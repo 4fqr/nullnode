@@ -94,8 +94,8 @@ You’ll be prompted to confirm before any operation runs.
 
 ## Contact & Links
 
-- Discord: https://discord.gg/Tz9Y3wea32
-- GitHub: https://github.com/Daiwik-M-Jith
+- **Discord (community):** https://discord.gg/Tz9Y3wea32
+- **GitHub (repo):** https://github.com/Daiwik-M-Jith
 
 ## License
 

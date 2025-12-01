@@ -15,7 +15,8 @@ param(
     [string]$RemoteUrl = 'https://github.com/Daiwik-M-Jith/nullnode.git',
     [switch]$AddRemoteIfMissing,
     [switch]$ForcePush,
-    [switch]$DryRun
+    [switch]$DryRun,
+    [switch]$AutoConfirm
 )
 
 function Confirm-Action([string]$Message){
@@ -66,7 +67,7 @@ try {
         exit 0
     }
 
-    if (-not (Confirm-Action "This will overwrite remote branches. Are you sure you want to continue?")) {
+    if (-not ($AutoConfirm -or (Confirm-Action "This will overwrite remote branches. Are you sure you want to continue?"))) {
         Write-Host 'Aborted by user.' -ForegroundColor Yellow
         exit 0
     }
@@ -82,7 +83,7 @@ try {
     $code = $LASTEXITCODE
     if ($code -ne 0) {
         Write-Host "Failed to push to main (exit $code)." -ForegroundColor Red
-        if (-not $ForcePush -and Confirm-Action "Force-push using --force instead of --force-with-lease?") {
+        if (-not $ForcePush -and ($AutoConfirm -or (Confirm-Action "Force-push using --force instead of --force-with-lease?"))) {
             Write-Host 'Using unconditional --force now (risky!)' -ForegroundColor Yellow
             git push --force $remoteToUse HEAD:main
         }
@@ -94,7 +95,7 @@ try {
     $code = $LASTEXITCODE
     if ($code -ne 0) {
         Write-Host "Failed to push to master (exit $code)." -ForegroundColor Red
-        if (-not $ForcePush -and Confirm-Action "Force-push using --force instead of --force-with-lease?") {
+        if (-not $ForcePush -and ($AutoConfirm -or (Confirm-Action "Force-push using --force instead of --force-with-lease?"))) {
             Write-Host 'Using unconditional --force now (risky!)' -ForegroundColor Yellow
             git push --force $remoteToUse HEAD:master
         }
