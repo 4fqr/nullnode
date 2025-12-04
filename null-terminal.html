@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="NullSector Terminal — A secure, feature-rich Kali Linux terminal emulator for learning and practice.">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none';">
+    <title>Null Terminal - NullSector</title>
+    <link rel="icon" type="image/svg+xml" href="logo.svg">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        .terminal-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .terminal-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .terminal-header h1 {
+            font-size: 2.5rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .terminal-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .terminal-window {
+            background: rgba(15, 20, 40, 0.95);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 255, 136, 0.2);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .terminal-titlebar {
+            background: rgba(10, 14, 39, 0.95);
+            padding: 0.8rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+        }
+
+        .terminal-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .terminal-btn {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .terminal-btn.close { background: #ff5f57; }
+        .terminal-btn.minimize { background: #ffbd2e; }
+        .terminal-btn.maximize { background: #28ca42; }
+        .terminal-btn:hover { filter: brightness(1.3); }
+
+        .terminal-title {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .terminal-info {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-family: 'Fira Code', monospace;
+        }
+
+        .terminal-body {
+            background: #0a0e1a;
+            padding: 1.5rem;
+            min-height: 500px;
+            max-height: 600px;
+            overflow-y: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .terminal-body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .terminal-body::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .terminal-body::-webkit-scrollbar-thumb {
+            background: rgba(0, 255, 136, 0.3);
+            border-radius: 4px;
+        }
+
+        .terminal-body::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 255, 136, 0.5);
+        }
+
+        .terminal-output {
+            margin-bottom: 0.5rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .terminal-prompt {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .prompt-user {
+            color: #00ff88;
+            font-weight: 600;
+        }
+
+        .prompt-at {
+            color: #ffffff;
+        }
+
+        .prompt-host {
+            color: #00ccff;
+            font-weight: 600;
+        }
+
+        .prompt-path {
+            color: #a855f7;
+            font-weight: 600;
+        }
+
+        .prompt-symbol {
+            color: #00ff88;
+            font-weight: bold;
+        }
+
+        .terminal-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex: 1;
+        }
+
+        .terminal-input {
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.95rem;
+            outline: none;
+            flex: 1;
+            padding: 0.2rem 0;
+        }
+
+        .terminal-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 18px;
+            background: #00ff88;
+            animation: blink 1s infinite;
+            margin-left: 2px;
+        }
+
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
+        .output-success {
+            color: #00ff88;
+        }
+
+        .output-error {
+            color: #ff5f57;
+        }
+
+        .output-warning {
+            color: #ffbd2e;
+        }
+
+        .output-info {
+            color: #00ccff;
+        }
+
+        .output-muted {
+            color: #6b7280;
+        }
+
+        .output-highlight {
+            color: #a855f7;
+        }
+
+        .file-listing {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.5rem;
+            margin: 0.5rem 0;
+        }
+
+        .file-item {
+            padding: 0.3rem 0.5rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
+        }
+
+        .file-item:hover {
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        .file-dir {
+            color: #00ccff;
+            font-weight: 600;
+        }
+
+        .file-exec {
+            color: #00ff88;
+            font-weight: 600;
+        }
+
+        .file-regular {
+            color: #ffffff;
+        }
+
+        .command-help {
+            display: grid;
+            gap: 0.3rem;
+            margin: 0.5rem 0;
+        }
+
+        .help-item {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .help-cmd {
+            color: #00ff88;
+            min-width: 150px;
+            font-weight: 600;
+        }
+
+        .help-desc {
+            color: var(--text-secondary);
+        }
+
+        .ascii-art {
+            color: #00ff88;
+            font-size: 0.8rem;
+            line-height: 1.2;
+            margin: 1rem 0;
+        }
+
+        .terminal-shortcuts {
+            background: rgba(15, 20, 40, 0.95);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .terminal-shortcuts h2 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .shortcuts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .shortcut-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+        }
+
+        .shortcut-key {
+            background: rgba(0, 255, 136, 0.2);
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            color: #00ff88;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .shortcut-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="twinkling"></div>
+    
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand" onclick="window.location.href='index.html'">
+                <img src="logo.svg" alt="NullSector Logo" class="logo">
+                <span class="brand-text">NullSector</span>
+            </div>
+            <div class="nav-links">
+                <a href="roadmap-hacking.html" class="nav-link">Hacking</a>
+                <a href="roadmap-programming.html" class="nav-link">Programming</a>
+                <a href="null-terminal.html" class="nav-link">Null Terminal</a>
+                <a href="faq.html" class="nav-link">FAQ</a>
+                <a href="https://discord.gg/Tz9Y3wea32" target="_blank" rel="noopener noreferrer" class="nav-link">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"/>
+                    </svg>
+                </a>
+                <a href="https://github.com/nullsector-official" target="_blank" rel="noopener noreferrer" class="nav-link">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                </a>
+            </div>
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Search...">
+                <span class="search-shortcut">CTRL K</span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="terminal-container">
+        <div class="terminal-header">
+            <h1>⚡ Null Terminal</h1>
+            <p>A secure, NullSector-modified Kali Linux terminal emulator for learning and practice</p>
+        </div>
+
+        <div class="terminal-window">
+            <div class="terminal-titlebar">
+                <div class="terminal-buttons">
+                    <div class="terminal-btn close" onclick="closeTerminal()"></div>
+                    <div class="terminal-btn minimize" onclick="minimizeTerminal()"></div>
+                    <div class="terminal-btn maximize" onclick="maximizeTerminal()"></div>
+                </div>
+                <div class="terminal-title">kali@nullsector: ~/terminal</div>
+                <div class="terminal-info">
+                    <span id="terminal-time">00:00:00</span>
+                    <span>⚡ Powered by NullSector</span>
+                </div>
+            </div>
+            <div class="terminal-body" id="terminal-output">
+                <!-- Output will be inserted here -->
+            </div>
+        </div>
+
+        <div class="terminal-shortcuts">
+            <h2>🎯 Terminal Shortcuts & Features</h2>
+            <div class="shortcuts-grid">
+                <div class="shortcut-item">
+                    <div class="shortcut-key">Tab</div>
+                    <div class="shortcut-desc">Auto-complete commands</div>
+                </div>
+                <div class="shortcut-item">
+                    <div class="shortcut-key">↑ / ↓</div>
+                    <div class="shortcut-desc">Navigate command history</div>
+                </div>
+                <div class="shortcut-item">
+                    <div class="shortcut-key">Ctrl + C</div>
+                    <div class="shortcut-desc">Cancel current command</div>
+                </div>
+                <div class="shortcut-item">
+                    <div class="shortcut-key">Ctrl + L</div>
+                    <div class="shortcut-desc">Clear terminal screen</div>
+                </div>
+                <div class="shortcut-item">
+                    <div class="shortcut-key">help</div>
+                    <div class="shortcut-desc">Show all available commands</div>
+                </div>
+                <div class="shortcut-item">
+                    <div class="shortcut-key">banner</div>
+                    <div class="shortcut-desc">Display NullSector ASCII art</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="null-terminal.js"></script>
+</body>
+</html>

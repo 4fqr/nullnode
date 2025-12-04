@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="NullSector Programming Roadmap — Master software development from fundamentals to production-ready applications.">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:">
+    <title>Programming Roadmap - NullSector</title>
+    <link rel="icon" type="image/svg+xml" href="logo.svg">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="twinkling"></div>
+    
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="index.html" style="display: flex; align-items: center; text-decoration: none; color: inherit;">
+                    <img src="logo.svg" alt="NullSector Logo" class="logo">
+                    <span class="brand-text">NullSector</span>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="choose-path.html" class="nav-link">Choose Path</a>
+                <a href="roadmap-programming.html" class="nav-link active">Programming</a>
+                <a href="roadmap-hacking.html" class="nav-link">Hacking</a>
+                <a href="faq.html" class="nav-link">FAQ</a>
+                <a href="https://discord.gg/Tz9Y3wea32" target="_blank" rel="noopener noreferrer" class="nav-link">Discord</a>
+            </div>
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Search..." aria-label="Search site content">
+            </div>
+        </div>
+    </nav>
+
+    <section class="content-page">
+        <div class="content-container">
+            <div class="breadcrumb">
+                <a href="index.html">Home</a> / <a href="choose-path.html">Choose Path</a> / <span>Programming</span>
+            </div>
+            
+            <h1 class="page-title">From Hello World to Production</h1>
+            <p class="page-subtitle">Your Complete Programming & Development Roadmap</p>
+
+            <div class="roadmap-content">
+                
+                <!-- FUNDAMENTALS I -->
+                <div class="roadmap-section">
+                    <div class="roadmap-number">01</div>
+                    <h2>Programming Fundamentals I — Your First Code</h2>
+                    
+                    <p><strong>Welcome to Programming!</strong> If you've NEVER written code before, you're in the right place. This chapter assumes ZERO prior knowledge and teaches you to think like a programmer.</p>
+
+                    <h3>🤖 What IS Programming?</h3>
+                    <p><strong>Metaphor:</strong> Programming is like writing a recipe for a robot chef who follows instructions EXACTLY — even if they're wrong!</p>
+                    <ul class="roadmap-list">
+                        <li><strong>Programs:</strong> Step-by-step instructions that tell the computer what to do</li>
+                        <li><strong>Code:</strong> The written instructions (in a programming language)</li>
+                        <li><strong>Compiler/Interpreter:</strong> Translates your code into machine language the computer understands</li>
+                    </ul>
+
+                    <p><strong>Real-World Analogy:</strong> Imagine telling a 5-year-old to make a sandwich:</p>
+                    <ul>
+                        <li>❌ Bad instruction: "Make a sandwich" (too vague!)</li>
+                        <li>✅ Good instructions: "1) Get two slices of bread. 2) Open peanut butter jar. 3) Spread peanut butter on one slice. 4) Put slices together."</li>
+                    </ul>
+                    <p>Computers need the GOOD version — specific, step-by-step, no ambiguity!</p>
+
+                    <h3>📦 Variables — Storage Boxes for Data</h3>
+                    <p><strong>Metaphor:</strong> Variables are like labeled jars on a shelf. Each jar has a name (label) and holds something inside (value).</p>
+
+                    <p><strong>Creating Variables in Python:</strong></p>
+                    <pre><code>name = "Alice"        # A jar labeled "name" holding text "Alice"
+age = 25              # A jar labeled "age" holding number 25
+is_student = True     # A jar labeled "is_student" holding True/False</code></pre>
+
+                    <h4>Data Types — Different Kinds of Jars</h4>
+                    <ul class="roadmap-list">
+                        <li><strong>Integers (int):</strong> Whole numbers. <code>42</code>, <code>-17</code>, <code>0</code></li>
+                        <li><strong>Floats (float):</strong> Decimal numbers. <code>3.14</code>, <code>-0.5</code>, <code>2.0</code></li>
+                        <li><strong>Strings (str):</strong> Text wrapped in quotes. <code>"Hello"</code>, <code>'Python'</code></li>
+                        <li><strong>Booleans (bool):</strong> True or False. <code>True</code>, <code>False</code></li>
+                    </ul>
+
+                    <p><strong>Why Types Matter:</strong></p>
+                    <pre><code>x = 5
+y = "5"
+print(x + x)      # Output: 10 (number math)
+print(y + y)      # Output: 55 (text concatenation)
+print(x + y)      # ERROR! Can't add number and text!</code></pre>
+
+                    <h3>🎯 Control Flow — Making Decisions</h3>
+                    
+                    <h4>If Statements — Ask Questions</h4>
+                    <p><strong>Metaphor:</strong> Like a bouncer checking IDs at a club. "IF age >= 21, let them in. ELSE, turn them away."</p>
+
+                    <pre><code>age = 20
+
+if age >= 18:
+    print("You can vote!")
+    print("Register at vote.gov")
+else:
+    print("Too young to vote yet")
+    
+# Output: "You can vote!" (since 20 >= 18)</code></pre>
+
+                    <p><strong>Multiple Conditions with elif:</strong></p>
+                    <pre><code>score = 85
+
+if score >= 90:
+    grade = "A"
+elif score >= 80:
+    grade = "B"
+elif score >= 70:
+    grade = "C"
+else:
+    grade = "F"
+    
+print(f"Your grade is: {grade}")  # Output: "Your grade is: B"</code></pre>
+
+                    <h4>Loops — Repetition Made Easy</h4>
+                    <p><strong>Metaphor:</strong> Loops are like saying "repeat this 10 times" instead of writing the same instruction 10 times!</p>
+
+                    <p><strong>For Loop — Do Something N Times:</strong></p>
+                    <pre><code># Print numbers 0 through 4
+for i in range(5):
+    print(i)
+    
+# Output:
+# 0
+# 1
+# 2
+# 3
+# 4</code></pre>
+
+                    <p><strong>While Loop — Keep Going Until Condition is False:</strong></p>
+                    <pre><code>count = 0
+
+while count < 3:
+    print(f"Count is: {count}")
+    count = count + 1  # MUST update or loop runs forever!
+    
+# Output:
+# Count is: 0
+# Count is: 1
+# Count is: 2</code></pre>
+
+                    <h3>🍳 Functions — Reusable Recipes</h3>
+                    <p><strong>Metaphor:</strong> Functions are like recipes in a cookbook. Define once, use many times!</p>
+
+                    <p><strong>Without Functions (repetitive):</strong></p>
+                    <pre><code>print("Hello, Alice!")
+print("Hello, Bob!")
+print("Hello, Charlie!")</code></pre>
+
+                    <p><strong>With Functions (clean!):</strong></p>
+                    <pre><code>def greet(name):
+    print(f"Hello, {name}!")
+    
+greet("Alice")     # Output: Hello, Alice!
+greet("Bob")       # Output: Hello, Bob!
+greet("Charlie")   # Output: Hello, Charlie!</code></pre>
+
+                    <h4>Return Values — Functions Can Give Back Results</h4>
+                    <pre><code>def add(a, b):
+    result = a + b
+    return result    # Send result back to caller
+
+total = add(5, 3)
+print(total)         # Output: 8</code></pre>
+
+                    <h3>💬 Input & Output — Talking to Users</h3>
+                    
+                    <p><strong>Getting Input from User:</strong></p>
+                    <pre><code>name = input("What's your name? ")
+print(f"Nice to meet you, {name}!")</code></pre>
+
+                    <p><strong>Converting Input to Numbers:</strong></p>
+                    <pre><code>age_text = input("How old are you? ")
+age = int(age_text)  # Convert text to integer
+
+if age >= 18:
+    print("You're an adult!")
+else:
+    print("You're a minor!")</code></pre>
+
+                    <h3>🐛 Debugging — Finding and Fixing Errors</h3>
+                    
+                    <p><strong>Common Error Types:</strong></p>
+                    <ul class="roadmap-list">
+                        <li><strong>SyntaxError:</strong> You wrote invalid code. Like a typo or missing colon.</li>
+                        <li><strong>TypeError:</strong> Wrong data type. Like trying to add a number and text.</li>
+                        <li><strong>NameError:</strong> Variable doesn't exist. You forgot to create it.</li>
+                        <li><strong>IndentationError:</strong> Python cares about spaces! Wrong indentation breaks code.</li>
+                    </ul>
+
+                    <p><strong>Debugging with Print Statements:</strong></p>
+                    <pre><code>def calculate_discount(price, discount):
+    print(f"DEBUG: price = {price}, discount = {discount}")  # See what values we got
+    final = price - (price * discount)
+    print(f"DEBUG: final price = {final}")  # See the result
+    return final
+
+result = calculate_discount(100, 0.2)
+print(f"You pay: ${result}")</code></pre>
+
+                    <h3>🎯 Your First Real Program — Number Guessing Game</h3>
+                    <pre><code>import random
+
+# Computer picks random number 1-10
+secret = random.randint(1, 10)
+attempts = 0
+
+print("I'm thinking of a number between 1 and 10!")
+
+while True:
+    guess = int(input("Your guess: "))
+    attempts += 1
+    
+    if guess < secret:
+        print("Too low! Try again.")
+    elif guess > secret:
+        print("Too high! Try again.")
+    else:
+        print(f"Correct! You got it in {attempts} attempts!")
+        break  # Exit loop</code></pre>
+
+                    <div class="key-takeaways" style="margin-top:2rem;">
+                        <h4>✅ Chapter 1 Checklist — Can You:</h4>
+                        <ul>
+                            <li>Create variables and understand different data types?</li>
+                            <li>Write if/else statements to make decisions?</li>
+                            <li>Use for and while loops correctly?</li>
+                            <li>Define and call functions with parameters?</li>
+                            <li>Get user input and print output?</li>
+                            <li>Read basic error messages and debug with print()?</li>
+                            <li>Build the number guessing game above from memory?</li>
+                        </ul>
+                        <p><strong>Practice:</strong> Code 30 minutes daily. Try modifying the guessing game — add difficulty levels, limited attempts, or hints!</p>
+                    </div>
+                </div>
+
+                <!-- FUNDAMENTALS II -->
+                <div class="roadmap-section">
+                    <div class="roadmap-number">02</div>
+                    <h2>Programming Fundamentals II — Level Up Your Skills</h2>
+                    
+                    <p><strong>You know the basics!</strong> Now learn how PROFESSIONAL developers organize code, handle errors, and build maintainable software. This chapter bridges "beginner" to "intermediate."</p>
+
+                    <h3>📚 Data Structures — The Right Container for the Job</h3>
+                    <p><strong>Metaphor:</strong> Data structures are like different storage containers — backpacks, toolboxes, filing cabinets. Each is good for specific purposes!</p>
+
+                    <h4>Lists — Ordered Collections</h4>
+                    <p><strong>Think:</strong> A shopping list. Items in order, duplicates allowed.</p>
+                    <pre><code>fruits = ["apple", "banana", "cherry", "apple"]  # Duplicates OK!
+print(fruits[0])      # "apple" (first item, index 0)
+fruits.append("date") # Add to end
+fruits.remove("banana")  # Remove first occurrence
+print(len(fruits))    # 4 items</code></pre>
+
+                    <h4>Dictionaries — Key-Value Pairs</h4>
+                    <p><strong>Think:</strong> A real dictionary. Look up a word (key) to get its definition (value).</p>
+                    <pre><code>person = {
+    "name": "Alice",
+    "age": 25,
+    "city": "NYC"
+}
+
+print(person["name"])        # "Alice"
+person["job"] = "Engineer"   # Add new key-value pair
+print(person.keys())         # All keys
+print(person.values())       # All values</code></pre>
+
+                    <h4>Sets — Unique, Unordered Collections</h4>
+                    <p><strong>Think:</strong> A bag of unique items. No duplicates, no specific order.</p>
+                    <pre><code>tags = {"python", "beginner", "tutorial", "python"}  # Duplicate ignored!
+print(tags)           # {"python", "beginner", "tutorial"}
+tags.add("coding")    # Add item
+tags.remove("tutorial")  # Remove item
+
+# Useful for finding unique items
+numbers = [1, 2, 2, 3, 3, 3, 4]
+unique = set(numbers)  # {1, 2, 3, 4}</code></pre>
+
+                    <h4>When to Use Which?</h4>
+                    <ul class="roadmap-list">
+                        <li><strong>List:</strong> Ordered data, need indexing. Example: todo items, high scores</li>
+                        <li><strong>Dictionary:</strong> Need fast lookup by key. Example: user profiles, settings</li>
+                        <li><strong>Set:</strong> Need uniqueness, no order matters. Example: tags, visited URLs</li>
+                    </ul>
+
+                    <h3>🏗️ Object-Oriented Programming (OOP) — Organizing Complex Code</h3>
+                    <p><strong>Metaphor:</strong> A CLASS is like a blueprint for a house. An OBJECT is an actual house built from that blueprint.</p>
+
+                    <h4>Classes & Objects — The Basics</h4>
+                    <pre><code>class Dog:
+    def __init__(self, name, age):
+        self.name = name    # Attribute (data)
+        self.age = age
+    
+    def bark(self):         # Method (behavior)
+        print(f"{self.name} says Woof!")
+    
+    def birthday(self):
+        self.age += 1
+        print(f"{self.name} is now {self.age} years old!")
+
+# Create objects (instances)
+dog1 = Dog("Buddy", 3)
+dog2 = Dog("Max", 5)
+
+dog1.bark()        # "Buddy says Woof!"
+dog1.birthday()    # "Buddy is now 4 years old!"
+dog2.bark()        # "Max says Woof!"</code></pre>
+
+                    <h4>Inheritance — Reusing Code</h4>
+                    <p><strong>Metaphor:</strong> Child classes inherit traits from parent classes, like kids inheriting genes from parents.</p>
+                    <pre><code>class Animal:
+    def __init__(self, name):
+        self.name = name
+    
+    def speak(self):
+        print(f"{self.name} makes a sound")
+
+class Dog(Animal):  # Dog inherits from Animal
+    def speak(self):  # Override parent method
+        print(f"{self.name} barks!")
+
+class Cat(Animal):
+    def speak(self):
+        print(f"{self.name} meows!")
+
+pets = [Dog("Buddy"), Cat("Whiskers")]
+for pet in pets:
+    pet.speak()
+# Output:
+# Buddy barks!
+# Whiskers meows!</code></pre>
+
+                    <h3>⚠️ Error Handling — Graceful Failures</h3>
+                    <p><strong>Problem:</strong> Programs crash when unexpected things happen (file not found, network timeout, bad user input).</p>
+                    <p><strong>Solution:</strong> Try/except blocks CATCH errors and handle them gracefully.</p>
+
+                    <pre><code># Without error handling (CRASH!)
+age = int(input("Enter age: "))  # User types "abc" → CRASH!
+
+# With error handling (SAFE!)
+try:
+    age = int(input("Enter age: "))
+    print(f"You are {age} years old")
+except ValueError:
+    print("That's not a valid number! Please enter digits only.")
+    age = 0  # Default value</code></pre>
+
+                    <h4>Multiple Exception Types</h4>
+                    <pre><code>try:
+    file = open("data.txt", "r")
+    number = int(file.read())
+    result = 100 / number
+except FileNotFoundError:
+    print("File doesn't exist!")
+except ValueError:
+    print("File doesn't contain a valid number!")
+except ZeroDivisionError:
+    print("Can't divide by zero!")
+finally:
+    print("This always runs, even if error occurred")</code></pre>
+
+                    <h3>📁 File I/O — Reading & Writing Data</h3>
+                    
+                    <h4>Writing to Files</h4>
+                    <pre><code># Write mode (creates new file or OVERWRITES existing)
+with open("output.txt", "w") as file:
+    file.write("Hello, World!\n")
+    file.write("This is a new line.")
+# File automatically closed after 'with' block
+
+# Append mode (adds to end of existing file)
+with open("output.txt", "a") as file:
+    file.write("\nAppended line!")</code></pre>
+
+                    <h4>Reading from Files</h4>
+                    <pre><code># Read entire file
+with open("data.txt", "r") as file:
+    content = file.read()
+    print(content)
+
+# Read line by line (memory efficient for large files)
+with open("data.txt", "r") as file:
+    for line in file:
+        print(line.strip())  # strip() removes trailing newline</code></pre>
+
+                    <h4>JSON — Structured Data Storage</h4>
+                    <pre><code>import json
+
+# Write JSON
+data = {
+    "name": "Alice",
+    "age": 25,
+    "skills": ["Python", "JavaScript"]
+}
+
+with open("person.json", "w") as file:
+    json.dump(data, file, indent=2)
+
+# Read JSON
+with open("person.json", "r") as file:
+    loaded = json.load(file)
+    print(loaded["name"])  # "Alice"</code></pre>
+
+                    <h3>📦 Modules & Packages — Organizing Large Projects</h3>
+                    
+                    <h4>Creating Your Own Module</h4>
+                    <p><strong>File: math_utils.py</strong></p>
+                    <pre><code>def add(a, b):
+    return a + b
+
+def multiply(a, b):
+    return a * b
+
+PI = 3.14159</code></pre>
+
+                    <p><strong>File: main.py</strong></p>
+                    <pre><code>import math_utils
+
+result = math_utils.add(5, 3)
+print(result)  # 8
+print(math_utils.PI)  # 3.14159
+
+# Alternative import styles
+from math_utils import add, PI
+print(add(2, 3))  # 5
+
+from math_utils import *  # Import everything (not recommended)</code></pre>
+
+                    <h4>Virtual Environments — Isolated Project Dependencies</h4>
+                    <p><strong>Problem:</strong> Project A needs Django 3.2, Project B needs Django 4.0. Conflicts!</p>
+                    <p><strong>Solution:</strong> Virtual environments isolate dependencies per project.</p>
+
+                    <pre><code># Create virtual environment
+python -m venv myenv
+
+# Activate (Windows)
+myenv\Scripts\activate
+
+# Activate (Mac/Linux)
+source myenv/bin/activate
+
+# Install packages (only affects this environment)
+pip install requests pandas
+
+# Save dependencies
+pip freeze > requirements.txt
+
+# Install from requirements.txt (for teammates/deployment)
+pip install -r requirements.txt</code></pre>
+
+                    <h3>✅ Testing — Catching Bugs Early</h3>
+                    <p><strong>Metaphor:</strong> Tests are like quality checks at a factory. Catch defects BEFORE shipping to customers!</p>
+
+                    <h4>Simple Unit Tests</h4>
+                    <pre><code>def add(a, b):
+    return a + b
+
+def test_add():
+    assert add(2, 3) == 5
+    assert add(-1, 1) == 0
+    assert add(0, 0) == 0
+    print("All tests passed!")
+
+test_add()  # Run tests</code></pre>
+
+                    <h4>Using pytest (Professional Testing Framework)</h4>
+                    <p><strong>File: test_math.py</strong></p>
+                    <pre><code>import pytest
+from math_utils import add, multiply
+
+def test_add():
+    assert add(2, 3) == 5
+    assert add(-1, 1) == 0
+
+def test_multiply():
+    assert multiply(3, 4) == 12
+    assert multiply(0, 10) == 0
+
+# Run: pytest test_math.py</code></pre>
+
+                    <div class="key-takeaways" style="margin-top:2rem;">
+                        <h4>✅ Chapter 2 Checklist — Can You:</h4>
+                        <ul>
+                            <li>Choose the right data structure (list/dict/set) for different scenarios?</li>
+                            <li>Create classes with attributes and methods?</li>
+                            <li>Use inheritance to reuse code?</li>
+                            <li>Handle errors gracefully with try/except?</li>
+                            <li>Read and write files (text and JSON)?</li>
+                            <li>Organize code into modules and import them?</li>
+                            <li>Set up a virtual environment for a project?</li>
+                            <li>Write basic unit tests for your functions?</li>
+                        </ul>
+                        <p><strong>Project Idea:</strong> Build a simple TODO app that saves tasks to JSON, uses a Task class, and has error handling + tests!</p>
+                    </div>
+                </div>
+
+                <!-- ALGORITHMS & DATA STRUCTURES -->
+                <div class="roadmap-section">
+                    <div class="roadmap-number">03</div>
+                    <h2>Algorithms & Problem Solving</h2>
+                    <p>Algorithms are recipes for solving problems efficiently. Learn classic patterns, analyze time complexity, and develop the problem-solving mindset of a computer scientist.</p>
+
+                    <ul class="roadmap-list">
+                        <li><strong>Big O Notation:</strong> Understand how fast your code runs as data grows. Learn O(1), O(n), O(log n), O(n²).</li>
+                        <li><strong>Searching & Sorting:</strong> Binary search, merge sort, quick sort — master the classics and know when to use each.</li>
+                        <li><strong>Recursion:</strong> Functions that call themselves — elegant for trees and divide-and-conquer problems. Understand base cases and stack limits.</li>
+                        <li><strong>Trees & Graphs:</strong> Hierarchical and networked data structures. Learn traversal algorithms (BFS, DFS) and use cases (file systems, social networks).</li>
+                        <li><strong>Dynamic Programming:</strong> Solve complex problems by breaking them into overlapping subproblems. Understand memoization and bottom-up approaches.</li>
+                        <li><strong>Practice Platforms:</strong> LeetCode, HackerRank, Codewars — regular practice builds pattern recognition.</li>
+                    </ul>
+
+                    <p class="small">🧠 Metaphor: Algorithms are shortcuts through a maze. Big O tells you how long the shortcut is as the maze grows bigger!</p>
+                    </div>
+
+                <!-- WEB DEVELOPMENT FUNDAMENTALS -->
+                <div class="roadmap-section">
+                    <div class="roadmap-number">04</div>
+                    <h2>Web Development Fundamentals</h2>
+                    <p>The web is everywhere — learn how browsers, servers, and databases work together to deliver modern applications. Start with HTML/CSS, then add JavaScript interactivity.</p>
+
+                    <ul class="roadmap-list">
+                        <li><strong>HTML & Semantic Markup:</strong> Structure content with tags. Learn accessibility (ARIA labels, semantic elements) from day one.</li>
+                        <li><strong>CSS & Styling:</strong> Layouts (flexbox, grid), colors, fonts, responsive design. Make your sites look good on any device.</li>
+                        <li><strong>JavaScript Essentials:</strong> DOM manipulation, event listeners, async/await. Bring pages to life with interactivity.</li>
+                        <li><strong>HTTP & APIs:</strong> Understand requests/responses, status codes, headers. Learn to fetch data from APIs (REST, JSON).</li>
+                        <li><strong>Dev Tools Mastery:</strong> Browser console, network tab, debugger — essential skills for every web developer.</li>
+                        <li><strong>Version Control (Git):</strong> Commit, branch, merge, push/pull. Git is the time machine for your code — learn it early.</li>
+                    </ul>
+
+                    <p class="small">🌐 Metaphor: HTML is the skeleton, CSS is the skin and clothes, JavaScript is the muscles that make it move!</p>
+                    </div>
+
+                <!-- BACKEND DEVELOPMENT -->
+                <div class="roadmap-section">
+                    <div class="roadmap-number">05</div>
+                    <h2>Backend Development</h2>
+                    <p>Backend code runs on servers, handles business logic, and talks to databases. Learn to build APIs, manage authentication, and deploy scalable applications.</p>
+
+                    <ul class="roadmap-list">
+                        <li><strong>Server Frameworks:</strong> Flask or Django (Python), Express (Node.js) — learn routing, middleware, and request handling.</li>
+                        <li><strong>Databases:</strong> SQL basics (SELECT, JOIN, CREATE), database design (normalization, indexes). Learn PostgreSQL or MySQL.</li>
+                        <li><strong>Authentication & Authorization:</strong> Secure user login with hashed passwords, sessions, JWTs. Understand OAuth and role-based access.</li>
+                        <li><strong>RESTful API Design:</strong> Clear endpoints, proper HTTP methods (GET, POST, PUT, DELETE), status codes, versioning.</li>
+                        <li><strong>Environment Management:</strong> Config files, environment variables, secrets management. Never commit API keys!</li>
+                        <li><strong>Deployment Basics:</strong> Docker containers, cloud platforms (Heroku, AWS, Vercel), CI/CD pipelines.</li>
+                    </ul>
+
+                    <p class="small">🔧 Metaphor: The backend is the kitchen of a restaurant — users never see it, but it's where all the real work happens!</p>
+                    </div>
+
+                <!-- DATABASES & PERSISTENCE -->
+                <div class="roadmap-section">
+                    <div class="roadmap-number">06</div>
+                    <h2>Databases & Data Management</h2>
+                    <p>Data is the heart of most applications. Master SQL, understand NoSQL alternatives, and learn to design efficient schemas that scale.</p>
+
+                    <ul class="roadmap-list">
+                        <li><strong>SQL Mastery:</strong> Complex queries (subqueries, CTEs, window functions), joins, aggregations, indexes for performance.</li>
+                        <li><strong>Database Design:</strong> Normalization (1NF, 2NF, 3NF), foreign keys, constraints, transactions (ACID properties).</li>
+                        <li><strong>NoSQL Databases:</strong> MongoDB (documents), Redis (key-value), when to choose NoSQL over SQL.</li>
+                        <li><strong>ORMs:</strong> SQLAlchemy, Sequelize, Prisma — map objects to database rows. Understand the benefits and pitfalls.</li>
+                        <li><strong>Migrations:</strong> Version your database schema changes. Learn tools like Alembic or Flyway.</li>
+                        <li><strong>Performance:</strong> Query optimization, explain plans, indexing strategies, caching layers.</li>
+                    </ul>
+
+                    <p class="small">📊 Metaphor: SQL databases are filing cabinets with strict rules. NoSQL is like a junk drawer — flexible but harder to organize!</p>
+                    </div>
+
+                <!-- FULL STACK PROJECTS -->
+                <div class="roadmap-section">
+                    <div class="roadmap-number">07</div>
+                    <h2>Full-Stack Integration</h2>
+                    <p>Bring frontend and backend together! Build complete applications from database to UI, deploy them, and learn to think like a product engineer.</p>
+
+                    <ul class="roadmap-list">
+                        <li><strong>Modern Frameworks:</strong> React, Vue, or Svelte for dynamic UIs. Understand component architecture and state management.</li>
+                        <li><strong>API Integration:</strong> Connect your frontend to backend APIs. Handle loading states, errors, authentication tokens.</li>
+                        <li><strong>Real-Time Features:</strong> WebSockets for chat apps, live notifications, collaborative editing.</li>
+                        <li><strong>File Uploads:</strong> Handle images, PDFs, videos. Learn storage solutions (S3, Cloudinary) and validation.</li>
+                        <li><strong>Project Architecture:</strong> Organize code, separate concerns, use environment configs, follow best practices.</li>
+                        <li><strong>Portfolio Projects:</strong> Build 2-3 impressive full-stack apps to showcase your skills (e.g., social media clone, task manager, e-commerce site).</li>
+                    </ul>
+
+                    <p class="small">🏗️ Metaphor: Full-stack is like building a house — foundation (backend), walls (APIs), beautiful interior (frontend)!</p>
+                    </div>
+
+                <!-- SOFTWARE ENGINEERING PRACTICES -->
+                <div class="roadmap-section">
+                    <div class="roadmap-number">08</div>
+                    <h2>Professional Practices & Tools</h2>
+                    <p>Writing code is only half the job — learn to collaborate, maintain quality, debug efficiently, and ship features safely in team environments.</p>
+
+                    <ul class="roadmap-list">
+                        <li><strong>Code Quality:</strong> Linters (ESLint, Pylint), formatters (Prettier, Black), code reviews, style guides.</li>
+                        <li><strong>Testing Strategies:</strong> Unit tests, integration tests, end-to-end tests (Cypress, Selenium). Learn TDD and BDD approaches.</li>
+                        <li><strong>CI/CD Pipelines:</strong> Automate testing and deployment with GitHub Actions, GitLab CI, or Jenkins.</li>
+                        <li><strong>Monitoring & Logging:</strong> Track errors (Sentry), log important events, set up alerts for production issues.</li>
+                        <li><strong>Documentation:</strong> Write clear READMEs, API docs, inline comments. Good docs save hours of confusion.</li>
+                        <li><strong>Team Collaboration:</strong> Pull requests, code reviews, pair programming, agile workflows (sprints, standups).</li>
+                    </ul>
+
+                    <p class="small">👥 Metaphor: Solo coding is like writing a diary. Team coding is like co-authoring a novel — communication is everything!</p>
+                    </div>
+
+                <!-- ADVANCED TOPICS -->
+                <div class="roadmap-section">
+                    <div class="roadmap-number">09</div>
+                    <h2>Advanced Topics & Specializations</h2>
+                    <p>Choose your path forward! Dive deeper into areas that excite you — whether that's performance optimization, security, machine learning, or cloud architecture.</p>
+
+                    <ul class="roadmap-list">
+                        <li><strong>Performance Optimization:</strong> Profiling, caching strategies, lazy loading, code splitting, CDN usage.</li>
+                        <li><strong>Security Best Practices:</strong> Input validation, SQL injection prevention, XSS/CSRF protection, secure authentication.</li>
+                        <li><strong>Cloud & DevOps:</strong> AWS/Azure/GCP services, container orchestration (Kubernetes), infrastructure as code (Terraform).</li>
+                        <li><strong>Microservices:</strong> Break monoliths into services, message queues (RabbitMQ, Kafka), service mesh.</li>
+                        <li><strong>Machine Learning Basics:</strong> Python ML libraries (scikit-learn, TensorFlow), data preprocessing, model training/deployment.</li>
+                        <li><strong>Mobile Development:</strong> React Native, Flutter — build cross-platform mobile apps with web skills.</li>
+                    </ul>
+
+                    <p class="small">🚀 Metaphor: You've learned to drive — now choose your vehicle (performance car, security truck, ML spaceship)!</p>
+                    </div>
+
+                <!-- CAREER & PORTFOLIO -->
+                <div class="roadmap-section">
+                    <div class="roadmap-number">10</div>
+                    <h2>Career Preparation & Portfolio</h2>
+                    <p>Land your dream job! Build a standout portfolio, contribute to open source, prepare for interviews, and learn to market your skills effectively.</p>
+
+                    <ul class="roadmap-list">
+                        <li><strong>Portfolio Website:</strong> Showcase 3-5 best projects with live demos, clean code, and detailed case studies.</li>
+                        <li><strong>GitHub Profile:</strong> Contribute to open source, maintain active repos, write good commit messages and READMEs.</li>
+                        <li><strong>Resume & LinkedIn:</strong> Highlight projects, skills, and impact. Use action verbs and quantify achievements.</li>
+                        <li><strong>Interview Prep:</strong> Practice coding challenges, system design questions, behavioral questions (STAR method).</li>
+                        <li><strong>Networking:</strong> Attend meetups, conferences, hackathons. Build relationships in the developer community.</li>
+                        <li><strong>Continuous Learning:</strong> Follow industry blogs, podcasts, newsletters. Tech evolves fast — stay curious and adaptable!</li>
+                    </ul>
+
+                    <p class="small">💼 Metaphor: Your portfolio is your storefront — make it so impressive that employers can't wait to see what's inside!</p>
+                    </div>
+
+            </div>
+
+            <!-- Action Section -->
+            <div class="key-takeaways" style="margin-top: 3rem;">
+                <h3>Ready to Start Coding?</h3>
+                <p>This roadmap is comprehensive, but you don't have to master everything at once. Start with Fundamentals I, build small projects, and gradually work your way up. Consistency beats intensity — 30 minutes daily is better than 8-hour weekend sprints.</p>
+                
+                <div style="display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap;">
+                    <a href="choose-path.html" class="cta-button">← Back to Choose Path</a>
+                    <a href="roadmap-hacking.html" class="cta-button">Explore Hacking Roadmap</a>
+                    <a href="https://discord.gg/Tz9Y3wea32" target="_blank" rel="noopener noreferrer" class="cta-button">Join Discord Community</a>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 NullSector — Building the next generation of developers & security professionals</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+

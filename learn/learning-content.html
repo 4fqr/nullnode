@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Learning Content — NullSector</title>
+  <link rel="icon" type="image/svg+xml" href="../logo.svg">
+  <link rel="stylesheet" href="../styles.css">
+  <meta name="description" content="Interactive, ground-up cybersecurity lessons with exercises you can run in the simulated terminal." />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:">
+  <style>
+    /* Lightweight learning-page specific styles (follows site theme) */
+    .learning-wrapper { max-width:1400px; margin: 2rem auto; padding: 1rem 2rem; }
+    .learning-layout { display:grid; grid-template-columns: 300px 1fr; gap: 2rem; align-items:start; }
+    .chapter { background: var(--card-bg); border:1px solid rgba(0,255,136,.08); padding:1.75rem; border-radius:12px; margin-bottom:1.5rem; }
+    .chapter h2 { font-size:1.6rem; margin-bottom:.35rem; }
+    .chapter p { color:var(--text-secondary); margin-bottom:.75rem; }
+    .chapter .meta { display:flex; gap:1rem; align-items:center; margin-bottom:1rem; }
+    .chapter .meta .badge { background:rgba(0,255,136,.06); padding:.35rem .6rem; border-radius:999px; font-size:.8rem; color:var(--primary-color); border:1px solid rgba(0,255,136,.08); }
+    .example { margin-top:.7rem; padding:1rem; border-radius:8px; background:rgba(0,0,0,.25); border:1px solid rgba(255,255,255,.02); }
+    .code { background:rgba(0,0,0,.6); padding: .8rem; border-radius:6px; font-family:monospace; color:#dfeff0; overflow:auto; margin-bottom:.6rem; }
+    .try-row { display:flex; gap:.6rem; flex-wrap:wrap; }
+    .checkmark { display:inline-block; width:18px; height:18px; border-radius:50%; background:rgba(0,255,136,.12); color:var(--primary-color); text-align:center; line-height:18px; font-size:.8rem; }
+    .chapter-complete { border-color: rgba(0,255,136,.5); box-shadow:0 10px 30px rgba(0,255,136,.03); }
+    .sidebar { position:sticky; top:86px; background:var(--card-bg); padding:1rem; border-radius:12px; border:1px solid rgba(0,255,136,.06); }
+    .sidebar h3 { color:var(--primary-color); margin-bottom:.6rem; }
+    .nav-list { list-style:none; padding-left:0; margin:0; }
+    .nav-list li { margin:.45rem 0; }
+    .nav-list a { color:var(--text-secondary); text-decoration:none; display:flex; align-items:center; gap:.5rem; padding:.45rem 0.6rem; border-radius:8px; }
+    .nav-list a.active { background:rgba(0,255,136,.08); color:var(--primary-color); border-left:3px solid var(--primary-color); }
+    .progress { margin-top:1rem; }
+    .progress .bar { height:10px; background:rgba(255,255,255,.06); border-radius:4px; overflow:hidden; }
+    .progress .fill { height:100%; background:linear-gradient(90deg,#00ff88,#00ccff); width:0%; transition:width .5s ease; }
+    .small { font-size:.9rem; color:var(--text-secondary); }
+    .hint { padding:.6rem 1rem; background:rgba(0,0,0,.2); border-radius:8px; color:var(--text-secondary); margin-top:.8rem; }
+    .exercise-success { background:linear-gradient(135deg,#0d1f14,#062a16); border:1px solid rgba(0,255,136,.2); padding:.8rem; border-radius:8px; color:var(--primary-color); margin-top:.6rem; display:none; }
+    .chapter-actions { display:flex; gap:.5rem; margin-top:.8rem; }
+    @media (max-width: 980px) { .learning-layout{ grid-template-columns: 1fr;} .sidebar{ position:relative; top:0;} }
+  </style>
+</head>
+<body>
+  <div class="stars"></div>
+  <div class="twinkling"></div>
+
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-brand"><a href="../index.html"><img src="../logo.svg" class="logo" alt="NullSector"/></a></div>
+      <div class="nav-links">
+        <a href="../roadmap.html" class="nav-link">Roadmap</a>
+        <a href="../faq.html" class="nav-link">FAQ</a>
+        <a href="https://discord.gg/Tz9Y3wea32" target="_blank" rel="noopener noreferrer" class="nav-link">Discord</a>
+      </div>
+      <div class="search-container"><input class="search-input" placeholder="Search..." aria-label="Search site content"></div>
+    </div>
+  </nav>
+
+  <div class="learning-wrapper">
+    <div class="content-container">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="../roadmap.html">Roadmap</a> / <strong>Learning Content</strong></div>
+      <h1 class="page-title">Learning Content — Guided, interactive, and safe</h1>
+      <p class="page-subtitle">Each chapter teaches a focused concept from the roadmap with clear examples, short exercises, and a practice terminal you can use without risk.</p>
+
+      <div class="learning-layout">
+
+        <aside class="sidebar">
+          <h3>Chapters</h3>
+          <ul class="nav-list" id="chapter-nav"></ul>
+
+          <div class="progress">
+            <div class="small">Progress</div>
+            <div class="bar" aria-hidden="true"><div id="progress-fill" class="fill" style="width:0%"></div></div>
+            <div style="margin-top:.6rem; font-size:.9rem;">Completed <span id="progress-count">0</span> / 10</div>
+          </div>
+
+          <div style="margin-top:1rem;">
+            <a href="../learn/01-fundamentals.html" class="cta-button">Full Fundamentals Page</a>
+          </div>
+
+          <div style="margin-top:1rem; font-size:.85rem; color:var(--text-secondary);">
+            <strong>Tips</strong>
+            <ul style="margin-top:.5rem;">
+              <li>Click Try → runs the example in the secure simulated terminal below.</li>
+              <li>Complete all example commands in a chapter to mark it complete automatically.</li>
+              <li>Progress is saved in your browser (localStorage).</li>
+            </ul>
+          </div>
+        </aside>
+
+        <main>
+          <!-- build chapters programmatically using JavaScript for clarity and maintainability -->
+          <div id="chapters"></div>
+
+          <section class="chapter" id="terminal-area">
+            <h2>Practice Terminal</h2>
+            <p class="small">This is a safe, simulated terminal included with the site — it imitates output for learning purposes only. Use the examples above or experiment freely.</p>
+
+            <div class="terminal-section" style="margin-top:1rem;">
+              <div data-terminal id="learning-terminal"></div>
+              <div class="small" style="margin-top:.75rem;">Shortcuts: <kbd>Ctrl+K</kbd> focus search, <kbd>↑</kbd>/<kbd>↓</kbd> history, <kbd>Tab</kbd> autocomplete</div>
+            </div>
+          </section>
+
+          <div class="key-takeaways" style="margin-top:1.5rem;">
+            <h4>How to get the most from these lessons</h4>
+            <ul>
+              <li>Start small: complete one chapter at a time and try to modify the examples.</li>
+              <li>Learn the command shapes (what switches look like) — this transfers to real systems.</li>
+              <li>Use external labs (TryHackMe/HackTheBox) for deeper practice once comfortable.</li>
+            </ul>
+          </div>
+
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-content"><p>&copy; 2025 NullSector</p></div>
+  </footer>
+
+  <script>
+  // Chapter data — each chapter contains a short intro, examples and expected commands (regexes) to mark completion.
+  const CHAPTERS = [
+    {
+      id: '01-basics', number: '01', title: 'Fundamentals',
+      intro: 'Start here — the computer is a simple ecosystem. Files are containers, processes are the active workers, and permissions are the locks that protect your stuff.',
+      sections: [
+        { type: 'concept', title: 'Computer as a town', body: 'Imagine a tiny town: houses (files), workers (processes), locks (permissions) and roads (networks). If you understand who lives where and who has keys, you can spot when something looks wrong.' },
+        { type: 'concept', title: 'Permissions simply', body: 'Read (r) lets you open a file, write (w) lets you change it, execute (x) lets you run it. In Linux the owner, group and others determine who has which keys.' },
+        { type: 'example', title: 'Explore the home area', code: 'pwd\nls -la\ncat welcome.txt', tries: ['pwd','ls -la','cat welcome.txt'], checks: [/^pwd$/i, /^ls\s+-la$/i, /^cat\s+welcome\.txt$/i] },
+        { type: 'challenge', title: 'Navigation check (multi-step)', steps: [
+          { code: 'pwd', check: /^pwd$/i, hint: 'What command shows your current working directory?' },
+          { code: 'ls -la', check: /^ls\s+-la$/i, hint: 'List files & hidden files with permissions: try ls -la' },
+          { code: 'cat practice_notes.txt', check: /^cat\s+practice_notes\.txt$/i, hint: 'Read practice_notes.txt using cat' }
+        ], hint: 'Complete all steps in order to confirm navigation basics.' },
+        { type: 'example', title: 'Practice note', code: 'cat practice_notes.txt', tries: ['cat practice_notes.txt'], checks: [/^cat\s+practice_notes\.txt$/i] }
+      ]
+    },
+    { id: '02-linux', number: '02', title: 'Linux Essentials', intro: 'Linux is the toolbelt for security work — once you understand a handful of commands you can do most of the heavy lifting.',
+      sections: [
+        { type: 'concept', title: 'File system & navigation', body: 'Paths tell you where to go. `pwd` says where you are. `ls` lists the doors. `ls -la` shows hidden files & the permission bits.' },
+        { type: 'example', title: 'Explore and read', code: 'pwd\nls -la\ncat notes.txt', tries:['pwd','ls -la','cat notes.txt'], checks:[/^pwd$/i,/^ls\s+-la$/i,/^cat\s+notes\.txt$/i] },
+        { type: 'example', title: 'Try a simple script', code: 'python -c "print(\'Hello world\')"\npython example.py', tries:["python -c \"print('Hello world')\"","python example.py"], checks:[/^python\s+-c/i,/^python\s+example\.py$/i] },
+        { type: 'challenge', title: 'Basic scripting challenge', steps: [
+          { code: 'python -c "print(\'Hello world\')"', check: /^python\s+-c/i, hint: 'Run a quick inline python print' },
+          { code: 'python example.py', check: /^python\s+example\.py$/i, hint: 'Execute the sample python file' },
+          { code: 'ls -la', check: /^ls\s+-la$/i, hint: 'Confirm the files exist with ls -la' }
+        ], hint: 'This multi-step challenge confirms you can run py snippets and scripts.' }
+      ] },
+    { id: '03-networking', number: '03', title: 'Networking Basics', intro: 'A network is just messages being passed. Packets carry those messages — read the envelope (headers) and the letter (payload).',
+      sections: [
+        { type: 'concept', title: 'IP addresses & ports', body: 'IP = address. Port = service slot. Combine both to reach a specific app on a machine.' },
+        { type: 'example', title: 'Interfaces & ping', code: 'ifconfig\nping example.com', tries:['ifconfig','ping example.com'], checks:[/^ifconfig$/i,/^ping\s+\S+/i] },
+        { type: 'example', title: 'Quick port scan', code: 'nmap 192.168.1.1', tries:['nmap 192.168.1.1'], checks:[/^nmap\s+\S+/i] }
+      ] },
+    { id: '04-programming', number: '04', title: 'Programming & Scripting', intro: 'Start writing small programs that solve one task. Scripting helps you repeatedly gather data, which is essential for investigations.',
+      sections: [
+        { type: 'concept', title: 'Why code', body: 'Automation saves time and reduces errors. Scripts can combine many commands and process their output into useful reports.' },
+        { type: 'example', title: 'Python: print & run files', code: 'python -c "print(\'Hello from Python\')"\npython example.py', tries:["python -c \"print('Hello from Python')\"","python example.py"], checks:[/^python(3?)?\s+-c/i,/^python\s+example\.py$/i] },
+        { type: 'example', title: 'Process output', code: 'echo "10 20 30"', tries:["echo \"10 20 30\""], checks:[/^echo\s+/i] }
+      ] },
+    { id: '05-web', number: '05', title: 'Web Security', intro: 'Web apps accept input. You must understand how inputs become code or queries on the server - that is the root of many vulnerabilities.',
+      sections: [
+        { type:'concept', title: 'Input flows', body: 'Form inputs travel over HTTP and get processed by backend code. If the code trusts the input, trouble follows. Always validate and sanitize.' },
+        { type:'example', title:'Fetch & inspect headers', code: 'curl http://example.com\n\ncurl -I http://example.com', tries:['curl http://example.com','curl -I http://example.com'], checks:[/^curl\s+/i,/^curl\s+-I\s+/i] },
+        { type:'example', title:'Simulate an injection test (reading responses)', code: 'curl http://example.com/search?q=test', tries:['curl http://example.com/search?q=test'], checks:[/^curl\s+/i] }
+      ] },
+    { id: '06-exploitation', number: '06', title: 'Exploitation & Post-Exploitation', intro: 'This chapter emphasizes the ethical cycle: reconnaissance → reproduce → verify → report. In labs we practice safely.',
+      sections: [
+        { type:'concept', title: 'Ethics & safety', body: 'Only test systems you own or have permission to test. Labs/CTFs are for learning. Never touch real production systems without authorization.' },
+        { type:'example', title:'Scan & inspect processes', code: 'nmap 192.168.1.1\nps\ntop', tries:['nmap 192.168.1.1','ps','top'], checks:[/^nmap\s+/i,/^ps$/i,/^top$/i] },
+        { type:'example', title:'Small POC approach', code: 'echo "found service OK"', tries:['echo "found service OK"'], checks:[/^echo\s+/i] }
+      ] },
+    { id: '07-reverse', number: '07', title: 'Reverse Engineering', intro: 'Reverse engineering is investigation: start from clues and peel the program back step-by-step — string searches, readme notes, then deeper tooling.',
+      sections: [
+        { type:'concept', title: 'Start small', body: 'Search for readable strings first. See what the program tells you and why. Tools like Ghidra and GDB are for advanced stages.' },
+        { type:'example', title:'Read the binary notes', code: 'cat readme_for_binary.txt', tries:['cat readme_for_binary.txt'], checks:[/^cat\s+readme_for_binary\.txt$/i] }
+      ] },
+    { id: '08-ad', number: '08', title: 'Active Directory & Enterprise', intro: 'Learn how identity is managed in enterprise environments and why attackers focus on credentials and trust relationships.',
+      sections: [
+        { type:'concept', title: 'Identity first', body: 'AD controls who can acess what. Finding overly permissive accounts or broken policies is a common path to escalation.' },
+        { type:'example', title:'Read AD summary (simulated)', code: 'cat ad_summary.txt\nls -la', tries:['cat ad_summary.txt','ls -la'], checks:[/^cat\s+ad_summary\.txt$/i,/^ls\s+-la$/i] }
+      ] },
+    { id: '09-cloud', number: '09', title: 'Cloud Security', intro: 'Clouds give power with complexity. Understand IAM, storage settings and the principle of least privilege to avoid accidental exposure.',
+      sections: [
+        { type:'concept', title: 'Least privilege & policies', body: 'Grant users only the rights they need. Broad roles are the easiest way to leak access across systems.' },
+        { type:'example', title:'Inspect a sample config', code: 'cat cloud_exposed_config.txt\nwget https://example.com', tries:['cat cloud_exposed_config.txt','wget https://example.com'], checks:[/^cat\s+cloud_exposed_config\.txt$/i,/^wget\s+/i] }
+      ] },
+    { id: '10-certs', number: '10', title: 'Certifications & Practice', intro: 'Certifications and practice rounds turn knowledge into muscle memory — combine focused study with labs and writeups.',
+      sections: [
+        { type:'concept', title: 'Practice + writeups', body: 'Do a few boxes, write up what you found and how you solved it. That portfolio tells a story of your skill.' },
+        { type:'example', title:'Review your history & notes', code:'history\ncat practice_notes.txt\nls -la', tries:['history','cat practice_notes.txt','ls -la'], checks:[/^history$/i,/^cat\s+practice_notes\.txt$/i,/^ls\s+-la$/i] }
+      ] }
+  ];
+
+  // Build the page content and nav
+  const chaptersNode = document.getElementById('chapters');
+  const navNode = document.getElementById('chapter-nav');
+
+  function createChapterHTML(chap) {
+    const el = document.createElement('section');
+    el.className = 'chapter';
+    el.id = chap.id;
+
+    const head = document.createElement('div');
+    head.className = 'meta';
+    head.innerHTML = `<div class="badge">${chap.number}</div><div style="flex:1"><h2>${chap.number} — ${chap.title}</h2><div class="small">${chap.intro || ''}</div></div><div style="text-align:right"></div>`;
+    el.appendChild(head);
+
+    // Add each section
+    chap.sections.forEach((s,i) => {
+      if (s.type === 'concept') {
+        const box = document.createElement('div');
+        box.className = 'concept-box';
+        box.innerHTML = `<h4>${s.title}</h4><div class="small">${s.body}</div>`;
+        el.appendChild(box);
+      }
+      if (s.type === 'example') {
+        const ex = document.createElement('div');
+        ex.className = 'example-box example';
+        ex.innerHTML = `<h4>${s.title}</h4><div class="code">${escapeHtml(s.code)}</div>`;
+        // add try buttons and markers
+        const tryRow = document.createElement('div');
+        tryRow.className = 'try-row';
+        s.tries.forEach((cmd, idx) => {
+          const btn = document.createElement('button');
+          btn.className = 'try-button';
+          btn.textContent = `Try: ${cmd}`;
+          btn.setAttribute('data-run', cmd);
+          btn.setAttribute('data-chapter', chap.id);
+          btn.setAttribute('data-check', s.checks[idx] ? s.checks[idx].toString() : '');
+          tryRow.appendChild(btn);
+        });
+        ex.appendChild(tryRow);
+
+        const success = document.createElement('div');
+        success.className = 'exercise-success';
+        success.textContent = 'Great — you ran the example! Complete all examples in this chapter to mark it finished.';
+        ex.appendChild(success);
+
+        el.appendChild(ex);
+      }
+      if (s.type === 'challenge') {
+        const ch = document.createElement('div');
+        ch.className = 'challenge-box example';
+        ch.innerHTML = `<h4>${s.title}</h4><div class="small">${s.hint || ''}</div>`;
+
+        const stepsList = document.createElement('div');
+        stepsList.className = 'challenge-steps';
+        s.steps.forEach((step, stepIndex) => {
+          const stepEl = document.createElement('div');
+          stepEl.className = 'example';
+          stepEl.style.marginTop = '0.6rem';
+          stepEl.innerHTML = `<div class="small"><strong>Step ${stepIndex+1}:</strong></div><div class="code">${escapeHtml(step.code)}</div>`;
+
+          const row = document.createElement('div');
+          row.className = 'try-row';
+          const btn = document.createElement('button');
+          btn.className = 'try-button';
+          btn.textContent = `Try: ${step.code}`;
+          btn.setAttribute('data-run', step.code);
+          btn.setAttribute('data-chapter', chap.id);
+          btn.setAttribute('data-check', step.check ? step.check.toString() : '');
+          btn.setAttribute('data-step-index', stepIndex);
+
+          const hintBtn = document.createElement('button');
+          hintBtn.className = 'cta-button';
+          hintBtn.textContent = 'Hint';
+          hintBtn.addEventListener('click', () => {
+            alert(step.hint || 'No hint available for this step.');
+          });
+
+          const checkmark = document.createElement('span');
+          checkmark.className = 'checkmark';
+          checkmark.textContent = '✓';
+          checkmark.style.display = 'none';
+
+          row.appendChild(btn);
+          row.appendChild(hintBtn);
+          row.appendChild(checkmark);
+
+          stepEl.appendChild(row);
+          stepsList.appendChild(stepEl);
+        });
+
+        const chSuccess = document.createElement('div');
+        chSuccess.className = 'exercise-success';
+        chSuccess.textContent = 'Challenge complete — you finished all steps!';
+        ch.appendChild(stepsList);
+        ch.appendChild(chSuccess);
+        el.appendChild(ch);
+      }
+    });
+
+    // actions
+    const actions = document.createElement('div');
+    actions.className = 'chapter-actions';
+    const markBtn = document.createElement('button');
+    markBtn.className = 'cta-button';
+    markBtn.textContent = 'Mark chapter complete';
+    markBtn.setAttribute('data-chapter', chap.id);
+    actions.appendChild(markBtn);
+    el.appendChild(actions);
+
+    return el;
+  }
+
+  // helper to escape HTML for code blocks
+  function escapeHtml(input) {
+    return input.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+  }
+
+  // populate nav and chapters
+  CHAPTERS.forEach(chap => {
+    // nav
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+    a.href = `#${chap.id}`;
+    a.innerHTML = `<span class="chapter-number">${chap.number}</span><span style="margin-left:.4rem">${chap.title}</span>`;
+    a.id = `nav-${chap.id}`;
+    li.appendChild(a);
+    navNode.appendChild(li);
+
+    // main content
+    chaptersNode.appendChild(createChapterHTML(chap));
+  });
+
+  // progress storage and helpers
+  const PROGRESS_KEY = 'ns_learning_progress_v1';
+  let progress = JSON.parse(localStorage.getItem(PROGRESS_KEY) || '{}');
+
+  function setCompleted(chapterId){
+    progress[chapterId] = true;
+    localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress));
+    updateUI();
+  }
+
+  function isCompleted(chapterId){ return !!progress[chapterId]; }
+
+  function updateUI(){
+    const total = CHAPTERS.length;
+    const done = CHAPTERS.filter(c=>isCompleted(c.id)).length;
+    const percent = Math.round((done / total) * 100);
+    document.getElementById('progress-fill').style.width = percent+'%';
+    document.getElementById('progress-count').textContent = `${done}`;
+
+    CHAPTERS.forEach(c => {
+      const node = document.getElementById(c.id);
+      const nav = document.getElementById('nav-'+c.id);
+      if (isCompleted(c.id)){
+        node.classList.add('chapter-complete');
+        nav.classList.add('active');
+        nav.classList.add('completed');
+      } else {
+        node.classList.remove('chapter-complete');
+        nav.classList.remove('active');
+        nav.classList.remove('completed');
+      }
+    });
+  }
+
+  // wiring: Try buttons insert command into terminal input and press Enter
+  function wireTryButtons() {
+    document.querySelectorAll('.try-button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const cmd = btn.getAttribute('data-run');
+        const container = document.querySelector('#learning-terminal');
+        if (!container) return;
+        const input = container.querySelector('.terminal-input');
+        if (!input) return;
+        input.focus();
+        input.value = cmd;
+        input.dispatchEvent(new KeyboardEvent('keydown',{ bubbles:true, cancelable:true, key:'Enter' }));
+      });
+    });
+
+    // Mark complete click
+    document.querySelectorAll('.chapter-actions .cta-button').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const id = btn.getAttribute('data-chapter');
+        setCompleted(id);
+      });
+    });
+  }
+
+  // Evaluate terminal commands and mark exercises as done when they match expected regex
+  function setupTerminalMonitoring() {
+    // register listener for our CustomEvent dispatched by terminal.js
+    document.addEventListener('terminal:command', ev => {
+      const cmdRaw = (ev && ev.detail && ev.detail.raw) ? ev.detail.raw.trim() : '';
+      if (!cmdRaw) return;
+
+      // find matching example checkers
+      document.querySelectorAll('.try-button').forEach(btn => {
+        const chapterId = btn.getAttribute('data-chapter');
+        const check = btn.getAttribute('data-check');
+        if (!check) return;
+        // convert check string to regex (from toString format)
+        let regexText = check;
+        try {
+          // check like /^ls(\s|$)/i
+          const m = regexText.match(/^\/(.*)\/([gimsuy]*)$/);
+          if (m){ regexText = m[1]; var flags = m[2]; }
+          const r = new RegExp(regexText, flags || 'i');
+          if (r.test(cmdRaw)){
+            // mark chapter progress only if all example checks in this chapter have been satisfied
+            markExampleRun(btn);
+          }
+        } catch (e){ /* ignore bad regex*/ }
+      });
+    });
+  }
+
+  // helper to mark example as run and check if chapter complete
+  function markExampleRun(btn){
+    // show success message for the example or challenge step
+    const exBox = btn.closest('.example-box, .challenge-box');
+    if (!exBox) return;
+
+    // Determine chapter id early
+    const chapterId = btn.getAttribute('data-chapter');
+    // If step-style button, enforce order and reveal the checkmark next to it
+    const row = btn.parentElement;
+    const stepIndex = btn.getAttribute('data-step-index');
+    if (stepIndex !== null) {
+      const idx = parseInt(stepIndex, 10);
+      const priorBtns = document.querySelectorAll(`.try-button[data-chapter="${chapterId}"][data-step-index]`);
+      // ensure earlier steps are completed first
+      for (let i = 0; i < idx; i++) {
+        const prior = document.querySelector(`.try-button[data-chapter="${chapterId}"][data-step-index="${i}"]`);
+        if (prior && !prior.dataset.ran) {
+          alert('Please complete the previous step(s) first — steps must be done in order.');
+          return;
+        }
+      }
+    }
+    if (row) {
+      const cm = row.querySelector('.checkmark');
+      if (cm) cm.style.display = 'inline-block';
+    }
+    btn.dataset.ran = '1';
+
+    // if this example/challenge's own buttons are all run, reveal its local success message
+    const ownButtons = exBox.querySelectorAll('.try-button');
+    let ownAllRan = true;
+    ownButtons.forEach(b => { if (!b.dataset.ran) ownAllRan = false; });
+    const ownSuccess = exBox.querySelector('.exercise-success');
+    if (ownAllRan && ownSuccess) ownSuccess.style.display = 'block';
+
+    // Chapter Id already determined earlier
+    if (!chapterId) return;
+
+    // collect all buttons for this chapter and check if they all ran
+    const buttons = document.querySelectorAll(`.try-button[data-chapter="${chapterId}"]`);
+    let allRan = true;
+    buttons.forEach(b => { if (!b.dataset.ran) allRan = false; });
+    if (allRan) setCompleted(chapterId);
+  }
+
+  // scrollspy to highlight nav
+  function setupScrollSpy(){
+    const navLinks = document.querySelectorAll('.nav-list a');
+    const sections = CHAPTERS.map(c=>document.getElementById(c.id));
+    const observer = new IntersectionObserver((entries)=>{
+      entries.forEach(ent=>{
+        if (ent.isIntersecting){
+          const id = ent.target.id; navLinks.forEach(l=>l.classList.remove('active'));
+          const active = document.getElementById('nav-'+id); if (active) active.classList.add('active');
+        }
+      });
+    }, { threshold: 0.3, rootMargin:'-100px 0px -60% 0px' });
+    sections.forEach(s=>observer.observe(s));
+  }
+
+  // initial setup
+  document.addEventListener('DOMContentLoaded', ()=>{
+    wireTryButtons();
+    setupTerminalMonitoring();
+    setupScrollSpy();
+    updateUI();
+
+    // allow users to clear progress quickly (dev only)
+    // uncomment to reset: localStorage.removeItem(PROGRESS_KEY); progress={}; updateUI();
+  });
+  </script>
+
+  <!-- the site terminal and JS are loaded for functionality -->
+  <script src="../script.js"></script>
+  <script src="../terminal.js"></script>
+</body>
+</html>

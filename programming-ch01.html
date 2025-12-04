@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ch01: Programming Fundamentals - NullSector</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="favicon.ico">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="twinkling"></div>
+    
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="index.html" style="display: flex; align-items: center; text-decoration: none; color: inherit;">
+                    <img src="logo.svg" alt="NullSector Logo" class="logo">
+                    <span class="brand-text">NullSector</span>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="roadmap-hacking.html" class="nav-link ">Hacking</a>
+                <a href="roadmap-programming.html" class="nav-link active">Programming</a>
+                <a href="faq.html" class="nav-link">FAQ</a>
+                <a href="https://discord.gg/Tz9Y3wea32" target="_blank" class="nav-link">Discord</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="content-page">
+        <div class="content-container">
+            <div class="breadcrumb">
+                <a href="roadmap-programming.html">Programming Roadmap</a> / <span>Chapter 01</span>
+            </div>
+            
+            <div class="roadmap-section">
+                <div class="roadmap-number">01</div>
+                <h1 class="page-title">Chapter 01: Programming Fundamentals</h1>
+                <p class="page-subtitle">Complete Beginner Friendly - Comprehensive Guide</p>
+
+                <div class="key-takeaways" style="margin-bottom:3rem;">
+                    <h3>What You'll Learn:</h3>
+                    <ul>
+                        <li>What programming actually is (demystified)</li>
+                        <li>How to think like a programmer</li>
+                        <li>The fundamental concepts that apply to ALL languages</li>
+                        <li>Why programming is a superpower</li>
+                    </ul>
+                </div>
+
+<!-- PROGRAMMING FUNDAMENTALS CONTENT GOES HERE - COPY STRUCTURE FROM HACKING CH01 -->
+
+<!-- Topic 1: What is Programming? -->
+<div class="topic-section" style="background: linear-gradient(135deg, rgba(0,255,136,0.05) 0%, rgba(0,204,255,0.05) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0;">
+    <h2 style="color: #00ff88; font-size: 2.2rem; margin-bottom: 2rem;">What is Programming?</h2>
+    
+    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 15px; margin: 2rem 0; font-size: 1.15rem; line-height: 1.9;">
+        <p style="margin: 0; font-size: 1.25rem;">
+            Programming is <strong>giving instructions to a computer</strong>. That's it. 
+            You tell the computer exactly what to do, step by step, and it does it. 
+            <strong>Programming = Writing instructions in a language computers understand.</strong>
+        </p>
+    </div>
+
+    <h3 style="color: #00ccff; font-size: 1.8rem; margin-top: 3rem;">The Reality Check</h3>
+    
+    <div style="background: rgba(0,0,0,0.5); padding: 2.5rem; border-radius: 15px; margin: 2rem 0;">
+        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+            Before we dive deep, let's be brutally honest about what programming is and isn't:
+        </p>
+        
+        <div style="display: grid; gap: 1.5rem; margin-top: 2rem;">
+            <div style="background: rgba(0,255,136,0.15); padding: 2rem; border-radius: 10px; border-left: 4px solid #00ff88;">
+                <h4 style="color: #00ff88; margin: 0 0 1rem 0; font-size: 1.3rem;">✓ Programming IS:</h4>
+                <ul style="font-size: 1.1rem; line-height: 1.8;">
+                    <li>Breaking problems into tiny, logical steps</li>
+                    <li>Telling computers EXACTLY what to do (they're dumb)</li>
+                    <li>Spending 80% of your time debugging (fixing mistakes)</li>
+                    <li>Learning to Google and read documentation</li>
+                    <li>Building tools that make your life easier</li>
+                </ul>
+            </div>
+            
+            <div style="background: rgba(255,100,100,0.15); padding: 2rem; border-radius: 10px; border-left: 4px solid #ff6464;">
+                <h4 style="color: #ff6464; margin: 0 0 1rem 0; font-size: 1.3rem;">✗ Programming is NOT:</h4>
+                <ul style="font-size: 1.1rem; line-height: 1.8;">
+                    <li>Memorizing syntax (you'll Google it constantly)</li>
+                    <li>Being a "math genius" (basic logic is enough)</li>
+                    <li>Working alone in a dark room (collaboration is key)</li>
+                    <li>Getting it right the first time (you won't)</li>
+                    <li>Only for "tech people" (anyone can learn)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <h3 style="color: #00ccff; font-size: 1.8rem; margin-top: 3rem;">Why Learn Programming?</h3>
+    
+    <div style="display: grid; gap: 2rem; margin: 2rem 0;">
+        
+        <div style="background: rgba(0,255,136,0.15); padding: 2.5rem; border-radius: 15px;">
+            <h4 style="color: #00ff88; font-size: 1.6rem; margin: 0 0 1rem 0;">1. Automation (Work Smarter)</h4>
+            <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+                Stop doing repetitive tasks manually. Write code once, run it forever. 
+                A programmer can automate in 1 hour what would take days manually.
+            </p>
+            <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem; line-height: 1.8;">
+                <strong>Real example:</strong> Renaming 10,000 files by hand = 10 hours. 
+                Python script = 2 seconds. That's the power of automation.
+            </div>
+        </div>
+
+        <div style="background: rgba(0,204,255,0.15); padding: 2.5rem; border-radius: 15px;">
+            <h4 style="color: #00ccff; font-size: 1.6rem; margin: 0 0 1rem 0;">2. Problem Solving (Life Skill)</h4>
+            <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+                Programming teaches you to break down complex problems into small, solvable steps. 
+                This is called <strong>computational thinking</strong> and it applies to EVERYTHING in life - 
+                not just coding.
+            </p>
+            <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem; line-height: 1.8;">
+                <strong>Example:</strong> Planning a trip? Programmers naturally break it down: 
+                book flights → reserve hotels → plan activities → pack bags. 
+                Each step is a "function" with inputs and outputs.
+            </div>
+        </div>
+
+        <div style="background: rgba(255,100,100,0.15); padding: 2.5rem; border-radius: 15px;">
+            <h4 style="color: #ff6464; font-size: 1.6rem; margin: 0 0 1rem 0;">3. Create Anything</h4>
+            <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1rem;">
+                If you can imagine it, you can build it:
+            </p>
+            <ul style="font-size: 1.1rem; line-height: 1.9;">
+                <li><strong>Websites & Apps</strong> - The next Facebook, Twitter, TikTok</li>
+                <li><strong>Games</strong> - From simple 2D to complex 3D worlds</li>
+                <li><strong>AI & Machine Learning</strong> - Chatbots, image recognition, predictions</li>
+                <li><strong>Trading Bots</strong> - Automated crypto/stock trading</li>
+                <li><strong>Automation Scripts</strong> - Anything repetitive = automated</li>
+                <li><strong>IoT Devices</strong> - Smart home, robots, wearables</li>
+            </ul>
+        </div>
+
+        <div style="background: rgba(255,200,0,0.15); padding: 2.5rem; border-radius: 15px;">
+            <h4 style="color: #ffc800; font-size: 1.6rem; margin: 0 0 1rem 0;">4. Career & Money</h4>
+            <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+                Let's talk reality: Programmers make BANK and have incredible job security.
+            </p>
+            <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px;">
+                <ul style="font-size: 1.1rem; line-height: 1.9; margin: 0;">
+                    <li><strong>Average Salary:</strong> $80k-$150k+ (entry to mid-level)</li>
+                    <li><strong>Senior Developers:</strong> $150k-$300k+</li>
+                    <li><strong>Remote Work:</strong> Work from anywhere in the world</li>
+                    <li><strong>Flexible Hours:</strong> Many companies offer flexible schedules</li>
+                    <li><strong>Job Security:</strong> Demand FAR exceeds supply</li>
+                    <li><strong>Freelance Potential:</strong> $50-$200+ per hour</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <h3 style="color: #8a2be2; font-size: 1.8rem; margin-top: 3rem;">Programming Languages: Choosing Your Tool</h3>
+    
+    <div style="background: rgba(138,43,226,0.15); padding: 2.5rem; border-radius: 15px; margin: 2rem 0;">
+        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+            Just like humans have English, Spanish, Chinese - computers have programming languages. 
+            Each language has its own <strong>syntax</strong> (grammar rules), but the core concepts 
+            (variables, loops, functions) are universal.
+        </p>
+        
+        <div style="background: rgba(0,0,0,0.5); padding: 2rem; border-radius: 10px; margin: 2rem 0;">
+            <h4 style="color: #00ff88; margin-top: 0; font-size: 1.4rem;">The Big Players:</h4>
+            
+            <div style="display: grid; gap: 1.5rem; margin-top: 1.5rem;">
+                <div style="background: rgba(0,255,136,0.1); padding: 1.5rem; border-radius: 8px; border-left: 3px solid #00ff88;">
+                    <h5 style="color: #00ff88; margin: 0 0 0.5rem 0; font-size: 1.2rem;">Python 🐍 (We'll use this!)</h5>
+                    <p style="font-size: 1.05rem; line-height: 1.7; margin: 0;">
+                        <strong>Best for:</strong> Beginners, AI/ML, automation, web backends, data science<br>
+                        <strong>Why:</strong> Easiest to read (looks like English), massive community, tons of libraries<br>
+                        <strong>Used by:</strong> Google, Netflix, Instagram, NASA
+                    </p>
+                </div>
+                
+                <div style="background: rgba(255,200,0,0.1); padding: 1.5rem; border-radius: 8px; border-left: 3px solid #ffc800;">
+                    <h5 style="color: #ffc800; margin: 0 0 0.5rem 0; font-size: 1.2rem;">JavaScript</h5>
+                    <p style="font-size: 1.05rem; line-height: 1.7; margin: 0;">
+                        <strong>Best for:</strong> Web development (frontend AND backend), mobile apps<br>
+                        <strong>Why:</strong> Runs in EVERY web browser, powers 95% of websites<br>
+                        <strong>Used by:</strong> Literally every website you visit
+                    </p>
+                </div>
+                
+                <div style="background: rgba(255,100,100,0.1); padding: 1.5rem; border-radius: 8px; border-left: 3px solid #ff6464;">
+                    <h5 style="color: #ff6464; margin: 0 0 0.5rem 0; font-size: 1.2rem;">Java</h5>
+                    <p style="font-size: 1.05rem; line-height: 1.7; margin: 0;">
+                        <strong>Best for:</strong> Enterprise applications, Android apps, large systems<br>
+                        <strong>Why:</strong> "Write once, run anywhere", extremely stable<br>
+                        <strong>Used by:</strong> Banks, Amazon, Android apps
+                    </p>
+                </div>
+                
+                <div style="background: rgba(0,204,255,0.1); padding: 1.5rem; border-radius: 8px; border-left: 3px solid #00ccff;">
+                    <h5 style="color: #00ccff; margin: 0 0 0.5rem 0; font-size: 1.2rem;">C / C++</h5>
+                    <p style="font-size: 1.05rem; line-height: 1.7; margin: 0;">
+                        <strong>Best for:</strong> Operating systems, game engines, embedded systems, performance-critical apps<br>
+                        <strong>Why:</strong> Direct hardware control, blazing fast<br>
+                        <strong>Used by:</strong> Windows, Linux, Unreal Engine, Photoshop
+                    </p>
+                </div>
+                
+                <div style="background: rgba(200,200,200,0.1); padding: 1.5rem; border-radius: 8px; border-left: 3px solid #cccccc;">
+                    <h5 style="color: #cccccc; margin: 0 0 0.5rem 0; font-size: 1.2rem;">SQL</h5>
+                    <p style="font-size: 1.05rem; line-height: 1.7; margin: 0;">
+                        <strong>Best for:</strong> Database queries and management<br>
+                        <strong>Why:</strong> Every app with data needs this<br>
+                        <strong>Used by:</strong> Every company with a database (so, everyone)
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div style="background: rgba(0,255,136,0.2); padding: 2rem; border-radius: 10px; margin-top: 2rem; border: 2px solid rgba(0,255,136,0.4);">
+            <h4 style="color: #00ff88; margin-top: 0; font-size: 1.3rem;">Why We're Starting with Python</h4>
+            <p style="font-size: 1.1rem; line-height: 1.8; margin: 0;">
+                <strong>1. Readable:</strong> Python looks like English. <code style="background: rgba(0,0,0,0.6); padding: 0.2rem 0.5rem; border-radius: 4px;">print("Hello")</code> does exactly what you think.<br>
+                <strong>2. Versatile:</strong> Web, AI, automation, games, data - Python does it all.<br>
+                <strong>3. In-Demand:</strong> One of the most sought-after skills in tech.<br>
+                <strong>4. Beginner-Friendly:</strong> Less boilerplate code = faster learning.<br>
+                <strong>5. Massive Ecosystem:</strong> Need to do something? There's probably a library for it.
+            </p>
+        </div>
+    </div>
+
+    <h3 style="color: #00ccff; font-size: 1.8rem; margin-top: 3rem;">How Programming Actually Works</h3>
+    
+    <div style="background: rgba(0,0,0,0.5); padding: 2.5rem; border-radius: 15px; margin: 2rem 0;">
+        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 2rem;">
+            Let's demystify the process. Here's what happens when you write and run code:
+        </p>
+        
+        <div style="display: grid; gap: 1.5rem;">
+            <div style="background: rgba(0,255,136,0.15); padding: 2rem; border-radius: 10px; border-left: 4px solid #00ff88;">
+                <h4 style="color: #00ff88; margin: 0 0 1rem 0; font-size: 1.4rem;">Step 1: You Write Code</h4>
+                <p style="font-size: 1.1rem; line-height: 1.8;">
+                    You write instructions in a text file using a programming language. 
+                    This is called <strong>source code</strong>.
+                </p>
+                <pre style="background: rgba(0,0,0,0.6); padding: 1.5rem; border-radius: 8px; margin-top: 1rem; font-size: 1.1rem;"><code>print("Hello, World!")
+age = 25
+print("You are", age, "years old")</code></pre>
+            </div>
+            
+            <div style="background: rgba(0,204,255,0.15); padding: 2rem; border-radius: 10px; border-left: 4px solid #00ccff;">
+                <h4 style="color: #00ccff; margin: 0 0 1rem 0; font-size: 1.4rem;">Step 2: Interpreter/Compiler Translates</h4>
+                <p style="font-size: 1.1rem; line-height: 1.8;">
+                    The computer doesn't understand Python (or any high-level language). 
+                    An <strong>interpreter</strong> or <strong>compiler</strong> translates your code into 
+                    machine code (binary 1s and 0s) the CPU can execute.
+                </p>
+                <ul style="font-size: 1.05rem; line-height: 1.8; margin-top: 1rem;">
+                    <li><strong>Interpreter (Python, JavaScript):</strong> Translates line-by-line as it runs</li>
+                    <li><strong>Compiler (C, C++, Java):</strong> Translates everything first, then runs</li>
+                </ul>
+            </div>
+            
+            <div style="background: rgba(255,200,0,0.15); padding: 2rem; border-radius: 10px; border-left: 4px solid #ffc800;">
+                <h4 style="color: #ffc800; margin: 0 0 1rem 0; font-size: 1.4rem;">Step 3: CPU Executes</h4>
+                <p style="font-size: 1.1rem; line-height: 1.8;">
+                    The CPU reads the machine code instructions and executes them one by one 
+                    (billions per second). Your program runs!
+                </p>
+            </div>
+            
+            <div style="background: rgba(255,100,100,0.15); padding: 2rem; border-radius: 10px; border-left: 4px solid #ff6464;">
+                <h4 style="color: #ff6464; margin: 0 0 1rem 0; font-size: 1.4rem;">Step 4: Output</h4>
+                <p style="font-size: 1.1rem; line-height: 1.8;">
+                    The program produces output - text on screen, file saved, webpage displayed, etc.
+                </p>
+                <pre style="background: rgba(0,0,0,0.6); padding: 1.5rem; border-radius: 8px; margin-top: 1rem; font-size: 1.1rem;"><code>Hello, World!
+You are 25 years old</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <h3 style="color: #ff0000; font-size: 1.8rem; margin-top: 3rem;">Why This Matters for Programming</h3>
+    
+    <div style="background: rgba(255,0,0,0.12); padding: 2.5rem; border-radius: 15px; border: 2px solid rgba(255,0,0,0.4); margin: 2rem 0;">
+        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+            <strong style="font-size: 1.3rem;">Understanding these fundamentals is CRITICAL because:</strong>
+        </p>
+        <ul style="font-size: 1.1rem; line-height: 1.9; margin: 1.5rem 0;">
+            <li><strong>Debugging:</strong> When code breaks, you need to understand HOW it executes to fix it</li>
+            <li><strong>Performance:</strong> Knowing how code runs helps you write faster, more efficient programs</li>
+            <li><strong>Language Agnostic:</strong> Once you understand ONE language, learning others is 10x easier</li>
+            <li><strong>Problem Solving:</strong> You'll learn to think in algorithms and data structures</li>
+            <li><strong>Career:</strong> These concepts are what separate junior from senior developers</li>
+        </ul>
+        <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin-top: 2rem; font-size: 1.15rem; line-height: 1.8;">
+            <strong style="color: #ff6464;">Real talk:</strong> Most "programmers" can copy-paste code from StackOverflow. 
+            TRUE programmers understand WHY it works and can adapt it to any situation. That's what this course teaches.
+        </div>
+    </div>
+
+    <div style="background: linear-gradient(135deg, rgba(0,255,136,0.2) 0%, rgba(0,204,255,0.2) 100%); padding: 2.5rem; border-radius: 15px; margin-top: 3rem;">
+        <h4 style="color: #00ff88; margin-top: 0; font-size: 1.5rem;">Quick Check</h4>
+        <ul style="font-size: 1.1rem; line-height: 1.9;">
+            <li>What is programming in simple terms?</li>
+            <li>Name 4 reasons to learn programming</li>
+            <li>What programming language will we focus on and why?</li>
+            <li>What's the difference between an interpreter and a compiler?</li>
+            <li>What are the 4 steps that happen when you run code?</li>
+        </ul>
+    </div>
+</div>
+
+<!-- Topic 2: How to Think Like a Programmer -->
+<div class="topic-section" style="background: linear-gradient(135deg, rgba(0,204,255,0.05) 0%, rgba(138,43,226,0.05) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0;">
+    <h2 style="color: #00ccff; font-size: 2.2rem; margin-bottom: 2rem;">How to Think Like a Programmer</h2>
+    
+    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 15px; margin: 2rem 0; font-size: 1.15rem; line-height: 1.9;">
+        <p style="margin: 0; font-size: 1.25rem;">
+            The hardest part of programming isn't the syntax - it's learning to <strong>think computationally</strong>. 
+            This is a skill that takes time to develop, but once you have it, you can solve ANY problem.
+        </p>
+    </div>
+
+    <h3 style="color: #00ccff; font-size: 1.8rem; margin-top: 3rem;">The 4-Step Problem Solving Process</h3>
+    
+    <div style="background: rgba(0,204,255,0.15); padding: 2.5rem; border-radius: 15px; margin: 2rem 0;">
+        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 2rem;">
+            Every programmer follows this process (whether they realize it or not):
+        </p>
+        
+        <div style="display: grid; gap: 2rem;">
+            <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; border-left: 4px solid #00ff88;">
+                <h4 style="color: #00ff88; margin: 0 0 1rem 0; font-size: 1.5rem;">1. UNDERSTAND the Problem</h4>
+                <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1rem;">
+                    Before writing ANY code, make sure you fully understand what you're trying to solve.
+                </p>
+                <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 8px; margin-top: 1rem;">
+                    <strong>Questions to ask:</strong>
+                    <ul style="font-size: 1.05rem; line-height: 1.8; margin-top: 0.5rem;">
+                        <li>What are the inputs? (data going IN)</li>
+                        <li>What are the outputs? (results coming OUT)</li>
+                        <li>What are the edge cases? (weird scenarios)</li>
+                        <li>Do I have all the information I need?</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; border-left: 4px solid #00ccff;">
+                <h4 style="color: #00ccff; margin: 0 0 1rem 0; font-size: 1.5rem;">2. PLAN the Solution</h4>
+                <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1rem;">
+                    Break the problem into smaller sub-problems. Write pseudocode (plain English steps).
+                </p>
+                <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 8px; margin-top: 1rem;">
+                    <strong>Example: "Make a program that finds if a number is even or odd"</strong>
+                    <pre style="background: rgba(0,0,0,0.6); padding: 1rem; border-radius: 6px; margin-top: 0.5rem; font-size: 1.05rem; line-height: 1.7;"><code>1. Get a number from the user
+2. Divide the number by 2
+3. If remainder is 0, it's even
+4. Otherwise, it's odd
+5. Display the result</code></pre>
+                </div>
+            </div>
+            
+            <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; border-left: 4px solid #ffc800;">
+                <h4 style="color: #ffc800; margin: 0 0 1rem 0; font-size: 1.5rem;">3. IMPLEMENT the Code</h4>
+                <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1rem;">
+                    NOW you write actual code. Translate your pseudocode into the programming language.
+                </p>
+                <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 8px; margin-top: 1rem;">
+                    <pre style="background: rgba(0,0,0,0.6); padding: 1rem; border-radius: 6px; font-size: 1.05rem; line-height: 1.7;"><code>number = int(input("Enter a number: "))
+
+if number % 2 == 0:
+    print("Even")
+else:
+    print("Odd")</code></pre>
+                </div>
+            </div>
+            
+            <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; border-left: 4px solid #ff6464;">
+                <h4 style="color: #ff6464; margin: 0 0 1rem 0; font-size: 1.5rem;">4. TEST & DEBUG</h4>
+                <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1rem;">
+                    Run your code with different inputs. Find bugs. Fix them. Repeat until it works perfectly.
+                </p>
+                <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 8px; margin-top: 1rem;">
+                    <strong>Test cases:</strong>
+                    <ul style="font-size: 1.05rem; line-height: 1.8; margin-top: 0.5rem;">
+                        <li>Input: 4 → Output: Even ✓</li>
+                        <li>Input: 7 → Output: Odd ✓</li>
+                        <li>Input: 0 → Output: Even ✓</li>
+                        <li>Input: -3 → Output: Odd ✓</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3 style="color: #8a2be2; font-size: 1.8rem; margin-top: 3rem;">Decomposition: Breaking Down Problems</h3>
+    
+    <div style="background: rgba(138,43,226,0.15); padding: 2.5rem; border-radius: 15px; margin: 2rem 0;">
+        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+            <strong>Decomposition</strong> = Breaking a complex problem into smaller, manageable pieces. 
+            This is THE most important programming skill.
+        </p>
+        
+        <div style="background: rgba(0,0,0,0.5); padding: 2rem; border-radius: 10px; margin-top: 2rem;">
+            <h4 style="color: #00ff88; margin-top: 0; font-size: 1.4rem;">Example: Build a Calculator</h4>
+            
+            <div style="background: rgba(255,100,100,0.15); padding: 1.5rem; border-radius: 8px; margin-top: 1.5rem; border-left: 3px solid #ff6464;">
+                <p style="font-size: 1.1rem; margin: 0;"><strong style="color: #ff6464;">❌ Bad Approach (Beginner Thinking):</strong></p>
+                <p style="font-size: 1.05rem; line-height: 1.7; margin-top: 0.5rem;">
+                    "I need to build a calculator" → Stares at blank screen → Gets overwhelmed → Gives up
+                </p>
+            </div>
+            
+            <div style="background: rgba(0,255,136,0.15); padding: 1.5rem; border-radius: 8px; margin-top: 1.5rem; border-left: 3px solid #00ff88;">
+                <p style="font-size: 1.1rem; margin: 0;"><strong style="color: #00ff88;">✓ Good Approach (Programmer Thinking):</strong></p>
+                <div style="margin-top: 1rem;">
+                    <p style="font-size: 1.05rem; line-height: 1.7; margin: 0.5rem 0;">Break it down:</p>
+                    <ol style="font-size: 1.05rem; line-height: 1.8;">
+                        <li><strong>Get user input</strong> - two numbers and an operation (+, -, *, /)</li>
+                        <li><strong>Validate input</strong> - make sure they entered valid numbers</li>
+                        <li><strong>Perform calculation</strong>:
+                            <ul style="margin-top: 0.5rem;">
+                                <li>If operation is +, add numbers</li>
+                                <li>If operation is -, subtract</li>
+                                <li>If operation is *, multiply</li>
+                                <li>If operation is /, divide (check for division by zero!)</li>
+                            </ul>
+                        </li>
+                        <li><strong>Display result</strong> - show the answer</li>
+                        <li><strong>Ask to continue</strong> - let user do another calculation or quit</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <p style="font-size: 1.15rem; line-height: 1.8; margin-top: 2rem;">
+                See the difference? Instead of one overwhelming task, you have 5 small, solvable tasks. 
+                Each one is easy to code individually.
+            </p>
+        </div>
+    </div>
+
+    <h3 style="color: #00ccff; font-size: 1.8rem; margin-top: 3rem;">Pattern Recognition</h3>
+    
+    <div style="background: rgba(0,204,255,0.15); padding: 2.5rem; border-radius: 15px; margin: 2rem 0;">
+        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+            After solving enough problems, you'll start recognizing <strong>patterns</strong>. 
+            Most programming problems fall into common categories:
+        </p>
+        
+        <div style="display: grid; gap: 1.5rem; margin-top: 2rem;">
+            <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 8px;">
+                <h4 style="color: #00ff88; margin: 0 0 0.8rem 0; font-size: 1.2rem;">Iteration (Loops)</h4>
+                <p style="font-size: 1.05rem; line-height: 1.7;">Do something repeatedly. Example: Process every item in a list.</p>
+            </div>
+            
+            <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 8px;">
+                <h4 style="color: #00ccff; margin: 0 0 0.8rem 0; font-size: 1.2rem;">Conditional Logic (If/Else)</h4>
+                <p style="font-size: 1.05rem; line-height: 1.7;">Make decisions based on conditions. Example: If age >= 18, allow access.</p>
+            </div>
+            
+            <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 8px;">
+                <h4 style="color: #ffc800; margin: 0 0 0.8rem 0; font-size: 1.2rem;">Search & Filter</h4>
+                <p style="font-size: 1.05rem; line-height: 1.7;">Find specific data. Example: Find all users with age > 21.</p>
+            </div>
+            
+            <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 8px;">
+                <h4 style="color: #ff6464; margin: 0 0 0.8rem 0; font-size: 1.2rem;">Accumulation</h4>
+                <p style="font-size: 1.05rem; line-height: 1.7;">Build up a result. Example: Sum all numbers in a list.</p>
+            </div>
+            
+            <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 8px;">
+                <h4 style="color: #8a2be2; margin: 0 0 0.8rem 0; font-size: 1.2rem;">Transformation</h4>
+                <p style="font-size: 1.05rem; line-height: 1.7;">Convert data from one form to another. Example: Convert temperatures from Celsius to Fahrenheit.</p>
+            </div>
+        </div>
+        
+        <div style="background: rgba(0,255,136,0.2); padding: 2rem; border-radius: 10px; margin-top: 2rem; border: 2px solid rgba(0,255,136,0.4);">
+            <p style="font-size: 1.1rem; line-height: 1.8; margin: 0;">
+                <strong style="color: #00ff88;">Pro tip:</strong> When you encounter a new problem, ask yourself: 
+                "What pattern does this fit?" Once you identify the pattern, the solution becomes obvious.
+            </p>
+        </div>
+    </div>
+
+    <h3 style="color: #ff0000; font-size: 1.8rem; margin-top: 3rem;">Why This Matters for Programming</h3>
+    
+    <div style="background: rgba(255,0,0,0.12); padding: 2.5rem; border-radius: 15px; border: 2px solid rgba(255,0,0,0.4); margin: 2rem 0;">
+        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+            <strong style="font-size: 1.3rem;">This mindset separates professionals from amateurs:</strong>
+        </p>
+        <ul style="font-size: 1.1rem; line-height: 1.9; margin: 1.5rem 0;">
+            <li><strong>Interviews:</strong> Tech interviews test problem-solving, not memorization</li>
+            <li><strong>Real Projects:</strong> You'll spend 90% of your time problem-solving, 10% typing code</li>
+            <li><strong>Debugging:</strong> When code breaks, computational thinking helps you trace the logic</li>
+            <li><strong>Efficiency:</strong> Better algorithms = faster programs = happier users</li>
+            <li><strong>Communication:</strong> You'll need to explain your thought process to teammates</li>
+        </ul>
+        <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin-top: 2rem; font-size: 1.15rem; line-height: 1.8;">
+            <strong style="color: #ff6464;">The truth:</strong> Anyone can learn syntax in a few weeks. 
+            Learning to THINK like a programmer takes months of practice. That's what makes you valuable.
+        </div>
+    </div>
+
+    <div style="background: linear-gradient(135deg, rgba(0,204,255,0.2) 0%, rgba(138,43,226,0.2) 100%); padding: 2.5rem; border-radius: 15px; margin-top: 3rem;">
+        <h4 style="color: #00ccff; margin-top: 0; font-size: 1.5rem;">Quick Check</h4>
+        <ul style="font-size: 1.1rem; line-height: 1.9;">
+            <li>What are the 4 steps of problem solving?</li>
+            <li>What is decomposition?</li>
+            <li>Why should you write pseudocode before actual code?</li>
+            <li>Name 3 common programming patterns</li>
+            <li>What separates professional programmers from amateurs?</li>
+        </ul>
+    </div>
+</div>
+
+<!-- Mastery Checklist -->
+<div style="background: linear-gradient(135deg, rgba(0,255,136,0.1) 0%, rgba(138,43,226,0.1) 100%); padding: 3rem; border-radius: 20px; margin: 4rem 0; border: 3px solid rgba(0,255,136,0.3);">
+    <h2 style="color: #00ff88; font-size: 2rem; margin-bottom: 2rem;">🎯 Chapter 01 Mastery Checklist</h2>
+    
+    <p style="font-size: 1.2rem; line-height: 1.8; margin-bottom: 2rem;">
+        Before moving to Chapter 02, make sure you can confidently answer YES to these:
+    </p>
+    
+    <div style="display: grid; gap: 1rem;">
+        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
+            ☐ I can explain what programming is to a complete beginner
+        </div>
+        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
+            ☐ I understand why programming is a valuable skill
+        </div>
+        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
+            ☐ I know the difference between interpreters and compilers
+        </div>
+        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
+            ☐ I can name 5 popular programming languages and their use cases
+        </div>
+        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
+            ☐ I understand the 4 steps of problem solving
+        </div>
+        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
+            ☐ I know what decomposition is and why it matters
+        </div>
+        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
+            ☐ I can identify common programming patterns
+        </div>
+        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
+            ☐ I understand why computational thinking is more important than syntax
+        </div>
+    </div>
+    
+    <div style="background: rgba(0,255,136,0.2); padding: 2rem; border-radius: 15px; margin-top: 3rem; border: 2px solid rgba(0,255,136,0.5);">
+        <h3 style="color: #00ff88; margin-top: 0; font-size: 1.6rem;">✅ Ready for Chapter 02?</h3>
+        <p style="font-size: 1.2rem; line-height: 1.8; margin-bottom: 1rem;">
+            <strong>Congratulations!</strong> You now understand what programming is and how to think like a programmer.
+        </p>
+        <p style="font-size: 1.15rem; line-height: 1.8;">
+            <strong style="color: #00ff88;">Next up:</strong> <a href="programming-ch02.html" style="color: #00ccff; text-decoration: underline;">Chapter 02: Python Basics</a>
+            <br>Time to write actual code and see these concepts in action!
+        </p>
+    </div>
+</div>
+
+                <div style="display: flex; gap: 2rem; margin-top: 3rem;">
+                    <a href="roadmap-programming.html" style="flex: 1; background: linear-gradient(135deg, rgba(0,204,255,0.2) 0%, rgba(138,43,226,0.2) 100%); padding: 2rem; border-radius: 15px; text-decoration: none; border: 2px solid rgba(0,204,255,0.4); transition: all 0.3s;">
+                        <div style="color: #00ccff; font-size: 0.9rem; margin-bottom: 0.5rem;">← PREVIOUS</div>
+                        <div style="color: #fff; font-size: 1.1rem; font-weight: 600;">Roadmap</div>
+                    </a>
+                    <a href="programming-ch02.html" style="flex: 1; background: linear-gradient(135deg, rgba(0,255,136,0.2) 0%, rgba(0,204,255,0.2) 100%); padding: 2rem; border-radius: 15px; text-decoration: none; border: 2px solid rgba(0,255,136,0.4); transition: all 0.3s; text-align: right;">
+                        <div style="color: #00ff88; font-size: 0.9rem; margin-bottom: 0.5rem;">NEXT →</div>
+                        <div style="color: #fff; font-size: 1.1rem; font-weight: 600;">Chapter 02</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>

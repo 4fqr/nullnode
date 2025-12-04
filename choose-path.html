@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Choose Your Path — NullSector</title>
+  <link rel="icon" type="image/svg+xml" href="logo.svg">
+  <link rel="stylesheet" href="styles.css">
+  <meta name="description" content="Choose your learning journey: Master Programming & Software Development or dive into Ethical Hacking & Cybersecurity." />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:">
+  <style>
+    .path-hero { text-align:center; padding: 4rem 2rem 3rem; max-width:900px; margin:0 auto; }
+    .path-hero h1 { font-size:3rem; margin-bottom:1rem; background:linear-gradient(135deg,#00ff88,#00ccff); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .path-hero p { font-size:1.25rem; color:var(--text-secondary); line-height:1.6; }
+    
+    .paths-container { display:grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap:2rem; max-width:1200px; margin:3rem auto; padding:0 2rem; }
+    .path-card { background:var(--card-bg); border:2px solid rgba(0,255,136,.1); border-radius:16px; padding:2.5rem; transition: all 0.3s ease; position:relative; overflow:hidden; }
+    .path-card::before { content:''; position:absolute; top:0; left:0; right:0; height:6px; background:linear-gradient(90deg,#00ff88,#00ccff); opacity:0; transition:opacity 0.3s; }
+    .path-card:hover { border-color:rgba(0,255,136,.4); transform: translateY(-8px); box-shadow:0 20px 60px rgba(0,255,136,.15); }
+    .path-card:hover::before { opacity:1; }
+    
+    .path-icon { font-size:4rem; margin-bottom:1.5rem; }
+    .path-card h2 { font-size:2rem; margin-bottom:1rem; color:var(--primary-color); }
+    .path-card .tagline { font-size:1.1rem; color:var(--text-secondary); margin-bottom:1.5rem; font-style:italic; }
+    .path-card .description { color:var(--text-secondary); line-height:1.7; margin-bottom:2rem; }
+    
+    .path-features { list-style:none; padding:0; margin:2rem 0; }
+    .path-features li { padding:.6rem 0; color:var(--text-secondary); display:flex; align-items:center; gap:.8rem; }
+    .path-features li::before { content:'✓'; color:var(--primary-color); font-weight:bold; font-size:1.2rem; }
+    
+    .path-cta { display:inline-block; width:100%; padding:1rem 2rem; background:linear-gradient(135deg,#00ff88,#00ccff); color:#0a0e27; font-weight:600; text-decoration:none; border-radius:8px; text-align:center; transition:transform 0.2s, box-shadow 0.2s; }
+    .path-cta:hover { transform:scale(1.05); box-shadow:0 10px 30px rgba(0,255,136,.3); }
+    
+    .comparison { max-width:900px; margin:4rem auto; padding:2rem; text-align:center; }
+    .comparison h3 { font-size:1.8rem; margin-bottom:1rem; color:var(--primary-color); }
+    .comparison p { color:var(--text-secondary); line-height:1.7; }
+    
+    @media (max-width: 768px) {
+      .paths-container { grid-template-columns: 1fr; }
+      .path-hero h1 { font-size:2rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="stars"></div>
+  <div class="twinkling"></div>
+
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-brand"><a href="index.html"><img src="logo.svg" class="logo" alt="NullSector"/></a></div>
+      <div class="nav-links">
+        <a href="choose-path.html" class="nav-link active">Choose Path</a>
+        <a href="faq.html" class="nav-link">FAQ</a>
+        <a href="https://discord.gg/Tz9Y3wea32" target="_blank" rel="noopener noreferrer" class="nav-link">Discord</a>
+      </div>
+      <div class="search-container"><input class="search-input" placeholder="Search..." aria-label="Search site content"></div>
+    </div>
+  </nav>
+
+  <div class="content-container">
+    <div class="path-hero">
+      <h1>Choose Your Learning Path</h1>
+      <p>Two distinct journeys, one powerful foundation. Whether you want to build software or break into systems, we'll guide you from zero to mastery with hands-on practice, interactive terminals, and real-world projects.</p>
+    </div>
+
+    <div class="paths-container">
+      <!-- Programming Path -->
+      <div class="path-card">
+        <div class="path-icon">💻</div>
+        <h2>Programming & Development</h2>
+        <p class="tagline">"Build the future, one line at a time"</p>
+        <p class="description">Master software development from the ground up. Learn Python, JavaScript, web development, algorithms, databases, and software engineering principles. Build real applications and develop the problem-solving mindset of a professional developer.</p>
+        
+        <ul class="path-features">
+          <li>Complete programming fundamentals (variables, loops, functions, OOP)</li>
+          <li>Full-stack web development (frontend + backend)</li>
+          <li>Data structures & algorithms</li>
+          <li>Databases, APIs, and version control</li>
+          <li>Interactive coding challenges & projects</li>
+          <li>Career-ready portfolio development</li>
+        </ul>
+
+        <a href="roadmap-programming.html" class="path-cta">Start Programming Journey →</a>
+      </div>
+
+      <!-- Ethical Hacking Path -->
+      <div class="path-card">
+        <div class="path-icon">🔐</div>
+        <h2>Ethical Hacking & Cybersecurity</h2>
+        <p class="tagline">"Break things to protect them"</p>
+        <p class="description">Dive into the world of cybersecurity and ethical hacking. Learn penetration testing, vulnerability assessment, network security, reverse engineering, and defensive strategies. Practice safely in labs and earn industry-recognized certifications.</p>
+        
+        <ul class="path-features">
+          <li>Linux mastery & command-line wizardry</li>
+          <li>Network protocols & traffic analysis</li>
+          <li>Web application security & OWASP Top 10</li>
+          <li>Exploitation techniques & post-exploitation</li>
+          <li>Active Directory & cloud security</li>
+          <li>Hands-on labs, CTFs, and certification prep (OSCP, eJPT)</li>
+        </ul>
+
+        <a href="roadmap-hacking.html" class="path-cta">Start Hacking Journey →</a>
+      </div>
+    </div>
+
+    <div class="comparison">
+      <h3>Not sure which path to choose?</h3>
+      <p><strong>Both paths share the same strong foundation:</strong> You'll learn core computing concepts, problem-solving, scripting, and systems thinking. Many professionals combine both skills — developers who understand security write safer code, and hackers who can code build better tools.</p>
+      <p style="margin-top:1.5rem;">🎯 <strong>Pro tip:</strong> Start with Programming if you're completely new to tech. Start with Hacking if you already know some coding and want to focus on security. You can always switch or combine paths later!</p>
+      
+      <div style="margin-top:2rem;">
+        <a href="index.html" class="cta-button" style="display:inline-block; margin-right:1rem;">← Back to Home</a>
+        <a href="faq.html" class="cta-button" style="display:inline-block;">Need Help? Read FAQ</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-content"><p>&copy; 2025 NullSector</p></div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
