@@ -1218,8 +1218,37 @@ function maximizeTerminal() {
 
 // Initialize terminal when page loads
 document.addEventListener('DOMContentLoaded', () => {
-    window.nullTerminal = new NullTerminal();
+    try {
+        window.nullTerminal = new NullTerminal();
+    } catch (err) {
+        console.error('[NullTerminal] Initialization error:', err);
+        // Add message into page for easier debugging
+        const el = document.getElementById('terminal-output') || document.querySelector('.terminal-body');
+        const message = `Initialization error: ${err && err.message ? err.message : err}`;
+        if (el) {
+            el.innerHTML = `<pre class="output-error">${message}</pre>`;
+        } else {
+            const fallback = document.createElement('div');
+            fallback.className = 'terminal-body';
+            fallback.id = 'terminal-output';
+            fallback.innerHTML = `<pre class="output-error">${message}</pre>`;
+            document.body.appendChild(fallback);
+        }
+    }
 });
+
+// Global error handler to catch any uncaught errors and present them in the terminal
+window.onerror = function (msg, url, lineNo, columnNo, error) {
+    const el = document.getElementById('terminal-output') || document.querySelector('.terminal-body');
+    const message = `${msg} at ${url}:${lineNo}:${columnNo}`;
+    if (el) {
+        const pre = document.createElement('pre');
+        pre.className = 'output-error';
+        pre.textContent = `[NullTerminal] ${message}`;
+        el.appendChild(pre);
+    }
+    console.error('[NullTerminal] Uncaught error:', msg, 'at', url, lineNo, columnNo, error);
+};
 
 // Search functionality
 document.addEventListener('keydown', (e) => {
