@@ -1,0 +1,359 @@
+# NullSector Lab - Professional Hacking Environment
+# Alpine Linux-based with comprehensive security toolkit
+# Optimized for speed and size - Production ready for NullNode
+
+FROM alpine:latest
+
+# Set environment with better terminal configuration
+ENV TERM=xterm-256color \
+    NULLNODE_URL=https://nullnode.vercel.app \
+    LANG=C.UTF-8 \
+    LC_ALL=C.UTF-8
+
+# Install base system and development tools
+RUN apk add --no-cache \
+    # Terminal and session management
+    ttyd \
+    bash \
+    bash-completion \
+    tmux \
+    vim \
+    nano \
+    git \
+    curl \
+    wget \
+    ca-certificates \
+    openssh-client \
+    # Build tools for compiling security tools
+    build-base \
+    gcc \
+    g++ \
+    make \
+    cmake \
+    autoconf \
+    automake \
+    libtool \
+    # Network analysis tools
+    nmap \
+    nmap-scripts \
+    netcat-openbsd \
+    bind-tools \
+    whois \
+    traceroute \
+    tcpdump \
+    wireshark-common \
+    tshark \
+    masscan \
+    ngrep \
+    arp-scan \
+    # Additional pentesting tools
+    hydra \
+    john \
+    aircrack-ng \
+    # Reverse engineering and debugging
+    radare2 \
+    gdb \
+    strace \
+    ltrace \
+    valgrind \
+    binutils \
+    file \
+    xxd \
+    socat \
+    # Python ecosystem
+    python3 \
+    python3-dev \
+    py3-pip \
+    py3-requests \
+    py3-cryptography \
+    py3-paramiko \
+    # Curl development files (required for pycurl/wfuzz)
+    curl-dev \
+    libcurl \
+    # Linux headers for psutil
+    linux-headers \
+    # Ruby for Metasploit
+    ruby \
+    ruby-dev \
+    ruby-bundler \
+    # Database support
+    postgresql-client \
+    postgresql-dev \
+    # Metasploit gem dependencies
+    yaml-dev \
+    libffi-dev \
+    libpcap-dev \
+    # Node.js for web apps
+    nodejs \
+    npm \
+    # Utilities
+    jq \
+    unzip \
+    p7zip \
+    zip \
+    tar \
+    gzip \
+    screen \
+    figlet \
+    coreutils \
+    # Sudo and man pages
+    sudo \
+    man-db \
+    man-pages \
+    man-pages-posix \
+    bash-doc \
+    coreutils-doc \
+    grep-doc \
+    findutils-doc \
+    sed-doc \
+    util-linux-doc \
+    net-tools-doc \
+    iproute2-doc \
+    openssl-doc \
+    curl-doc \
+    wget-doc \
+    git-doc \
+    python3-doc \
+    nmap-doc \
+    aircrack-ng-doc \
+    hydra-doc \
+    john-doc \
+    && rm -rf /var/cache/apk/*
+
+# Install comprehensive Python hacking toolkit
+RUN pip3 install --no-cache-dir --break-system-packages \
+    # Web application testing
+    sqlmap \
+    dirsearch \
+    sublist3r \
+    # Network and exploitation
+    scapy \
+    impacket \
+    pycryptodome \
+    # SMB and Windows testing
+    smbmap \
+    # Information gathering
+    dnspython \
+    theHarvester \
+    # Web scraping and analysis
+    beautifulsoup4 \
+    requests \
+    lxml \
+    selenium \
+    # Password cracking utilities
+    passlib \
+    hashid \
+    # Reconnaissance
+    dnspython \
+    shodan \
+    censys \
+    # Utilities
+    colorama \
+    termcolor
+
+# Install additional security tools via npm
+RUN npm install -g \
+    @apideck/portman \
+    retire \
+    && npm cache clean --force
+
+# Install gobuster (directory/DNS brute-forcing)
+RUN wget -q https://github.com/OJ/gobuster/releases/download/v3.6.0/gobuster_Linux_x86_64.tar.gz && \
+    tar -xzf gobuster_Linux_x86_64.tar.gz && \
+    mv gobuster /usr/local/bin/ && \
+    rm gobuster_Linux_x86_64.tar.gz
+
+# Install Metasploit Framework (lightweight installation)
+RUN cd /opt && \
+    git clone --depth 1 https://github.com/rapid7/metasploit-framework.git && \
+    cd metasploit-framework && \
+    gem install bundler && \
+    bundle install && \
+    ln -s /opt/metasploit-framework/msfconsole /usr/local/bin/msfconsole && \
+    ln -s /opt/metasploit-framework/msfvenom /usr/local/bin/msfvenom
+
+# Install Nikto web scanner
+# Install Nikto web scanner
+RUN cd /opt && \
+    git clone --depth 1 https://github.com/sullo/nikto.git && \
+    ln -s /opt/nikto/program/nikto.pl /usr/local/bin/nikto
+
+# Install WPScan (WordPress security scanner)
+RUN gem install wpscan
+
+# Install samba-client for SMB testing
+RUN apk add --no-cache samba-client
+
+# Install essential wordlists (using raw URLs to avoid 1.2GB SecLists clone)
+RUN mkdir -p /usr/share/wordlists && \
+    cd /usr/share/wordlists && \
+    curl -sSL https://raw.githubusercontent.com/danielmiessler/SecLists/master/Discovery/Web-Content/directory-list-2.3-medium.txt -o directory-list-2.3-medium.txt && \
+    curl -sSL https://raw.githubusercontent.com/danielmiessler/SecLists/master/Discovery/Web-Content/common.txt -o common.txt && \
+    curl -sSL https://raw.githubusercontent.com/danielmiessler/SecLists/master/Discovery/Web-Content/raft-medium-directories.txt -o raft-medium-directories.txt && \
+    curl -sSL https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/Common-Credentials/10-million-password-list-top-1000.txt -o passwords-top1000.txt && \
+    curl -sSL https://raw.githubusercontent.com/danielmiessler/SecLists/master/Usernames/top-usernames-shortlist.txt -o usernames.txt && \
+    curl -sSL https://raw.githubusercontent.com/danielmiessler/SecLists/master/Discovery/DNS/subdomains-top1million-5000.txt -o subdomains-5000.txt
+
+# Install OWASP Juice Shop (vulnerable web application)
+WORKDIR /opt
+RUN git clone --depth 1 https://github.com/juice-shop/juice-shop.git && \
+    cd juice-shop && \
+    npm install --omit=dev && \
+    npm cache clean --force && \
+    chmod -R 777 /opt/juice-shop/data
+
+# Create restricted lab user with sudo access
+RUN adduser -D -s /bin/bash labuser && \
+    echo "labuser:nullsector" | chpasswd && \
+    echo "labuser ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/labuser && \
+    chmod 440 /etc/sudoers.d/labuser
+
+# Set up lab environment
+WORKDIR /home/labuser
+RUN mkdir -p /home/labuser/tools /home/labuser/targets /home/labuser/workspace
+
+# Create comprehensive beginner-friendly welcome message
+RUN echo '#!/bin/bash' > /home/labuser/.welcome.sh && \
+    echo 'clear' >> /home/labuser/.welcome.sh && \
+    echo 'echo ""' >> /home/labuser/.welcome.sh && \
+    echo 'figlet -f slant "NullSector"' >> /home/labuser/.welcome.sh && \
+    echo 'echo ""' >> /home/labuser/.welcome.sh && \
+    echo 'echo "  Professional Security Lab | nullnode.vercel.app"' >> /home/labuser/.welcome.sh && \
+    echo 'echo "  Session: 15 minutes | User: labuser | Password: nullsector"' >> /home/labuser/.welcome.sh && \
+    echo 'echo ""' >> /home/labuser/.welcome.sh && \
+    echo 'echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"' >> /home/labuser/.welcome.sh && \
+    echo 'echo ""' >> /home/labuser/.welcome.sh && \
+    echo 'echo "📚 QUICK START GUIDE"' >> /home/labuser/.welcome.sh && \
+    echo 'echo ""' >> /home/labuser/.welcome.sh && \
+    echo 'echo "  1. Test your first scan:"' >> /home/labuser/.welcome.sh && \
+    echo 'echo "     nmap -sV scanme.nmap.org"' >> /home/labuser/.welcome.sh && \
+    echo 'echo ""' >> /home/labuser/.welcome.sh && \
+    echo 'echo "  2. Start practice target:"' >> /home/labuser/.welcome.sh && \
+    echo 'echo "     juice              # Launches OWASP Juice Shop on port 3000"' >> /home/labuser/.welcome.sh && \
+    echo 'echo ""' >> /home/labuser/.welcome.sh && \
+    echo 'echo "  3. View tool documentation:"' >> /home/labuser/.welcome.sh && \
+    echo 'echo "     man nmap           # Read the manual for any tool"' >> /home/labuser/.welcome.sh && \
+    echo 'echo "     nmap --help        # Quick help for commands"' >> /home/labuser/.welcome.sh && \
+    echo 'echo ""' >> /home/labuser/.welcome.sh && \
+    echo 'echo "  4. Use sudo for admin tasks:"' >> /home/labuser/.welcome.sh && \
+    echo 'echo "     sudo apk add <package>    # Install additional tools"' >> /home/labuser/.welcome.sh && \
+    echo 'echo ""' >> /home/labuser/.welcome.sh && \
+    echo 'echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"' >> /home/labuser/.welcome.sh && \
+    echo 'echo ""' >> /home/labuser/.welcome.sh && \
+    echo 'echo "🔧 INSTALLED TOOLS (by category)"' >> /home/labuser/.welcome.sh && \
+    echo 'echo ""' >> /home/labuser/.welcome.sh && \
+    echo 'echo "  Network Scanning:"' >> /home/labuser/.welcome.sh && \
+    echo 'echo "    nmap, masscan, ngrep, tcpdump, tshark, arp-scan"' >> /home/labuser/.welcome.sh && \
+    echo 'echo "    Example: nmap -A -T4 target.com"' >> /home/labuser/.welcome.sh && \
+    echo 'echo ""' >> /home/labuser/.welcome.sh && \
+    echo 'echo "  Web Application Testing:"' >> /home/labuser/.welcome.sh && \
+    echo 'echo "    gobuster, sqlmap, nikto, dirsearch, wpscan"' >> /home/labuser/.welcome.sh && \
+    echo 'echo "    Example: gobuster dir -u http://target.com -w /usr/share/wordlists/common.txt"' >> /home/labuser/.welcome.sh && \
+    echo 'echo ""' >> /home/labuser/.welcome.sh && \
+    echo 'echo "  Password Attacks:"' >> /home/labuser/.welcome.sh && \
+    echo 'echo "    hydra, john, aircrack-ng"' >> /home/labuser/.welcome.sh && \
+    echo 'echo "    Example: hydra -l admin -P /usr/share/wordlists/passwords-top1000.txt ssh://target"' >> /home/labuser/.welcome.sh && \
+    echo 'echo ""' >> /home/labuser/.welcome.sh && \
+    echo 'echo "  Exploitation & Post-Exploitation:"' >> /home/labuser/.welcome.sh && \
+    echo 'echo "    msfconsole, msfvenom, impacket, scapy"' >> /home/labuser/.welcome.sh && \
+    echo 'echo "    Example: msfconsole"' >> /home/labuser/.welcome.sh && \
+    echo 'echo ""' >> /home/labuser/.welcome.sh && \
+    echo 'echo "  SMB/Windows Tools:"' >> /home/labuser/.welcome.sh && \
+    echo 'echo "    smbclient, smbmap, enum4linux"' >> /home/labuser/.welcome.sh && \
+    echo 'echo "    Example: smbmap -H target.com -u guest"' >> /home/labuser/.welcome.sh && \
+    echo 'echo ""' >> /home/labuser/.welcome.sh && \
+    echo 'echo "  Reverse Engineering & Debugging:"' >> /home/labuser/.welcome.sh && \
+    echo 'echo "    radare2, gdb, strace, ltrace, valgrind"' >> /home/labuser/.welcome.sh && \
+    echo 'echo "    Example: radare2 binary_file"' >> /home/labuser/.welcome.sh && \
+    echo 'echo ""' >> /home/labuser/.welcome.sh && \
+    echo 'echo "  Information Gathering:"' >> /home/labuser/.welcome.sh && \
+    echo 'echo "    theharvester, sublist3r, whois, dig, nslookup"' >> /home/labuser/.welcome.sh && \
+    echo 'echo "    Example: sublist3r -d target.com"' >> /home/labuser/.welcome.sh && \
+    echo 'echo ""' >> /home/labuser/.welcome.sh && \
+    echo 'echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"' >> /home/labuser/.welcome.sh && \
+    echo 'echo ""' >> /home/labuser/.welcome.sh && \
+    echo 'echo "📁 WORDLISTS & RESOURCES"' >> /home/labuser/.welcome.sh && \
+    echo 'echo ""' >> /home/labuser/.welcome.sh && \
+    echo 'echo "  Location: /usr/share/wordlists/"' >> /home/labuser/.welcome.sh && \
+    echo 'echo "  • directory-list-2.3-medium.txt  # Web directory fuzzing"' >> /home/labuser/.welcome.sh && \
+    echo 'echo "  • common.txt                      # Common files/dirs"' >> /home/labuser/.welcome.sh && \
+    echo 'echo "  • raft-medium-directories.txt     # Web enumeration"' >> /home/labuser/.welcome.sh && \
+    echo 'echo "  • passwords-top1000.txt           # Password attacks"' >> /home/labuser/.welcome.sh && \
+    echo 'echo "  • usernames.txt                   # Username enumeration"' >> /home/labuser/.welcome.sh && \
+    echo 'echo "  • subdomains-5000.txt             # Subdomain discovery"' >> /home/labuser/.welcome.sh && \
+    echo 'echo ""' >> /home/labuser/.welcome.sh && \
+    echo 'echo "  Quick access: wordlists           # Alias to view all lists"' >> /home/labuser/.welcome.sh && \
+    echo 'echo ""' >> /home/labuser/.welcome.sh && \
+    echo 'echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"' >> /home/labuser/.welcome.sh && \
+    echo 'echo ""' >> /home/labuser/.welcome.sh && \
+    echo 'echo "💡 USEFUL ALIASES"' >> /home/labuser/.welcome.sh && \
+    echo 'echo ""' >> /home/labuser/.welcome.sh && \
+    echo 'echo "  ll             # List files with details"' >> /home/labuser/.welcome.sh && \
+    echo 'echo "  scan <target>  # Quick nmap scan (ports 1-1000)"' >> /home/labuser/.welcome.sh && \
+    echo 'echo "  juice          # Start OWASP Juice Shop"' >> /home/labuser/.welcome.sh && \
+    echo 'echo "  nikto <url>    # Run nikto web scanner"' >> /home/labuser/.welcome.sh && \
+    echo 'echo "  wordlists      # View available wordlists"' >> /home/labuser/.welcome.sh && \
+    echo 'echo "  msfconsole     # Start Metasploit Framework"' >> /home/labuser/.welcome.sh && \
+    echo 'echo "  help           # Show all aliases"' >> /home/labuser/.welcome.sh && \
+    echo 'echo ""' >> /home/labuser/.welcome.sh && \
+    echo 'echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"' >> /home/labuser/.welcome.sh && \
+    echo 'echo ""' >> /home/labuser/.welcome.sh && \
+    echo 'echo "⚠️  IMPORTANT NOTES"' >> /home/labuser/.welcome.sh && \
+    echo 'echo ""' >> /home/labuser/.welcome.sh && \
+    echo 'echo "  • Session expires in 15 minutes"' >> /home/labuser/.welcome.sh && \
+    echo 'echo "  • Only test systems you own or have permission to test"' >> /home/labuser/.welcome.sh && \
+    echo 'echo "  • All activity is logged and monitored"' >> /home/labuser/.welcome.sh && \
+    echo 'echo "  • Type clear to clean the terminal anytime"' >> /home/labuser/.welcome.sh && \
+    echo 'echo ""' >> /home/labuser/.welcome.sh && \
+    echo 'echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"' >> /home/labuser/.welcome.sh && \
+    echo 'echo ""' >> /home/labuser/.welcome.sh && \
+    chmod +x /home/labuser/.welcome.sh
+
+# Configure clean bash environment
+RUN echo '' >> /home/labuser/.bashrc && \
+    echo '# NullSector Lab Aliases' >> /home/labuser/.bashrc && \
+    echo 'alias ll="ls -lah --color=auto"' >> /home/labuser/.bashrc && \
+    echo 'alias scan="nmap -sV -sC"' >> /home/labuser/.bashrc && \
+    echo 'alias juice="cd /opt/juice-shop && npm start"' >> /home/labuser/.bashrc && \
+    echo 'alias nikto="perl /opt/nikto/program/nikto.pl"' >> /home/labuser/.bashrc && \
+    echo 'alias wordlists="cd /usr/share/wordlists"' >> /home/labuser/.bashrc && \
+    echo 'alias msfconsole="/opt/metasploit-framework/msfconsole"' >> /home/labuser/.bashrc && \
+    echo 'alias help="/home/labuser/.welcome.sh"' >> /home/labuser/.bashrc && \
+    echo '' >> /home/labuser/.bashrc && \
+    echo '# Clean PS1 prompt' >> /home/labuser/.bashrc && \
+    echo 'export PS1="\[\033[0;36m\]lab\[\033[0m\]@\[\033[0;35m\]nullsector\[\033[0m\]:\[\033[0;34m\]\w\[\033[0m\]\$ "' >> /home/labuser/.bashrc && \
+    echo '' >> /home/labuser/.bashrc && \
+    echo '# Show welcome on login' >> /home/labuser/.bashrc && \
+    echo 'if [ -f ~/.welcome.sh ]; then ~/.welcome.sh; fi' >> /home/labuser/.bashrc
+
+# Set proper ownership
+RUN chown -R labuser:labuser /home/labuser /opt/juice-shop
+
+# Switch to lab user
+USER labuser
+WORKDIR /home/labuser
+
+# Expose ttyd port
+EXPOSE 7681
+
+# Start ttyd with enhanced configuration and NullNode branding
+# Start ttyd with normal terminal settings
+CMD ["ttyd", "-W", "-p", "7681", "-t", "fontSize=14", "-t", "fontFamily=monospace", "-t", "cursorBlink=true", "bash"]
+
+# Create sample recon script
+RUN echo '#!/bin/bash' > /home/labuser/tools/quick-recon.sh && \
+    echo '# Quick Reconnaissance Script - NullSector Lab' >> /home/labuser/tools/quick-recon.sh && \
+    echo '# Usage: ./quick-recon.sh <target>' >> /home/labuser/tools/quick-recon.sh && \
+    echo '' >> /home/labuser/tools/quick-recon.sh && \
+    echo 'if [ -z "$1" ]; then' >> /home/labuser/tools/quick-recon.sh && \
+    echo '    echo "Usage: $0 <target>"' >> /home/labuser/tools/quick-recon.sh && \
+    echo '    exit 1' >> /home/labuser/tools/quick-recon.sh && \
+    echo 'fi' >> /home/labuser/tools/quick-recon.sh && \
+    echo '' >> /home/labuser/tools/quick-recon.sh && \
+    echo 'TARGET=$1' >> /home/labuser/tools/quick-recon.sh && \
+    echo 'echo "[*] Starting reconnaissance on $TARGET"' >> /home/labuser/tools/quick-recon.sh && \
+    echo 'echo "[*] Port scanning..."' >> /home/labuser/tools/quick-recon.sh && \
+    echo 'nmap -sV -sC -p- $TARGET' >> /home/labuser/tools/quick-recon.sh && \
+    echo 'echo ""' >> /home/labuser/tools/quick-recon.sh && \
+    echo 'echo "[✓] Scan complete! Visit https://nullnode.vercel.app for analysis guides"' >> /home/labuser/tools/quick-recon.sh && \
+    chmod +x /home/labuser/tools/quick-recon.sh

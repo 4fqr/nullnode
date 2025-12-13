@@ -1,0 +1,9 @@
+# Add to .gitignore to prevent sensitive data leakage
+.env
+node_modules/
+npm-debug.log
+yarn-error.log
+.DS_Store
+*.swp
+*.swo
+*~

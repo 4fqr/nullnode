@@ -1,0 +1,32 @@
+{
+  "name": "nullsector-lab-server",
+  "version": "1.0.0",
+  "description": "NullSector ephemeral lab access system with Docker integration",
+  "main": "lab-server.js",
+  "scripts": {
+    "start": "node lab-server.js",
+    "dev": "nodemon lab-server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "cybersecurity",
+    "docker",
+    "labs",
+    "ephemeral",
+    "nullsector"
+  ],
+  "author": "NullSector",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "dockerode": "^4.0.0",
+    "rate-limiter-flexible": "^3.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  }
+}
