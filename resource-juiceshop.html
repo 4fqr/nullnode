@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OWASP Juice Shop Complete Guide - NullNode</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #0a1a0a 100%);
+            color: #e0e0e0;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .orb1 {
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(135deg, #4caf50 0%, #8bc34a 100%);
+            top: -250px;
+            right: -250px;
+            animation: float 25s infinite ease-in-out;
+        }
+
+        .orb2 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, #00bcd4 0%, #03a9f4 100%);
+            bottom: -200px;
+            left: -200px;
+            animation: float 30s infinite ease-in-out reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(100px, -100px) rotate(120deg); }
+            66% { transform: translate(-50px, 50px) rotate(240deg); }
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #4caf50;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 30px;
+            transition: all 0.3s;
+        }
+
+        .back-link:hover {
+            gap: 12px;
+            color: #66bb6a;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #4caf50 0%, #8bc34a 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #4caf50 0%, #8bc34a 50%, #00bcd4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: #999;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(76, 175, 80, 0.1);
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: #4caf50;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            color: #66bb6a;
+            margin: 30px 0 15px 0;
+        }
+
+        h4 {
+            font-size: 1.2rem;
+            color: #8bc34a;
+            margin: 25px 0 12px 0;
+        }
+
+        .info-box {
+            background: rgba(76, 175, 80, 0.1);
+            border-left: 4px solid #4caf50;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .warning-box {
+            background: rgba(255, 152, 0, 0.1);
+            border-left: 4px solid #ff9800;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .success-box {
+            background: rgba(76, 175, 80, 0.1);
+            border-left: 4px solid #4caf50;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .danger-box {
+            background: rgba(244, 67, 54, 0.1);
+            border-left: 4px solid #f44336;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        code {
+            background: rgba(76, 175, 80, 0.1);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #4caf50;
+            font-size: 0.95em;
+        }
+
+        pre {
+            background: #1a1a1a;
+            border: 1px solid rgba(76, 175, 80, 0.2);
+            border-radius: 8px;
+            padding: 20px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: #e0e0e0;
+            font-size: 0.9em;
+        }
+
+        .command {
+            color: #4caf50;
+        }
+
+        .output {
+            color: #999;
+        }
+
+        .comment {
+            color: #666;
+        }
+
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
+
+        li {
+            margin: 10px 0;
+        }
+
+        strong {
+            color: #4caf50;
+            font-weight: 700;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .grid-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(76, 175, 80, 0.2);
+            border-radius: 12px;
+            padding: 25px;
+        }
+
+        .grid-item h4 {
+            margin-top: 0;
+            color: #4caf50;
+        }
+
+        .steps {
+            counter-reset: step-counter;
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .steps li {
+            counter-increment: step-counter;
+            position: relative;
+            padding-left: 50px;
+            margin: 25px 0;
+        }
+
+        .steps li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: linear-gradient(135deg, #4caf50 0%, #8bc34a 100%);
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        a {
+            color: #4caf50;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        a:hover {
+            color: #66bb6a;
+        }
+
+        .vulnerability-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(76, 175, 80, 0.2);
+            border-radius: 12px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+
+        .vuln-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .vuln-title {
+            font-size: 1.8rem;
+            color: #4caf50;
+            margin: 0;
+        }
+
+        .severity {
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .severity-high {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+        }
+
+        .severity-medium {
+            background: rgba(255, 152, 0, 0.2);
+            color: #ff9800;
+        }
+
+        .severity-low {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+        }
+    </style>
+</head>
+<body>
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+
+    <div class="container">
+        <a href="resources.html" class="back-link">
+            <span>←</span>
+            <span>Back to Resources</span>
+        </a>
+
+        <div class="header">
+            <div class="badge">WEB SECURITY • OWASP TOP 10</div>
+            <h1>🧃 OWASP Juice Shop<br/>Complete Walkthrough</h1>
+            <p class="subtitle">
+                Master web application security by hacking an intentionally vulnerable e-commerce site. 
+                Learn SQL injection, XSS, authentication bypasses, and more with step-by-step beginner guidance.
+            </p>
+        </div>
+
+        <!-- INTRODUCTION -->
+        <div class="section">
+            <h2>🎯 What is OWASP Juice Shop?</h2>
+            <p>
+                OWASP Juice Shop is a <strong>deliberately insecure web application</strong> built for learning 
+                about web security. It's like a playground where you can practice hacking legally and safely - 
+                it's an online juice shop with hundreds of security vulnerabilities waiting to be exploited!
+            </p>
+
+            <div class="info-box">
+                <strong>💡 What Does "OWASP" Mean?</strong>
+                <p style="margin: 10px 0 0 0;">
+                    OWASP (Open Web Application Security Project) is a non-profit organization focused on improving 
+                    software security. They publish the <strong>OWASP Top 10</strong> - a list of the most critical 
+                    web application security risks. Juice Shop covers ALL of them!
+                </p>
+            </div>
+
+            <h3>What You'll Learn</h3>
+            <ul>
+                <li><strong>SQL Injection</strong> - Manipulate database queries to access unauthorized data</li>
+                <li><strong>Cross-Site Scripting (XSS)</strong> - Inject malicious JavaScript into web pages</li>
+                <li><strong>Authentication Bypass</strong> - Break login systems and access other accounts</li>
+                <li><strong>Broken Access Control</strong> - Access resources you shouldn't be able to</li>
+                <li><strong>Security Misconfiguration</strong> - Find exposed admin panels and sensitive files</li>
+                <li><strong>Cross-Site Request Forgery (CSRF)</strong> - Make users perform unwanted actions</li>
+                <li><strong>API Exploitation</strong> - Abuse backend APIs to manipulate data</li>
+                <li><strong>Cryptographic Failures</strong> - Crack weak passwords and encryption</li>
+            </ul>
+        </div>
+
+        <!-- SETUP -->
+        <div class="section">
+            <h2>🛠️ Setting Up Juice Shop</h2>
+            <p>
+                You can run Juice Shop on your own computer using Docker (easiest method) or Node.js. 
+                I'll show you the Docker way - it takes just 2 commands!
+            </p>
+
+            <h3>Method 1: Docker (Recommended)</h3>
+            
+            <h4>Step 1: Install Docker</h4>
+            <ul>
+                <li><strong>Windows/Mac:</strong> Download <a href="https://www.docker.com/products/docker-desktop" target="_blank">Docker Desktop</a> and install it</li>
+                <li><strong>Linux:</strong> Run <code>sudo apt install docker.io</code> (Ubuntu/Debian)</li>
+            </ul>
+
+            <div class="info-box">
+                <strong>💡 What is Docker?</strong>
+                <p style="margin: 10px 0 0 0;">
+                    Docker is like a lightweight virtual machine. It packages applications with everything they need 
+                    to run. Instead of installing Node.js, databases, and dependencies manually, Docker does it all 
+                    in one isolated "container". Super convenient!
+                </p>
+            </div>
+
+            <h4>Step 2: Run Juice Shop</h4>
+            <pre><code><span class="comment"># Pull and run Juice Shop (one command!)</span>
+<span class="command">docker run -p 3000:3000 bkimminich/juice-shop</span>
+
+<span class="comment"># Wait for it to start (takes ~30 seconds)</span>
+<span class="output">Server listening on port 3000</span></code></pre>
+
+            <h4>Step 3: Access Juice Shop</h4>
+            <p>
+                Open your browser and go to: <code>http://localhost:3000</code>
+            </p>
+
+            <div class="success-box">
+                <strong>✅ You're Ready!</strong>
+                <p style="margin: 10px 0 0 0;">
+                    You should see a colorful juice shop website. This is YOUR personal hacking playground - 
+                    try to break EVERYTHING! Nothing you do here affects the real world.
+                </p>
+            </div>
+
+            <h3>Useful Docker Commands</h3>
+            <pre><code><span class="comment"># Stop Juice Shop</span>
+<span class="command">docker ps</span>                    <span class="comment"># Find the container ID</span>
+<span class="command">docker stop &lt;container-id&gt;</span>  <span class="comment"># Stop it</span>
+
+<span class="comment"># Restart fresh (resets all progress)</span>
+<span class="command">docker rm &lt;container-id&gt;</span>
+<span class="command">docker run -p 3000:3000 bkimminich/juice-shop</span></code></pre>
+        </div>
+
+        <!-- TOOLS -->
+        <div class="section">
+            <h2>🔧 Essential Tools</h2>
+            <p>
+                To hack Juice Shop effectively, you'll need these tools. Don't worry - I'll explain what each one does!
+            </p>
+
+            <div class="grid">
+                <div class="grid-item">
+                    <h4>🌐 Browser DevTools</h4>
+                    <p style="font-size: 0.95em; margin: 10px 0 0 0;">
+                        Built into Chrome/Firefox (press F12). Inspect HTML, see network requests, run JavaScript, 
+                        modify cookies. Your #1 tool!
+                    </p>
+                </div>
+                <div class="grid-item">
+                    <h4>🔍 Burp Suite</h4>
+                    <p style="font-size: 0.95em; margin: 10px 0 0 0;">
+                        Intercepts HTTP requests between your browser and Juice Shop. Lets you modify requests 
+                        before they're sent. <a href="https://portswigger.net/burp/communitydownload" target="_blank">Download Community Edition</a> (free)
+                    </p>
+                </div>
+                <div class="grid-item">
+                    <h4>📝 Text Editor</h4>
+                    <p style="font-size: 0.95em; margin: 10px 0 0 0;">
+                        For saving payloads and notes. VS Code, Sublime, or even Notepad works!
+                    </p>
+                </div>
+                <div class="grid-item">
+                    <h4>🐍 Python (Optional)</h4>
+                    <p style="font-size: 0.95em; margin: 10px 0 0 0;">
+                        For writing automated scripts to exploit APIs. Install <code>requests</code> library: 
+                        <code>pip install requests</code>
+                    </p>
+                </div>
+            </div>
+
+            <h3>Browser DevTools Quick Guide</h3>
+            <p>Press <strong>F12</strong> or Right-click → Inspect to open DevTools. Here's what each tab does:</p>
+
+            <div class="grid">
+                <div class="grid-item">
+                    <h4>Elements Tab</h4>
+                    <ul style="font-size: 0.9em; margin: 10px 0 0 0; padding-left: 20px;">
+                        <li>View/edit HTML</li>
+                        <li>See hidden form fields</li>
+                        <li>Modify page content</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h4>Console Tab</h4>
+                    <ul style="font-size: 0.9em; margin: 10px 0 0 0; padding-left: 20px;">
+                        <li>Run JavaScript</li>
+                        <li>See error messages</li>
+                        <li>Test XSS payloads</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h4>Network Tab</h4>
+                    <ul style="font-size: 0.9em; margin: 10px 0 0 0; padding-left: 20px;">
+                        <li>See all HTTP requests</li>
+                        <li>View API endpoints</li>
+                        <li>Check server responses</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h4>Application Tab</h4>
+                    <ul style="font-size: 0.9em; margin: 10px 0 0 0; padding-left: 20px;">
+                        <li>View cookies</li>
+                        <li>See local storage</li>
+                        <li>Inspect session data</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHALLENGE 1: SQL INJECTION -->
+        <div class="vulnerability-card">
+            <div class="vuln-header">
+                <h2 class="vuln-title">💉 Challenge 1: SQL Injection Login Bypass</h2>
+                <span class="severity severity-high">HIGH SEVERITY</span>
+            </div>
+
+            <h3>What is SQL Injection?</h3>
+            <div class="info-box">
+                <strong>💡 SQL Injection Explained Simply</strong>
+                <p style="margin: 10px 0 0 0;">
+                    Imagine a library where you ask for a book by filling out a form. The librarian takes your request 
+                    and runs: <code>SELECT * FROM books WHERE title = 'YOUR_INPUT'</code>
+                </p>
+                <p style="margin: 10px 0 0 0;">
+                    But what if instead of a book title, you write: <code>nothing' OR '1'='1</code>?
+                </p>
+                <p style="margin: 10px 0 0 0;">
+                    The query becomes: <code>SELECT * FROM books WHERE title = 'nothing' OR '1'='1'</code>
+                </p>
+                <p style="margin: 10px 0 0 0;">
+                    Since <code>'1'='1'</code> is ALWAYS TRUE, this returns ALL books! That's SQL injection - 
+                    injecting SQL code into user input to change query logic.
+                </p>
+            </div>
+
+            <h3>The Vulnerability</h3>
+            <p>
+                Juice Shop's login page doesn't properly escape user input. When you type an email and password, 
+                the server runs something like:
+            </p>
+            <pre><code>SELECT * FROM users WHERE email = 'YOUR_EMAIL' AND password = 'YOUR_PASSWORD'</code></pre>
+
+            <p>
+                If we inject SQL code into the email field, we can bypass the password check entirely!
+            </p>
+
+            <h3>The Exploit</h3>
+            <ol class="steps">
+                <li>
+                    <strong>Go to the Login Page</strong><br>
+                    Click "Account" → "Login" in the top right
+                </li>
+                <li>
+                    <strong>Inject SQL into Email Field</strong><br>
+                    Email: <code>' OR 1=1--</code><br>
+                    Password: <code>anything</code> (doesn't matter)
+                </li>
+                <li>
+                    <strong>Click Login</strong><br>
+                    You're now logged in as the first user in the database (usually admin)!
+                </li>
+            </ol>
+
+            <h3>Why It Works</h3>
+            <p>The query becomes:</p>
+            <pre><code>SELECT * FROM users WHERE email = '' OR 1=1--' AND password = 'anything'</code></pre>
+
+            <p>Let's break this down:</p>
+            <ul>
+                <li><code>''</code> - Empty email (false)</li>
+                <li><code>OR</code> - "Or" operator</li>
+                <li><code>1=1</code> - Always true!</li>
+                <li><code>--</code> - SQL comment symbol (ignores everything after, including the password check)</li>
+            </ul>
+
+            <div class="danger-box">
+                <strong>🔥 Real-World Impact</strong>
+                <p style="margin: 10px 0 0 0;">
+                    SQL injection has been used to steal millions of credit cards, expose entire user databases, 
+                    and deface websites. It's been #1 on the OWASP Top 10 multiple times. NEVER trust user input!
+                </p>
+            </div>
+
+            <h3>Other SQL Injection Payloads to Try</h3>
+            <pre><code><span class="comment"># Login as admin specifically</span>
+<span class="command">admin'--</span>
+<span class="command">admin@juice-sh.op'--</span>
+
+<span class="comment"># Bypass without knowing any username</span>
+<span class="command">' OR '1'='1'--</span>
+<span class="command">' OR 'a'='a'--</span>
+
+<span class="comment"># Union-based injection (extract data)</span>
+<span class="command">' UNION SELECT NULL,NULL,NULL--</span></code></pre>
+
+            <div class="success-box">
+                <strong>✅ What You Learned</strong>
+                <ul style="margin: 10px 0 0 0;">
+                    <li>How SQL queries work</li>
+                    <li>What SQL injection is and why it's dangerous</li>
+                    <li>How to manipulate query logic with OR conditions</li>
+                    <li>What SQL comment symbols (--) do</li>
+                    <li>How to bypass authentication</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- CHALLENGE 2: XSS -->
+        <div class="vulnerability-card">
+            <div class="vuln-header">
+                <h2 class="vuln-title">🚨 Challenge 2: Cross-Site Scripting (XSS)</h2>
+                <span class="severity severity-high">HIGH SEVERITY</span>
+            </div>
+
+            <h3>What is XSS?</h3>
+            <div class="info-box">
+                <strong>💡 XSS Explained Simply</strong>
+                <p style="margin: 10px 0 0 0;">
+                    Cross-Site Scripting (XSS) is when you inject JavaScript code into a website, and that code 
+                    runs in other users' browsers. Imagine leaving a sticky note on a public bulletin board, but 
+                    the note is actually a command that makes people's phones ring when they look at it!
+                </p>
+                <p style="margin: 10px 0 0 0;">
+                    Example: If a website displays user comments without sanitizing them, you could post a comment 
+                    like <code>&lt;script&gt;alert('HACKED!')&lt;/script&gt;</code> and everyone who views that page 
+                    would see your alert!
+                </p>
+            </div>
+
+            <h3>Finding the XSS Vulnerability</h3>
+            <p>
+                Juice Shop has several XSS vulnerabilities. Let's exploit the search function!
+            </p>
+
+            <ol class="steps">
+                <li>
+                    <strong>Navigate to the Search Bar</strong><br>
+                    Look at the top of the Juice Shop homepage
+                </li>
+                <li>
+                    <strong>Test for XSS</strong><br>
+                    Type: <code>&lt;script&gt;alert('XSS')&lt;/script&gt;</code><br>
+                    Press Enter
+                </li>
+                <li>
+                    <strong>Watch the Alert Pop Up</strong><br>
+                    If you see an alert box saying "XSS", congratulations - you found an XSS vulnerability!
+                </li>
+            </ol>
+
+            <h3>More XSS Payloads to Try</h3>
+            <pre><code><span class="comment"># Basic alert</span>
+<span class="command">&lt;script&gt;alert('XSS')&lt;/script&gt;</span>
+
+<span class="comment"># Image tag XSS (when &lt;script&gt; is blocked)</span>
+<span class="command">&lt;img src=x onerror="alert('XSS')"&gt;</span>
+
+<span class="comment"># Steal cookies (malicious!)</span>
+<span class="command">&lt;script&gt;alert(document.cookie)&lt;/script&gt;</span>
+
+<span class="comment"># Redirect users</span>
+<span class="command">&lt;script&gt;window.location='http://evil.com'&lt;/script&gt;</span>
+
+<span class="comment"># DOM-based XSS (via URL)</span>
+<span class="command">http://localhost:3000/#/search?q=&lt;script&gt;alert('XSS')&lt;/script&gt;</span></code></pre>
+
+            <h3>Types of XSS</h3>
+            <div class="grid">
+                <div class="grid-item">
+                    <h4>Reflected XSS</h4>
+                    <p style="font-size: 0.95em;">
+                        Your payload is immediately reflected back in the response. Example: Search results showing 
+                        your search term without sanitization.
+                    </p>
+                </div>
+                <div class="grid-item">
+                    <h4>Stored XSS</h4>
+                    <p style="font-size: 0.95em;">
+                        Your payload is saved in the database and affects everyone who views it. Example: Malicious 
+                        comment that executes when others read comments.
+                    </p>
+                </div>
+                <div class="grid-item">
+                    <h4>DOM XSS</h4>
+                    <p style="font-size: 0.95em;">
+                        The vulnerability is in client-side JavaScript code that processes user input. Example: 
+                        JavaScript reading URL parameters and inserting them into the page.
+                    </p>
+                </div>
+            </div>
+
+            <div class="danger-box">
+                <strong>🔥 Real-World Impact</strong>
+                <p style="margin: 10px 0 0 0;">
+                    XSS can steal session cookies (hijacking accounts), redirect users to phishing sites, 
+                    deface websites, or install malware. Major sites like Facebook, Twitter, and eBay have 
+                    all had XSS vulnerabilities. It's EXTREMELY common!
+                </p>
+            </div>
+
+            <div class="success-box">
+                <strong>✅ What You Learned</strong>
+                <ul style="margin: 10px 0 0 0;">
+                    <li>What Cross-Site Scripting (XSS) is</li>
+                    <li>Three types of XSS: Reflected, Stored, DOM</li>
+                    <li>How to test for XSS with payloads</li>
+                    <li>Alternative XSS vectors when &lt;script&gt; is blocked</li>
+                    <li>Why input sanitization is critical</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- CHALLENGE 3: BROKEN AUTHENTICATION -->
+        <div class="vulnerability-card">
+            <div class="vuln-header">
+                <h2 class="vuln-title">🔓 Challenge 3: Password Reset Bypass</h2>
+                <span class="severity severity-high">HIGH SEVERITY</span>
+            </div>
+
+            <h3>What is Broken Authentication?</h3>
+            <div class="info-box">
+                <strong>💡 Broken Authentication Explained</strong>
+                <p style="margin: 10px 0 0 0;">
+                    Authentication is how websites verify you are who you claim to be (usually username + password). 
+                    <strong>Broken authentication</strong> means there are flaws in this system that let attackers 
+                    bypass it - like having a lock on your door but the key is taped to the door frame!
+                </p>
+            </div>
+
+            <h3>The Vulnerability</h3>
+            <p>
+                Juice Shop has a password reset function that asks security questions. But if you can guess or 
+                find out someone's security answer, you can reset their password!
+            </p>
+
+            <ol class="steps">
+                <li>
+                    <strong>Go to Forgot Password</strong><br>
+                    Click "Account" → "Login" → "Forgot your password?"
+                </li>
+                <li>
+                    <strong>Try Admin's Email</strong><br>
+                    Enter: <code>admin@juice-sh.op</code>
+                </li>
+                <li>
+                    <strong>Find Their Security Question</strong><br>
+                    The question is: "Your eldest siblings middle name?"
+                </li>
+                <li>
+                    <strong>Research the Answer</strong><br>
+                    <div class="info-box" style="margin: 15px 0;">
+                        <strong>💡 OSINT (Open Source Intelligence)</strong>
+                        <p style="margin: 10px 0 0 0;">
+                            Look around Juice Shop! Check the "About Us" page. You'll find information about 
+                            the company founder's family. This is called OSINT - gathering information from 
+                            publicly available sources.
+                        </p>
+                    </div>
+                </li>
+                <li>
+                    <strong>Answer the Question</strong><br>
+                    The answer is hidden in Juice Shop's lore (hint: check the photo gallery!)
+                </li>
+                <li>
+                    <strong>Reset the Password</strong><br>
+                    Set a new password and login as admin!
+                </li>
+            </ol>
+
+            <h3>Other Authentication Flaws in Juice Shop</h3>
+            <ul>
+                <li><strong>Weak Passwords</strong> - Users with passwords like "admin123" can be brute-forced</li>
+                <li><strong>JWT Manipulation</strong> - JSON Web Tokens can sometimes be tampered with (check cookies in DevTools!)</li>
+                <li><strong>Session Fixation</strong> - Reusing session tokens across different users</li>
+            </ul>
+
+            <div class="success-box">
+                <strong>✅ What You Learned</strong>
+                <ul style="margin: 10px 0 0 0;">
+                    <li>How password reset mechanisms work</li>
+                    <li>Why security questions are weak authentication</li>
+                    <li>What OSINT (Open Source Intelligence) is</li>
+                    <li>How to research targets before attacking</li>
+                    <li>Account takeover techniques</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- CHALLENGE 4: API ABUSE -->
+        <div class="vulnerability-card">
+            <div class="vuln-header">
+                <h2 class="vuln-title">📡 Challenge 4: Hidden API Exploitation</h2>
+                <span class="severity severity-medium">MEDIUM SEVERITY</span>
+            </div>
+
+            <h3>What is an API?</h3>
+            <div class="info-box">
+                <strong>💡 API Explained Simply</strong>
+                <p style="margin: 10px 0 0 0;">
+                    API (Application Programming Interface) is how the frontend (what you see) talks to the backend 
+                    (server/database). When you click "Add to Cart", your browser sends an API request like 
+                    <code>POST /api/cart {productId: 5}</code> to the server.
+                </p>
+                <p style="margin: 10px 0 0 0;">
+                    APIs often have hidden endpoints that aren't linked in the UI but are still accessible if you 
+                    know the URL!
+                </p>
+            </div>
+
+            <h3>Finding Hidden APIs</h3>
+            <ol class="steps">
+                <li>
+                    <strong>Open Browser DevTools</strong><br>
+                    Press F12 → Go to "Network" tab
+                </li>
+                <li>
+                    <strong>Interact with Juice Shop</strong><br>
+                    Browse products, add items to cart, search for products
+                </li>
+                <li>
+                    <strong>Watch Network Requests</strong><br>
+                    You'll see requests like:
+                    <pre style="margin: 10px 0;"><code>/api/Products
+/api/BasketItems
+/api/Users
+/api/SecurityQuestions</code></pre>
+                </li>
+                <li>
+                    <strong>Test Endpoints Manually</strong><br>
+                    Try visiting: <code>http://localhost:3000/api/Users</code><br>
+                    You might see ALL users in the database!
+                </li>
+            </ol>
+
+            <h3>Exploiting APIs with Python</h3>
+            <pre><code><span class="comment">#!/usr/bin/python3</span>
+<span class="comment"># Extract all users from API</span>
+
+import requests
+
+<span class="comment"># Target API endpoint</span>
+url = "http://localhost:3000/api/Users"
+
+<span class="comment"># Send GET request</span>
+response = requests.get(url)
+
+<span class="comment"># Parse JSON response</span>
+users = response.json()
+
+<span class="comment"># Display all emails</span>
+print("Found users:")
+for user in users['data']:
+    print(f"- {user['email']}")
+</code></pre>
+
+            <h3>Common API Vulnerabilities</h3>
+            <div class="grid">
+                <div class="grid-item">
+                    <h4>No Authentication</h4>
+                    <p style="font-size: 0.95em;">
+                        APIs that don't check if you're logged in. Anyone can access sensitive data!
+                    </p>
+                </div>
+                <div class="grid-item">
+                    <h4>Broken Authorization</h4>
+                    <p style="font-size: 0.95em;">
+                        You can access other users' data by changing IDs: <code>/api/user/1</code> → <code>/api/user/2</code>
+                    </p>
+                </div>
+                <div class="grid-item">
+                    <h4>Mass Assignment</h4>
+                    <p style="font-size: 0.95em;">
+                        Modify fields you shouldn't by adding them to requests: <code>{"isAdmin": true}</code>
+                    </p>
+                </div>
+                <div class="grid-item">
+                    <h4>Rate Limiting Missing</h4>
+                    <p style="font-size: 0.95em;">
+                        APIs with no rate limits can be brute-forced or DDoS'd with automated requests
+                    </p>
+                </div>
+            </div>
+
+            <div class="success-box">
+                <strong>✅ What You Learned</strong>
+                <ul style="margin: 10px 0 0 0;">
+                    <li>What APIs are and how they work</li>
+                    <li>How to discover hidden API endpoints</li>
+                    <li>Using Browser DevTools Network tab</li>
+                    <li>Writing Python scripts to exploit APIs</li>
+                    <li>Common API security flaws</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- PRO TIPS -->
+        <div class="section">
+            <h2>🎓 Pro Tips for Juice Shop</h2>
+            
+            <div class="grid">
+                <div class="grid-item">
+                    <h4>🎯 Use the Score Board</h4>
+                    <p style="font-size: 0.95em;">
+                        Visit <code>http://localhost:3000/#/score-board</code> to see ALL challenges! 
+                        This is normally hidden but you can find it via API exploration.
+                    </p>
+                </div>
+                
+                <div class="grid-item">
+                    <h4>📖 Read the Companion Guide</h4>
+                    <p style="font-size: 0.95em;">
+                        OWASP has a free book explaining every challenge in detail: 
+                        <a href="https://pwning.owasp-juice.shop/" target="_blank">pwning.owasp-juice.shop</a>
+                    </p>
+                </div>
+                
+                <div class="grid-item">
+                    <h4>🔄 Reset When Stuck</h4>
+                    <p style="font-size: 0.95em;">
+                        Broke something? Just stop and restart the Docker container. You'll get a fresh instance!
+                    </p>
+                </div>
+                
+                <div class="grid-item">
+                    <h4>📝 Take Notes</h4>
+                    <p style="font-size: 0.95em;">
+                        Document every vulnerability you find, how you exploited it, and how to fix it. 
+                        This builds your portfolio!
+                    </p>
+                </div>
+            </div>
+
+            <h3>Recommended Learning Path</h3>
+            <ol class="steps">
+                <li><strong>Easy Challenges First</strong> - Build confidence with simple exploits</li>
+                <li><strong>Learn One Vulnerability Type at a Time</strong> - Master SQL injection before moving to XSS</li>
+                <li><strong>Read Code When Available</strong> - Juice Shop is open source on GitHub!</li>
+                <li><strong>Automate Exploits</strong> - Write Python scripts to practice coding skills</li>
+                <li><strong>Try Advanced Challenges</strong> - SSRF, XXE, Deserialization attacks</li>
+            </ol>
+        </div>
+
+        <!-- NEXT STEPS -->
+        <div class="section">
+            <h2>🚀 What's Next?</h2>
+            
+            <div class="info-box">
+                <strong>📚 More Resources</strong>
+                <ul style="margin: 10px 0 0 0;">
+                    <li><a href="https://portswigger.net/web-security" target="_blank">PortSwigger Web Security Academy</a> - Free courses on every web vulnerability</li>
+                    <li><a href="https://www.hackthebox.com/" target="_blank">HackTheBox</a> - Real-world pentesting labs</li>
+                    <li><a href="https://tryhackme.com/" target="_blank">TryHackMe</a> - Guided cybersecurity learning paths</li>
+                    <li><a href="https://owasp.org/www-project-top-ten/" target="_blank">OWASP Top 10</a> - Full list of critical web risks</li>
+                </ul>
+            </div>
+
+            <h3>Certification Path</h3>
+            <p>If you master Juice Shop, consider these certifications:</p>
+            <ul>
+                <li><strong>eLearnSecurity eWPT</strong> - Web Application Penetration Testing</li>
+                <li><strong>Offensive Security OSWA</strong> - Web Assessor</li>
+                <li><strong>Certified Ethical Hacker (CEH)</strong> - General ethical hacking</li>
+                <li><strong>Offensive Security OSCP</strong> - Advanced pentesting (includes web exploits)</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin-top: 60px; padding: 40px; background: rgba(76, 175, 80, 0.05); border-radius: 16px;">
+            <p style="font-size: 1.2rem; color: #4caf50; margin-bottom: 20px;">
+                Ready to explore more resources?
+            </p>
+            <a href="resources.html" style="display: inline-block; background: linear-gradient(135deg, #4caf50 0%, #8bc34a 100%); color: white; padding: 15px 40px; border-radius: 8px; font-weight: 700; text-decoration: none; transition: transform 0.3s;">
+                Back to Resources Hub →
+            </a>
+        </div>
+    </div>
+</body>
+</html>
