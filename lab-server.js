@@ -45,7 +45,7 @@ app.use(express.static(__dirname)); // Serve static files
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, X-LAB-BOT-SECRET');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   
   // Handle preflight
   if (req.method === 'OPTIONS') {
@@ -173,48 +173,12 @@ function startCleanupTask() {
 // ===== API ENDPOINTS =====
 
 /**
- * POST /api/lab/generate-code
- * Generate a new access code (called by Discord bot)
- * Requires secret key for authorization
- */
-app.post('/api/lab/generate-code', (req, res) => {
-  const { secret } = req.body;
-  
-  // Simple secret validation (set via environment variable)
-  const expectedSecret = process.env.LAB_BOT_SECRET || 'change-me-in-production';
-  if (secret !== expectedSecret) {
-    return res.status(403).json({ error: 'Forbidden' });
-  }
-  
-  const code = generateAccessCode();
-  accessCodes.set(code, {
-    createdAt: Date.now(),
-    used: false,
-    claimedAt: null,
-  });
-  
-  console.log(`[Bot] Generated code: ${code}`);
-  res.json({ code });
-});
-
-/**
  * POST /api/lab/claim
  * Validate access code and spawn lab container
+ * Requires valid Supabase JWT token in Authorization header
  */
 app.post('/api/lab/claim', async (req, res) => {
   const clientIp = req.ip || req.connection.remoteAddress;
-  
-  // Validate secret header
-  const expectedSecret = process.env.LAB_BOT_SECRET || 'PY7iexIRYpmeLEK0lWS76eeEg7c22XcD';
-  const providedSecret = req.headers['x-lab-bot-secret'];
-  
-  if (providedSecret !== expectedSecret) {
-    console.log(`[Claim] Invalid secret from ${clientIp}`);
-    return res.status(401).json({
-      error: 'Unauthorized',
-      message: 'Invalid or missing authentication',
-    });
-  }
   
   try {
     // Rate limiting

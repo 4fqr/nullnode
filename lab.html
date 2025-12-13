@@ -401,7 +401,6 @@
 
     <script>
         const API_BASE = 'https://nullnode.onrender.com/api/lab';
-        const LAB_SECRET = 'PY7iexIRYpmeLEK0lWS76eeEg7c22XcD';
         
         const accessCodeInput = document.getElementById('accessCode');
         const claimBtn = document.getElementById('claimBtn');
@@ -454,11 +453,11 @@
                     method: 'POST',
                     headers: { 
                         'Content-Type': 'application/json',
-                        'X-LAB-BOT-SECRET': LAB_SECRET
+                        'Authorization': `Bearer ${sessionStorage.getItem('supabase_token') || ''}` // Supabase JWT token
                     },
                     body: JSON.stringify({ 
                         code: code,
-                        userId: 'web_' + Date.now() // Temporary web user ID
+                        userId: sessionStorage.getItem('user_id') || 'anonymous'
                     }),
                 });
 
