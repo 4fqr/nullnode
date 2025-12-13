@@ -19,6 +19,10 @@ CREATE TABLE IF NOT EXISTS public.profiles (
 -- Enable Row Level Security
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS "Users can view own profile" ON public.profiles;
+DROP POLICY IF EXISTS "Users can update own profile" ON public.profiles;
+
 -- Policies: Users can only read their own profile
 CREATE POLICY "Users can view own profile" 
     ON public.profiles FOR SELECT 
@@ -45,6 +49,11 @@ CREATE TABLE IF NOT EXISTS public.lab_codes (
 
 -- Enable Row Level Security
 ALTER TABLE public.lab_codes ENABLE ROW LEVEL SECURITY;
+
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS "Users can view own codes" ON public.lab_codes;
+DROP POLICY IF EXISTS "Users can insert own codes" ON public.lab_codes;
+DROP POLICY IF EXISTS "Users can update own codes" ON public.lab_codes;
 
 -- Policies: Users can only see their own codes
 CREATE POLICY "Users can view own codes" 
@@ -83,6 +92,11 @@ CREATE TABLE IF NOT EXISTS public.lab_sessions (
 
 -- Enable Row Level Security
 ALTER TABLE public.lab_sessions ENABLE ROW LEVEL SECURITY;
+
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS "Users can view own sessions" ON public.lab_sessions;
+DROP POLICY IF EXISTS "Users can insert own sessions" ON public.lab_sessions;
+DROP POLICY IF EXISTS "Users can update own sessions" ON public.lab_sessions;
 
 -- Policies: Users can only see their own sessions
 CREATE POLICY "Users can view own sessions" 
