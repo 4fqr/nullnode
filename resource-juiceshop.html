@@ -1755,10 +1755,372 @@ $()</span> <span class="comment"># Command substitution (modern)</span></code></
                 <li><strong>Complete ALL Categories</strong> - Aim for 100% completion across all OWASP types</li>
             </ol>
 
-            <h3>More Challenges to Explore</h3>
-            <p>Juice Shop has 100+ challenges across these categories:</p>
+            <h3>Complete Challenge List - ALL 100+ Juice Shop Challenges</h3>
+            <p>Here's EVERY challenge organized by difficulty and category. Click the official guide link for detailed solutions!</p>
 
-            <div class="grid">
+            <div style="background: rgba(76, 175, 80, 0.1); padding: 2rem; border-radius: 12px; margin: 2rem 0;">
+                <h4 style="color: #4caf50; margin: 0 0 1rem 0;">📚 Official Resources</h4>
+                <ul style="font-size: 1.05rem; line-height: 1.8;">
+                    <li><strong>Official Solution Guide:</strong> <a href="https://pwning.owasp-juice.shop/" target="_blank" style="color: #00ff88;">https://pwning.owasp-juice.shop/</a></li>
+                    <li><strong>GitHub Repository:</strong> <a href="https://github.com/juice-shop/juice-shop" target="_blank" style="color: #00ff88;">https://github.com/juice-shop/juice-shop</a></li>
+                    <li><strong>Score Board:</strong> <code>http://localhost:3000/#/score-board</code></li>
+                    <li><strong>Official Documentation:</strong> <a href="https://owasp.org/www-project-juice-shop/" target="_blank" style="color: #00ff88;">https://owasp.org/www-project-juice-shop/</a></li>
+                </ul>
+            </div>
+
+            <!-- ⭐ EASY CHALLENGES (1-STAR) -->
+            <div style="background: linear-gradient(135deg, rgba(76, 175, 80, 0.1) 0%, rgba(139, 195, 74, 0.1) 100%); padding: 2rem; border-radius: 12px; margin: 2rem 0;">
+                <h3 style="color: #4caf50;">⭐ Easy Challenges (1-Star) - ~35 Challenges</h3>
+                <p style="color: #8bc34a; font-size: 1.05rem;">Perfect for beginners. Learn the basics of web vulnerabilities.</p>
+
+                <div class="grid" style="gap: 1.5rem; margin-top: 1.5rem;">
+                    <div style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 8px;">
+                        <h4 style="color: #4caf50; margin: 0 0 0.8rem 0;">🔍 Discovery & Reconnaissance</h4>
+                        <ul style="font-size: 0.95em; line-height: 1.7;">
+                            <li><strong>Score Board:</strong> Find the hidden score board (<code>/#/score-board</code>)</li>
+                            <li><strong>Admin Section:</strong> Access the administration section (<code>/#/administration</code>)</li>
+                            <li><strong>Confidential Document:</strong> Access the FTP directory and download files</li>
+                            <li><strong>Error Handling:</strong> Provoke an error that reveals stack trace</li>
+                            <li><strong>Privacy Policy:</strong> Read the privacy policy (hidden link)</li>
+                            <li><strong>Zero Stars:</strong> Give a 0-star rating despite frontend validation</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 8px;">
+                        <h4 style="color: #4caf50; margin: 0 0 0.8rem 0;">💉 Basic Injection</h4>
+                        <ul style="font-size: 0.95em; line-height: 1.7;">
+                            <li><strong>SQL Injection Login:</strong> Bypass login with <code>' OR 1=1--</code></li>
+                            <li><strong>SQL Injection Search:</strong> Find deleted products via SQL in search</li>
+                            <li><strong>DOM XSS:</strong> Perform DOM-based XSS attack</li>
+                            <li><strong>Reflected XSS:</strong> Trigger reflected XSS via search or tracking</li>
+                            <li><strong>Client-Side XSS:</strong> XSS attack through DOM manipulation</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 8px;">
+                        <h4 style="color: #4caf50; margin: 0 0 0.8rem 0;">🔓 Access Control</h4>
+                        <ul style="font-size: 0.95em; line-height: 1.7;">
+                            <li><strong>View Basket:</strong> View another user's basket via IDOR</li>
+                            <li><strong>Forged Feedback:</strong> Post feedback as another user</li>
+                            <li><strong>Five-Star Feedback:</strong> Get rid of 5-star feedback (admin access)</li>
+                            <li><strong>Product Tampering:</strong> Change product descriptions</li>
+                            <li><strong>Basket Manipulation:</strong> Add items to someone else's basket</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 8px;">
+                        <h4 style="color: #4caf50; margin: 0 0 0.8rem 0;">🎭 Broken Authentication</h4>
+                        <ul style="font-size: 0.95em; line-height: 1.7;">
+                            <li><strong>Password Strength:</strong> Login with admin's weak password</li>
+                            <li><strong>Security Question:</strong> Bypass password reset (Google admin's pet)</li>
+                            <li><strong>Login Bender:</strong> Login as Bender (robot character)</li>
+                            <li><strong>Login Jim:</strong> Login as Jim (another user)</li>
+                            <li><strong>Weak Password:</strong> Crack weak user passwords</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 8px;">
+                        <h4 style="color: #4caf50; margin: 0 0 0.8rem 0;">💰 Business Logic</h4>
+                        <ul style="font-size: 0.95em; line-height: 1.7;">
+                            <li><strong>Negative Order:</strong> Place order with negative quantity</li>
+                            <li><strong>Outdated Allowlist:</strong> Use outdated coupon codes</li>
+                            <li><strong>Basket Access:</strong> Access basket without authentication</li>
+                            <li><strong>Manipulated Price:</strong> Buy item for less than retail price</li>
+                            <li><strong>Free Shipping:</strong> Get free delivery despite not qualifying</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 8px;">
+                        <h4 style="color: #4caf50; margin: 0 0 0.8rem 0;">📄 Information Disclosure</h4>
+                        <ul style="font-size: 0.95em; line-height: 1.7;">
+                            <li><strong>Exposed Metrics:</strong> Find the /metrics endpoint</li>
+                            <li><strong>API Docs:</strong> Discover Swagger/OpenAPI docs</li>
+                            <li><strong>Package.json:</strong> Access package.json file</li>
+                            <li><strong>Security Policy:</strong> Find security.txt file</li>
+                            <li><strong>Geocaching:</strong> Find the hidden geocache</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ⭐⭐ MEDIUM CHALLENGES (2-STAR) -->
+            <div style="background: linear-gradient(135deg, rgba(255, 152, 0, 0.1) 0%, rgba(255, 193, 7, 0.1) 100%); padding: 2rem; border-radius: 12px; margin: 2rem 0;">
+                <h3 style="color: #ff9800;">⭐⭐ Medium Challenges (2-Star) - ~30 Challenges</h3>
+                <p style="color: #ffc107; font-size: 1.05rem;">Requires understanding of web app architecture and basic exploitation techniques.</p>
+
+                <div class="grid" style="gap: 1.5rem; margin-top: 1.5rem;">
+                    <div style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 8px;">
+                        <h4 style="color: #ff9800; margin: 0 0 0.8rem 0;">💉 Advanced Injection</h4>
+                        <ul style="font-size: 0.95em; line-height: 1.7;">
+                            <li><strong>NoSQL Injection:</strong> Bypass MongoDB query restrictions</li>
+                            <li><strong>Union SQLi:</strong> Extract data using UNION-based injection</li>
+                            <li><strong>Blind SQL Injection:</strong> Boolean-based blind SQLi</li>
+                            <li><strong>Second Order SQLi:</strong> Stored SQL injection attack</li>
+                            <li><strong>LDAP Injection:</strong> Exploit LDAP query vulnerabilities</li>
+                            <li><strong>Template Injection:</strong> Server-side template injection (SSTI)</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 8px;">
+                        <h4 style="color: #ff9800; margin: 0 0 0.8rem 0;">🔐 Authentication Bypass</h4>
+                        <ul style="font-size: 0.95em; line-height: 1.7;">
+                            <li><strong>JWT Token Manipulation:</strong> Modify JWT to escalate privileges</li>
+                            <li><strong>JWT None Algorithm:</strong> Bypass signature verification</li>
+                            <li><strong>Password Reset Flaw:</strong> Reset any user's password</li>
+                            <li><strong>OAuth Misconfiguration:</strong> Exploit OAuth flow</li>
+                            <li><strong>Session Hijacking:</strong> Steal and reuse session tokens</li>
+                            <li><strong>2FA Bypass:</strong> Bypass two-factor authentication</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 8px;">
+                        <h4 style="color: #ff9800; margin: 0 0 0.8rem 0;">🚨 XSS Variants</h4>
+                        <ul style="font-size: 0.95em; line-height: 1.7;">
+                            <li><strong>Stored XSS:</strong> Persist XSS in database (comments, feedback)</li>
+                            <li><strong>XSS in iframe:</strong> Escape iframe context</li>
+                            <li><strong>mXSS:</strong> Mutation XSS attack</li>
+                            <li><strong>XSS via SVG:</strong> Upload malicious SVG with XSS</li>
+                            <li><strong>Prototype Pollution XSS:</strong> JavaScript prototype exploitation</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 8px;">
+                        <h4 style="color: #ff9800; margin: 0 0 0.8rem 0;">📡 CSRF & SSRF</h4>
+                        <ul style="font-size: 0.95em; line-height: 1.7;">
+                            <li><strong>CSRF Attack:</strong> Change user email/password via CSRF</li>
+                            <li><strong>CSRF Token Bypass:</strong> Exploit weak CSRF protection</li>
+                            <li><strong>SSRF to Internal Network:</strong> Access internal services</li>
+                            <li><strong>SSRF to Cloud Metadata:</strong> Read AWS/Azure metadata</li>
+                            <li><strong>SSRF File Read:</strong> Read local files via SSRF</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 8px;">
+                        <h4 style="color: #ff9800; margin: 0 0 0.8rem 0;">🔧 Security Misconfiguration</h4>
+                        <ul style="font-size: 0.95em; line-height: 1.7;">
+                            <li><strong>Directory Traversal:</strong> Access files via path traversal (<code>../../../etc/passwd</code>)</li>
+                            <li><strong>Null Byte Injection:</strong> Bypass file extension filters</li>
+                            <li><strong>Unsafe Deserialization:</strong> Exploit Node.js deserialization</li>
+                            <li><strong>Log Injection:</strong> Inject malicious data into logs</li>
+                            <li><strong>HTTP Response Splitting:</strong> Inject headers</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 8px;">
+                        <h4 style="color: #ff9800; margin: 0 0 0.8rem 0;">💾 File Upload Exploits</h4>
+                        <ul style="font-size: 0.95em; line-height: 1.7;">
+                            <li><strong>XXE via File Upload:</strong> Upload malicious XML</li>
+                            <li><strong>Malicious File Upload:</strong> Upload executable files</li>
+                            <li><strong>Zip Slip:</strong> Extract files outside intended directory</li>
+                            <li><strong>Image Metadata:</strong> Exploit EXIF data processing</li>
+                            <li><strong>Polyglot File:</strong> File that's valid as multiple types</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ⭐⭐⭐ HARD CHALLENGES (3-STAR) -->
+            <div style="background: linear-gradient(135deg, rgba(244, 67, 54, 0.1) 0%, rgba(233, 30, 99, 0.1) 100%); padding: 2rem; border-radius: 12px; margin: 2rem 0;">
+                <h3 style="color: #f44336;">⭐⭐⭐ Hard Challenges (3-Star) - ~25 Challenges</h3>
+                <p style="color: #e91e63; font-size: 1.05rem;">Requires deep technical knowledge and creative exploitation techniques.</p>
+
+                <div class="grid" style="gap: 1.5rem; margin-top: 1.5rem;">
+                    <div style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 8px;">
+                        <h4 style="color: #f44336; margin: 0 0 0.8rem 0;">🔒 Cryptography Attacks</h4>
+                        <ul style="font-size: 0.95em; line-height: 1.7;">
+                            <li><strong>Weak Hash:</strong> Crack MD5/SHA1 hashes</li>
+                            <li><strong>ECB Mode:</strong> Exploit ECB encryption oracle</li>
+                            <li><strong>Padding Oracle:</strong> CBC padding oracle attack</li>
+                            <li><strong>Hash Length Extension:</strong> Exploit hash construction</li>
+                            <li><strong>Predictable Tokens:</strong> Guess session tokens</li>
+                            <li><strong>Replay Attack:</strong> Reuse authentication tokens</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 8px;">
+                        <h4 style="color: #f44336; margin: 0 0 0.8rem 0;">⚙️ Advanced Access Control</h4>
+                        <ul style="font-size: 0.95em; line-height: 1.7;">
+                            <li><strong>Mass Assignment:</strong> Add admin role via mass assignment</li>
+                            <li><strong>HTTP Parameter Pollution:</strong> Confuse backend parsing</li>
+                            <li><strong>Race Condition:</strong> Exploit timing vulnerabilities</li>
+                            <li><strong>IDOR Chain:</strong> Chain multiple IDOR vulnerabilities</li>
+                            <li><strong>Authorization Bypass:</strong> Access admin functions as user</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 8px;">
+                        <h4 style="color: #f44336; margin: 0 0 0.8rem 0;">🎯 Complex Injection</h4>
+                        <ul style="font-size: 0.95em; line-height: 1.7;">
+                            <li><strong>Regex DoS:</strong> ReDoS attack via regex</li>
+                            <li><strong>XML Bomb:</strong> Billion Laughs attack</li>
+                            <li><strong>CRLF Injection:</strong> HTTP response manipulation</li>
+                            <li><strong>Expression Language Injection:</strong> EL injection</li>
+                            <li><strong>Code Injection:</strong> Execute arbitrary JavaScript on server</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 8px;">
+                        <h4 style="color: #f44336; margin: 0 0 0.8rem 0;">💼 Business Logic Exploits</h4>
+                        <ul style="font-size: 0.95em; line-height: 1.7;">
+                            <li><strong>Coupon Stacking:</strong> Apply multiple coupons illegally</li>
+                            <li><strong>Payment Bypass:</strong> Complete order without paying</li>
+                            <li><strong>Inventory Manipulation:</strong> Buy out-of-stock items</li>
+                            <li><strong>Deluxe Fraud:</strong> Get premium features for free</li>
+                            <li><strong>Accounting Tricks:</strong> Manipulate pricing logic</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 8px;">
+                        <h4 style="color: #f44336; margin: 0 0 0.8rem 0;">🌐 Client-Side Exploits</h4>
+                        <ul style="font-size: 0.95em; line-height: 1.7;">
+                            <li><strong>DOM Clobbering:</strong> Override JavaScript variables</li>
+                            <li><strong>Clickjacking:</strong> UI redressing attack</li>
+                            <li><strong>Postmessage XSS:</strong> Exploit postMessage API</li>
+                            <li><strong>CORS Misconfiguration:</strong> Bypass CORS restrictions</li>
+                            <li><strong>Web Storage Manipulation:</strong> Exploit localStorage/sessionStorage</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ⭐⭐⭐⭐ EXPERT CHALLENGES (4-STAR) -->
+            <div style="background: linear-gradient(135deg, rgba(156, 39, 176, 0.1) 0%, rgba(103, 58, 183, 0.1) 100%); padding: 2rem; border-radius: 12px; margin: 2rem 0;">
+                <h3 style="color: #9c27b0;">⭐⭐⭐⭐ Expert Challenges (4-Star) - ~15 Challenges</h3>
+                <p style="color: #ba68c8; font-size: 1.05rem;">Extremely difficult. Requires advanced knowledge and out-of-the-box thinking.</p>
+
+                <div class="grid" style="gap: 1.5rem; margin-top: 1.5rem;">
+                    <div style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 8px;">
+                        <h4 style="color: #9c27b0; margin: 0 0 0.8rem 0;">🔐 Advanced Cryptography</h4>
+                        <ul style="font-size: 0.95em; line-height: 1.7;">
+                            <li><strong>RSA Signature Forgery:</strong> Forge JWT signatures</li>
+                            <li><strong>Timing Attack:</strong> Extract secrets via timing side-channel</li>
+                            <li><strong>Key Confusion:</strong> Confuse symmetric/asymmetric keys</li>
+                            <li><strong>Algorithm Confusion:</strong> Switch JWT algorithms</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 8px;">
+                        <h4 style="color: #9c27b0; margin: 0 0 0.8rem 0;">⚡ Complex Injection Chains</h4>
+                        <ul style="font-size: 0.95em; line-height: 1.7;">
+                            <li><strong>Multi-Stage Injection:</strong> Chain SQLi + XSS + SSRF</li>
+                            <li><strong>Polyglot Injection:</strong> Single payload for multiple contexts</li>
+                            <li><strong>Filter Bypass:</strong> Evade complex WAF rules</li>
+                            <li><strong>Encoding Exploitation:</strong> Double/triple encoding tricks</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 8px;">
+                        <h4 style="color: #9c27b0; margin: 0 0 0.8rem 0;">🎭 Stealth & Evasion</h4>
+                        <ul style="font-size: 0.95em; line-height: 1.7;">
+                            <li><strong>Stealth Mode:</strong> Exploit without triggering logging</li>
+                            <li><strong>Anti-Forensics:</strong> Cover tracks after exploitation</li>
+                            <li><strong>Persistent Backdoor:</strong> Maintain long-term access</li>
+                            <li><strong>Privilege Escalation Chain:</strong> User → Admin → System</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 8px;">
+                        <h4 style="color: #9c27b0; margin: 0 0 0.8rem 0;">🧩 Logic Bombs</h4>
+                        <ul style="font-size: 0.95em; line-height: 1.7;">
+                            <li><strong>Time-Based Attacks:</strong> Exploit scheduled jobs</li>
+                            <li><strong>State Confusion:</strong> Desync application state</li>
+                            <li><strong>Race Condition Chain:</strong> Complex timing exploits</li>
+                            <li><strong>Quantum Superposition:</strong> Be in two states simultaneously</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ⭐⭐⭐⭐⭐ MASTER CHALLENGES (5-STAR) -->
+            <div style="background: linear-gradient(135deg, rgba(255, 0, 0, 0.15) 0%, rgba(139, 0, 0, 0.15) 100%); padding: 2rem; border-radius: 12px; margin: 2rem 0;">
+                <h3 style="color: #ff1744;">⭐⭐⭐⭐⭐ Master Challenges (5-Star) - ~8 Challenges</h3>
+                <p style="color: #ff5252; font-size: 1.05rem;">Nearly impossible without deep system knowledge. For true security experts.</p>
+
+                <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 8px; margin-top: 1.5rem;">
+                    <ul style="font-size: 0.95em; line-height: 2;">
+                        <li><strong>🏆 Blockchain Hacking:</strong> Exploit blockchain/smart contract logic</li>
+                        <li><strong>🏆 Supply Chain Attack:</strong> Compromise dependencies</li>
+                        <li><strong>🏆 Prototype Pollution to RCE:</strong> Chain prototype pollution to remote code execution</li>
+                        <li><strong>🏆 VM Escape:</strong> Break out of sandboxed environment</li>
+                        <li><strong>🏆 Memory Corruption:</strong> Exploit buffer overflow in Node.js</li>
+                        <li><strong>🏆 Zero-Day Discovery:</strong> Find and exploit undocumented vulnerability</li>
+                        <li><strong>🏆 Full Chain Exploit:</strong> Combine 5+ vulnerabilities for full compromise</li>
+                        <li><strong>🏆 Easter Egg Hunt:</strong> Find the most hidden easter eggs</li>
+                    </ul>
+                    <p style="color: #ff5252; margin-top: 1.5rem; font-size: 1.05rem;">
+                        <strong>💀 These challenges require research beyond Juice Shop itself!</strong>
+                    </p>
+                </div>
+            </div>
+
+            <!-- ⭐⭐⭐⭐⭐⭐ ELITE CHALLENGES (6-STAR) -->
+            <div style="background: linear-gradient(135deg, rgba(0, 0, 0, 0.5) 0%, rgba(139, 0, 139, 0.3) 100%); padding: 2rem; border-radius: 12px; margin: 2rem 0; border: 2px solid #ff00ff;">
+                <h3 style="color: #ff00ff; text-shadow: 0 0 10px #ff00ff;">⭐⭐⭐⭐⭐⭐ ELITE Challenges (6-Star) - ~3 Challenges</h3>
+                <p style="color: #ff00ff; font-size: 1.05rem;">Legendary difficulty. Reserved for the absolute best hackers in the world.</p>
+
+                <div style="background: rgba(0,0,0,0.6); padding: 2rem; border-radius: 8px; margin-top: 1.5rem; border: 1px solid #ff00ff;">
+                    <ul style="font-size: 1.05em; line-height: 2; color: #ff00ff;">
+                        <li><strong>👑 Ultimate SQL Injection:</strong> Most complex SQLi scenario imaginable</li>
+                        <li><strong>👑 Mega-Combo:</strong> Chain 10+ vulnerabilities in perfect sequence</li>
+                        <li><strong>👑 Hidden Challenge:</strong> The challenge that even the docs don't explain clearly</li>
+                    </ul>
+                    <p style="color: #ff00ff; margin-top: 1.5rem; font-size: 1.1rem; text-align: center;">
+                        <strong>🔥 If you complete these, you're in the top 0.1% of hackers globally 🔥</strong>
+                    </p>
+                </div>
+            </div>
+
+            <!-- CATEGORY SUMMARY -->
+            <div style="background: rgba(0, 188, 212, 0.1); padding: 2rem; border-radius: 12px; margin: 2rem 0;">
+                <h3 style="color: #00bcd4;">📊 Challenges by OWASP Category</h3>
+                <div class="grid" style="gap: 1rem; margin-top: 1.5rem;">
+                    <div style="background: rgba(0,0,0,0.3); padding: 1rem;">
+                        <h4 style="color: #4caf50; margin: 0 0 0.5rem 0;">🔐 Broken Authentication (10)</h4>
+                        <p style="font-size: 0.9em; margin: 0;">JWT, OAuth, password reset, 2FA bypass, session hijacking</p>
+                    </div>
+                    <div style="background: rgba(0,0,0,0.3); padding: 1rem;">
+                        <h4 style="color: #ff9800; margin: 0 0 0.5rem 0;">🔓 Broken Access Control (15)</h4>
+                        <p style="font-size: 0.9em; margin: 0;">IDOR, privilege escalation, admin bypass, basket manipulation</p>
+                    </div>
+                    <div style="background: rgba(0,0,0,0.3); padding: 1rem;">
+                        <h4 style="color: #f44336; margin: 0 0 0.5rem 0;">💉 Injection (18)</h4>
+                        <p style="font-size: 0.9em; margin: 0;">SQL, NoSQL, Command, LDAP, Template, XXE, CRLF, Code injection</p>
+                    </div>
+                    <div style="background: rgba(0,0,0,0.3); padding: 1rem;">
+                        <h4 style="color: #9c27b0; margin: 0 0 0.5rem 0;">🔒 Cryptographic Failures (8)</h4>
+                        <p style="font-size: 0.9em; margin: 0;">Weak hashing, ECB mode, padding oracle, hash length extension</p>
+                    </div>
+                    <div style="background: rgba(0,0,0,0.3); padding: 1rem;">
+                        <h4 style="color: #00bcd4; margin: 0 0 0.5rem 0;">🚨 XSS (12)</h4>
+                        <p style="font-size: 0.9em; margin: 0;">Reflected, Stored, DOM, mXSS, prototype pollution, SVG-based</p>
+                    </div>
+                    <div style="background: rgba(0,0,0,0.3); padding: 1rem;">
+                        <h4 style="color: #ff5722; margin: 0 0 0.5rem 0;">⚙️ Security Misconfiguration (12)</h4>
+                        <p style="font-size: 0.9em; margin: 0;">Directory traversal, log injection, XXE, deserialization, CORS</p>
+                    </div>
+                    <div style="background: rgba(0,0,0,0.3); padding: 1rem;">
+                        <h4 style="color: #8bc34a; margin: 0 0 0.5rem 0;">📡 SSRF & CSRF (7)</h4>
+                        <p style="font-size: 0.9em; margin: 0;">Internal network access, cloud metadata, CSRF token bypass</p>
+                    </div>
+                    <div style="background: rgba(0,0,0,0.3); padding: 1rem;">
+                        <h4 style="color: #ffc107; margin: 0 0 0.5rem 0;">💼 Business Logic (10)</h4>
+                        <p style="font-size: 0.9em; margin: 0;">Payment bypass, coupon stacking, race conditions, logic flaws</p>
+                    </div>
+                    <div style="background: rgba(0,0,0,0.3); padding: 1rem;">
+                        <h4 style="color: #e91e63; margin: 0 0 0.5rem 0;">📄 Information Disclosure (8)</h4>
+                        <p style="font-size: 0.9em; margin: 0;">Exposed metrics, API docs, sensitive files, error messages</p>
+                    </div>
+                    <div style="background: rgba(0,0,0,0.3); padding: 1rem;">
+                        <h4 style="color: #673ab7; margin: 0 0 0.5rem 0;">🎭 Other (10+)</h4>
+                        <p style="font-size: 0.9em; margin: 0;">Easter eggs, hidden features, creative exploits, bonus challenges</p>
+                    </div>
+                </div>
+                <p style="text-align: center; margin-top: 2rem; font-size: 1.1rem; color: #00ff88;">
+                    <strong>Total: 110+ Challenges</strong> (Score board shows exact current count)
+                </p>
+            </div>
+
+            <div class="grid" style="gap: 1.5rem; margin-top: 2rem;">
                 <div class="grid-item">
                     <h4>🔐 Broken Authentication</h4>
                     <ul style="font-size: 0.9em; margin: 10px 0 0 20px;">
