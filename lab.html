@@ -313,9 +313,10 @@
                     type="text" 
                     class="code-input" 
                     id="accessCode" 
-                    placeholder="xxxx-xxxx"
-                    maxlength="9"
+                    placeholder="ABC123"
+                    maxlength="6"
                     autocomplete="off"
+                    style="text-transform: uppercase;"
                 >
                 <button class="submit-btn" id="claimBtn">Launch Lab</button>
             </div>
@@ -325,10 +326,10 @@
             <div class="info-section">
                 <h3>Don't have a code?</h3>
                 <p style="color: var(--text-secondary); margin-bottom: 1rem;">
-                    Join our Discord server and use the <code style="background: rgba(0,0,0,0.3); padding: 0.2rem 0.5rem; border-radius: 4px; color: var(--primary-color);">/labs</code> command to get your access code.
+                    Join our Discord server and use the <code style="background: rgba(0,0,0,0.3); padding: 0.2rem 0.5rem; border-radius: 4px; color: var(--primary-color);">/labs generate</code> command to get your 6-character access code.
                 </p>
                 <a href="https://discord.gg/Tz9Y3wea32" target="_blank" rel="noopener noreferrer" class="cta-button" style="display: inline-block; margin-top: 1rem; padding: 0.8rem 2rem; text-decoration: none;">
-                    Join Discord
+                    Join Discord Server
                 </a>
             </div>
         </div>
@@ -399,7 +400,8 @@
     </div>
 
     <script>
-        const API_BASE = 'http://localhost:3001/api/lab';
+        const API_BASE = 'https://nullnode.onrender.com/api/lab';
+        const LAB_SECRET = 'PY7iexIRYpmeLEK0lWS76eeEg7c22XcD';
         
         const accessCodeInput = document.getElementById('accessCode');
         const claimBtn = document.getElementById('claimBtn');
@@ -410,11 +412,11 @@
 
         let sessionInterval = null;
 
-        // Format code input
+        // Format code input - accept 6-character uppercase alphanumeric
         accessCodeInput.addEventListener('input', (e) => {
-            let value = e.target.value.toLowerCase().replace(/[^a-z0-9]/g, '');
-            if (value.length > 4) {
-                value = value.slice(0, 4) + '-' + value.slice(4, 8);
+            let value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+            if (value.length > 6) {
+                value = value.slice(0, 6);
             }
             e.target.value = value;
         });
@@ -430,10 +432,16 @@
         claimBtn.addEventListener('click', claimLab);
 
         async function claimLab() {
-            const code = accessCodeInput.value.trim();
+            const code = accessCodeInput.value.trim().toUpperCase();
             
-            if (!code || code.length < 8) {
-                showStatus('error', 'Please enter a valid access code (format: xxxx-xxxx)');
+            if (!code || code.length !== 6) {
+                showStatus('error', 'Please enter a valid 6-character access code');
+                return;
+            }
+
+            // Validate alphanumeric
+            if (!/^[A-Z0-9]{6}$/.test(code)) {
+                showStatus('error', 'Invalid code format. Use uppercase letters and numbers only.');
                 return;
             }
 
@@ -444,23 +452,31 @@
             try {
                 const response = await fetch(`${API_BASE}/claim`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ code }),
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'X-LAB-BOT-SECRET': LAB_SECRET
+                    },
+                    body: JSON.stringify({ 
+                        code: code,
+                        userId: 'web_' + Date.now() // Temporary web user ID
+                    }),
                 });
 
                 const data = await response.json();
 
-                if (response.ok && data.success) {
-                    showStatus('success', data.message);
-                    loadSession(data.url, data.expiresIn);
+                if (response.ok && (data.success || data.url)) {
+                    showStatus('success', data.message || 'Lab launched successfully!');
+                    const expiresIn = data.expiresIn || Math.floor((new Date(data.expiresAt) - Date.now()) / 1000) || 900;
+                    loadSession(data.url, expiresIn);
                 } else {
-                    showStatus('error', data.message || 'Failed to claim lab');
+                    const errorMsg = data.message || data.error || 'Failed to claim lab';
+                    showStatus('error', errorMsg);
                     claimBtn.disabled = false;
                     claimBtn.textContent = 'Launch Lab';
                 }
             } catch (error) {
                 console.error('Claim error:', error);
-                showStatus('error', 'Connection error. Make sure the lab server is running.');
+                showStatus('error', 'Connection error. The Render service may be starting up (can take 1-2 minutes on first request).');
                 claimBtn.disabled = false;
                 claimBtn.textContent = 'Launch Lab';
             }

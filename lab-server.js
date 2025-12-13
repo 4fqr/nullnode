@@ -51,13 +51,12 @@ app.use((req, res, next) => {
 
 /**
  * Generate a unique access code
- * Format: xxxx-xxxx (8 chars, alphanumeric, lowercase)
+ * Format: XXXXXX (6 chars, alphanumeric uppercase)
  */
 function generateAccessCode() {
-  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let code = '';
-  for (let i = 0; i < 8; i++) {
-    if (i === 4) code += '-';
+  for (let i = 0; i < 6; i++) {
     code += chars[Math.floor(Math.random() * chars.length)];
   }
   return code;
@@ -198,6 +197,18 @@ app.post('/api/lab/generate-code', (req, res) => {
 app.post('/api/lab/claim', async (req, res) => {
   const clientIp = req.ip || req.connection.remoteAddress;
   
+  // Validate secret header
+  const expectedSecret = process.env.LAB_BOT_SECRET || 'PY7iexIRYpmeLEK0lWS76eeEg7c22XcD';
+  const providedSecret = req.headers['x-lab-bot-secret'];
+  
+  if (providedSecret !== expectedSecret) {
+    console.log(`[Claim] Invalid secret from ${clientIp}`);
+    return res.status(401).json({
+      error: 'Unauthorized',
+      message: 'Invalid or missing authentication',
+    });
+  }
+  
   try {
     // Rate limiting
     await rateLimiter.consume(clientIp);
@@ -218,7 +229,7 @@ app.post('/api/lab/claim', async (req, res) => {
     });
   }
   
-  const codeData = accessCodes.get(code.toLowerCase().trim());
+  const codeData = accessCodes.get(code.toUpperCase().trim());
   
   if (!codeData) {
     console.log(`[Claim] Invalid code attempted: ${code} from ${clientIp}`);
