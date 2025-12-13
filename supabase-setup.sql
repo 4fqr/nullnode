@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS public.profiles (
     discord_id TEXT UNIQUE,
     username TEXT,
     discriminator TEXT,
-    avatar_url TEXT,
+    avatar TEXT,
     has_student_role BOOLEAN DEFAULT false,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
@@ -123,7 +123,7 @@ CREATE INDEX IF NOT EXISTS idx_lab_sessions_expires_at ON public.lab_sessions(ex
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
-    INSERT INTO public.profiles (id, discord_id, username, avatar_url)
+    INSERT INTO public.profiles (id, discord_id, username, avatar)
     VALUES (
         NEW.id,
         NEW.raw_user_meta_data->>'provider_id',
@@ -131,6 +131,14 @@ BEGIN
         NEW.raw_user_meta_data->>'avatar_url'
     );
     RETURN NEW;
+EXCEPTION
+    WHEN unique_violation THEN
+        -- User already exists, ignore
+        RETURN NEW;
+    WHEN OTHERS THEN
+        -- Log error but don't fail the auth
+        RAISE WARNING 'Error creating profile: %', SQLERRM;
+        RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 

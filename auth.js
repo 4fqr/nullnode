@@ -9,8 +9,10 @@ const supabase = window.supabase?.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Initialize auth UI
 function initAuth() {
+    console.log('[Auth] Initializing...');
+    
     if (!supabase) {
-        console.warn('Supabase not loaded');
+        console.error('[Auth] Supabase not loaded!');
         return;
     }
 
@@ -21,30 +23,46 @@ function initAuth() {
     const logoutButton = document.getElementById('logoutButton');
 
     if (!authButton || !userProfile) {
-        console.warn('Auth elements not found in page');
+        console.error('[Auth] Auth elements not found in page');
         return;
     }
 
-    // Check current session
+    console.log('[Auth] Elements found, checking session...');
+
+    // Check current session immediately
     checkAuth();
 
     // Login button handler
     authButton.addEventListener('click', async () => {
+        console.log('[Auth] Login button clicked');
+        
+        // Determine redirect URL based on environment
+        const isProduction = window.location.hostname === 'nullnode.vercel.app';
+        const redirectTo = isProduction 
+            ? 'https://nullnode.vercel.app/' 
+            : window.location.origin + window.location.pathname;
+        
+        console.log('[Auth] Redirect URL:', redirectTo);
+        
         const { data, error } = await supabase.auth.signInWithOAuth({
             provider: 'discord',
             options: {
                 scopes: 'identify guilds guilds.members.read',
-                redirectTo: window.location.href
+                redirectTo: redirectTo
             }
         });
+        
         if (error) {
-            console.error('Login error:', error);
-            alert('Failed to login with Discord. Please check the console for details.');
+            console.error('[Auth] Login error:', error);
+            alert('Failed to login: ' + error.message);
+        } else {
+            console.log('[Auth] OAuth initiated');
         }
     });
 
     // Logout button handler
     logoutButton?.addEventListener('click', async () => {
+        console.log('[Auth] Logging out...');
         await supabase.auth.signOut();
         sessionStorage.clear();
         userProfile.style.display = 'none';
@@ -54,27 +72,45 @@ function initAuth() {
 
     // Handle OAuth callback
     supabase.auth.onAuthStateChange((event, session) => {
+        console.log('[Auth] Auth state changed:', event, session ? 'Session exists' : 'No session');
+        
         if (event === 'SIGNED_IN' && session) {
+            console.log('[Auth] User signed in:', session.user.email || session.user.id);
             showUserProfile(session.user);
         } else if (event === 'SIGNED_OUT') {
+            console.log('[Auth] User signed out');
             authButton.style.display = 'block';
             userProfile.style.display = 'none';
+        } else if (event === 'TOKEN_REFRESHED') {
+            console.log('[Auth] Token refreshed');
         }
     });
 
     async function checkAuth() {
-        const { data: { session } } = await supabase.auth.getSession();
+        console.log('[Auth] Checking authentication...');
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+            console.error('[Auth] Error getting session:', error);
+            authButton.style.display = 'block';
+            return;
+        }
+        
         if (session) {
+            console.log('[Auth] Active session found for:', session.user.email || session.user.id);
             showUserProfile(session.user);
             // Store for lab.html
             sessionStorage.setItem('user_id', session.user.id);
             sessionStorage.setItem('supabase_token', session.access_token);
         } else {
+            console.log('[Auth] No active session, showing login button');
             authButton.style.display = 'block';
         }
     }
 
     function showUserProfile(user) {
+        console.log('[Auth] Showing user profile:', user.user_metadata);
+        
         authButton.style.display = 'none';
         userProfile.style.display = 'flex';
         
@@ -82,7 +118,11 @@ function initAuth() {
         const username = user.user_metadata.full_name || 
                         user.user_metadata.custom_claims?.global_name ||
                         user.user_metadata.name || 
+                        user.user_metadata.preferred_username ||
                         'User';
+        
+        console.log('[Auth] Avatar URL:', avatarUrl);
+        console.log('[Auth] Username:', username);
         
         userAvatar.src = avatarUrl;
         userAvatar.alt = username;
