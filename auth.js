@@ -86,8 +86,12 @@ function initAuth() {
         
         userAvatar.src = avatarUrl;
         userAvatar.alt = username;
-        userName.textContent = username;
-        userName.title = username; // Tooltip on hover
+        userAvatar.title = username; // Tooltip on hover
+        
+        if (userName) {
+            userName.textContent = username;
+            userName.title = username;
+        }
     }
 }
 
