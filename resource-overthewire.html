@@ -402,12 +402,246 @@
 
             </div>
 
+            <!-- LEVEL 3→4: Hidden Files -->
+            <div class="level-section" style="background: rgba(255,255,255,0.03); border-radius: 16px; padding: 3rem; margin: 3rem 0; border-left: 4px solid #ff9800;">
+                <h3 style="color: #ff9800; font-size: 2rem; margin-bottom: 1.5rem;">🎯 Level 3 → 4: Hidden Files</h3>
+                
+                <div style="background: rgba(255,152,0,0.1); padding: 1.5rem; border-radius: 10px; margin: 1.5rem 0;">
+                    <strong style="color: #ff9800;">Goal:</strong> Find the password in a hidden file in the home directory<br>
+                    <strong style="color: #ff9800;">Connection:</strong> <code>ssh bandit3@bandit.labs.overthewire.org -p 2220</code><br>
+                    <strong style="color: #ff9800;">Password:</strong> (from level 2)
+                </div>
+
+                <h4 style="color: #ff9800; font-size: 1.5rem; margin-top: 2rem;">💡 What Are Hidden Files?</h4>
+                <p style="font-size: 1.15rem; line-height: 1.8;">
+                    In Linux, files starting with a dot (.) are <strong>hidden</strong>. When you run <code>ls</code>, you WON'T see them!
+                    Think of it like invisible ink - the files exist, but you need special glasses to see them.
+                </p>
+                <p style="font-size: 1.15rem; line-height: 1.8;">
+                    <strong>Why hide files?</strong> Configuration files (like .bashrc, .ssh) are hidden so they don't clutter your view.
+                </p>
+
+                <h4 style="color: #ff9800; font-size: 1.5rem; margin-top: 2rem;">📝 Solution</h4>
+                <ol style="font-size: 1.1rem; line-height: 1.8;">
+                    <li><strong>List ALL files (including hidden):</strong><br>
+                    <code>ls -la</code><br>
+                    The <code>-a</code> flag means "show ALL files, even hidden ones"</li>
+                    <li><strong>You'll see a directory called "inhere":</strong><br>
+                    <code>cd inhere</code></li>
+                    <li><strong>List hidden files in this directory:</strong><br>
+                    <code>ls -la</code><br>
+                    You'll see a file like <code>.hidden</code></li>
+                    <li><strong>Read it:</strong><br>
+                    <code>cat .hidden</code></li>
+                </ol>
+
+                <div style="background: rgba(76,175,80,0.1); padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
+                    <strong style="color: #4caf50;">✅ What You Learned:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li>Files starting with . are hidden</li>
+                        <li><code>ls -a</code> shows hidden files</li>
+                        <li><code>ls -la</code> = long format + hidden files</li>
+                        <li>How to navigate directories and read hidden files</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- LEVEL 4→5: Human-Readable Files -->
+            <div class="level-section" style="background: rgba(255,255,255,0.03); border-radius: 16px; padding: 3rem; margin: 3rem 0; border-left: 4px solid #ff9800;">
+                <h3 style="color: #ff9800; font-size: 2rem; margin-bottom: 1.5rem;">🎯 Level 4 → 5: Finding Human-Readable Files</h3>
+                
+                <div style="background: rgba(255,152,0,0.1); padding: 1.5rem; border-radius: 10px; margin: 1.5rem 0;">
+                    <strong style="color: #ff9800;">Goal:</strong> Find the ONLY human-readable file among 10 files<br>
+                    <strong style="color: #ff9800;">Location:</strong> inhere directory<br>
+                    <strong style="color: #ff9800;">Challenge:</strong> Most files are binary garbage, only ONE has text
+                </div>
+
+                <h4 style="color: #ff9800; font-size: 1.5rem; margin-top: 2rem;">💡 What is "Human-Readable"?</h4>
+                <p style="font-size: 1.15rem; line-height: 1.8;">
+                    Computers store TWO types of files:<br>
+                    <strong>1. Text files</strong> - You can read them (like .txt, .html, .py)<br>
+                    <strong>2. Binary files</strong> - Computer code, images, videos (looks like gibberish if you open it)
+                </p>
+                <p style="font-size: 1.15rem; line-height: 1.8;">
+                    The <code>file</code> command tells you what type a file is!
+                </p>
+
+                <h4 style="color: #ff9800; font-size: 1.5rem; margin-top: 2rem;">📝 Solution</h4>
+                <ol style="font-size: 1.1rem; line-height: 1.8;">
+                    <li><strong>Go to the directory:</strong><br>
+                    <code>cd inhere</code></li>
+                    <li><strong>List all files:</strong><br>
+                    <code>ls</code><br>
+                    You'll see: -file00, -file01, -file02... (note the dash!)</li>
+                    <li><strong>Check what type each file is:</strong><br>
+                    <code>file ./*</code><br>
+                    This checks ALL files. You'll see "data" for binary, "ASCII text" for readable ones</li>
+                    <li><strong>Read the ASCII text file:</strong><br>
+                    <code>cat ./-file07</code> (or whichever says ASCII text)<br>
+                    The <code>./</code> is needed because of the dash!</li>
+                </ol>
+
+                <div style="background: rgba(76,175,80,0.1); padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
+                    <strong style="color: #4caf50;">✅ What You Learned:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li><code>file</code> command identifies file types</li>
+                        <li>ASCII text = human-readable</li>
+                        <li><code>./*</code> = all files in current directory</li>
+                        <li>How to handle files starting with special characters</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- LEVEL 5→6: Find by Properties -->
+            <div class="level-section" style="background: rgba(255,255,255,0.03); border-radius: 16px; padding: 3rem; margin: 3rem 0; border-left: 4px solid #ff9800;">
+                <h3 style="color: #ff9800; font-size: 2rem; margin-bottom: 1.5rem;">🎯 Level 5 → 6: Finding Files by Size & Type</h3>
+                
+                <div style="background: rgba(255,152,0,0.1); padding: 1.5rem; border-radius: 10px; margin: 1.5rem 0;">
+                    <strong style="color: #ff9800;">Goal:</strong> Find a file that is:
+                    <ul style="margin: 0.5rem 0 0 1.5rem;">
+                        <li>Human-readable</li>
+                        <li>1033 bytes in size</li>
+                        <li>Not executable</li>
+                    </ul>
+                </div>
+
+                <h4 style="color: #ff9800; font-size: 1.5rem; margin-top: 2rem;">💡 The Find Command - Your Swiss Army Knife</h4>
+                <p style="font-size: 1.15rem; line-height: 1.8;">
+                    <code>find</code> is like a super-powered search. Instead of just searching by name, you can search by:
+                    size, type, permissions, date modified, and more!
+                </p>
+
+                <h4 style="color: #ff9800; font-size: 1.5rem; margin-top: 2rem;">📝 Solution</h4>
+                <ol style="font-size: 1.1rem; line-height: 1.8;">
+                    <li><strong>Navigate to inhere:</strong><br>
+                    <code>cd inhere</code></li>
+                    <li><strong>Use find with multiple conditions:</strong><br>
+                    <code>find . -type f -size 1033c ! -executable</code><br>
+                    Let's break this down:
+                    <ul style="margin-top: 0.5rem;">
+                        <li><code>.</code> = search in current directory</li>
+                        <li><code>-type f</code> = only files (not directories)</li>
+                        <li><code>-size 1033c</code> = exactly 1033 bytes (c=characters/bytes)</li>
+                        <li><code>! -executable</code> = NOT executable (the ! means NOT)</li>
+                    </ul>
+                    </li>
+                    <li><strong>It will show you the path, then read it:</strong><br>
+                    <code>cat ./maybehere07/.file2</code> (or whatever path it found)</li>
+                </ol>
+
+                <div style="background: rgba(76,175,80,0.1); padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
+                    <strong style="color: #4caf50;">✅ What You Learned:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li><code>find</code> command with multiple filters</li>
+                        <li><code>-size</code> flag (c=bytes, k=kilobytes, M=megabytes)</li>
+                        <li><code>-type f</code> for files only</li>
+                        <li><code>!</code> operator for negation (NOT)</li>
+                        <li>How to combine multiple search criteria</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- LEVEL 6→7: System-Wide Search -->
+            <div class="level-section" style="background: rgba(255,255,255,0.03); border-radius: 16px; padding: 3rem; margin: 3rem 0; border-left: 4px solid #ff9800;">
+                <h3 style="color: #ff9800; font-size: 2rem; margin-bottom: 1.5rem;">🎯 Level 6 → 7: Searching the Entire System</h3>
+                
+                <div style="background: rgba(255,152,0,0.1); padding: 1.5rem; border-radius: 10px; margin: 1.5rem 0;">
+                    <strong style="color: #ff9800;">Goal:</strong> Find a file ANYWHERE on the server that is:
+                    <ul style="margin: 0.5rem 0 0 1.5rem;">
+                        <li>Owned by user bandit7</li>
+                        <li>Owned by group bandit6</li>
+                        <li>33 bytes in size</li>
+                    </ul>
+                </div>
+
+                <h4 style="color: #ff9800; font-size: 1.5rem; margin-top: 2rem;">💡 Understanding File Ownership</h4>
+                <p style="font-size: 1.15rem; line-height: 1.8;">
+                    Every file in Linux has TWO owners:<br>
+                    <strong>1. User owner</strong> - The person who created it<br>
+                    <strong>2. Group owner</strong> - A group of users who can access it
+                </p>
+                <p style="font-size: 1.15rem; line-height: 1.8;">
+                    This is like a document being owned by "John" but shared with the "Engineering Team".
+                </p>
+
+                <h4 style="color: #ff9800; font-size: 1.5rem; margin-top: 2rem;">📝 Solution</h4>
+                <ol style="font-size: 1.1rem; line-height: 1.8;">
+                    <li><strong>Search from root directory:</strong><br>
+                    <code>find / -user bandit7 -group bandit6 -size 33c 2>/dev/null</code><br>
+                    Breaking it down:
+                    <ul style="margin-top: 0.5rem;">
+                        <li><code>/</code> = start from root (search EVERYWHERE)</li>
+                        <li><code>-user bandit7</code> = owned by bandit7</li>
+                        <li><code>-group bandit6</code> = group is bandit6</li>
+                        <li><code>-size 33c</code> = 33 bytes</li>
+                        <li><code>2>/dev/null</code> = hide "Permission denied" errors</li>
+                    </ul>
+                    </li>
+                    <li><strong>You'll see something like:</strong><br>
+                    <code>/var/lib/dpkg/info/bandit7.password</code></li>
+                    <li><strong>Read it:</strong><br>
+                    <code>cat /var/lib/dpkg/info/bandit7.password</code></li>
+                </ol>
+
+                <div style="background: rgba(255,193,7,0.1); padding: 1.5rem; border-radius: 10px; margin: 2rem 0; border-left: 3px solid #ffc107;">
+                    <strong style="color: #ffc107;">💡 Pro Tip:</strong> <code>2>/dev/null</code> is your best friend!<br>
+                    <strong>2</strong> = error messages (stderr)<br>
+                    <strong>>/dev/null</strong> = send to the void (discard them)<br>
+                    Without this, your screen would be flooded with "Permission denied" messages!
+                </div>
+
+                <div style="background: rgba(76,175,80,0.1); padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
+                    <strong style="color: #4caf50;">✅ What You Learned:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li>File ownership (user and group)</li>
+                        <li><code>-user</code> and <code>-group</code> flags</li>
+                        <li>Searching from root directory <code>/</code></li>
+                        <li><code>2>/dev/null</code> to suppress errors</li>
+                        <li>How to find files system-wide</li>
+                    </ul>
+                </div>
+            </div>
+
             <!-- Next Steps -->
             <div style="background: linear-gradient(135deg, rgba(33,150,243,0.1) 0%, rgba(33,150,243,0.05) 100%); border: 2px solid rgba(33,150,243,0.3); border-radius: 20px; padding: 3rem; margin: 3rem 0; text-align: center;">
-                <h3 style="font-size: 2rem; color: #2196f3; margin-bottom: 1.5rem;">🎯 What's Next?</h3>
+                <h3 style="font-size: 2rem; color: #2196f3; margin-bottom: 1.5rem;">🎯 Continue Your Journey</h3>
                 <p style="font-size: 1.2rem; line-height: 1.8; max-width: 700px; margin: 0 auto 2rem;">
-                    You've learned the foundation! Continue through all 34 Bandit levels following this same pattern. Each level introduces ONE new concept. By the end, you'll be a Linux command line expert.
+                    You've now mastered 7 Bandit levels! The remaining levels (7-34) cover: grep, sorting, encoding, compression, SSH keys, port connections, cron jobs, and more. Keep applying this same learning pattern - understand the concept, try the command, learn from outputs.
                 </p>
+                
+                <div style="background: rgba(255,193,7,0.15); padding: 2rem; border-radius: 12px; margin: 2rem auto; max-width: 800px; text-align: left;">
+                    <strong style="color: #ffc107; font-size: 1.3rem;">📚 Quick Reference: Commands You've Mastered</strong>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem; font-size: 1.05rem;">
+                        <div><code>ssh</code> - Remote login</div>
+                        <div><code>ls -la</code> - List with hidden files</div>
+                        <div><code>cat</code> - Read files</div>
+                        <div><code>cd</code> - Change directory</div>
+                        <div><code>file</code> - Check file type</div>
+                        <div><code>find</code> - Search by properties</div>
+                        <div><code>./ prefix</code> - Handle special filenames</div>
+                        <div><code>2>/dev/null</code> - Suppress errors</div>
+                    </div>
+                </div>
+                
+                <h3 style="font-size: 1.8rem; color: #2196f3; margin: 3rem 0 1.5rem;">🚀 Advanced Levels Preview</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; text-align: left; margin-bottom: 2rem;">
+                    <div style="background: rgba(76,175,80,0.1); padding: 1.5rem; border-radius: 12px; border-left: 3px solid #4caf50;">
+                        <strong style="color: #4caf50;">Level 7-10:</strong><br>
+                        grep patterns, sorting data, unique lines, binary strings
+                    </div>
+                    <div style="background: rgba(33,150,243,0.1); padding: 1.5rem; border-radius: 12px; border-left: 3px solid #2196f3;">
+                        <strong style="color: #2196f3;">Level 11-15:</strong><br>
+                        Base64, ROT13, compression (gzip/bzip2/tar), SSH keys
+                    </div>
+                    <div style="background: rgba(156,39,176,0.1); padding: 1.5rem; border-radius: 12px; border-left: 3px solid #9c27b0;">
+                        <strong style="color: #9c27b0;">Level 16-20:</strong><br>
+                        Port scanning, SSL, diff, cron jobs, setuid binaries
+                    </div>
+                    <div style="background: rgba(255,87,34,0.1); padding: 1.5rem; border-radius: 12px; border-left: 3px solid #ff5722;">
+                        <strong style="color: #ff5722;">Level 21-34:</strong><br>
+                        Shell scripting, git, password cracking, more!
+                    </div>
+                </div>
                 <div style="display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
                     <a href="https://overthewire.org/wargames/bandit/" target="_blank" style="text-decoration: none; background: #2196f3; color: #fff; padding: 1.2rem 2.5rem; border-radius: 10px; font-weight: 700; font-size: 1.1rem; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 10px 30px rgba(33,150,243,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
                         Go to OverTheWire →
