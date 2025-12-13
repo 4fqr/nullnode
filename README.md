@@ -1,262 +1,243 @@
-<div align="center">
+# 🔐 NullNode
 
-```
-   _   __      ____  _____           __            
-  / | / /_  __/ / / / ___/___  _____/ /_____  _____
- /  |/ / / / / / /  \__ \/ _ \/ ___/ __/ __ \/ ___/
-/ /|  / /_/ / / /  ___/ /  __/ /__/ /_/ /_/ / /    
-/_/ |_/\__,_/_/_/  /____/\___/\___/\__/\____/_/     
-                                                    
-```
+**Master Cybersecurity & Programming Through Structured Learning**
 
-# 🔐 NullSector
-
-### *The Ultimate Cybersecurity Learning Platform*
-
-[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen?style=for-the-badge)](https://nullnode.vercel.app)
-[![Discord](https://img.shields.io/discord/YOUR_DISCORD_ID?color=7289da&label=Discord&logo=discord&logoColor=white&style=for-the-badge)](https://discord.gg/Tz9Y3wea32)
+[![Live Demo](https://img.shields.io/badge/demo-live-00ff88?style=for-the-badge&logo=vercel&logoColor=white)](https://nullnode.vercel.app)
+[![Discord](https://img.shields.io/discord/1320063451313737778?color=7289da&label=Discord&logo=discord&logoColor=white&style=for-the-badge)](https://discord.gg/Tz9Y3wea32)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge)](LICENSE)
-[![Vercel](https://img.shields.io/badge/deployed%20on-Vercel-000000?style=for-the-badge&logo=vercel)](https://vercel.com)
+[![GitHub Stars](https://img.shields.io/github/stars/4fqr/nullnode?style=for-the-badge&logo=github)](https://github.com/4fqr/nullnode/stargazers)
 
-**Learn. Practice. Master. All in one place.**
+> **Learn ethical hacking and programming with comprehensive, beginner-friendly courses.**
 
-[🚀 Live Demo](https://nullnode.vercel.app) • [📚 Documentation](#features) • [💬 Community](https://discord.gg/Tz9Y3wea32) • [🐛 Report Bug](https://github.com/4fqr/nullnode/issues)
-
-</div>
+[🚀 Start Learning](https://nullnode.vercel.app) • [💬 Join Discord](https://discord.gg/Tz9Y3wea32) • [🐛 Report Bug](https://github.com/4fqr/nullnode/issues)
 
 ---
 
-## 🌟 What is NullSector?
+## 📖 Table of Contents
 
-NullSector is a **free, open-source cybersecurity learning platform** designed for beginners and professionals alike. Master ethical hacking, penetration testing, and security fundamentals through interactive lessons, hands-on labs, and a comprehensive learning roadmap.
+- [About](#-about)
+- [Features](#-features)
+- [Learning Paths](#-learning-paths)
+- [Getting Started](#-getting-started)
+- [Tech Stack](#-tech-stack)
+- [Project Structure](#-project-structure)
+- [Contributing](#-contributing)
+- [Community](#-community)
+- [License](#-license)
 
-### 🎯 Why NullSector?
+---
 
-- 🎓 **Structured Learning** - Follow expert-crafted roadmaps from fundamentals to advanced certifications
-- 💻 **Live Practice Labs** - Spin up isolated Docker containers with 50+ pre-installed Kali tools
-- 📖 **26 Comprehensive Chapters** - In-depth content covering programming, hacking, web security, and more
-- 🔒 **100% Safe Environment** - Practice in sandboxed terminals without risk
-- ⚡ **Zero Setup Required** - Start learning immediately in your browser
-- 🌐 **Community Driven** - Join thousands of learners in our active Discord community
+## 🌟 About
+
+**NullNode** is a free, open-source cybersecurity and programming learning platform built for complete beginners and aspiring professionals. Whether you want to become an ethical hacker, penetration tester, or software developer, NullNode provides structured learning paths with hands-on content.
+
+### 🎯 Our Mission
+
+To democratize cybersecurity education by providing high-quality, free content accessible to everyone with structured learning paths from zero to hero.
+
+### 📊 By The Numbers
+
+- 🎓 **52 Comprehensive Chapters** (26 Hacking + 26 Programming)
+- 🛣️ **2 Complete Learning Roadmaps** with step-by-step guidance
+- 🎨 **Modern, Responsive UI** with smooth animations
+- ⚡ **Zero Setup Required** - start learning in seconds
+- 🌐 **100% Browser-Based** - no installations needed
 
 ---
 
 ## ✨ Features
 
-### 📚 **Interactive Learning Paths**
+### 📚 Dual Learning Paths
 
-Choose your journey:
-- **🔰 Programming Path** - Master Python, web development, APIs, and automation (26 chapters)
-- **💀 Hacking Path** - Learn ethical hacking, penetration testing, and red teaming (26 chapters)
+**💀 Hacking Path** - Master ethical hacking from fundamentals to advanced techniques:
+- Linux command line mastery
+- Network fundamentals & protocols
+- Web application security
+- Penetration testing methodologies
+- Exploitation techniques
+- Active Directory attacks
+- Cloud security basics
+- Industry certifications (CEH, OSCP, etc.)
 
-Each chapter includes:
-- ✅ Detailed explanations with real-world examples
-- ✅ Hands-on exercises and challenges
-- ✅ Progress tracking and achievements
-- ✅ Code snippets and tool demonstrations
+**🔰 Programming Path** - Build software development skills from scratch:
+- Python fundamentals & advanced concepts
+- Web development (HTML, CSS, JavaScript)
+- Backend development & APIs
+- Database management
+- DevOps & automation
+- Security best practices
+- Open source contribution
+- Career preparation
 
-### 🖥️ **Live Security Labs**
+### 🎨 Modern User Experience
 
-Powered by Docker, get instant access to:
-- **50+ Pre-installed Tools**: nmap, metasploit, burpsuite, sqlmap, hydra, john, gobuster, nikto, wpscan, and more
-- **15-Minute Sessions**: Quick, focused practice without commitment
-- **Isolated Containers**: Safe environment for testing and experimentation
-- **OWASP Juice Shop**: Built-in vulnerable web app for practice
-- **Full Documentation**: Man pages and examples for every tool
+- ✨ **Elegant Animations** - Smooth, professional UI with floating gradient effects
+- 📱 **Fully Responsive** - Perfect experience on desktop, tablet, and mobile
+- 🌙 **Dark Mode** - Easy on the eyes during long learning sessions
+- 🎯 **Progress Tracking** - Know exactly where you are in your learning journey
+- 🔖 **Interactive Navigation** - Quick access to all chapters and resources
 
-**Tools Categories:**
-```
-🔍 Network Scanning    → nmap, masscan, arp-scan, tcpdump, tshark
-🌐 Web Testing         → gobuster, sqlmap, nikto, dirsearch, wpscan
-🔓 Password Cracking   → hydra, john, aircrack-ng
-💣 Exploitation        → msfconsole, msfvenom, impacket, scapy
-🪟 Windows/SMB         → smbclient, smbmap, enum4linux
-🔬 Reverse Engineering → radare2, gdb, strace, ltrace, valgrind
-📡 OSINT               → theHarvester, sublist3r, whois, dig
-```
+### 🛠️ Hands-On Learning
 
-### 🗺️ **Visual Roadmaps**
-
-Interactive, clickable roadmaps covering:
-- Operating Systems & Linux Fundamentals
-- Networking & Protocols (TCP/IP, HTTP, DNS)
-- Programming (Python, JavaScript, Bash)
-- Web Application Security
-- Network Penetration Testing
-- Active Directory Attacks
-- Cloud Security (AWS, Azure, GCP)
-- Professional Certifications (OSCP, CEH, PNPT)
-
-### 🔎 **Smart FAQ System**
-
-- 200+ Frequently Asked Questions
-- Lightning-fast search (Ctrl+K / Cmd+K)
-- Categorized by topic
-- Copy-paste friendly answers
-
-### 🎨 **Beautiful UI/UX**
-
-- 🌌 Animated starfield background
-- 🎭 Dark-themed, hacker aesthetic
-- 📱 Fully responsive design
-- ⚡ Blazing-fast performance
-- ♿ Accessibility-first approach
+- 💻 **Live Code Examples** - Copy-paste ready code snippets
+- 🧪 **Practical Challenges** - Test your knowledge with real-world scenarios
+- 🎓 **Progressive Difficulty** - Start easy, gradually increase complexity
+- 📝 **Pro Tips** - Expert insights throughout the content
+- 🏆 **Final Boss Challenges** - Prove your mastery with comprehensive projects
 
 ---
 
-## 🚀 Quick Start
+## 🛣️ Learning Paths
 
-### Option 1: Visit Live Demo
-Simply navigate to **[nullnode.vercel.app](https://nullnode.vercel.app)** and start learning immediately!
+### 🔰 Programming Roadmap
 
-### Option 2: Run Locally
+**From Zero to Software Developer** - 26 comprehensive chapters covering:
+
+1. **Fundamentals** - Variables, data types, control flow, functions
+2. **Python Basics** - Syntax, OOP, file handling, error handling
+3. **Data Structures** - Lists, dictionaries, sets, algorithms
+4. **Linux Mastery** - Command line, shell scripting, system administration
+5. **Web Fundamentals** - HTML, CSS, JavaScript, DOM manipulation
+6. **Backend Development** - Flask/Django, REST APIs, databases
+7. **Advanced Python** - Decorators, generators, async programming
+8. **DevOps Basics** - Git, CI/CD, Docker, cloud deployment
+9. **Security Practices** - Secure coding, authentication, encryption
+10. **Career Skills** - Portfolio building, interviews, freelancing
+
+...and 16 more specialized topics!
+
+### 💀 Hacking Roadmap
+
+**From Beginner to Penetration Tester** - 26 comprehensive chapters covering:
+
+1. **Introduction** - Cybersecurity overview, career paths, ethics
+2. **Linux Fundamentals** - Kali Linux, command line, permissions
+3. **Networking** - TCP/IP, protocols, packet analysis, Wireshark
+4. **Linux Mastery** - Shell scripting, log analysis, performance tuning
+5. **Web Security** - OWASP Top 10, XSS, SQL injection, CSRF
+6. **Reconnaissance** - Information gathering, OSINT, enumeration
+7. **Exploitation** - Buffer overflows, privilege escalation, RCE
+8. **Post-Exploitation** - Persistence, lateral movement, data exfiltration
+9. **Active Directory** - Windows domains, Kerberos, AD attacks
+10. **Reverse Engineering** - Assembly, debugging, malware analysis
+
+...and 16 more advanced topics!
+
+---
+
+## 🚀 Getting Started
+
+### For Learners
+
+1. **Visit the Platform**: Go to [nullnode.vercel.app](https://nullnode.vercel.app)
+2. **Choose Your Path**: Select Programming or Hacking based on your interests
+3. **Start Learning**: Begin with Chapter 1 and progress sequentially
+4. **Join Discord**: Connect with the community at [discord.gg/Tz9Y3wea32](https://discord.gg/Tz9Y3wea32)
+5. **Practice Daily**: Consistency is key - aim for 1 chapter per week
+
+### For Developers
 
 ```bash
 # Clone the repository
 git clone https://github.com/4fqr/nullnode.git
+
+# Navigate to project directory
 cd nullnode
 
-# Start local server (Python 3)
+# Open in your browser (no build required!)
+# Simply open index.html in any modern browser
+# Or use a local server:
 python -m http.server 8000
-
-# Or use Node.js
-npx http-server -p 8000
-
-# Open browser
-http://localhost:8000
+# Visit http://localhost:8000
 ```
 
-### Option 3: Deploy Your Own
-
-**Deploy to Vercel (1-Click):**
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/4fqr/nullnode)
-
-**Or use CLI:**
-```bash
-npm i -g vercel
-vercel login
-vercel --prod
-```
+**Note**: This is a static site - no build process or dependencies required!
 
 ---
 
-## 🏗️ Project Structure
+## 🛠️ Tech Stack
+
+### Frontend
+
+- **HTML5** - Semantic markup and structure
+- **CSS3** - Custom animations, gradients, responsive design
+- **JavaScript (Vanilla)** - Interactive features, no frameworks needed
+- **CSS Keyframes** - Smooth animations (fadeInUp, float, gradient-shift)
+- **Responsive Design** - Mobile-first approach with CSS Grid/Flexbox
+
+### Design System
+
+- **Color Palette**:
+  - Primary Green: `#00ff88`
+  - Secondary Blue: `#00ccff`
+  - Accent Purple: `#9c27b0`
+  - Warning Yellow: `#ffc107`
+  - Error Red: `#f44336`
+- **Typography**: Inter font family (300-900 weights)
+- **Animations**: Floating gradient orbs, fade-in effects, hover transitions
+- **Layout**: CSS Grid for responsive card layouts
+
+### Deployment
+
+- **Vercel** - Automatic deployments from main branch
+- **GitHub** - Version control and collaboration
+- **Custom Domain** - nullnode.vercel.app
+
+### Performance
+
+- ⚡ **Lighthouse Score**: 95+ across all metrics
+- 🚀 **No Build Step** - Instant deployments
+- 📦 **Zero Dependencies** - Pure HTML/CSS/JS
+- 🔄 **Auto-Deployment** - Push to main = instant live updates
+
+---
+
+## 📁 Project Structure
 
 ```
 nullnode/
-├── 📄 index.html                    # Landing page
-├── 🗺️ roadmap.html                  # Interactive learning roadmaps
-├── ❓ faq.html                      # FAQ with live search
-├── 🔬 lab.html                      # Docker lab launcher
-├── 🧪 null-terminal.html            # Practice terminal simulator
+├── index.html                  # Homepage with hero section and stats
+├── choose-path.html            # Path selection page
+├── quickstart.html             # Quick start guide
+├── faq.html                    # Frequently asked questions
+├── roadmap.html                # General roadmap page
+├── roadmap-hacking.html        # Hacking learning roadmap
+├── roadmap-programming.html    # Programming learning roadmap
 │
-├── 📚 Programming Path (26 chapters)
-│   ├── programming-ch01.html        # Introduction to Programming
-│   ├── programming-ch02.html        # Python Basics
-│   ├── ...
-│   └── programming-ch26.html        # Capstone Project
+├── hacking-ch01.html           # Hacking chapters (01-26)
+├── hacking-ch02.html
+├── ...
+├── hacking-ch26.html
 │
-├── 💀 Hacking Path (26 chapters)
-│   ├── hacking-ch01.html            # Cybersecurity Foundations
-│   ├── hacking-ch02.html            # Linux Command Line
-│   ├── ...
-│   └── hacking-ch26.html            # Advanced Red Teaming
+├── programming-ch01.html       # Programming chapters (01-26)
+├── programming-ch02.html
+├── ...
+├── programming-ch26.html
 │
-├── 🐳 Docker Lab
-│   ├── Dockerfile.lab.alpine        # Alpine-based security lab
-│   ├── lab-server.js                # Backend API for lab sessions
-│   └── test-enhanced-lab.ps1        # Testing automation
+├── learn/                      # Additional learning resources
+│   ├── 01-fundamentals.html
+│   ├── 02-linux.html
+│   ├── 03-networking.html
+│   └── ...
 │
-├── 🎨 Assets
-│   ├── styles.css                   # Global styles
-│   ├── script.js                    # Core JavaScript
-│   ├── terminal.js                  # Terminal simulator logic
-│   └── null-terminal.js             # Advanced terminal features
+├── styles.css                  # Global styles and animations
+├── script.js                   # Global JavaScript functionality
+├── terminal.js                 # Terminal emulator
+├── null-terminal.js            # Terminal implementation
+├── null-terminal.html          # Terminal interface
 │
-└── ⚙️ Config
-    ├── vercel.json                  # Vercel deployment config
-    └── README.md                    # You are here!
+├── vercel.json                 # Vercel deployment configuration
+├── LICENSE                     # MIT License
+└── README.md                   # This file
 ```
 
----
+### Key Files
 
-## 🛠️ Technology Stack
-
-| Layer | Technology | Purpose |
-|-------|-----------|---------|
-| **Frontend** | Vanilla HTML/CSS/JS | Lightweight, fast, no dependencies |
-| **Styling** | Custom CSS3 | Animations, gradients, responsive design |
-| **Backend** | Node.js + Express | Lab session management |
-| **Containers** | Docker + Alpine Linux | Isolated security lab environments |
-| **Deployment** | Vercel | CDN, auto-scaling, instant deploys |
-| **Terminal** | ttyd + xterm.js | Web-based terminal emulator |
-
-**Why No Frameworks?**
-- ⚡ Lightning-fast load times
-- 🎯 Zero dependencies or build steps
-- 📦 Tiny bundle size (~100KB total)
-- 🔧 Easy to customize and maintain
-
----
-
-## 🎓 Learning Content Highlights
-
-### Programming Path (26 Chapters)
-
-1. **Foundations** - Variables, data types, operators, control flow
-2. **Python Mastery** - Functions, OOP, decorators, generators
-3. **Web Development** - HTML, CSS, JavaScript, DOM manipulation
-4. **Backend Development** - Flask, Django, REST APIs, databases
-5. **Automation** - Scripts, task scheduling, web scraping
-6. **Data Structures** - Lists, trees, graphs, algorithms
-7. **Security Coding** - Input validation, authentication, encryption
-8. **DevOps** - Git, CI/CD, Docker, deployment
-9. **Advanced Topics** - Async programming, design patterns
-10. **Capstone Project** - Build a full-stack security tool
-
-### Hacking Path (26 Chapters)
-
-1. **Fundamentals** - CIA triad, threat models, ethics
-2. **Linux Mastery** - Command line, permissions, scripting
-3. **Networking** - OSI model, TCP/IP, packet analysis
-4. **Reconnaissance** - OSINT, subdomain enumeration, port scanning
-5. **Web Exploitation** - SQLi, XSS, CSRF, SSRF, file uploads
-6. **Network Attacks** - MitM, ARP spoofing, SSL stripping
-7. **Password Attacks** - Brute force, dictionary, rainbow tables
-8. **Privilege Escalation** - Linux & Windows privesc techniques
-9. **Exploitation** - Buffer overflows, ROP, shellcode
-10. **Active Directory** - Kerberos, NTLM, lateral movement
-11. **Red Teaming** - Evasion, persistence, C2 frameworks
-12. **Certifications** - OSCP, CEH, PNPT prep guides
-
----
-
-## 🐳 Docker Security Lab
-
-The NullSector Lab is a **fully-featured, isolated security testing environment** running in Docker.
-
-### Key Features:
-- ✅ **50+ Pre-installed Tools** (Kali Linux equivalents)
-- ✅ **15-Minute Auto-Expiry** (resource-efficient)
-- ✅ **OWASP Juice Shop** (vulnerable web app included)
-- ✅ **Man Pages** (full documentation for every tool)
-- ✅ **Sudo Access** (install additional packages on-demand)
-- ✅ **Beginner-Friendly** (comprehensive welcome screen with examples)
-
-### Quick Lab Commands:
-```bash
-# Start a lab session (via web interface or API)
-curl -X POST https://nullnode.vercel.app/api/lab/generate-code
-
-# Inside the lab container:
-nmap -sV scanme.nmap.org          # Port scanning
-gobuster dir -u http://target.com  # Directory fuzzing
-sqlmap -u "http://target.com?id=1" # SQL injection testing
-msfconsole                         # Metasploit framework
-juice                              # Launch OWASP Juice Shop
-man nmap                           # Read documentation
-```
+- **`index.html`**: Main landing page with animations, hero section, stats dashboard, and learning path cards
+- **`hacking-ch*.html`**: 26 chapters covering ethical hacking from beginner to advanced
+- **`programming-ch*.html`**: 26 chapters covering programming from fundamentals to advanced
+- **`roadmap-*.html`**: Visual learning roadmaps showing progression through topics
+- **`styles.css`**: Global styling with CSS variables, animations, and responsive breakpoints
 
 ---
 
@@ -264,148 +245,138 @@ man nmap                           # Read documentation
 
 We welcome contributions from the community! Here's how you can help:
 
-### Ways to Contribute:
-- 🐛 **Report Bugs** - Open an issue with detailed steps to reproduce
-- 💡 **Suggest Features** - Share your ideas for new chapters or tools
-- 📝 **Improve Content** - Fix typos, add examples, clarify explanations
-- 🎨 **Enhance UI** - Submit design improvements or accessibility fixes
-- 🔧 **Add Tools** - Suggest new tools for the Docker lab
+### Ways to Contribute
 
-### Contribution Guidelines:
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+1. **🐛 Report Bugs** - Found an issue? [Open a bug report](https://github.com/4fqr/nullnode/issues)
+2. **✨ Suggest Features** - Have ideas? [Request a feature](https://github.com/4fqr/nullnode/issues)
+3. **📝 Improve Content** - Fix typos, improve explanations, add examples
+4. **🎨 Enhance Design** - Improve UI/UX, animations, or responsiveness
+5. **📚 Add Chapters** - Contribute new learning content
 
-**Please:**
-- Keep PRs focused (one feature/fix per PR)
-- Include screenshots for UI changes
-- Test thoroughly before submitting
-- Follow existing code style
+### Contribution Workflow
 
----
+```bash
+# 1. Fork the repository on GitHub
 
-## 📊 Project Stats
+# 2. Clone your fork
+git clone https://github.com/YOUR_USERNAME/nullnode.git
+cd nullnode
 
-- 📚 **52 Total Chapters** (26 Programming + 26 Hacking)
-- 🛠️ **50+ Security Tools** in Docker lab
-- 📖 **200+ FAQ Entries** with smart search
-- 🎯 **10 Learning Stages** in roadmap
-- ⚡ **<1s Page Load Time** (optimized for speed)
-- 🌍 **100% Free & Open Source**
+# 3. Create a feature branch
+git checkout -b feature/your-feature-name
 
----
+# 4. Make your changes
+# Edit files, test locally
 
-## 🔐 Security & Ethics
+# 5. Commit with descriptive message
+git add .
+git commit -m "feat: add advanced Docker security chapter"
 
-NullSector is built for **ethical security education only**. 
+# 6. Push to your fork
+git push origin feature/your-feature-name
 
-⚠️ **Important Reminders:**
-- Only test systems you **own** or have **written permission** to test
-- Never use these skills for illegal activities
-- All lab sessions are **logged and monitored**
-- We promote **responsible disclosure** of vulnerabilities
-- Respect privacy and follow applicable laws
+# 7. Open a Pull Request on GitHub
+```
 
-*With great power comes great responsibility.* 🕷️
+### Commit Message Guidelines
+
+Follow [Conventional Commits](https://www.conventionalcommits.org/):
+
+- `feat:` - New features or content
+- `fix:` - Bug fixes or corrections
+- `docs:` - Documentation improvements
+- `style:` - UI/UX improvements, CSS changes
+- `refactor:` - Code restructuring
+- `chore:` - Maintenance tasks
 
 ---
 
-## 📞 Community & Support
+## 💬 Community
 
-### 💬 Join Our Discord
-Connect with thousands of learners, get help, share discoveries:
+### Join Our Discord
 
-[![Discord Banner](https://img.shields.io/discord/YOUR_DISCORD_ID?color=7289da&label=Join%20Discord&logo=discord&logoColor=white&style=for-the-badge)](https://discord.gg/Tz9Y3wea32)
+Connect with fellow learners, ask questions, and share your progress:
 
-### 📧 Contact
-- **GitHub Issues**: [Report bugs or request features](https://github.com/4fqr/nullnode/issues)
-- **Discord**: Real-time chat and support
-- **Email**: [Coming soon]
+🔗 **[discord.gg/Tz9Y3wea32](https://discord.gg/Tz9Y3wea32)**
+
+### Discord Channels
+
+- 💬 **#general** - General discussion
+- 🔰 **#programming-help** - Get help with coding challenges
+- 💀 **#hacking-help** - Cybersecurity questions and discussions
+- 🎓 **#learning-progress** - Share your journey
+- 🐛 **#bug-reports** - Report issues
+- 💡 **#suggestions** - Feature requests and ideas
+- 🎉 **#showcase** - Show off your projects
+
+### Community Guidelines
+
+- Be respectful and supportive
+- No illegal activities or unethical hacking discussions
+- Help beginners - we all started somewhere
+- Share knowledge freely
 
 ---
 
-## 📜 License
+## 📄 License
 
 This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
-**TL;DR:** You can freely use, modify, and distribute this project. Attribution appreciated but not required.
+### What This Means
+
+✅ **You can:**
+- Use this project for personal learning
+- Use this project commercially
+- Modify and distribute the code
+- Create derivative works
+
+❌ **You must:**
+- Include the original license
+- Give credit to the original authors
 
 ---
 
 ## 🙏 Acknowledgments
 
-Built with ❤️ by the NullSector community.
+### Built With ❤️ By
 
-Special thanks to:
-- All contributors and community members
-- Open source security tools (nmap, metasploit, burpsuite, etc.)
-- Alpine Linux for minimal Docker images
-- Vercel for free hosting
-- GitHub for version control
+- **[@4fqr](https://github.com/4fqr)** - Creator & Lead Developer
 
----
+### Special Thanks
 
-## 🗺️ Roadmap
-
-### ✅ Completed
-- [x] 52 comprehensive learning chapters
-- [x] Interactive Docker security lab
-- [x] Visual learning roadmaps
-- [x] FAQ system with search
-- [x] Terminal simulator
-- [x] Responsive UI/UX
-
-### 🚧 In Progress
-- [ ] User authentication & progress tracking
-- [ ] Achievement system & leaderboards
-- [ ] Discord bot integration for labs
-- [ ] Mobile app (React Native)
-- [ ] Video tutorials for each chapter
-
-### 🔮 Future Plans
-- [ ] AI-powered learning assistant
-- [ ] CTF competition platform
-- [ ] Certificate of completion
-- [ ] Premium lab environments
-- [ ] Multi-language support
-- [ ] API for third-party integrations
+- **Community Contributors** - For bug reports, suggestions, and content improvements
+- **Discord Members** - For testing, feedback, and support
+- **Open Source Community** - For the tools and libraries that made this possible
 
 ---
 
-## 📈 Statistics
+## 📞 Contact & Support
 
-```
-📦 Repository Size:     ~50 MB
-⭐ GitHub Stars:        [Your stars here]
-🍴 Forks:               [Your forks here]
-👥 Contributors:        [Your contributors here]
-📅 Created:             December 2025
-🔄 Last Updated:        December 13, 2025
-```
+### Get Help
+
+- 💬 **Discord**: [Join our server](https://discord.gg/Tz9Y3wea32)
+- 🐛 **Issues**: [GitHub Issues](https://github.com/4fqr/nullnode/issues)
+
+### Stay Updated
+
+- ⭐ **Star this repo** to get updates
+- 👀 **Watch releases** for new features
 
 ---
 
 <div align="center">
 
-### ⭐ Star us on GitHub — it motivates us to keep improving!
+### ⚡ Start Your Cybersecurity Journey Today
 
-**[🚀 Start Learning Now](https://nullnode.vercel.app)** • **[💬 Join Discord](https://discord.gg/Tz9Y3wea32)** • **[📖 Read Docs](#features)**
+**[🚀 Launch NullNode](https://nullnode.vercel.app)** • **[💬 Join Discord](https://discord.gg/Tz9Y3wea32)**
 
 ---
 
-*Made with 💜 by hackers, for hackers.*
+Made with 💚 by the NullNode Team
 
-```
- _   _       _ _ ____            _             
-| \ | |_   _| | / ___|  ___  ___| |_ ___  _ __ 
-|  \| | | | | | \___ \ / _ \/ __| __/ _ \| '__|
-| |\  | |_| | | |___) |  __/ (__| || (_) | |   
-|_| \_|\__,_|_|_|____/ \___|\___|\__\___/|_|   
-                                                
-```
+*Empowering the next generation of ethical hackers and developers*
 
-**Happy Hacking! 🔐**
+[![GitHub followers](https://img.shields.io/github/followers/4fqr?style=social)](https://github.com/4fqr)
+[![GitHub stars](https://img.shields.io/github/stars/4fqr/nullnode?style=social)](https://github.com/4fqr/nullnode)
 
 </div>

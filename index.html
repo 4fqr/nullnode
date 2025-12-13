@@ -28,7 +28,7 @@
         @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: translateY(20px);
             }
             to {
                 opacity: 1;
@@ -37,18 +37,18 @@
         }
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
+            50% { transform: translateY(-10px); }
         }
         @keyframes gradient-shift {
             0%, 100% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
         }
         @keyframes glow {
-            0%, 100% { box-shadow: 0 0 20px rgba(0,255,136,0.4), 0 0 40px rgba(0,255,136,0.2); }
-            50% { box-shadow: 0 0 30px rgba(0,255,136,0.6), 0 0 60px rgba(0,255,136,0.3); }
+            0%, 100% { box-shadow: 0 0 15px rgba(0,255,136,0.3), 0 0 30px rgba(0,255,136,0.15); }
+            50% { box-shadow: 0 0 25px rgba(0,255,136,0.5), 0 0 50px rgba(0,255,136,0.25); }
         }
         .fade-in-up {
-            animation: fadeInUp 0.8s ease-out forwards;
+            animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             opacity: 0;
         }
         .delay-1 { animation-delay: 0.1s; }
@@ -62,9 +62,9 @@
     <div class="twinkling"></div>
     
     <!-- Animated Background Orbs -->
-    <div style="position: fixed; top: -10%; left: -5%; width: 40%; height: 40%; background: radial-gradient(circle, rgba(0,255,136,0.15) 0%, transparent 70%); border-radius: 50%; filter: blur(80px); animation: float 15s ease-in-out infinite; z-index: 0;"></div>
-    <div style="position: fixed; bottom: -10%; right: -5%; width: 50%; height: 50%; background: radial-gradient(circle, rgba(0,204,255,0.12) 0%, transparent 70%); border-radius: 50%; filter: blur(100px); animation: float 20s ease-in-out infinite reverse; z-index: 0;"></div>
-    <div style="position: fixed; top: 40%; right: 10%; width: 30%; height: 30%; background: radial-gradient(circle, rgba(156,39,176,0.1) 0%, transparent 70%); border-radius: 50%; filter: blur(70px); animation: float 18s ease-in-out infinite; z-index: 0;"></div>
+    <div style="position: fixed; top: -10%; left: -5%; width: 40%; height: 40%; background: radial-gradient(circle, rgba(0,255,136,0.08) 0%, transparent 70%); border-radius: 50%; filter: blur(80px); animation: float 25s ease-in-out infinite; z-index: 0; will-change: transform;"></div>
+    <div style="position: fixed; bottom: -10%; right: -5%; width: 50%; height: 50%; background: radial-gradient(circle, rgba(0,204,255,0.06) 0%, transparent 70%); border-radius: 50%; filter: blur(100px); animation: float 30s ease-in-out infinite reverse; z-index: 0; will-change: transform;"></div>
+    <div style="position: fixed; top: 40%; right: 10%; width: 30%; height: 30%; background: radial-gradient(circle, rgba(156,39,176,0.05) 0%, transparent 70%); border-radius: 50%; filter: blur(70px); animation: float 28s ease-in-out infinite; z-index: 0; will-change: transform;"></div>
     
     <!-- Navigation -->
     <nav class="navbar">
@@ -104,7 +104,7 @@
     <section class="hero fade-in-up" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; padding: 2rem; z-index: 1;">
         <div style="max-width: 1200px; width: 100%; text-align: center;">
             <!-- Live Badge -->
-            <div class="fade-in-up delay-1" style="display: inline-flex; align-items: center; gap: 0.75rem; background: rgba(0,20,10,0.9); border: 1px solid rgba(0,255,136,0.4); padding: 0.85rem 2rem; border-radius: 50px; margin-bottom: 3rem; backdrop-filter: blur(20px); box-shadow: 0 8px 32px rgba(0,255,136,0.15); transition: all 0.3s;" onmouseover="this.style.transform='scale(1.05)'; this.style.borderColor='rgba(0,255,136,0.6)'" onmouseout="this.style.transform='scale(1)'; this.style.borderColor='rgba(0,255,136,0.4)'">
+            <div class="fade-in-up delay-1" style="display: inline-flex; align-items: center; gap: 0.75rem; background: rgba(0,20,10,0.9); border: 1px solid rgba(0,255,136,0.4); padding: 0.85rem 2rem; border-radius: 50px; margin-bottom: 3rem; backdrop-filter: blur(20px); box-shadow: 0 8px 32px rgba(0,255,136,0.15); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);" onmouseover="this.style.transform='scale(1.03)'; this.style.borderColor='rgba(0,255,136,0.6)'" onmouseout="this.style.transform='scale(1)'; this.style.borderColor='rgba(0,255,136,0.4)'">
                 <span style="width: 12px; height: 12px; background: #00ff88; border-radius: 50%; box-shadow: 0 0 20px #00ff88, 0 0 40px rgba(0,255,136,0.5); animation: pulse 2s infinite;"></span>
                 <span style="font-size: 1rem; color: #00ff88; font-weight: 700; letter-spacing: 1.5px;">LIVE COMMUNITY</span>
             </div>
@@ -121,14 +121,16 @@
             
             <!-- CTA Buttons -->
             <div class="fade-in-up delay-4" style="display: flex; gap: 1.75rem; justify-content: center; flex-wrap: wrap; margin-bottom: 6rem;">
-                <a href="hacking-ch01.html" style="text-decoration: none; background: linear-gradient(135deg, #00ff88 0%, #00cc6f 100%); color: #000; padding: 1.4rem 3.5rem; border-radius: 16px; font-weight: 900; font-size: 1.2rem; transition: all 0.4s; box-shadow: 0 15px 50px rgba(0,255,136,0.5), 0 0 0 0 rgba(0,255,136,0.4); display: inline-flex; align-items: center; gap: 0.85rem; position: relative; overflow: hidden;" onmouseover="this.style.transform='translateY(-8px) scale(1.03)'; this.style.boxShadow='0 20px 60px rgba(0,255,136,0.7), 0 0 0 8px rgba(0,255,136,0.1)'; this.style.animation='glow 1.5s infinite'" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 15px 50px rgba(0,255,136,0.5), 0 0 0 0 rgba(0,255,136,0.4)'; this.style.animation='none'">
-                    <span style="font-size: 1.5rem;">🔒</span>
-                    <span>Start Hacking Path</span>
-                    <div style="position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); transition: left 0.5s;"></div>
+                <a href="https://discord.gg/Tz9Y3wea32" target="_blank" rel="noopener noreferrer" style="text-decoration: none; background: linear-gradient(135deg, #5865F2 0%, #4752C4 100%); color: #fff; padding: 1.4rem 3.5rem; border-radius: 16px; font-weight: 900; font-size: 1.2rem; transition: all 0.3s ease; box-shadow: 0 10px 40px rgba(88,101,242,0.4); display: inline-flex; align-items: center; gap: 0.85rem; position: relative; overflow: hidden;" onmouseover="this.style.transform='translateY(-5px) scale(1.02)'; this.style.boxShadow='0 15px 50px rgba(88,101,242,0.6)'" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 10px 40px rgba(88,101,242,0.4)'">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"/>
+                    </svg>
+                    <span>Join Discord Community</span>
+                    <div style="position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: left 0.5s;"></div>
                 </a>
-                <a href="programming-ch01.html" style="text-decoration: none; background: rgba(0,204,255,0.12); color: #fff; padding: 1.4rem 3.5rem; border-radius: 16px; font-weight: 900; font-size: 1.2rem; border: 2.5px solid #00ccff; transition: all 0.4s; display: inline-flex; align-items: center; gap: 0.85rem; backdrop-filter: blur(20px); box-shadow: 0 10px 40px rgba(0,204,255,0.3); position: relative; overflow: hidden;" onmouseover="this.style.background='rgba(0,204,255,0.25)'; this.style.transform='translateY(-8px) scale(1.03)'; this.style.boxShadow='0 20px 60px rgba(0,204,255,0.5), 0 0 0 8px rgba(0,204,255,0.1)'" onmouseout="this.style.background='rgba(0,204,255,0.12)'; this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 10px 40px rgba(0,204,255,0.3)'">
-                    <span style="font-size: 1.5rem;">💻</span>
-                    <span>Start Programming Path</span>
+                <a href="roadmap-hacking.html" style="text-decoration: none; background: rgba(0,255,136,0.12); color: #fff; padding: 1.4rem 3.5rem; border-radius: 16px; font-weight: 900; font-size: 1.2rem; border: 2.5px solid #00ff88; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.85rem; backdrop-filter: blur(20px); box-shadow: 0 10px 40px rgba(0,255,136,0.3); position: relative; overflow: hidden;" onmouseover="this.style.background='rgba(0,255,136,0.2)'; this.style.transform='translateY(-5px) scale(1.02)'; this.style.boxShadow='0 15px 50px rgba(0,255,136,0.5)'" onmouseout="this.style.background='rgba(0,255,136,0.12)'; this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 10px 40px rgba(0,255,136,0.3)'">
+                    <span style="font-size: 1.5rem;">🔒</span>
+                    <span>Explore Roadmaps</span>
                 </a>
             </div>
             
