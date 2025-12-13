@@ -357,7 +357,14 @@
                     <p style="color: var(--text-secondary); margin-bottom: 0.5rem;">Your Lab Code:</p>
                     <p style="font-family: 'Fira Code', monospace; font-size: 2rem; color: var(--primary-color); font-weight: 700; letter-spacing: 0.3em;" id="displayedCode">xxxx-xxxx</p>
                     <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">⏱️ Expires in <span id="codeExpiry">15:00</span></p>
-                    <button class="submit-btn" id="claimGeneratedCodeBtn" style="margin-top: 1rem;">Launch Lab Now</button>
+                    
+                    <div style="margin-top: 1.5rem;">
+                        <p style="color: var(--text-secondary); margin-bottom: 0.75rem; font-size: 0.95rem;">Enter the code above to launch your lab:</p>
+                        <input type="text" id="codeInput" placeholder="Enter lab code" 
+                               style="width: 100%; max-width: 300px; padding: 0.75rem; font-family: 'Fira Code', monospace; font-size: 1.2rem; text-align: center; letter-spacing: 0.2em; background: var(--card-bg); border: 2px solid var(--border-color); border-radius: 8px; color: var(--text-primary); margin-bottom: 1rem; text-transform: uppercase;"
+                               maxlength="10" />
+                        <button class="submit-btn" id="claimGeneratedCodeBtn" style="margin-top: 0.5rem;">Launch Lab Now</button>
+                    </div>
                 </div>
 
                 <div id="cooldownMessage" style="display: none; padding: 1rem; background: rgba(255, 193, 7, 0.05); border-left: 4px solid #ffc107; border-radius: 8px; margin-top: 1rem;">
@@ -703,6 +710,24 @@
 
         // Claim generated code
         claimGeneratedCodeBtn?.addEventListener('click', async () => {
+            const codeInput = document.getElementById('codeInput');
+            const enteredCode = codeInput?.value.trim().toLowerCase().replace('-', '');
+            const displayedCode = currentCode?.replace('-', '');
+            
+            if (!enteredCode) {
+                showStatus('error', 'Please enter the lab code displayed above');
+                return;
+            }
+            
+            if (enteredCode !== displayedCode) {
+                showStatus('error', 'Incorrect code. Please enter the code shown above.');
+                codeInput.style.borderColor = '#ff5f57';
+                setTimeout(() => {
+                    codeInput.style.borderColor = 'var(--border-color)';
+                }, 2000);
+                return;
+            }
+            
             if (!currentCode) return;
             await claimLab(currentCode);
         });
@@ -860,6 +885,10 @@
     </script>
 
     <script src="script.js"></script>
+    
+    <!-- Supabase Client & Auth -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="auth.js?v=2"></script>
 </body>
 </html>
 

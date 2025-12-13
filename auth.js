@@ -5,8 +5,8 @@ const SUPABASE_URL = 'https://fshfvihunprbqlukbdpi.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZzaGZ2aWh1bnByYnFsdWtiZHBpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU2MTQyOTYsImV4cCI6MjA4MTE5MDI5Nn0.jyyP3VJ2nqXmRqnC5O_CbqK_GZXMdBotdhT7Nufa5j0';
 
 // Detect production environment
-const isProduction = window.location.hostname === 'nullnode.vercel.app';
-const siteUrl = isProduction ? 'https://nullnode.vercel.app' : window.location.origin;
+const isProduction = window.location.hostname === 'nullnode.vercel.app' || window.location.hostname === 'nullnode.web.app';
+const siteUrl = isProduction ? window.location.origin : window.location.origin;
 
 console.log('[Auth] Environment:', isProduction ? 'PRODUCTION' : 'DEVELOPMENT');
 console.log('[Auth] Site URL:', siteUrl);
