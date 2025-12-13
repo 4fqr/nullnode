@@ -602,9 +602,1320 @@
                 </div>
             </div>
 
-            <!-- Next Steps -->
+            <!-- LEVEL 7 → 8: GREP WITHIN A FILE -->
+            <div style="background: linear-gradient(135deg, rgba(244,67,54,0.05) 0%, rgba(244,67,54,0.02) 100%); border-radius: 20px; padding: 3rem; margin: 3rem 0;">
+                <h3 style="font-size: 2.5rem; color: #f44336; margin-bottom: 2rem;">📝 Level 7 → 8: Finding Text in Large Files with grep</h3>
+                
+                <div style="background: rgba(255,152,0,0.15); padding: 1.5rem; border-radius: 10px; border-left: 4px solid #ff9800; margin-bottom: 2rem;">
+                    <strong style="color: #ff9800; font-size: 1.2rem;">🎯 GOAL:</strong>
+                    <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem;">
+                        Password is stored in <strong>data.txt</strong> next to word <strong>"millionth"</strong><br>
+                        <code>ssh bandit7@bandit.labs.overthewire.org -p 2220</code><br>
+                        Password: (from previous level)
+                    </p>
+                </div>
+
+                <h4 style="color: #2196f3; font-size: 1.6rem; margin: 2rem 0 1rem;">📚 Concepts You Need to Know</h4>
+                <div style="background: rgba(33,150,243,0.1); padding: 2rem; border-radius: 10px; margin-bottom: 2rem;">
+                    <p style="font-size: 1.1rem; margin-bottom: 1rem;"><strong style="color: #2196f3;">What is grep?</strong></p>
+                    <p style="font-size: 1.05rem; line-height: 1.8;">
+                        <code>grep</code> = "Global Regular Expression Print". Think of it like <strong>Ctrl+F in a text editor</strong>, but WAY more powerful. It searches INSIDE files for specific text patterns.
+                    </p>
+                    <p style="font-size: 1.05rem; line-height: 1.8; margin-top: 1rem;">
+                        <strong>Real-world analogy:</strong> Imagine you have a 1000-page book and need to find the word "millionth". You could read every page (would take forever), OR you could use grep which instantly finds it for you!
+                    </p>
+                </div>
+
+                <h4 style="color: #4caf50; font-size: 1.6rem; margin: 2rem 0 1rem;">✅ Step-by-Step Solution</h4>
+                <ol style="font-size: 1.1rem; line-height: 2; padding-left: 1.5rem;">
+                    <li><strong>SSH into bandit7</strong></li>
+                    <li><strong>Check what's in the directory:</strong><br>
+                    <code>ls -la</code><br>
+                    You'll see <code>data.txt</code> - a large file with many lines</li>
+                    <li><strong>Try reading it normally (bad idea):</strong><br>
+                    <code>cat data.txt</code><br>
+                    Whoa! Thousands of lines scroll past. This is NOT the way!</li>
+                    <li><strong>Use grep to find "millionth":</strong><br>
+                    <code>grep "millionth" data.txt</code><br>
+                    <strong>Expected output:</strong><br>
+                    <code>millionth       [PASSWORD HERE]</code></li>
+                </ol>
+
+                <div style="background: rgba(76,175,80,0.1); padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
+                    <strong style="color: #4caf50;">✅ What You Learned:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li><code>grep</code> searches INSIDE files for text</li>
+                        <li>It's MUCH faster than reading manually</li>
+                        <li>Syntax: <code>grep "search term" filename</code></li>
+                        <li>grep shows the entire line containing the match</li>
+                    </ul>
+                </div>
+
+                <div style="background: rgba(255,193,7,0.1); padding: 1.5rem; border-radius: 10px; border-left: 3px solid #ffc107;">
+                    <strong style="color: #ffc107;">💡 grep Power Tips:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li><code>grep -i "word" file</code> - Case-insensitive (finds Word, WORD, word)</li>
+                        <li><code>grep -n "word" file</code> - Show line numbers</li>
+                        <li><code>grep -v "word" file</code> - Show lines that DON'T match</li>
+                        <li><code>grep -r "word" /path/</code> - Search recursively in all files</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- LEVEL 8 → 9: SORTING AND UNIQUE LINES -->
+            <div style="background: linear-gradient(135deg, rgba(156,39,176,0.05) 0%, rgba(156,39,176,0.02) 100%); border-radius: 20px; padding: 3rem; margin: 3rem 0;">
+                <h3 style="font-size: 2.5rem; color: #9c27b0; margin-bottom: 2rem;">🔢 Level 8 → 9: Finding Unique Lines with sort and uniq</h3>
+                
+                <div style="background: rgba(255,152,0,0.15); padding: 1.5rem; border-radius: 10px; border-left: 4px solid #ff9800; margin-bottom: 2rem;">
+                    <strong style="color: #ff9800; font-size: 1.2rem;">🎯 GOAL:</strong>
+                    <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem;">
+                        Password is the <strong>only line of text that occurs only once</strong> in <strong>data.txt</strong><br>
+                        <code>ssh bandit8@bandit.labs.overthewire.org -p 2220</code><br>
+                        Password: (from previous level)
+                    </p>
+                </div>
+
+                <h4 style="color: #2196f3; font-size: 1.6rem; margin: 2rem 0 1rem;">📚 Concepts You Need to Know</h4>
+                <div style="background: rgba(33,150,243,0.1); padding: 2rem; border-radius: 10px; margin-bottom: 2rem;">
+                    <p style="font-size: 1.1rem; margin-bottom: 1rem;"><strong style="color: #2196f3;">What are sort and uniq?</strong></p>
+                    <p style="font-size: 1.05rem; line-height: 1.8;">
+                        <strong>sort:</strong> Arranges lines alphabetically (A-Z). Like sorting a deck of cards.<br>
+                        <strong>uniq:</strong> Removes duplicate CONSECUTIVE lines. But it ONLY works on sorted data!
+                    </p>
+                    <p style="font-size: 1.05rem; line-height: 1.8; margin-top: 1rem;">
+                        <strong>Why sort first?</strong> Because <code>uniq</code> only removes duplicates that are <strong>next to each other</strong>. If you have: [apple, banana, apple], uniq won't remove the second apple because they're not consecutive. But if you sort first: [apple, apple, banana], NOW uniq works!
+                    </p>
+                    <p style="font-size: 1.05rem; line-height: 1.8; margin-top: 1rem;">
+                        <strong>The pipe (|):</strong> This is the MAGIC of Linux! The <code>|</code> symbol takes the OUTPUT of one command and feeds it as INPUT to another command. It's like a production line in a factory!
+                    </p>
+                </div>
+
+                <h4 style="color: #4caf50; font-size: 1.6rem; margin: 2rem 0 1rem;">✅ Step-by-Step Solution</h4>
+                <ol style="font-size: 1.1rem; line-height: 2; padding-left: 1.5rem;">
+                    <li><strong>Look at the file:</strong><br>
+                    <code>cat data.txt</code><br>
+                    You'll see many lines, most appearing multiple times</li>
+                    <li><strong>Sort the file first:</strong><br>
+                    <code>sort data.txt</code><br>
+                    Now identical lines are grouped together</li>
+                    <li><strong>Use uniq to find unique lines:</strong><br>
+                    <code>sort data.txt | uniq -u</code><br>
+                    <strong>Breaking this down:</strong><br>
+                    • <code>sort data.txt</code> - Sort all lines<br>
+                    • <code>|</code> - Pipe (send output to next command)<br>
+                    • <code>uniq -u</code> - Show only unique lines (the -u flag means "unique only")</li>
+                    <li><strong>The password appears!</strong> That's the line that only occurs once.</li>
+                </ol>
+
+                <div style="background: rgba(76,175,80,0.1); padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
+                    <strong style="color: #4caf50;">✅ What You Learned:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li><code>sort</code> arranges lines alphabetically</li>
+                        <li><code>uniq</code> removes duplicate consecutive lines</li>
+                        <li><code>uniq -u</code> shows ONLY lines that appear once</li>
+                        <li><code>|</code> (pipe) chains commands together</li>
+                        <li>Always sort BEFORE using uniq!</li>
+                    </ul>
+                </div>
+
+                <div style="background: rgba(255,193,7,0.1); padding: 1.5rem; border-radius: 10px; border-left: 3px solid #ffc107;">
+                    <strong style="color: #ffc107;">💡 More uniq Tricks:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li><code>uniq -c</code> - Count how many times each line appears</li>
+                        <li><code>uniq -d</code> - Show only duplicate lines</li>
+                        <li><code>sort | uniq</code> - Remove all duplicates (keep one copy)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- LEVEL 9 → 10: STRINGS COMMAND FOR BINARY FILES -->
+            <div style="background: linear-gradient(135deg, rgba(0,188,212,0.05) 0%, rgba(0,188,212,0.02) 100%); border-radius: 20px; padding: 3rem; margin: 3rem 0;">
+                <h3 style="font-size: 2.5rem; color: #00bcd4; margin-bottom: 2rem;">🔤 Level 9 → 10: Extracting Text from Binary Files</h3>
+                
+                <div style="background: rgba(255,152,0,0.15); padding: 1.5rem; border-radius: 10px; border-left: 4px solid #ff9800; margin-bottom: 2rem;">
+                    <strong style="color: #ff9800; font-size: 1.2rem;">🎯 GOAL:</strong>
+                    <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem;">
+                        Password is in <strong>data.txt</strong>, in one of the few <strong>human-readable strings</strong>, preceded by <strong>several '=' characters</strong><br>
+                        <code>ssh bandit9@bandit.labs.overthewire.org -p 2220</code><br>
+                        Password: (from previous level)
+                    </p>
+                </div>
+
+                <h4 style="color: #2196f3; font-size: 1.6rem; margin: 2rem 0 1rem;">📚 Concepts You Need to Know</h4>
+                <div style="background: rgba(33,150,243,0.1); padding: 2rem; border-radius: 10px; margin-bottom: 2rem;">
+                    <p style="font-size: 1.1rem; margin-bottom: 1rem;"><strong style="color: #2196f3;">What is a binary file?</strong></p>
+                    <p style="font-size: 1.05rem; line-height: 1.8;">
+                        Most files are either <strong>text files</strong> (you can read them with cat) or <strong>binary files</strong> (compiled programs, images, etc. that look like gibberish if you cat them).
+                    </p>
+                    <p style="font-size: 1.05rem; line-height: 1.8; margin-top: 1rem;">
+                        <strong>What is strings?</strong> The <code>strings</code> command extracts ONLY the human-readable text from binary files. It ignores all the binary garbage and shows you readable words!
+                    </p>
+                    <p style="font-size: 1.05rem; line-height: 1.8; margin-top: 1rem;">
+                        <strong>Real-world analogy:</strong> Imagine a book where 99% of pages are in alien language, but 1% have English sentences. <code>strings</code> automatically finds and shows you ONLY the English sentences!
+                    </p>
+                </div>
+
+                <h4 style="color: #4caf50; font-size: 1.6rem; margin: 2rem 0 1rem;">✅ Step-by-Step Solution</h4>
+                <ol style="font-size: 1.1rem; line-height: 2; padding-left: 1.5rem;">
+                    <li><strong>Check the file type:</strong><br>
+                    <code>file data.txt</code><br>
+                    Output: <code>data.txt: data</code> (binary file, not text!)</li>
+                    <li><strong>Try to read it normally (fails):</strong><br>
+                    <code>cat data.txt</code><br>
+                    Your terminal shows garbage characters! ��� This is binary data.</li>
+                    <li><strong>Extract readable strings:</strong><br>
+                    <code>strings data.txt</code><br>
+                    Now you see ONLY human-readable text!</li>
+                    <li><strong>Search for lines with '==' characters:</strong><br>
+                    <code>strings data.txt | grep "=="</code><br>
+                    <strong>Expected output:</strong><br>
+                    <code>========== password</code><br>
+                    <code>========== [THE PASSWORD]</code></li>
+                </ol>
+
+                <div style="background: rgba(76,175,80,0.1); padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
+                    <strong style="color: #4caf50;">✅ What You Learned:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li><code>strings</code> extracts readable text from binary files</li>
+                        <li>Binary files contain non-text data (compiled code, images, etc.)</li>
+                        <li>You can pipe strings output to grep for filtering</li>
+                        <li>Combining commands with <code>|</code> is incredibly powerful</li>
+                    </ul>
+                </div>
+
+                <div style="background: rgba(255,193,7,0.1); padding: 1.5rem; border-radius: 10px; border-left: 3px solid #ffc107;">
+                    <strong style="color: #ffc107;">💡 strings Options:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li><code>strings -n 10 file</code> - Show only strings of 10+ characters</li>
+                        <li><code>strings -a file</code> - Scan entire file (default only scans certain sections)</li>
+                        <li><code>strings -o file</code> - Show byte offset of each string</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- LEVEL 10 → 11: BASE64 ENCODING -->
+            <div style="background: linear-gradient(135deg, rgba(255,87,34,0.05) 0%, rgba(255,87,34,0.02) 100%); border-radius: 20px; padding: 3rem; margin: 3rem 0;">
+                <h3 style="font-size: 2.5rem; color: #ff5722; margin-bottom: 2rem;">🔐 Level 10 → 11: Base64 Decoding</h3>
+                
+                <div style="background: rgba(255,152,0,0.15); padding: 1.5rem; border-radius: 10px; border-left: 4px solid #ff9800; margin-bottom: 2rem;">
+                    <strong style="color: #ff9800; font-size: 1.2rem;">🎯 GOAL:</strong>
+                    <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem;">
+                        Password is in <strong>data.txt</strong>, which contains <strong>base64 encoded data</strong><br>
+                        <code>ssh bandit10@bandit.labs.overthewire.org -p 2220</code><br>
+                        Password: (from previous level)
+                    </p>
+                </div>
+
+                <h4 style="color: #2196f3; font-size: 1.6rem; margin: 2rem 0 1rem;">📚 Concepts You Need to Know</h4>
+                <div style="background: rgba(33,150,243,0.1); padding: 2rem; border-radius: 10px; margin-bottom: 2rem;">
+                    <p style="font-size: 1.1rem; margin-bottom: 1rem;"><strong style="color: #2196f3;">What is Base64?</strong></p>
+                    <p style="font-size: 1.05rem; line-height: 1.8;">
+                        Base64 is an <strong>encoding</strong> (NOT encryption!) that converts binary data into ASCII text. It uses only letters (A-Z, a-z), numbers (0-9), and two symbols (+, /).
+                    </p>
+                    <p style="font-size: 1.05rem; line-height: 1.8; margin-top: 1rem;">
+                        <strong>Why use it?</strong> Email and old systems can only handle text, not binary data. Base64 lets you send ANY file (images, programs) as text!
+                    </p>
+                    <p style="font-size: 1.05rem; line-height: 1.8; margin-top: 1rem;">
+                        <strong>Example:</strong><br>
+                        Original: <code>Hello</code><br>
+                        Base64: <code>SGVsbG8=</code><br>
+                        Notice the <code>=</code> at the end? That's padding! Base64 often ends with = or ==
+                    </p>
+                    <p style="font-size: 1.05rem; line-height: 1.8; margin-top: 1rem;">
+                        <strong>⚠️ Important:</strong> Base64 is NOT secure! It's encoding, not encryption. Anyone can decode it instantly. It's just a way to represent data, not hide it!
+                    </p>
+                </div>
+
+                <h4 style="color: #4caf50; font-size: 1.6rem; margin: 2rem 0 1rem;">✅ Step-by-Step Solution</h4>
+                <ol style="font-size: 1.1rem; line-height: 2; padding-left: 1.5rem;">
+                    <li><strong>Read the file:</strong><br>
+                    <code>cat data.txt</code><br>
+                    You'll see something like: <code>VGhlIHBhc3N3b3JkIGlzIDZ6UGV6aUxkUjJSS05kTllGTmI2blZDS3pwaGxYSEJNCg==</code></li>
+                    <li><strong>Notice the characteristics:</strong>
+                    <ul style="margin-left: 2rem;">
+                        <li>Only letters, numbers, +, /, and =</li>
+                        <li>Ends with == (padding)</li>
+                        <li>This is definitely Base64!</li>
+                    </ul>
+                    </li>
+                    <li><strong>Decode it:</strong><br>
+                    <code>base64 -d data.txt</code><br>
+                    <strong>Breaking it down:</strong><br>
+                    • <code>base64</code> - The base64 command<br>
+                    • <code>-d</code> - Decode flag (opposite of encode)<br>
+                    • <code>data.txt</code> - The file to decode</li>
+                    <li><strong>Output:</strong><br>
+                    <code>The password is [PASSWORD HERE]</code></li>
+                </ol>
+
+                <div style="background: rgba(76,175,80,0.1); padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
+                    <strong style="color: #4caf50;">✅ What You Learned:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li>Base64 is an encoding method (not encryption!)</li>
+                        <li><code>base64 -d file</code> decodes base64</li>
+                        <li><code>base64 file</code> encodes to base64</li>
+                        <li>Base64 uses A-Z, a-z, 0-9, +, / and = for padding</li>
+                        <li>Encoding ≠ Encryption (base64 provides NO security)</li>
+                    </ul>
+                </div>
+
+                <div style="background: rgba(255,193,7,0.1); padding: 1.5rem; border-radius: 10px; border-left: 3px solid #ffc107;">
+                    <strong style="color: #ffc107;">💡 Base64 in the Real World:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li><strong>Email attachments:</strong> Files are base64 encoded in email source</li>
+                        <li><strong>Data URLs:</strong> Images in HTML/CSS (<code>data:image/png;base64,...</code>)</li>
+                        <li><strong>JWTs:</strong> JSON Web Tokens use base64 for headers/payloads</li>
+                        <li><strong>Malware:</strong> Attackers sometimes base64-encode payloads to avoid detection</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- LEVEL 11 → 12: ROT13 CIPHER -->
+            <div style="background: linear-gradient(135deg, rgba(103,58,183,0.05) 0%, rgba(103,58,183,0.02) 100%); border-radius: 20px; padding: 3rem; margin: 3rem 0;">
+                <h3 style="font-size: 2.5rem; color: #673ab7; margin-bottom: 2rem;">🔄 Level 11 → 12: ROT13 Cipher (Letter Rotation)</h3>
+                
+                <div style="background: rgba(255,152,0,0.15); padding: 1.5rem; border-radius: 10px; border-left: 4px solid #ff9800; margin-bottom: 2rem;">
+                    <strong style="color: #ff9800; font-size: 1.2rem;">🎯 GOAL:</strong>
+                    <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem;">
+                        Password in <strong>data.txt</strong> where <strong>all lowercase (a-z) and uppercase (A-Z) letters have been rotated by 13 positions</strong><br>
+                        <code>ssh bandit11@bandit.labs.overthewire.org -p 2220</code><br>
+                        Password: (from previous level)
+                    </p>
+                </div>
+
+                <h4 style="color: #2196f3; font-size: 1.6rem; margin: 2rem 0 1rem;">📚 Concepts You Need to Know</h4>
+                <div style="background: rgba(33,150,243,0.1); padding: 2rem; border-radius: 10px; margin-bottom: 2rem;">
+                    <p style="font-size: 1.1rem; margin-bottom: 1rem;"><strong style="color: #2196f3;">What is ROT13?</strong></p>
+                    <p style="font-size: 1.05rem; line-height: 1.8;">
+                        ROT13 = "Rotate by 13 places". It's a simple <strong>substitution cipher</strong> where each letter is replaced by the letter 13 positions after it in the alphabet.
+                    </p>
+                    <p style="font-size: 1.05rem; line-height: 1.8; margin-top: 1rem;">
+                        <strong>The alphabet has 26 letters.</strong> So rotating by 13 means:<br>
+                        A → N, B → O, C → P, ... M → Z, N → A, O → B, ... Z → M
+                    </p>
+                    <p style="font-size: 1.05rem; line-height: 1.8; margin-top: 1rem;">
+                        <strong>Cool trick:</strong> ROT13 is its own inverse! If you ROT13 something twice, you get the original back:<br>
+                        <code>Hello</code> → <code>Uryyb</code> → <code>Hello</code>
+                    </p>
+                    <p style="font-size: 1.05rem; line-height: 1.8; margin-top: 1rem;">
+                        <strong>The tr command:</strong> "translate" - it replaces characters. Syntax: <code>tr 'old chars' 'new chars'</code>
+                    </p>
+                </div>
+
+                <h4 style="color: #4caf50; font-size: 1.6rem; margin: 2rem 0 1rem;">✅ Step-by-Step Solution</h4>
+                <ol style="font-size: 1.1rem; line-height: 2; padding-left: 1.5rem;">
+                    <li><strong>Read the encoded file:</strong><br>
+                    <code>cat data.txt</code><br>
+                    You'll see: <code>Gur cnffjbeq vf 7k16WgUl0m...</code> (gibberish!)</li>
+                    <li><strong>Use tr to decode ROT13:</strong><br>
+                    <code>cat data.txt | tr 'A-Za-z' 'N-ZA-Mn-za-m'</code><br>
+                    <strong>Let's break this down character by character:</strong>
+                    <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                        <li><code>cat data.txt</code> - Read the file</li>
+                        <li><code>|</code> - Pipe the output</li>
+                        <li><code>tr</code> - Translate command</li>
+                        <li><code>'A-Za-z'</code> - OLD characters (all letters)</li>
+                        <li><code>'N-ZA-Mn-za-m'</code> - NEW characters (rotated by 13)</li>
+                    </ul>
+                    </li>
+                    <li><strong>Understanding the rotation string:</strong><br>
+                    <code>'N-ZA-M'</code> means: N,O,P,Q,R,S,T,U,V,W,X,Y,Z,A,B,C,D,E,F,G,H,I,J,K,L,M<br>
+                    This is the alphabet shifted by 13 positions!</li>
+                    <li><strong>Output:</strong><br>
+                    <code>The password is [PASSWORD]</code></li>
+                </ol>
+
+                <div style="background: rgba(76,175,80,0.1); padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
+                    <strong style="color: #4caf50;">✅ What You Learned:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li>ROT13 is a Caesar cipher (shift cipher)</li>
+                        <li><code>tr</code> translates/replaces characters</li>
+                        <li>Syntax: <code>tr 'from' 'to'</code></li>
+                        <li>A-Z notation represents a range of characters</li>
+                        <li>ROT13 is symmetric (encode = decode)</li>
+                    </ul>
+                </div>
+
+                <div style="background: rgba(255,193,7,0.1); padding: 1.5rem; border-radius: 10px; border-left: 3px solid #ffc107;">
+                    <strong style="color: #ffc107;">💡 More tr Examples:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li><code>tr 'a-z' 'A-Z'</code> - Convert lowercase to uppercase</li>
+                        <li><code>tr -d 'a'</code> - Delete all 'a' characters</li>
+                        <li><code>tr -s ' '</code> - Squeeze repeated spaces into one</li>
+                        <li><code>tr ' ' '_'</code> - Replace spaces with underscores</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- LEVEL 12 → 13: DECOMPRESSION HELL -->
+            <div style="background: linear-gradient(135deg, rgba(233,30,99,0.05) 0%, rgba(233,30,99,0.02) 100%); border-radius: 20px; padding: 3rem; margin: 3rem 0;">
+                <h3 style="font-size: 2.5rem; color: #e91e63; margin-bottom: 2rem;">📦 Level 12 → 13: Multiple Compression Formats (The Nested Doll)</h3>
+                
+                <div style="background: rgba(255,152,0,0.15); padding: 1.5rem; border-radius: 10px; border-left: 4px solid #ff9800; margin-bottom: 2rem;">
+                    <strong style="color: #ff9800; font-size: 1.2rem;">🎯 GOAL:</strong>
+                    <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem;">
+                        Password is in <strong>data.txt</strong>, which is a <strong>hexdump of a file that has been compressed multiple times</strong><br>
+                        <code>ssh bandit12@bandit.labs.overthewire.org -p 2220</code><br>
+                        Password: (from previous level)
+                    </p>
+                </div>
+
+                <h4 style="color: #ff5722; font-size: 1.6rem; margin: 2rem 0 1rem;">⚠️ WARNING: This Level is TOUGH!</h4>
+                <div style="background: rgba(244,67,54,0.15); padding: 1.5rem; border-radius: 10px; margin-bottom: 2rem; border-left: 4px solid #f44336;">
+                    <p style="font-size: 1.1rem; line-height: 1.8;">
+                        This is the first HARD level! The file is compressed with gzip, then bzip2, then tar, then gzip again, etc. - like Russian nesting dolls! You'll decompress, check file type, decompress again, repeat... about 8-10 times!
+                    </p>
+                </div>
+
+                <h4 style="color: #2196f3; font-size: 1.6rem; margin: 2rem 0 1rem;">📚 Concepts You Need to Know</h4>
+                <div style="background: rgba(33,150,243,0.1); padding: 2rem; border-radius: 10px; margin-bottom: 2rem;">
+                    <p style="font-size: 1.1rem; margin-bottom: 1rem;"><strong style="color: #2196f3;">Compression Formats:</strong></p>
+                    <ul style="font-size: 1.05rem; line-height: 1.8; margin-left: 1rem;">
+                        <li><strong>gzip (.gz):</strong> Common Linux compression. Decompress with <code>gzip -d file.gz</code> or <code>gunzip file.gz</code></li>
+                        <li><strong>bzip2 (.bz2):</strong> Better compression than gzip. Decompress with <code>bzip2 -d file.bz2</code> or <code>bunzip2 file.bz2</code></li>
+                        <li><strong>tar (.tar):</strong> Archive format (not compression!). Think of it as a "folder" that bundles files. Extract with <code>tar -xf file.tar</code></li>
+                        <li><strong>Hexdump:</strong> Binary data represented as hexadecimal text. Reverse with <code>xxd -r</code></li>
+                    </ul>
+                    <p style="font-size: 1.05rem; line-height: 1.8; margin-top: 1rem;">
+                        <strong>Key command:</strong> <code>file filename</code> - tells you what TYPE of file you're dealing with!
+                    </p>
+                </div>
+
+                <h4 style="color: #4caf50; font-size: 1.6rem; margin: 2rem 0 1rem;">✅ Step-by-Step Solution</h4>
+                <ol style="font-size: 1.1rem; line-height: 2; padding-left: 1.5rem;">
+                    <li><strong>Create a working directory:</strong><br>
+                    <code>mkdir /tmp/mywork && cd /tmp/mywork</code><br>
+                    <em>Why /tmp? You have write permission there! Your home directory is read-only.</em></li>
+                    
+                    <li><strong>Copy the file:</strong><br>
+                    <code>cp ~/data.txt .</code><br>
+                    The <code>.</code> means "current directory"</li>
+                    
+                    <li><strong>Convert from hexdump to binary:</strong><br>
+                    <code>xxd -r data.txt > data.bin</code><br>
+                    <strong>Breaking this down:</strong><br>
+                    • <code>xxd -r</code> - Reverse hexdump (convert hex to binary)<br>
+                    • <code>data.txt</code> - Input (hex dump)<br>
+                    • <code>> data.bin</code> - Output redirect to new file</li>
+                    
+                    <li><strong>Check what you have:</strong><br>
+                    <code>file data.bin</code><br>
+                    Output: <code>data.bin: gzip compressed data</code><br>
+                    Aha! It's gzip!</li>
+                    
+                    <li><strong>Decompress gzip (rename first):</strong><br>
+                    <code>mv data.bin data.gz</code><br>
+                    <code>gzip -d data.gz</code><br>
+                    This creates <code>data</code> (without .gz)</li>
+                    
+                    <li><strong>Check again:</strong><br>
+                    <code>file data</code><br>
+                    Output: <code>data: bzip2 compressed data</code><br>
+                    Now it's bzip2!</li>
+                    
+                    <li><strong>Decompress bzip2:</strong><br>
+                    <code>mv data data.bz2</code><br>
+                    <code>bzip2 -d data.bz2</code></li>
+                    
+                    <li><strong>Keep checking and decompressing:</strong><br>
+                    You'll encounter (in various orders):
+                    <ul style="margin-left: 2rem;">
+                        <li><code>file data</code> → gzip → <code>mv data data.gz && gzip -d data.gz</code></li>
+                        <li><code>file data</code> → bzip2 → <code>mv data data.bz2 && bzip2 -d data.bz2</code></li>
+                        <li><code>file data</code> → tar archive → <code>tar -xf data</code></li>
+                    </ul>
+                    </li>
+                    
+                    <li><strong>Repeat steps 8 about 8-10 times until:</strong><br>
+                    <code>file data</code><br>
+                    Output: <code>data: ASCII text</code><br>
+                    Finally! It's text!</li>
+                    
+                    <li><strong>Read it:</strong><br>
+                    <code>cat data</code><br>
+                    <code>The password is [PASSWORD]</code></li>
+                </ol>
+
+                <div style="background: rgba(76,175,80,0.1); padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
+                    <strong style="color: #4caf50;">✅ What You Learned:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li><code>xxd -r</code> converts hexdump to binary</li>
+                        <li><code>gzip -d</code> decompresses gzip files</li>
+                        <li><code>bzip2 -d</code> decompresses bzip2 files</li>
+                        <li><code>tar -xf</code> extracts tar archives</li>
+                        <li>ALWAYS use <code>file</code> command to check file type!</li>
+                        <li>Files can be compressed multiple times (nested)</li>
+                    </ul>
+                </div>
+
+                <div style="background: rgba(255,193,7,0.1); padding: 1.5rem; border-radius: 10px; border-left: 3px solid #ffc107;">
+                    <strong style="color: #ffc107;">💡 Quick Reference:</strong>
+                    <div style="font-family: monospace; margin-top: 0.5rem; font-size: 0.95rem;">
+                        <p><code>file data</code> → Check type</p>
+                        <p><code>xxd -r hex.txt data</code> → Hex to binary</p>
+                        <p><code>gzip -d file.gz</code> → Decompress gzip</p>
+                        <p><code>bzip2 -d file.bz2</code> → Decompress bzip2</p>
+                        <p><code>tar -xf file.tar</code> → Extract tar</p>
+                        <p><code>mv old new</code> → Rename file</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LEVEL 13 → 14: SSH PRIVATE KEYS -->
+            <div style="background: linear-gradient(135deg, rgba(76,175,80,0.05) 0%, rgba(76,175,80,0.02) 100%); border-radius: 20px; padding: 3rem; margin: 3rem 0;">
+                <h3 style="font-size: 2.5rem; color: #4caf50; margin-bottom: 2rem;">🔑 Level 13 → 14: SSH Private Keys (Password-less Login)</h3>
+                
+                <div style="background: rgba(255,152,0,0.15); padding: 1.5rem; border-radius: 10px; border-left: 4px solid #ff9800; margin-bottom: 2rem;">
+                    <strong style="color: #ff9800; font-size: 1.2rem;">🎯 GOAL:</strong>
+                    <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem;">
+                        Password for next level is stored in <strong>/etc/bandit_pass/bandit14</strong> (you can't read it yet!)<br>
+                        You have an <strong>SSH private key</strong> in your home directory to log in as bandit14<br>
+                        <code>ssh bandit13@bandit.labs.overthewire.org -p 2220</code>
+                    </p>
+                </div>
+
+                <h4 style="color: #2196f3; font-size: 1.6rem; margin: 2rem 0 1rem;">📚 Concepts You Need to Know</h4>
+                <div style="background: rgba(33,150,243,0.1); padding: 2rem; border-radius: 10px; margin-bottom: 2rem;">
+                    <p style="font-size: 1.1rem; margin-bottom: 1rem;"><strong style="color: #2196f3;">What is SSH Key Authentication?</strong></p>
+                    <p style="font-size: 1.05rem; line-height: 1.8;">
+                        Usually you SSH with a password. But there's a MORE SECURE way: <strong>SSH keys</strong>!
+                    </p>
+                    <p style="font-size: 1.05rem; line-height: 1.8; margin-top: 1rem;">
+                        <strong>How it works:</strong><br>
+                        • You have TWO keys: <strong>private key</strong> (secret, keep it safe!) and <strong>public key</strong> (can share with anyone)<br>
+                        • The public key is placed on the server you want to access<br>
+                        • When you connect, you present your private key<br>
+                        • The server checks: "Does this private key match the public key I have?" If yes → you're in!
+                    </p>
+                    <p style="font-size: 1.05rem; line-height: 1.8; margin-top: 1rem;">
+                        <strong>Real-world analogy:</strong> The public key is a lock, the private key is the key that opens it. You can give out many copies of the lock (public key), but only YOUR key (private key) can open them!
+                    </p>
+                    <p style="font-size: 1.05rem; line-height: 1.8; margin-top: 1rem;">
+                        <strong>The -i flag:</strong> Tells SSH "use THIS specific private key file"
+                    </p>
+                </div>
+
+                <h4 style="color: #4caf50; font-size: 1.6rem; margin: 2rem 0 1rem;">✅ Step-by-Step Solution</h4>
+                <ol style="font-size: 1.1rem; line-height: 2; padding-left: 1.5rem;">
+                    <li><strong>List files in home directory:</strong><br>
+                    <code>ls -la</code><br>
+                    You'll see: <code>sshkey.private</code></li>
+                    
+                    <li><strong>Check the key:</strong><br>
+                    <code>cat sshkey.private</code><br>
+                    Starts with <code>-----BEGIN RSA PRIVATE KEY-----</code><br>
+                    This is the private key!</li>
+                    
+                    <li><strong>Use it to SSH as bandit14:</strong><br>
+                    <code>ssh -i sshkey.private bandit14@localhost -p 2220</code><br>
+                    <strong>Breaking this down:</strong><br>
+                    • <code>ssh</code> - SSH command<br>
+                    • <code>-i sshkey.private</code> - Use this private key<br>
+                    • <code>bandit14@localhost</code> - Login as bandit14 on same machine<br>
+                    • <code>-p 2220</code> - Port 2220</li>
+                    
+                    <li><strong>You're now bandit14!</strong> No password needed!<br>
+                    Read the password file:<br>
+                    <code>cat /etc/bandit_pass/bandit14</code></li>
+                </ol>
+
+                <div style="background: rgba(76,175,80,0.1); padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
+                    <strong style="color: #4caf50;">✅ What You Learned:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li>SSH key authentication (more secure than passwords!)</li>
+                        <li>Private key = secret, Public key = shareable</li>
+                        <li><code>ssh -i keyfile</code> uses specific key</li>
+                        <li><code>localhost</code> means "this same machine"</li>
+                        <li>Keys stored in <code>~/.ssh/</code> by default</li>
+                    </ul>
+                </div>
+
+                <div style="background: rgba(255,193,7,0.1); padding: 1.5rem; border-radius: 10px; border-left: 3px solid #ffc107;">
+                    <strong style="color: #ffc107;">💡 SSH Key Best Practices:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li><strong>Generate keys:</strong> <code>ssh-keygen -t ed25519</code></li>
+                        <li><strong>Never share private keys!</strong> If leaked, regenerate immediately</li>
+                        <li><strong>Use passphrases:</strong> Add extra password to your private key</li>
+                        <li><strong>Permissions matter:</strong> Private key must be <code>chmod 600</code> (owner read/write only)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- LEVEL 14 → 15: NETCAT AND PORT CONNECTIONS -->
+            <div style="background: linear-gradient(135deg, rgba(63,81,181,0.05) 0%, rgba(63,81,181,0.02) 100%); border-radius: 20px; padding: 3rem; margin: 3rem 0;">
+                <h3 style="font-size: 2.5rem; color: #3f51b5; margin-bottom: 2rem;">🌐 Level 14 → 15: Network Ports with Netcat</h3>
+                
+                <div style="background: rgba(255,152,0,0.15); padding: 1.5rem; border-radius: 10px; border-left: 4px solid #ff9800; margin-bottom: 2rem;">
+                    <strong style="color: #ff9800; font-size: 1.2rem;">🎯 GOAL:</strong>
+                    <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem;">
+                        Submit current level password to <strong>port 30000 on localhost</strong> to get next password<br>
+                        <code>ssh bandit14@bandit.labs.overthewire.org -p 2220</code>
+                    </p>
+                </div>
+
+                <h4 style="color: #2196f3; font-size: 1.6rem; margin: 2rem 0 1rem;">📚 Concepts You Need to Know</h4>
+                <div style="background: rgba(33,150,243,0.1); padding: 2rem; border-radius: 10px; margin-bottom: 2rem;">
+                    <p style="font-size: 1.1rem; margin-bottom: 1rem;"><strong style="color: #2196f3;">What is a Network Port?</strong></p>
+                    <p style="font-size: 1.05rem; line-height: 1.8;">
+                        Think of your computer as an apartment building. The <strong>IP address</strong> is the building address. The <strong>ports</strong> are individual apartment numbers (1-65535)!
+                    </p>
+                    <p style="font-size: 1.05rem; line-height: 1.8; margin-top: 1rem;">
+                        <strong>Common ports you should know:</strong><br>
+                        • Port 22: SSH<br>
+                        • Port 80: HTTP (websites)<br>
+                        • Port 443: HTTPS (secure websites)<br>
+                        • Port 3306: MySQL database<br>
+                        • Port 30000: (custom, used in this challenge)
+                    </p>
+                    <p style="font-size: 1.05rem; line-height: 1.8; margin-top: 1rem;">
+                        <strong>What is Netcat (nc)?</strong><br>
+                        Netcat is the "Swiss Army knife" of networking! It can:
+                        <ul style="margin-left: 2rem;">
+                            <li>Connect to any port (like making a phone call)</li>
+                            <li>Send data over the network</li>
+                            <li>Listen on a port (wait for connections)</li>
+                            <li>Transfer files</li>
+                            <li>Create backdoors (in hacking!)</li>
+                        </ul>
+                    </p>
+                </div>
+
+                <h4 style="color: #4caf50; font-size: 1.6rem; margin: 2rem 0 1rem;">✅ Step-by-Step Solution</h4>
+                <ol style="font-size: 1.1rem; line-height: 2; padding-left: 1.5rem;">
+                    <li><strong>Get the current password:</strong><br>
+                    <code>cat /etc/bandit_pass/bandit14</code><br>
+                    Copy this password!</li>
+                    
+                    <li><strong>Connect to port 30000:</strong><br>
+                    <code>nc localhost 30000</code><br>
+                    <strong>What this means:</strong><br>
+                    • <code>nc</code> - Netcat command<br>
+                    • <code>localhost</code> - This same machine (127.0.0.1)<br>
+                    • <code>30000</code> - Port number</li>
+                    
+                    <li><strong>Your terminal is now connected!</strong><br>
+                    Type (or paste) the bandit14 password and press Enter</li>
+                    
+                    <li><strong>The server responds:</strong><br>
+                    <code>Correct!</code><br>
+                    <code>[BANDIT15 PASSWORD]</code></li>
+                </ol>
+
+                <div style="background: rgba(76,175,80,0.1); padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
+                    <strong style="color: #4caf50;">✅ What You Learned:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li>Network ports are like apartment numbers (1-65535)</li>
+                        <li><code>nc host port</code> connects to a port</li>
+                        <li>You can send data through network connections</li>
+                        <li><code>localhost</code> = 127.0.0.1 = this machine</li>
+                        <li>Services listen on specific ports</li>
+                    </ul>
+                </div>
+
+                <div style="background: rgba(255,193,7,0.1); padding: 1.5rem; border-radius: 10px; border-left: 3px solid #ffc107;">
+                    <strong style="color: #ffc107;">💡 Netcat Hacking Uses:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li><strong>Port scanning:</strong> Check which ports are open</li>
+                        <li><strong>Reverse shells:</strong> Get remote access to a machine</li>
+                        <li><strong>File transfer:</strong> Send files between machines</li>
+                        <li><strong>Banner grabbing:</strong> Identify services running on ports</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- LEVEL 15 → 16: SSL/TLS WITH OPENSSL -->
+            <div style="background: linear-gradient(135deg, rgba(0,150,136,0.05) 0%, rgba(0,150,136,0.02) 100%); border-radius: 20px; padding: 3rem; margin: 3rem 0;">
+                <h3 style="font-size: 2.5rem; color: #009688; margin-bottom: 2rem;">🔒 Level 15 → 16: SSL/TLS Encryption with OpenSSL</h3>
+                
+                <div style="background: rgba(255,152,0,0.15); padding: 1.5rem; border-radius: 10px; border-left: 4px solid #ff9800; margin-bottom: 2rem;">
+                    <strong style="color: #ff9800; font-size: 1.2rem;">🎯 GOAL:</strong>
+                    <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem;">
+                        Submit current password to <strong>port 30001 on localhost</strong> using <strong>SSL encryption</strong><br>
+                        <code>ssh bandit15@bandit.labs.overthewire.org -p 2220</code>
+                    </p>
+                </div>
+
+                <h4 style="color: #2196f3; font-size: 1.6rem; margin: 2rem 0 1rem;">📚 Concepts You Need to Know</h4>
+                <div style="background: rgba(33,150,243,0.1); padding: 2rem; border-radius: 10px; margin-bottom: 2rem;">
+                    <p style="font-size: 1.1rem; margin-bottom: 1rem;"><strong style="color: #2196f3;">What is SSL/TLS?</strong></p>
+                    <p style="font-size: 1.05rem; line-height: 1.8;">
+                        <strong>SSL</strong> (Secure Sockets Layer) and <strong>TLS</strong> (Transport Layer Security) encrypt your network traffic so nobody can spy on it!
+                    </p>
+                    <p style="font-size: 1.05rem; line-height: 1.8; margin-top: 1rem;">
+                        <strong>Real-world analogy:</strong> Regular netcat is like sending a postcard (anyone can read it). SSL is like putting it in a locked box with a code only you and the recipient know!
+                    </p>
+                    <p style="font-size: 1.05rem; line-height: 1.8; margin-top: 1rem;">
+                        <strong>When you see HTTPS:</strong> That's HTTP + SSL/TLS. The padlock 🔒 in your browser means encryption is active!
+                    </p>
+                    <p style="font-size: 1.05rem; line-height: 1.8; margin-top: 1rem;">
+                        <strong>OpenSSL:</strong> The Swiss Army knife for SSL/TLS. It can:
+                        <ul style="margin-left: 2rem;">
+                            <li>Create encrypted connections</li>
+                            <li>Generate certificates</li>
+                            <li>Test SSL configurations</li>
+                            <li>Encrypt/decrypt data</li>
+                        </ul>
+                    </p>
+                </div>
+
+                <h4 style="color: #4caf50; font-size: 1.6rem; margin: 2rem 0 1rem;">✅ Step-by-Step Solution</h4>
+                <ol style="font-size: 1.1rem; line-height: 2; padding-left: 1.5rem;">
+                    <li><strong>Get the current password:</strong><br>
+                    <code>cat /etc/bandit_pass/bandit15</code></li>
+                    
+                    <li><strong>Connect with SSL encryption:</strong><br>
+                    <code>openssl s_client -connect localhost:30001 -ign_eof</code><br>
+                    <strong>Breaking this down:</strong><br>
+                    • <code>openssl</code> - OpenSSL tool<br>
+                    • <code>s_client</code> - SSL client mode (connect to server)<br>
+                    • <code>-connect localhost:30001</code> - Where to connect<br>
+                    • <code>-ign_eof</code> - Ignore end-of-file (keeps connection open)</li>
+                    
+                    <li><strong>You'll see lots of certificate info scroll by:</strong><br>
+                    <code>---<br>
+                    Certificate chain<br>
+                    SSL handshake has read 1234 bytes<br>
+                    ...</code><br>
+                    Wait until you see: <code>---</code> and a blank line ready for input</li>
+                    
+                    <li><strong>Paste the password and press Enter</strong></li>
+                    
+                    <li><strong>Response:</strong><br>
+                    <code>Correct!</code><br>
+                    <code>[BANDIT16 PASSWORD]</code></li>
+                </ol>
+
+                <div style="background: rgba(76,175,80,0.1); padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
+                    <strong style="color: #4caf50;">✅ What You Learned:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li>SSL/TLS encrypts network traffic</li>
+                        <li><code>openssl s_client</code> creates encrypted connections</li>
+                        <li>HTTPS = HTTP + SSL/TLS</li>
+                        <li>Certificates verify server identity</li>
+                        <li>Port 443 is standard for HTTPS</li>
+                    </ul>
+                </div>
+
+                <div style="background: rgba(255,193,7,0.1); padding: 1.5rem; border-radius: 10px; border-left: 3px solid #ffc107;">
+                    <strong style="color: #ffc107;">💡 OpenSSL Power Commands:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li><code>openssl s_client -connect site.com:443</code> - Test HTTPS connection</li>
+                        <li><code>openssl enc -aes-256-cbc -in file -out file.enc</code> - Encrypt file</li>
+                        <li><code>openssl x509 -in cert.pem -text</code> - View certificate details</li>
+                        <li><code>openssl genrsa -out key.pem 2048</code> - Generate RSA key</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- LEVEL 16 → 17: PORT SCANNING WITH NMAP -->
+            <div style="background: linear-gradient(135deg, rgba(121,85,72,0.05) 0%, rgba(121,85,72,0.02) 100%); border-radius: 20px; padding: 3rem; margin: 3rem 0;">
+                <h3 style="font-size: 2.5rem; color: #795548; margin-bottom: 2rem;">🔍 Level 16 → 17: Port Scanning (Finding Open Ports)</h3>
+                
+                <div style="background: rgba(255,152,0,0.15); padding: 1.5rem; border-radius: 10px; border-left: 4px solid #ff9800; margin-bottom: 2rem;">
+                    <strong style="color: #ff9800; font-size: 1.2rem;">🎯 GOAL:</strong>
+                    <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem;">
+                        Find the SSL port in range <strong>31000-32000</strong> on localhost, submit password to it<br>
+                        One port speaks SSL and will give you the next password<br>
+                        <code>ssh bandit16@bandit.labs.overthewire.org -p 2220</code>
+                    </p>
+                </div>
+
+                <h4 style="color: #2196f3; font-size: 1.6rem; margin: 2rem 0 1rem;">📚 Concepts You Need to Know</h4>
+                <div style="background: rgba(33,150,243,0.1); padding: 2rem; border-radius: 10px; margin-bottom: 2rem;">
+                    <p style="font-size: 1.1rem; margin-bottom: 1rem;"><strong style="color: #2196f3;">What is Port Scanning?</strong></p>
+                    <p style="font-size: 1.05rem; line-height: 1.8;">
+                        Port scanning = checking which ports are OPEN (accepting connections) on a computer. It's like trying every door in a building to see which ones are unlocked!
+                    </p>
+                    <p style="font-size: 1.05rem; line-height: 1.8; margin-top: 1rem;">
+                        <strong>Nmap:</strong> The KING of port scanners! Used by hackers, pentesters, and sysadmins worldwide. It can:
+                        <ul style="margin-left: 2rem;">
+                            <li>Find open ports</li>
+                            <li>Detect what services are running (SSH? Web server?)</li>
+                            <li>Identify operating system</li>
+                            <li>Check for vulnerabilities</li>
+                        </ul>
+                    </p>
+                </div>
+
+                <h4 style="color: #4caf50; font-size: 1.6rem; margin: 2rem 0 1rem;">✅ Step-by-Step Solution</h4>
+                <ol style="font-size: 1.1rem; line-height: 2; padding-left: 1.5rem;">
+                    <li><strong>Scan the port range:</strong><br>
+                    <code>nmap -p 31000-32000 localhost</code><br>
+                    <strong>Breaking this down:</strong><br>
+                    • <code>nmap</code> - Network mapper (port scanner)<br>
+                    • <code>-p 31000-32000</code> - Port range to scan<br>
+                    • <code>localhost</code> - Target (this machine)</li>
+                    
+                    <li><strong>You'll see output like:</strong><br>
+                    <code>PORT      STATE SERVICE<br>
+                    31046/tcp open  unknown<br>
+                    31518/tcp open  unknown<br>
+                    31691/tcp open  unknown<br>
+                    31790/tcp open  unknown<br>
+                    31960/tcp open  unknown</code><br>
+                    5 ports are open! But which one has SSL?</li>
+                    
+                    <li><strong>Test each port with SSL:</strong><br>
+                    Try each open port:<br>
+                    <code>openssl s_client -connect localhost:31046 -ign_eof</code><br>
+                    Some will fail or echo back your input (wrong!)<br>
+                    Keep trying: 31518, 31691, 31790, 31960...</li>
+                    
+                    <li><strong>When you find the right one:</strong><br>
+                    Paste the current password<br>
+                    You'll get back an SSH PRIVATE KEY, not a password!</li>
+                    
+                    <li><strong>Save the private key:</strong><br>
+                    <code>mkdir /tmp/mykey && cd /tmp/mykey</code><br>
+                    <code>nano sshkey.private</code><br>
+                    Paste the entire key (from BEGIN to END)<br>
+                    Save with Ctrl+O, Enter, Ctrl+X</li>
+                    
+                    <li><strong>Set permissions:</strong><br>
+                    <code>chmod 600 sshkey.private</code><br>
+                    SSH keys MUST have strict permissions!</li>
+                    
+                    <li><strong>Use it to log in as bandit17:</strong><br>
+                    <code>ssh -i sshkey.private bandit17@localhost -p 2220</code></li>
+                </ol>
+
+                <div style="background: rgba(76,175,80,0.1); padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
+                    <strong style="color: #4caf50;">✅ What You Learned:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li><code>nmap -p range host</code> scans port ranges</li>
+                        <li>Port scanning finds open ports</li>
+                        <li>Not all open ports do the same thing</li>
+                        <li><code>chmod 600</code> sets file permissions to owner-only</li>
+                        <li>SSH keys can be used instead of passwords</li>
+                    </ul>
+                </div>
+
+                <div style="background: rgba(255,193,7,0.1); padding: 1.5rem; border-radius: 10px; border-left: 3px solid #ffc107;">
+                    <strong style="color: #ffc107;">💡 Nmap Scan Types:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li><code>nmap -sS host</code> - SYN scan (stealth scan, default)</li>
+                        <li><code>nmap -sV host</code> - Service version detection</li>
+                        <li><code>nmap -O host</code> - Operating system detection</li>
+                        <li><code>nmap -A host</code> - Aggressive scan (OS, version, scripts)</li>
+                        <li><code>nmap -Pn host</code> - Skip ping (useful if ICMP blocked)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- LEVEL 17 → 18: COMPARING FILES WITH DIFF -->
+            <div style="background: linear-gradient(135deg, rgba(255,152,0,0.05) 0%, rgba(255,152,0,0.02) 100%); border-radius: 20px; padding: 3rem; margin: 3rem 0;">
+                <h3 style="font-size: 2.5rem; color: #ff9800; margin-bottom: 2rem;">📊 Level 17 → 18: Finding Differences Between Files</h3>
+                
+                <div style="background: rgba(255,152,0,0.15); padding: 1.5rem; border-radius: 10px; border-left: 4px solid #ff9800; margin-bottom: 2rem;">
+                    <strong style="color: #ff9800; font-size: 1.2rem;">🎯 GOAL:</strong>
+                    <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem;">
+                        Password is the <strong>only line that changed</strong> between <strong>passwords.old</strong> and <strong>passwords.new</strong><br>
+                        <code>ssh bandit17@bandit.labs.overthewire.org -p 2220</code>
+                    </p>
+                </div>
+
+                <h4 style="color: #2196f3; font-size: 1.6rem; margin: 2rem 0 1rem;">📚 Concepts You Need to Know</h4>
+                <div style="background: rgba(33,150,243,0.1); padding: 2rem; border-radius: 10px; margin-bottom: 2rem;">
+                    <p style="font-size: 1.1rem; margin-bottom: 1rem;"><strong style="color: #2196f3;">What is diff?</strong></p>
+                    <p style="font-size: 1.05rem; line-height: 1.8;">
+                        <code>diff</code> compares two files line-by-line and shows the differences. It's like "track changes" in Microsoft Word!
+                    </p>
+                    <p style="font-size: 1.05rem; line-height: 1.8; margin-top: 1rem;">
+                        <strong>Output format:</strong><br>
+                        • Lines starting with <code>&lt;</code> = in first file only<br>
+                        • Lines starting with <code>&gt;</code> = in second file only<br>
+                        • Lines with <code>---</code> = separator<br>
+                        • Numbers like <code>42c42</code> = line 42 changed
+                    </p>
+                    <p style="font-size: 1.05rem; line-height: 1.8; margin-top: 1rem;">
+                        <strong>Real-world uses:</strong>
+                        <ul style="margin-left: 2rem;">
+                            <li>Comparing code versions (Git uses diff internally!)</li>
+                            <li>Finding configuration changes</li>
+                            <li>Detecting file tampering</li>
+                            <li>Code reviews</li>
+                        </ul>
+                    </p>
+                </div>
+
+                <h4 style="color: #4caf50; font-size: 1.6rem; margin: 2rem 0 1rem;">✅ Step-by-Step Solution</h4>
+                <ol style="font-size: 1.1rem; line-height: 2; padding-left: 1.5rem;">
+                    <li><strong>List the files:</strong><br>
+                    <code>ls -la</code><br>
+                    You see: <code>passwords.old</code> and <code>passwords.new</code></li>
+                    
+                    <li><strong>Check file sizes:</strong><br>
+                    <code>wc -l passwords.*</code><br>
+                    Both have 100 lines! Manually comparing would take forever.</li>
+                    
+                    <li><strong>Use diff to compare:</strong><br>
+                    <code>diff passwords.old passwords.new</code><br>
+                    <strong>Output:</strong><br>
+                    <code>42c42<br>
+                    &lt; [OLD PASSWORD]<br>
+                    ---<br>
+                    &gt; [NEW PASSWORD]</code></li>
+                    
+                    <li><strong>Understanding the output:</strong><br>
+                    • <code>42c42</code> - Line 42 changed<br>
+                    • <code>&lt; [OLD PASSWORD]</code> - What was in passwords.old<br>
+                    • <code>&gt; [NEW PASSWORD]</code> - What's now in passwords.new<br>
+                    The NEW password (after >) is the answer!</li>
+                </ol>
+
+                <div style="background: rgba(76,175,80,0.1); padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
+                    <strong style="color: #4caf50;">✅ What You Learned:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li><code>diff file1 file2</code> shows differences</li>
+                        <li><code>&lt;</code> means "in first file"</li>
+                        <li><code>&gt;</code> means "in second file"</li>
+                        <li>diff is perfect for comparing versions</li>
+                        <li><code>wc -l</code> counts lines in files</li>
+                    </ul>
+                </div>
+
+                <div style="background: rgba(255,193,7,0.1); padding: 1.5rem; border-radius: 10px; border-left: 3px solid #ffc107;">
+                    <strong style="color: #ffc107;">💡 diff Options:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li><code>diff -u file1 file2</code> - Unified format (easier to read)</li>
+                        <li><code>diff -y file1 file2</code> - Side-by-side comparison</li>
+                        <li><code>diff -r dir1 dir2</code> - Recursively compare directories</li>
+                        <li><code>diff -q file1 file2</code> - Only say IF files differ, not how</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- LEVEL 18 → 19: BYPASSING BASHRC (COMMAND INJECTION) -->
+            <div style="background: linear-gradient(135deg, rgba(244,67,54,0.05) 0%, rgba(244,67,54,0.02) 100%); border-radius: 20px; padding: 3rem; margin: 3rem 0;">
+                <h3 style="font-size: 2.5rem; color: #f44336; margin-bottom: 2rem;">⚡ Level 18 → 19: Bypassing Auto-Logout (SSH Command Injection)</h3>
+                
+                <div style="background: rgba(255,152,0,0.15); padding: 1.5rem; border-radius: 10px; border-left: 4px solid #ff9800; margin-bottom: 2rem;">
+                    <strong style="color: #ff9800; font-size: 1.2rem;">🎯 GOAL:</strong>
+                    <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem;">
+                        Password in <strong>readme</strong> file in home directory<br>
+                        BUT: .<code>bashrc</code> file logs you out immediately!<br>
+                        <code>ssh bandit18@bandit.labs.overthewire.org -p 2220</code>
+                    </p>
+                </div>
+
+                <h4 style="color: #2196f3; font-size: 1.6rem; margin: 2rem 0 1rem;">📚 Concepts You Need to Know</h4>
+                <div style="background: rgba(33,150,243,0.1); padding: 2rem; border-radius: 10px; margin-bottom: 2rem;">
+                    <p style="font-size: 1.1rem; margin-bottom: 1rem;"><strong style="color: #2196f3;">What is .bashrc?</strong></p>
+                    <p style="font-size: 1.05rem; line-height: 1.8;">
+                        <code>.bashrc</code> is a script that runs EVERY time you start a bash shell. It sets up your environment (aliases, colors, prompt, etc.)
+                    </p>
+                    <p style="font-size: 1.05rem; line-height: 1.8; margin-top: 1rem;">
+                        <strong>The problem:</strong> Someone modified .bashrc to run <code>exit</code>, so you get logged out instantly!
+                    </p>
+                    <p style="font-size: 1.05rem; line-height: 1.8; margin-top: 1rem;">
+                        <strong>The trick:</strong> You can run commands through SSH WITHOUT starting an interactive shell! Syntax: <code>ssh user@host "command"</code>
+                    </p>
+                </div>
+
+                <h4 style="color: #4caf50; font-size: 1.6rem; margin: 2rem 0 1rem;">✅ Step-by-Step Solution</h4>
+                <ol style="font-size: 1.1rem; line-height: 2; padding-left: 1.5rem;">
+                    <li><strong>Try normal login (fails):</strong><br>
+                    <code>ssh bandit18@bandit.labs.overthewire.org -p 2220</code><br>
+                    Immediately disconnected!</li>
+                    
+                    <li><strong>Run command directly through SSH:</strong><br>
+                    <code>ssh bandit18@bandit.labs.overthewire.org -p 2220 "cat readme"</code><br>
+                    <strong>Breaking this down:</strong><br>
+                    • SSH connects<br>
+                    • Runs the command <code>cat readme</code><br>
+                    • Shows output<br>
+                    • Disconnects<br>
+                    .bashrc never gets a chance to run!</li>
+                    
+                    <li><strong>The password appears!</strong></li>
+                </ol>
+
+                <div style="background: rgba(76,175,80,0.1); padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
+                    <strong style="color: #4caf50;">✅ What You Learned:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li><code>.bashrc</code> runs on every bash shell startup</li>
+                        <li><code>ssh user@host "command"</code> runs non-interactive command</li>
+                        <li>You can bypass shell initialization this way</li>
+                        <li>This technique works for restricted shells too!</li>
+                    </ul>
+                </div>
+
+                <div style="background: rgba(255,193,7,0.1); padding: 1.5rem; border-radius: 10px; border-left: 3px solid #ffc107;">
+                    <strong style="color: #ffc107;">💡 Alternative Solutions:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li><code>ssh ... "bash --norc"</code> - Start bash without .bashrc</li>
+                        <li><code>ssh ... "bash --noprofile"</code> - Skip profile scripts</li>
+                        <li><code>ssh ... "/bin/sh"</code> - Use different shell (sh doesn't use .bashrc)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- LEVEL 19 → 20: SETUID BINARIES -->
+            <div style="background: linear-gradient(135deg, rgba(156,39,176,0.05) 0%, rgba(156,39,176,0.02) 100%); border-radius: 20px; padding: 3rem; margin: 3rem 0;">
+                <h3 style="font-size: 2.5rem; color: #9c27b0; margin-bottom: 2rem;">👑 Level 19 → 20: SETUID Privilege Escalation</h3>
+                
+                <div style="background: rgba(255,152,0,0.15); padding: 1.5rem; border-radius: 10px; border-left: 4px solid #ff9800; margin-bottom: 2rem;">
+                    <strong style="color: #ff9800; font-size: 1.2rem;">🎯 GOAL:</strong>
+                    <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem;">
+                        Use the <strong>setuid binary</strong> to access bandit20's password<br>
+                        <code>ssh bandit19@bandit.labs.overthewire.org -p 2220</code>
+                    </p>
+                </div>
+
+                <h4 style="color: #2196f3; font-size: 1.6rem; margin: 2rem 0 1rem;">📚 Concepts You Need to Know</h4>
+                <div style="background: rgba(33,150,243,0.1); padding: 2rem; border-radius: 10px; margin-bottom: 2rem;">
+                    <p style="font-size: 1.1rem; margin-bottom: 1rem;"><strong style="color: #2196f3;">What is SETUID?</strong></p>
+                    <p style="font-size: 1.05rem; line-height: 1.8;">
+                        <strong>SETUID</strong> (Set User ID) is a special permission bit. When you run a SETUID program, it executes with the permissions of the FILE OWNER, not YOU!
+                    </p>
+                    <p style="font-size: 1.05rem; line-height: 1.8; margin-top: 1rem;">
+                        <strong>Real-world example:</strong> The <code>passwd</code> command (changes your password) is SETUID root. Why? Because it needs to edit <code>/etc/shadow</code> (a root-only file), but YOU need to be able to change YOUR password!
+                    </p>
+                    <p style="font-size: 1.05rem; line-height: 1.8; margin-top: 1rem;">
+                        <strong>How to spot SETUID:</strong> Run <code>ls -l file</code>. If you see an 's' in the execute position: <code>-rwsr-xr-x</code> (the 's' means SETUID!)
+                    </p>
+                    <p style="font-size: 1.05rem; line-height: 1.8; margin-top: 1rem;">
+                        <strong>Security risk:</strong> SETUID binaries are GOLD for hackers! If you can exploit one, you get higher privileges (privilege escalation!)
+                    </p>
+                </div>
+
+                <h4 style="color: #4caf50; font-size: 1.6rem; margin: 2rem 0 1rem;">✅ Step-by-Step Solution</h4>
+                <ol style="font-size: 1.1rem; line-height: 2; padding-left: 1.5rem;">
+                    <li><strong>List files:</strong><br>
+                    <code>ls -la</code><br>
+                    You see: <code>-rwsr-x--- 1 bandit20 bandit19 bandit20-do</code><br>
+                    Notice the 's'! This is SETUID and owned by bandit20!</li>
+                    
+                    <li><strong>Test the binary:</strong><br>
+                    <code>./bandit20-do</code><br>
+                    Output: <code>Run a command as another user.</code></li>
+                    
+                    <li><strong>Check who you are normally:</strong><br>
+                    <code>whoami</code><br>
+                    Output: <code>bandit19</code></li>
+                    
+                    <li><strong>Use the SETUID binary to run commands as bandit20:</strong><br>
+                    <code>./bandit20-do cat /etc/bandit_pass/bandit20</code><br>
+                    <strong>What happens:</strong><br>
+                    • The binary runs as bandit20 (owner)<br>
+                    • It executes: <code>cat /etc/bandit_pass/bandit20</code><br>
+                    • Since it's running AS bandit20, it can read bandit20's password!</li>
+                    
+                    <li><strong>Password appears!</strong></li>
+                </ol>
+
+                <div style="background: rgba(76,175,80,0.1); padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
+                    <strong style="color: #4caf50;">✅ What You Learned:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li>SETUID programs run with owner's permissions</li>
+                        <li><code>ls -l</code> shows 's' for SETUID files</li>
+                        <li>This is a common privilege escalation vector</li>
+                        <li><code>whoami</code> shows current user</li>
+                        <li>SETUID is powerful but dangerous!</li>
+                    </ul>
+                </div>
+
+                <div style="background: rgba(255,193,7,0.1); padding: 1.5rem; border-radius: 10px; border-left: 3px solid #ffc107;">
+                    <strong style="color: #ffc107;">💡 Finding SETUID Files (Hacking):</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li><code>find / -perm -4000 2>/dev/null</code> - Find all SETUID files</li>
+                        <li><code>find / -user root -perm -4000 2>/dev/null</code> - SETUID root files (highest value!)</li>
+                        <li>Check <a href="https://gtfobins.github.io/" target="_blank">GTFOBins</a> for exploitable SETUID binaries</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- LEVEL 20 → 21: NETWORK SERVICES AND BACKGROUND JOBS -->
+            <div style="background: linear-gradient(135deg, rgba(0,188,212,0.05) 0%, rgba(0,188,212,0.02) 100%); border-radius: 20px; padding: 3rem; margin: 3rem 0;">
+                <h3 style="font-size: 2.5rem; color: #00bcd4; margin-bottom: 2rem;">🔌 Level 20 → 21: Network Listener & Background Processes</h3>
+                
+                <div style="background: rgba(255,152,0,0.15); padding: 1.5rem; border-radius: 10px; border-left: 4px solid #ff9800; margin-bottom: 2rem;">
+                    <strong style="color: #ff9800; font-size: 1.2rem;">🎯 GOAL:</strong>
+                    <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem;">
+                        SETUID binary <strong>suconnect</strong> connects to localhost on port you specify<br>
+                        If it receives current password, it transmits next password<br>
+                        <code>ssh bandit20@bandit.labs.overthewire.org -p 2220</code>
+                    </p>
+                </div>
+
+                <h4 style="color: #2196f3; font-size: 1.6rem; margin: 2rem 0 1rem;">📚 Concepts You Need to Know</h4>
+                <div style="background: rgba(33,150,243,0.1); padding: 2rem; border-radius: 10px; margin-bottom: 2rem;">
+                    <p style="font-size: 1.1rem; margin-bottom: 1rem;"><strong style="color: #2196f3;">The Challenge:</strong></p>
+                    <p style="font-size: 1.05rem; line-height: 1.8;">
+                        You need TWO things running AT THE SAME TIME:
+                        <ul style="margin-left: 2rem;">
+                            <li><strong>Server:</strong> A listener that sends the current password when connected to</li>
+                            <li><strong>Client:</strong> The suconnect binary that connects to your listener</li>
+                        </ul>
+                    </p>
+                    <p style="font-size: 1.05rem; line-height: 1.8; margin-top: 1rem;">
+                        <strong>Background processes:</strong> Adding <code>&</code> at the end of a command runs it in the background, so you can run more commands!
+                    </p>
+                </div>
+
+                <h4 style="color: #4caf50; font-size: 1.6rem; margin: 2rem 0 1rem;">✅ Step-by-Step Solution</h4>
+                <ol style="font-size: 1.1rem; line-height: 2; padding-left: 1.5rem;">
+                    <li><strong>Get current password:</strong><br>
+                    <code>cat /etc/bandit_pass/bandit20</code><br>
+                    Copy it!</li>
+                    
+                    <li><strong>Start a listener on any port (e.g., 6000):</strong><br>
+                    <code>echo "[PASTE BANDIT20 PASSWORD]" | nc -l -p 6000 &</code><br>
+                    <strong>Breaking this down:</strong><br>
+                    • <code>echo "password"</code> - Output the password<br>
+                    • <code>|</code> - Pipe it to netcat<br>
+                    • <code>nc -l -p 6000</code> - Listen on port 6000<br>
+                    • <code>&</code> - Run in background!</li>
+                    
+                    <li><strong>Verify it's listening:</strong><br>
+                    <code>jobs</code><br>
+                    Or: <code>netstat -ln | grep 6000</code></li>
+                    
+                    <li><strong>Now connect with suconnect:</strong><br>
+                    <code>./suconnect 6000</code><br>
+                    <strong>What happens:</strong><br>
+                    • suconnect connects to port 6000<br>
+                    • Your listener sends the bandit20 password<br>
+                    • suconnect verifies it's correct<br>
+                    • suconnect sends back bandit21 password!</li>
+                    
+                    <li><strong>Output:</strong><br>
+                    <code>Read: [BANDIT20 PASSWORD]<br>
+                    Password matches, sending next password<br>
+                    [BANDIT21 PASSWORD]</code></li>
+                </ol>
+
+                <div style="background: rgba(76,175,80,0.1); padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
+                    <strong style="color: #4caf50;">✅ What You Learned:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li><code>&</code> runs commands in background</li>
+                        <li><code>nc -l -p PORT</code> creates a listener</li>
+                        <li><code>jobs</code> shows background processes</li>
+                        <li>You can pipe data to network connections</li>
+                        <li>Client-server communication basics</li>
+                    </ul>
+                </div>
+
+                <div style="background: rgba(255,193,7,0.1); padding: 1.5rem; border-radius: 10px; border-left: 3px solid #ffc107;">
+                    <strong style="color: #ffc107;">💡 Process Control:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li><code>command &</code> - Run in background</li>
+                        <li><code>jobs</code> - List background jobs</li>
+                        <li><code>fg %1</code> - Bring job 1 to foreground</li>
+                        <li><code>bg %1</code> - Continue job 1 in background</li>
+                        <li><code>Ctrl+Z</code> - Suspend current process</li>
+                        <li><code>kill %1</code> - Kill job 1</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- LEVELS 21-25 SUMMARY (Cron, Git, Shell) -->
+            <div style="background: linear-gradient(135deg, rgba(103,58,183,0.05) 0%, rgba(103,58,183,0.02) 100%); border-radius: 20px; padding: 3rem; margin: 3rem 0;">
+                <h3 style="font-size: 2.5rem; color: #673ab7; margin-bottom: 2rem;">⏰ Levels 21-25: Cron Jobs, Git & Shell Scripting</h3>
+                
+                <div style="background: rgba(255,193,7,0.15); padding: 2rem; border-radius: 12px; margin: 2rem 0;">
+                    <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+                        <strong style="color: #673ab7; font-size: 1.3rem;">🎯 Level 21 → 22: Cron Jobs</strong><br>
+                        Cron = task scheduler (runs commands at specific times). Check <code>/etc/cron.d/</code> for scheduled tasks. Read cron scripts to understand what they do!
+                    </p>
+                    <p style="font-size: 1.05rem; font-family: monospace; background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 8px;">
+                        <code>cat /etc/cron.d/cronjob_bandit22</code><br>
+                        Look for script paths, read those scripts!
+                    </p>
+                </div>
+
+                <div style="background: rgba(233,30,99,0.15); padding: 2rem; border-radius: 12px; margin: 2rem 0;">
+                    <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+                        <strong style="color: #e91e63; font-size: 1.3rem;">🎯 Level 22 → 23: Shell Scripting & MD5 Hashing</strong><br>
+                        Script uses <code>md5sum</code> to create filename. Understand bash variables (<code>$USER</code>, <code>$(command)</code>) and command substitution!
+                    </p>
+                    <p style="font-size: 1.05rem; font-family: monospace; background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 8px;">
+                        <code>echo I am user $myname | md5sum</code><br>
+                        Generate hash, find file in /tmp with that name!
+                    </p>
+                </div>
+
+                <div style="background: rgba(255,87,34,0.15); padding: 2rem; border-radius: 12px; margin: 2rem 0;">
+                    <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+                        <strong style="color: #ff5722; font-size: 1.3rem;">🎯 Level 23 → 24: Writing Your Own Script</strong><br>
+                        Cron job executes scripts in a directory. You can WRITE your own script that gets executed by bandit24!
+                    </p>
+                    <p style="font-size: 1.05rem; font-family: monospace; background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 8px;">
+                        <code>#!/bin/bash<br>
+                        cat /etc/bandit_pass/bandit24 > /tmp/mypass</code><br>
+                        Make executable with <code>chmod +x</code>, wait for cron!
+                    </p>
+                </div>
+
+                <div style="background: rgba(0,150,136,0.15); padding: 2rem; border-radius: 12px; margin: 2rem 0;">
+                    <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+                        <strong style="color: #009688; font-size: 1.3rem;">🎯 Level 24 → 25: Brute Force Attack</strong><br>
+                        Daemon on port 30002 needs password + 4-digit PIN (0000-9999). Write a script to try ALL combinations!
+                    </p>
+                    <p style="font-size: 1.05rem; font-family: monospace; background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 8px;">
+                        <code>for i in {0000..9999}; do<br>
+                        &nbsp;&nbsp;echo "PASSWORD $i"<br>
+                        done | nc localhost 30002</code><br>
+                        Brute force all 10,000 combinations!
+                    </p>
+                </div>
+
+                <div style="background: rgba(33,150,243,0.15); padding: 2rem; border-radius: 12px; margin: 2rem 0;">
+                    <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+                        <strong style="color: #2196f3; font-size: 1.3rem;">🎯 Level 25 → 26: Escaping More Shell</strong><br>
+                        SSH logs you out via shell. But there's a SETUID binary that uses <code>more</code> pager. If terminal is small, you can escape from <code>more</code>!
+                    </p>
+                    <p style="font-size: 1.05rem; font-family: monospace; background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 8px;">
+                        <code>ssh -t bandit26@localhost -i key</code><br>
+                        Make terminal TINY, press 'v' in more to enter vim, read password from vim!
+                    </p>
+                </div>
+
+                <div style="background: rgba(76,175,80,0.1); padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
+                    <strong style="color: #4caf50;">✅ Key Concepts Covered:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li><strong>Cron:</strong> <code>/etc/cron.d/</code>, crontab syntax</li>
+                        <li><strong>Shell scripting:</strong> Variables, command substitution, loops</li>
+                        <li><strong>MD5 hashing:</strong> <code>md5sum</code>, unique fingerprints</li>
+                        <li><strong>File permissions:</strong> <code>chmod +x</code> to make executable</li>
+                        <li><strong>Brute force:</strong> Trying all possible combinations</li>
+                        <li><strong>Pager escapes:</strong> Breaking out of <code>more</code>, <code>less</code></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- LEVELS 26-34 ADVANCED SUMMARY -->
+            <div style="background: linear-gradient(135deg, rgba(244,67,54,0.1) 0%, rgba(156,39,176,0.1) 100%); border-radius: 20px; padding: 3rem; margin: 3rem 0; border: 2px solid rgba(244,67,54,0.3);">
+                <h2 style="font-size: 2.8rem; color: #f44336; margin-bottom: 2rem; text-align: center;">🔥 Advanced Levels 26-34: Expert Territory</h2>
+                
+                <div style="background: rgba(0,0,0,0.4); padding: 2.5rem; border-radius: 15px; margin: 2rem 0;">
+                    <h3 style="color: #ff5722; font-size: 2rem; margin-bottom: 1.5rem;">⚠️ These Levels Are HARD!</h3>
+                    <p style="font-size: 1.15rem; line-height: 1.9;">
+                        Levels 26-34 require advanced techniques combining everything you've learned. Each level builds on previous skills:
+                    </p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; margin: 2rem 0;">
+                    <div style="background: rgba(156,39,176,0.15); padding: 2rem; border-radius: 12px; border-left: 4px solid #9c27b0;">
+                        <h4 style="color: #9c27b0; font-size: 1.4rem; margin-bottom: 1rem;">🎯 Levels 26-27: Vim Escape</h4>
+                        <p style="font-size: 1.05rem; line-height: 1.8;">
+                            <strong>Concepts:</strong> Terminal resizing, vim editor exploitation, shell escape from vim<br>
+                            <strong>Key commands:</strong> <code>:set shell=/bin/bash</code>, <code>:shell</code><br>
+                            <strong>Trick:</strong> Use vim's command mode to spawn shell and read files!
+                        </p>
+                    </div>
+
+                    <div style="background: rgba(233,30,99,0.15); padding: 2rem; border-radius: 12px; border-left: 4px solid #e91e63;">
+                        <h4 style="color: #e91e63; font-size: 1.4rem; margin-bottom: 1rem;">🎯 Levels 28-29: Git Repository</h4>
+                        <p style="font-size: 1.05rem; line-height: 1.8;">
+                            <strong>Concepts:</strong> Git history, commits, diffs, branches<br>
+                            <strong>Key commands:</strong> <code>git log</code>, <code>git show</code>, <code>git diff</code><br>
+                            <strong>Trick:</strong> Password was committed then removed - check git history!
+                        </p>
+                    </div>
+
+                    <div style="background: rgba(255,152,0,0.15); padding: 2rem; border-radius: 12px; border-left: 4px solid #ff9800;">
+                        <h4 style="color: #ff9800; font-size: 1.4rem; margin-bottom: 1rem;">🎯 Level 30: Git Tags</h4>
+                        <p style="font-size: 1.05rem; line-height: 1.8;">
+                            <strong>Concepts:</strong> Git tags (version markers)<br>
+                            <strong>Key commands:</strong> <code>git tag</code>, <code>git show TAG</code><br>
+                            <strong>Trick:</strong> Password hidden in a git tag annotation!
+                        </p>
+                    </div>
+
+                    <div style="background: rgba(76,175,80,0.15); padding: 2rem; border-radius: 12px; border-left: 4px solid #4caf50;">
+                        <h4 style="color: #4caf50; font-size: 1.4rem; margin-bottom: 1rem;">🎯 Level 31: Git Push</h4>
+                        <p style="font-size: 1.05rem; line-height: 1.8;">
+                            <strong>Concepts:</strong> Remote git repositories, pushing commits<br>
+                            <strong>Key commands:</strong> <code>git add</code>, <code>git commit</code>, <code>git push</code><br>
+                            <strong>Trick:</strong> Create a file, commit it, push to remote - password returned!
+                        </p>
+                    </div>
+
+                    <div style="background: rgba(33,150,243,0.15); padding: 2rem; border-radius: 12px; border-left: 4px solid #2196f3;">
+                        <h4 style="color: #2196f3; font-size: 1.4rem; margin-bottom: 1rem;">🎯 Level 32: Uppercase Shell</h4>
+                        <p style="font-size: 1.05rem; line-height: 1.8;">
+                            <strong>Concepts:</strong> Shell variable exploitation<br>
+                            <strong>Key trick:</strong> Shell converts commands to UPPERCASE (can't run normal commands!)<br>
+                            <strong>Solution:</strong> Use <code>$0</code> (refers to shell itself) to spawn new shell!
+                        </p>
+                    </div>
+
+                    <div style="background: rgba(103,58,183,0.15); padding: 2rem; border-radius: 12px; border-left: 4px solid #673ab7;">
+                        <h4 style="color: #673ab7; font-size: 1.4rem; margin-bottom: 1rem;">🎯 Levels 33-34: Final Boss</h4>
+                        <p style="font-size: 1.05rem; line-height: 1.8;">
+                            <strong>Concepts:</strong> Combination of ALL previous techniques<br>
+                            <strong>Requirements:</strong> Mastery of file permissions, shell tricks, network knowledge<br>
+                            <strong>Reward:</strong> You've beaten Bandit! 🎉
+                        </p>
+                    </div>
+                </div>
+
+                <div style="background: rgba(255,193,7,0.15); padding: 2.5rem; border-radius: 15px; margin: 3rem 0; text-align: center;">
+                    <h3 style="color: #ffc107; font-size: 2rem; margin-bottom: 1.5rem;">💎 Essential Skills for Advanced Levels</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; text-align: left; margin-top: 2rem;">
+                        <div style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 10px;">
+                            <strong style="color: #4caf50;">🔧 Git Mastery</strong>
+                            <p style="margin-top: 0.5rem; font-size: 0.95rem;">
+                                <code>git log --all</code><br>
+                                <code>git show HASH</code><br>
+                                <code>git branch -a</code><br>
+                                <code>git checkout BRANCH</code>
+                            </p>
+                        </div>
+                        <div style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 10px;">
+                            <strong style="color: #2196f3;">📝 Vim Escapes</strong>
+                            <p style="margin-top: 0.5rem; font-size: 0.95rem;">
+                                <code>:set shell=/bin/bash</code><br>
+                                <code>:shell</code><br>
+                                <code>:!/bin/bash</code><br>
+                                <code>:read /path/file</code>
+                            </p>
+                        </div>
+                        <div style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 10px;">
+                            <strong style="color: #9c27b0;">⚡ Shell Variables</strong>
+                            <p style="margin-top: 0.5rem; font-size: 0.95rem;">
+                                <code>$0</code> - Current shell<br>
+                                <code>$$</code> - Process ID<br>
+                                <code>$?</code> - Last exit code<br>
+                                <code>$_</code> - Last argument
+                            </p>
+                        </div>
+                        <div style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 10px;">
+                            <strong style="color: #ff5722;">🔐 Permissions</strong>
+                            <p style="margin-top: 0.5rem; font-size: 0.95rem;">
+                                <code>chmod +x file</code><br>
+                                <code>find / -perm -4000</code><br>
+                                <code>ls -la</code><br>
+                                <code>stat file</code>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: linear-gradient(135deg, rgba(76,175,80,0.2) 0%, rgba(33,150,243,0.2) 100%); padding: 3rem; border-radius: 15px; margin: 3rem 0; text-align: center;">
+                    <h3 style="font-size: 2.3rem; color: #4caf50; margin-bottom: 1.5rem;">🎓 Congratulations!</h3>
+                    <p style="font-size: 1.3rem; line-height: 1.9; max-width: 700px; margin: 0 auto;">
+                        You now have a <strong>COMPLETE roadmap</strong> of all 34 Bandit levels! You've learned:
+                    </p>
+                    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin: 2rem 0; font-size: 1.1rem;">
+                        <span style="background: rgba(76,175,80,0.3); padding: 0.5rem 1.5rem; border-radius: 20px;">Linux Commands</span>
+                        <span style="background: rgba(33,150,243,0.3); padding: 0.5rem 1.5rem; border-radius: 20px;">File Permissions</span>
+                        <span style="background: rgba(156,39,176,0.3); padding: 0.5rem 1.5rem; border-radius: 20px;">SSH & Networking</span>
+                        <span style="background: rgba(255,152,0,0.3); padding: 0.5rem 1.5rem; border-radius: 20px;">Encryption</span>
+                        <span style="background: rgba(244,67,54,0.3); padding: 0.5rem 1.5rem; border-radius: 20px;">Privilege Escalation</span>
+                        <span style="background: rgba(233,30,99,0.3); padding: 0.5rem 1.5rem; border-radius: 20px;">Shell Scripting</span>
+                        <span style="background: rgba(103,58,183,0.3); padding: 0.5rem 1.5rem; border-radius: 20px;">Git Mastery</span>
+                    </div>
+                    <p style="font-size: 1.2rem; margin-top: 2rem; color: #ffc107;">
+                        <strong>Ready to put your skills into practice?</strong>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Continue Your Journey section -->
             <div style="background: linear-gradient(135deg, rgba(33,150,243,0.1) 0%, rgba(33,150,243,0.05) 100%); border: 2px solid rgba(33,150,243,0.3); border-radius: 20px; padding: 3rem; margin: 3rem 0; text-align: center;">
-                <h3 style="font-size: 2rem; color: #2196f3; margin-bottom: 1.5rem;">🎯 Continue Your Journey</h3>
+                <h3 style="font-size: 2rem; color: #2196f3; margin-bottom: 1.5rem;">🎯 You've Mastered All 34 Bandit Levels!</h3>
                 <p style="font-size: 1.2rem; line-height: 1.8; max-width: 700px; margin: 0 auto 2rem;">
                     You've now mastered 7 Bandit levels! The remaining levels (7-34) cover: grep, sorting, encoding, compression, SSH keys, port connections, cron jobs, and more. Keep applying this same learning pattern - understand the concept, try the command, learn from outputs.
                 </p>
