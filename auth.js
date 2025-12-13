@@ -36,8 +36,8 @@ function initAuth() {
     const userName = document.getElementById('userName');
     const logoutButton = document.getElementById('logoutButton');
 
-    if (!authButton || !userProfile) {
-        console.error('[Auth] Auth elements not found in page');
+    if (!authButton || !userProfile || !userAvatar) {
+        console.error('[Auth] Required auth elements not found in page');
         return;
     }
 
