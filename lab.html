@@ -376,16 +376,17 @@
             <div class="status-message" id="statusMessage"></div>
         </div>
 
-        <!-- Lab Session Frame -->
+        <!-- Lab Session Terminal -->
         <div class="session-frame" id="sessionFrame">
             <div class="session-header">
                 <div class="session-status">
                     <div class="status-indicator"></div>
-                    <span style="color: var(--primary-color); font-weight: 600;">Lab Active</span>
+                    <span style="color: var(--primary-color); font-weight: 600;">Kali Lab Active</span>
                 </div>
                 <div class="session-timer" id="sessionTimer">15:00</div>
+                <button id="closeLabBtn" style="background: rgba(255, 95, 87, 0.1); border: 1px solid #ff5f57; padding: 0.4rem 1rem; border-radius: 6px; font-weight: 500; cursor: pointer; color: #ff5f57;">Close Lab</button>
             </div>
-            <iframe class="session-iframe" id="sessionIframe" sandbox="allow-same-origin allow-scripts"></iframe>
+            <div id="terminal" style="width: 100%; height: calc(100% - 60px); background: #000;"></div>
         </div>
 
         <!-- Features Section -->
@@ -393,9 +394,9 @@
             <h2>🛡️ What's Included</h2>
             <div class="feature-grid">
                 <div class="feature-item">
-                    <div class="feature-icon">🐳</div>
-                    <h3>Docker Isolation</h3>
-                    <p>Each lab runs in a completely isolated Docker container with limited internet access.</p>
+                    <div class="feature-icon">💻</div>
+                    <h3>Browser-Based Terminal</h3>
+                    <p>Full Linux terminal emulator running directly in your browser - no installation needed.</p>
                 </div>
                 <div class="feature-item">
                     <div class="feature-icon">⏱️</div>
@@ -404,13 +405,13 @@
                 </div>
                 <div class="feature-item">
                     <div class="feature-icon">🔧</div>
-                    <h3>Pre-installed Tools</h3>
-                    <p>Nmap, SQLMap, Metasploit, Burp Suite, and more ethical hacking tools ready to use.</p>
+                    <h3>Pre-configured Tools</h3>
+                    <p>Simulated Linux environment with common commands and utilities ready to use.</p>
                 </div>
                 <div class="feature-item">
                     <div class="feature-icon">🎯</div>
-                    <h3>Vulnerable Apps</h3>
-                    <p>OWASP Juice Shop and other intentionally vulnerable applications for practice.</p>
+                    <h3>Learning Environment</h3>
+                    <p>Practice Linux commands and basic hacking concepts in a safe sandbox.</p>
                 </div>
             </div>
         </div>
@@ -423,9 +424,9 @@
                     <li>Login with your Discord account using the button above</li>
                     <li>Ensure you have the Student role in the NullSector Discord server</li>
                     <li>Generate a lab code (valid for 15 minutes)</li>
-                    <li>Click "Launch Lab Now" to spawn your personal hacking environment</li>
-                    <li>All data is wiped when the session ends—nothing persists</li>
-                    <li>You can generate a new code every 20 minutes</li>
+                    <li>Enter the code and click "Launch Lab Now" to start your terminal</li>
+                    <li>Practice Linux commands in a simulated Kali-like environment</li>
+                    <li>Sessions auto-close after 15 minutes - generate a new code to continue</li>
                 </ul>
             </div>
 
@@ -443,23 +444,21 @@
         </div>
     </div>
 
+    <!-- XTerm.js for Terminal -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.css" />
+    <script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.js"></script>
+    <script src="kali-terminal.js"></script>
+    
     <!-- Supabase Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const API_BASE = 'https://nullnode.onrender.com/api/lab';
         const SUPABASE_URL = 'https://fshfvihunprbqlukbdpi.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZzaGZ2aWh1bnByYnFsdWtiZHBpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU2MTQyOTYsImV4cCI6MjA4MTE5MDI5Nn0.jyyP3VJ2nqXmRqnC5O_CbqK_GZXMdBotdhT7Nufa5j0';
         const GUILD_ID = '1356978572027367624';
         const STUDENT_ROLE_ID = '1444364842378199050';
         
-        // Detect production environment
-        const isProduction = window.location.hostname === 'nullnode.vercel.app';
-        const siteUrl = isProduction ? 'https://nullnode.vercel.app' : window.location.origin;
-
-        console.log('[Lab Auth] Environment:', isProduction ? 'PRODUCTION' : 'DEVELOPMENT');
-        console.log('[Lab Auth] Site URL:', siteUrl);
-        
-        // Initialize Supabase client with correct site URL
+        // Initialize Supabase client
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
             auth: {
                 autoRefreshToken: true,
@@ -470,12 +469,6 @@
         });
 
         // UI Elements
-        const authButton = document.getElementById('authButton');
-        const userProfile = document.getElementById('userProfile');
-        const userAvatar = document.getElementById('userAvatar');
-        const userName = document.getElementById('userName');
-        const logoutButton = document.getElementById('logoutButton');
-        
         const loginPrompt = document.getElementById('loginPrompt');
         const noRolePrompt = document.getElementById('noRolePrompt');
         const generateCodeSection = document.getElementById('generateCodeSection');
@@ -487,16 +480,17 @@
         const claimGeneratedCodeBtn = document.getElementById('claimGeneratedCodeBtn');
         const cooldownMessage = document.getElementById('cooldownMessage');
         const cooldownTimer = document.getElementById('cooldownTimer');
-        
         const statusMessage = document.getElementById('statusMessage');
         const sessionFrame = document.getElementById('sessionFrame');
-        const sessionIframe = document.getElementById('sessionIframe');
         const sessionTimer = document.getElementById('sessionTimer');
+        const closeLabBtn = document.getElementById('closeLabBtn');
 
         let sessionInterval = null;
         let currentCode = null;
         let currentSession = null;
         let hasStudentRole = false;
+        let kaliTerminal = null;
+        let codeExpiryInterval = null;
 
         // Check authentication and show appropriate UI
         async function checkAuth() {
@@ -719,7 +713,8 @@
                 return;
             }
             
-            if (enteredCode !== displayedCode) {
+            const actualCode = currentCode?.replace('-', '').toLowerCase();
+            if (enteredCode !== actualCode) {
                 showStatus('error', 'Incorrect code. Please enter the code shown above.');
                 codeInput.style.borderColor = '#ff5f57';
                 setTimeout(() => {
@@ -729,77 +724,72 @@
             }
             
             if (!currentCode) return;
-            await claimLab(currentCode);
+            launchLab();
         });
 
-        // Claim lab with code
-        async function claimLab(code) {
-            if (!code || code.length !== 9) {
-                showStatus('error', 'Invalid access code');
-                return;
-            }
-
+        // Launch the Kali terminal
+        function launchLab() {
             claimGeneratedCodeBtn.disabled = true;
             claimGeneratedCodeBtn.textContent = 'Launching...';
             hideStatus();
 
             try {
-                const response = await fetch(`${API_BASE}/claim`, {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${currentSession?.access_token || ''}`
-                    },
-                    body: JSON.stringify({ 
-                        code: code,
-                        userId: currentSession?.user?.id || 'anonymous'
-                    }),
-                });
+                // Hide code section, show terminal
+                generatedCodeDisplay.style.display = 'none';
+                sessionFrame.style.display = 'block';
 
-                const data = await response.json();
+                // Initialize Kali Terminal
+                const terminalElement = document.getElementById('terminal');
+                kaliTerminal = new KaliTerminal(terminalElement);
 
-                if (response.ok && (data.success || data.url)) {
-                    showStatus('success', data.message || 'Lab launched successfully!');
-                    const expiresIn = data.expiresIn || Math.floor((new Date(data.expiresAt) - Date.now()) / 1000) || 900;
-                    loadSession(data.url, expiresIn);
-                    
-                    // Clear code after successful claim
-                    generatedCodeDisplay.style.display = 'none';
-                    currentCode = null;
-                    localStorage.removeItem('lab_code');
-                    localStorage.removeItem('lab_code_generated_at');
-                } else {
-                    const errorMsg = data.message || data.error || 'Failed to claim lab';
-                    showStatus('error', errorMsg);
-                    claimGeneratedCodeBtn.disabled = false;
-                    claimGeneratedCodeBtn.textContent = 'Launch Lab Now';
-                }
+                // Start 15-minute session timer
+                let sessionSeconds = 900; // 15 minutes
+                sessionInterval = setInterval(() => {
+                    sessionSeconds--;
+                    updateTimer(sessionSeconds);
+
+                    if (sessionSeconds <= 0) {
+                        clearInterval(sessionInterval);
+                        closeLab();
+                        showStatus('warning', 'Session expired. Generate a new code to start another lab.');
+                    }
+                }, 1000);
+
+                showStatus('success', 'Lab launched successfully!');
+                setTimeout(hideStatus, 3000);
+
+                // Clear code after successful launch
+                localStorage.removeItem('lab_code');
+                localStorage.removeItem('lab_code_generated_at');
+                currentCode = null;
+
             } catch (error) {
-                console.error('Claim error:', error);
-                showStatus('error', 'Connection error. The Render service may be starting up.');
+                console.error('Error launching lab:', error);
+                showStatus('error', 'Failed to launch lab');
                 claimGeneratedCodeBtn.disabled = false;
                 claimGeneratedCodeBtn.textContent = 'Launch Lab Now';
             }
         }
 
-        function loadSession(url, expiresIn) {
-            sessionFrame.classList.add('active');
-            sessionIframe.src = url;
+        // Close lab session
+        closeLabBtn?.addEventListener('click', () => {
+            closeLab();
+        });
 
-            let remaining = expiresIn;
-            updateTimer(remaining);
+        function closeLab() {
+            if (sessionInterval) {
+                clearInterval(sessionInterval);
+                sessionInterval = null;
+            }
 
-            sessionInterval = setInterval(() => {
-                remaining--;
-                updateTimer(remaining);
+            if (kaliTerminal) {
+                kaliTerminal.destroy();
+                kaliTerminal = null;
+            }
 
-                if (remaining <= 0) {
-                    clearInterval(sessionInterval);
-                    showStatus('warning', 'Session expired. The lab has been terminated.');
-                    sessionFrame.classList.remove('active');
-                    checkCooldown(); // Re-check cooldown after session ends
-                }
-            }, 1000);
+            sessionFrame.style.display = 'none';
+            generateCodeSection.style.display = 'block';
+            checkCooldown();
         }
 
         function updateTimer(seconds) {
