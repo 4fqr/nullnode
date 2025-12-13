@@ -204,12 +204,12 @@ nullnode/
 ├── roadmap-hacking.html        # Hacking learning roadmap
 ├── roadmap-programming.html    # Programming learning roadmap
 │
-├── hacking-ch01.html           # Hacking chapters (01-26)
+├── hacking-ch01.html           # Ethical hacking curriculum
 ├── hacking-ch02.html
 ├── ...
 ├── hacking-ch26.html
 │
-├── programming-ch01.html       # Programming chapters (01-26)
+├── programming-ch01.html       # Programming curriculum
 ├── programming-ch02.html
 ├── ...
 ├── programming-ch26.html
@@ -234,8 +234,8 @@ nullnode/
 ### Key Files
 
 - **`index.html`**: Main landing page with animations, hero section, stats dashboard, and learning path cards
-- **`hacking-ch*.html`**: 26 chapters covering ethical hacking from beginner to advanced
-- **`programming-ch*.html`**: 26 chapters covering programming from fundamentals to advanced
+- **`hacking-ch*.html`**: Comprehensive ethical hacking curriculum from beginner to advanced
+- **`programming-ch*.html`**: Complete programming curriculum from fundamentals to advanced
 - **`roadmap-*.html`**: Visual learning roadmaps showing progression through topics
 - **`styles.css`**: Global styling with CSS variables, animations, and responsive breakpoints
 

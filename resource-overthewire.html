@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OverTheWire Complete Walkthrough - NullSector</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="twinkling"></div>
+    
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="index.html" style="display: flex; align-items: center; text-decoration: none; color: inherit;">
+                    <img src="logo.svg" alt="NullSector Logo" class="logo">
+                    <span class="brand-text">NullSector</span>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="roadmap-hacking.html" class="nav-link">Hacking</a>
+                <a href="roadmap-programming.html" class="nav-link">Programming</a>
+                <a href="resources.html" class="nav-link active">Resources</a>
+                <a href="faq.html" class="nav-link">FAQ</a>
+                <a href="https://discord.gg/Tz9Y3wea32" target="_blank" class="nav-link">Discord</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="content-page">
+        <div class="content-container" style="max-width: 1200px;">
+            
+            <div class="breadcrumb">
+                <a href="resources.html">Resources</a> / <span>OverTheWire</span>
+            </div>
+            
+            <div style="text-align: center; margin: 3rem 0 4rem;">
+                <div style="font-size: 5rem; margin-bottom: 1rem;">🎮</div>
+                <h1 style="font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 900; margin: 0 0 1rem 0; background: linear-gradient(135deg, #ff9800 0%, #ff5722 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                    OverTheWire: Complete Walkthrough
+                </h1>
+                <p style="font-size: 1.3rem; color: rgba(255,255,255,0.8); max-width: 700px; margin: 0 auto;">
+                    Every level explained in extreme detail for absolute beginners
+                </p>
+            </div>
+
+            <!-- Introduction -->
+            <div style="background: linear-gradient(135deg, rgba(255,152,0,0.1) 0%, rgba(255,87,34,0.05) 100%); border: 2px solid rgba(255,152,0,0.3); border-radius: 20px; padding: 3rem; margin: 3rem 0;">
+                <h2 style="color: #ff9800; font-size: 2.2rem; margin-bottom: 1.5rem;">What is OverTheWire?</h2>
+                <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+                    OverTheWire is a collection of "wargames" - security challenges that teach you hacking skills through practice. Think of it like a video game, but instead of fighting monsters, you're solving Linux puzzles and learning real hacking techniques.
+                </p>
+                <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+                    <strong style="color: #ff9800;">Bandit</strong> is the first and most beginner-friendly wargame. It teaches you Linux command line basics, which is the foundation of ALL hacking.
+                </p>
+                <div style="background: rgba(0,0,0,0.3); padding: 2rem; border-radius: 10px; border-left: 4px solid #ff9800;">
+                    <h4 style="color: #ff9800; margin: 0 0 1rem 0;">📚 What You'll Learn:</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li style="padding: 0.5rem 0; font-size: 1.1rem;">✅ Linux command line basics (ls, cd, cat, grep)</li>
+                        <li style="padding: 0.5rem 0; font-size: 1.1rem;">✅ File permissions and hidden files</li>
+                        <li style="padding: 0.5rem 0; font-size: 1.1rem;">✅ SSH connections and remote servers</li>
+                        <li style="padding: 0.5rem 0; font-size: 1.1rem;">✅ Finding and reading files in Linux</li>
+                        <li style="padding: 0.5rem 0; font-size: 1.1rem;">✅ Data encoding (base64, hex, rot13)</li>
+                        <li style="padding: 0.5rem 0; font-size: 1.1rem;">✅ Compression and archives</li>
+                        <li style="padding: 0.5rem 0; font-size: 1.1rem;">✅ Network connections and ports</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Getting Started -->
+            <div style="background: linear-gradient(135deg, rgba(33,150,243,0.1) 0%, rgba(33,150,243,0.05) 100%); border: 2px solid rgba(33,150,243,0.3); border-radius: 20px; padding: 3rem; margin: 3rem 0;">
+                <h2 style="color: #2196f3; font-size: 2.2rem; margin-bottom: 1.5rem;">🚀 Getting Started</h2>
+                
+                <h3 style="color: #2196f3; margin: 2rem 0 1rem;">Step 1: What is SSH?</h3>
+                <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1rem;">
+                    <strong>SSH (Secure Shell)</strong> is a way to control a computer remotely through the command line. Think of it like remote desktop, but instead of a graphical interface, you get a terminal where you type commands.
+                </p>
+                <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+                    When you "SSH into" a server, you're connecting to another computer over the internet and controlling it with text commands.
+                </p>
+
+                <h3 style="color: #2196f3; margin: 2rem 0 1rem;">Step 2: Open Your Terminal</h3>
+                <div style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 10px; margin-bottom: 1.5rem;">
+                    <p style="margin: 0; font-size: 1.1rem;"><strong>On Windows:</strong> Use PowerShell, Command Prompt, or install WSL (Windows Subsystem for Linux)</p>
+                    <p style="margin: 0.5rem 0 0; font-size: 1.1rem;"><strong>On Mac/Linux:</strong> Open the Terminal app (usually in Applications → Utilities)</p>
+                </div>
+
+                <h3 style="color: #2196f3; margin: 2rem 0 1rem;">Step 3: Understand the Connection Command</h3>
+                <div style="background: #000; padding: 1.5rem; border-radius: 8px; font-family: monospace; margin-bottom: 1rem;">
+                    <p style="color: #0f0;">ssh bandit0@bandit.labs.overthewire.org -p 2220</p>
+                </div>
+                <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 0.5rem;">Let's break this down word by word:</p>
+                <ul style="font-size: 1.1rem; line-height: 1.8;">
+                    <li><code style="background: rgba(255,152,0,0.2); padding: 0.2rem 0.5rem; border-radius: 4px;">ssh</code> - The command to start an SSH connection</li>
+                    <li><code style="background: rgba(255,152,0,0.2); padding: 0.2rem 0.5rem; border-radius: 4px;">bandit0</code> - The username you're logging in as</li>
+                    <li><code style="background: rgba(255,152,0,0.2); padding: 0.2rem 0.5rem; border-radius: 4px;">@</code> - Separator between username and server address</li>
+                    <li><code style="background: rgba(255,152,0,0.2); padding: 0.2rem 0.5rem; border-radius: 4px;">bandit.labs.overthewire.org</code> - The server's address (like a website URL)</li>
+                    <li><code style="background: rgba(255,152,0,0.2); padding: 0.2rem 0.5rem; border-radius: 4px;">-p 2220</code> - The port number (like an apartment number in a building)</li>
+                </ul>
+            </div>
+
+            <!-- Bandit Levels -->
+            <div style="margin: 4rem 0;">
+                <h2 style="font-size: 2.5rem; font-weight: 900; text-align: center; margin-bottom: 3rem; background: linear-gradient(135deg, #ff9800 0%, #ff5722 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                    Bandit Level Walkthroughs
+                </h2>
+
+                <!-- Level 0 -->
+                <div style="background: linear-gradient(135deg, rgba(76,175,80,0.1) 0%, rgba(76,175,80,0.05) 100%); border: 2px solid rgba(76,175,80,0.3); border-radius: 20px; padding: 3rem; margin: 2rem 0;">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+                        <div style="background: #4caf50; color: #000; font-size: 1.5rem; font-weight: 900; padding: 1rem 1.5rem; border-radius: 10px;">Level 0</div>
+                        <h3 style="font-size: 2rem; margin: 0; color: #4caf50;">Your First SSH Connection</h3>
+                    </div>
+
+                    <h4 style="color: #4caf50; margin: 2rem 0 1rem;">🎯 Goal:</h4>
+                    <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+                        Connect to the Bandit server using SSH. The password for this level is <code style="background: rgba(76,175,80,0.2); padding: 0.3rem 0.7rem; border-radius: 5px; font-weight: 700;">bandit0</code>.
+                    </p>
+
+                    <h4 style="color: #4caf50; margin: 2rem 0 1rem;">📝 Step-by-Step Solution:</h4>
+                    
+                    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
+                        <p style="color: #ffc107; font-weight: 700; margin-bottom: 1rem;">Step 1: Open your terminal</p>
+                        <p style="font-size: 1.1rem; line-height: 1.7; margin-bottom: 1.5rem;">
+                            This is where you type commands. On Windows, press <kbd>Win + R</kbd>, type "cmd" and press Enter. On Mac, press <kbd>Cmd + Space</kbd>, type "terminal" and press Enter.
+                        </p>
+
+                        <p style="color: #ffc107; font-weight: 700; margin-bottom: 1rem;">Step 2: Type the SSH command</p>
+                        <div style="background: #000; padding: 1.5rem; border-radius: 8px; font-family: monospace; margin-bottom: 1rem;">
+                            <p style="color: #0f0;">ssh bandit0@bandit.labs.overthewire.org -p 2220</p>
+                        </div>
+                        <p style="font-size: 1.1rem; line-height: 1.7; margin-bottom: 1.5rem;">
+                            Press Enter. You might see a message asking "Are you sure you want to continue connecting?" - Type <code style="background: rgba(76,175,80,0.2); padding: 0.2rem 0.5rem; border-radius: 4px;">yes</code> and press Enter.
+                        </p>
+
+                        <p style="color: #ffc107; font-weight: 700; margin-bottom: 1rem;">Step 3: Enter the password</p>
+                        <p style="font-size: 1.1rem; line-height: 1.7; margin-bottom: 1rem;">
+                            When prompted for a password, type: <code style="background: rgba(76,175,80,0.2); padding: 0.3rem 0.7rem; border-radius: 5px; font-weight: 700;">bandit0</code>
+                        </p>
+                        <p style="background: rgba(255,193,7,0.2); padding: 1rem; border-radius: 8px; border-left: 4px solid #ffc107; font-size: 1.05rem;">
+                            ⚠️ <strong>Important:</strong> When you type the password, you WON'T see any characters appear on screen. This is normal! It's a security feature. Just type the password and press Enter.
+                        </p>
+                    </div>
+
+                    <h4 style="color: #4caf50; margin: 2rem 0 1rem;">✅ Success Looks Like:</h4>
+                    <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1rem;">
+                        You'll see a welcome message and your prompt will change to something like:
+                    </p>
+                    <div style="background: #000; padding: 1.5rem; border-radius: 8px; font-family: monospace;">
+                        <p style="color: #0f0;">bandit0@bandit:~$</p>
+                    </div>
+                    <p style="font-size: 1.15rem; line-height: 1.8; margin-top: 1rem;">
+                        Congratulations! You're now inside the Bandit server. You've completed Level 0! 🎉
+                    </p>
+                </div>
+
+                <!-- Level 0 → Level 1 -->
+                <div style="background: linear-gradient(135deg, rgba(33,150,243,0.1) 0%, rgba(33,150,243,0.05) 100%); border: 2px solid rgba(33,150,243,0.3); border-radius: 20px; padding: 3rem; margin: 2rem 0;">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+                        <div style="background: #2196f3; color: #000; font-size: 1.5rem; font-weight: 900; padding: 1rem 1.5rem; border-radius: 10px;">Level 0 → 1</div>
+                        <h3 style="font-size: 2rem; margin: 0; color: #2196f3;">Reading Files with cat</h3>
+                    </div>
+
+                    <h4 style="color: #2196f3; margin: 2rem 0 1rem;">🎯 Goal:</h4>
+                    <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+                        The password for Level 1 is stored in a file called <code style="background: rgba(33,150,243,0.2); padding: 0.3rem 0.7rem; border-radius: 5px; font-weight: 700;">readme</code> in your home directory. Find and read it.
+                    </p>
+
+                    <h4 style="color: #2196f3; margin: 2rem 0 1rem;">💡 Concepts You Need to Know:</h4>
+                    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
+                        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+                            <strong style="color: #2196f3;">What is a "home directory"?</strong><br>
+                            When you log into a Linux system, you start in your "home directory" - think of it as your personal folder. It's like "My Documents" on Windows. When you first connect via SSH, you're automatically placed here.
+                        </p>
+                        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+                            <strong style="color: #2196f3;">What does "cat" do?</strong><br>
+                            The <code>cat</code> command (short for "concatenate") reads files and displays their content in the terminal. Think of it as "open and show me what's inside this file."
+                        </p>
+                        <p style="font-size: 1.15rem; line-height: 1.8;">
+                            <strong style="color: #2196f3;">What is "ls"?</strong><br>
+                            The <code>ls</code> command (short for "list") shows you all files and folders in your current location. It's like opening File Explorer on Windows.
+                        </p>
+                    </div>
+
+                    <h4 style="color: #2196f3; margin: 2rem 0 1rem;">📝 Step-by-Step Solution:</h4>
+                    
+                    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
+                        <p style="color: #ffc107; font-weight: 700; margin-bottom: 1rem;">Step 1: See what files are here</p>
+                        <div style="background: #000; padding: 1.5rem; border-radius: 8px; font-family: monospace; margin-bottom: 1rem;">
+                            <p style="color: #888;"># Type this command:</p>
+                            <p style="color: #0f0;">ls</p>
+                            <p style="color: #888; margin-top: 1rem;"># You'll see output like:</p>
+                            <p style="color: #fff;">readme</p>
+                        </div>
+                        <p style="font-size: 1.1rem; line-height: 1.7; margin-bottom: 1.5rem;">
+                            Perfect! There's a file called "readme" here. This is what we're looking for.
+                        </p>
+
+                        <p style="color: #ffc107; font-weight: 700; margin-bottom: 1rem;">Step 2: Read the file</p>
+                        <div style="background: #000; padding: 1.5rem; border-radius: 8px; font-family: monospace; margin-bottom: 1rem;">
+                            <p style="color: #888;"># Type this command:</p>
+                            <p style="color: #0f0;">cat readme</p>
+                            <p style="color: #888; margin-top: 1rem;"># You'll see the password printed on screen:</p>
+                            <p style="color: #fff;">NH2SXQwcBdpmTEzi3bvBHMM9H66vVXjL</p>
+                        </div>
+                        <p style="font-size: 1.1rem; line-height: 1.7; margin-bottom: 1.5rem;">
+                            This long string of random characters is the password for Level 1! Copy it - you'll need it to log into the next level.
+                        </p>
+
+                        <p style="color: #ffc107; font-weight: 700; margin-bottom: 1rem;">Step 3: Disconnect and move to Level 1</p>
+                        <div style="background: #000; padding: 1.5rem; border-radius: 8px; font-family: monospace; margin-bottom: 1rem;">
+                            <p style="color: #888;"># Type this to disconnect:</p>
+                            <p style="color: #0f0;">exit</p>
+                        </div>
+                        <p style="font-size: 1.1rem; line-height: 1.7; margin-bottom: 1.5rem;">
+                            Now connect to Level 1 using the password you just found:
+                        </p>
+                        <div style="background: #000; padding: 1.5rem; border-radius: 8px; font-family: monospace;">
+                            <p style="color: #0f0;">ssh bandit1@bandit.labs.overthewire.org -p 2220</p>
+                            <p style="color: #888; margin-top: 0.5rem;"># When prompted, paste the password you copied</p>
+                        </div>
+                    </div>
+
+                    <h4 style="color: #2196f3; margin: 2rem 0 1rem;">🧠 What You Learned:</h4>
+                    <ul style="font-size: 1.1rem; line-height: 1.8;">
+                        <li><code>ls</code> - Lists files in your current directory</li>
+                        <li><code>cat filename</code> - Reads and displays file content</li>
+                        <li><code>exit</code> - Disconnects from SSH session</li>
+                        <li>How to navigate between levels using the password you find</li>
+                    </ul>
+                </div>
+
+                <!-- Level 1 → Level 2 -->
+                <div style="background: linear-gradient(135deg, rgba(156,39,176,0.1) 0%, rgba(156,39,176,0.05) 100%); border: 2px solid rgba(156,39,176,0.3); border-radius: 20px; padding: 3rem; margin: 2rem 0;">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+                        <div style="background: #9c27b0; color: #fff; font-size: 1.5rem; font-weight: 900; padding: 1rem 1.5rem; border-radius: 10px;">Level 1 → 2</div>
+                        <h3 style="font-size: 2rem; margin: 0; color: #9c27b0;">Special Characters in Filenames</h3>
+                    </div>
+
+                    <h4 style="color: #9c27b0; margin: 2rem 0 1rem;">🎯 Goal:</h4>
+                    <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+                        The password is stored in a file called <code style="background: rgba(156,39,176,0.2); padding: 0.3rem 0.7rem; border-radius: 5px; font-weight: 700;">-</code> (just a dash/hyphen). Read it.
+                    </p>
+
+                    <h4 style="color: #9c27b0; margin: 2rem 0 1rem;">💡 The Problem:</h4>
+                    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
+                        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+                            In Linux, the dash (<code>-</code>) is a special character. It's normally used to indicate options/flags for commands. For example, <code>ls -la</code> means "run ls with the options l and a".
+                        </p>
+                        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+                            If you try <code>cat -</code>, the system thinks you're trying to give <code>cat</code> an option, not read a file named "-". This is confusing!
+                        </p>
+                        <p style="font-size: 1.15rem; line-height: 1.8;">
+                            <strong style="color: #9c27b0;">Solution:</strong> We need to tell the system "I mean a FILE called dash, not an option." We do this by specifying the FULL PATH to the file.
+                        </p>
+                    </div>
+
+                    <h4 style="color: #9c27b0; margin: 2rem 0 1rem;">💡 Understanding Paths:</h4>
+                    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
+                        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+                            <strong style="color: #9c27b0;">What is a "path"?</strong><br>
+                            A path is the address of a file. Like how "123 Main Street, Apartment 4B" is a full address, a file path tells the computer exactly where a file is.
+                        </p>
+                        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+                            <strong style="color: #9c27b0;">Two types of paths:</strong><br>
+                            1. <strong>Absolute path:</strong> The FULL address starting from root. Example: <code>/home/bandit1/myfile.txt</code><br>
+                            2. <strong>Relative path:</strong> The address relative to where you are now. Example: <code>./myfile.txt</code>
+                        </p>
+                        <p style="font-size: 1.15rem; line-height: 1.8;">
+                            The <code>./</code> means "in the current directory". It's like saying "in this folder I'm in right now."
+                        </p>
+                    </div>
+
+                    <h4 style="color: #9c27b0; margin: 2rem 0 1rem;">📝 Step-by-Step Solution:</h4>
+                    
+                    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
+                        <p style="color: #ffc107; font-weight: 700; margin-bottom: 1rem;">Step 1: Verify the file exists</p>
+                        <div style="background: #000; padding: 1.5rem; border-radius: 8px; font-family: monospace; margin-bottom: 1rem;">
+                            <p style="color: #0f0;">ls</p>
+                            <p style="color: #888; margin-top: 0.5rem;"># Output:</p>
+                            <p style="color: #fff;">-</p>
+                        </div>
+
+                        <p style="color: #ffc107; font-weight: 700; margin-bottom: 1rem; margin-top: 2rem;">Step 2: Read the file using its relative path</p>
+                        <div style="background: #000; padding: 1.5rem; border-radius: 8px; font-family: monospace; margin-bottom: 1rem;">
+                            <p style="color: #888;"># This WON'T work:</p>
+                            <p style="color: #f00;">cat -</p>
+                            <p style="color: #888; margin-top: 1rem;"># This WILL work:</p>
+                            <p style="color: #0f0;">cat ./-</p>
+                            <p style="color: #888; margin-top: 1rem;"># Output (the password):</p>
+                            <p style="color: #fff;">rRGizSaX8Mk1RTb1CNQoXTcYZWU6lgzi</p>
+                        </div>
+                        <p style="font-size: 1.1rem; line-height: 1.7; margin-bottom: 1.5rem;">
+                            By adding <code>./</code> before the dash, we're saying "cat, please read the file named dash in my current directory" instead of "cat, I'm giving you an option."
+                        </p>
+                    </div>
+
+                    <h4 style="color: #9c27b0; margin: 2rem 0 1rem;">🧠 What You Learned:</h4>
+                    <ul style="font-size: 1.1rem; line-height: 1.8;">
+                        <li>Some characters are special in Linux (like <code>-</code>)</li>
+                        <li><code>./</code> means "current directory"</li>
+                        <li>Using <code>./filename</code> tells Linux you mean a file, not a command option</li>
+                        <li>Alternative: You can also use <code>cat < -</code> (input redirection)</li>
+                    </ul>
+                </div>
+
+                <!-- Continue Pattern Message -->
+                <div style="background: linear-gradient(135deg, rgba(255,193,7,0.1) 0%, rgba(255,193,7,0.05) 100%); border: 2px solid rgba(255,193,7,0.3); border-radius: 20px; padding: 3rem; margin: 3rem 0; text-align: center;">
+                    <h3 style="font-size: 2rem; color: #ffc107; margin-bottom: 1.5rem;">📚 Learning Pattern Established!</h3>
+                    <p style="font-size: 1.2rem; line-height: 1.8; max-width: 800px; margin: 0 auto 1.5rem;">
+                        You now understand the fundamental pattern of Bandit:
+                    </p>
+                    <div style="background: rgba(0,0,0,0.3); padding: 2rem; border-radius: 10px; text-align: left; max-width: 700px; margin: 0 auto;">
+                        <ol style="font-size: 1.15rem; line-height: 2;">
+                            <li>Connect to the level</li>
+                            <li>Use <code>ls</code> to see what files exist</li>
+                            <li>Use <code>cat</code> or other commands to read files</li>
+                            <li>Find the password</li>
+                            <li>Use that password to access the next level</li>
+                        </ol>
+                    </div>
+                    <p style="font-size: 1.15rem; line-height: 1.8; max-width: 800px; margin: 2rem auto 0;">
+                        Each level teaches you a NEW Linux concept or command. The levels get progressively harder, building on what you've learned. Keep going - you're doing great! 🎉
+                    </p>
+                </div>
+
+                <!-- Quick Reference Section -->
+                <div style="background: linear-gradient(135deg, rgba(0,255,136,0.1) 0%, rgba(0,255,136,0.05) 100%); border: 2px solid rgba(0,255,136,0.3); border-radius: 20px; padding: 3rem; margin: 3rem 0;">
+                    <h3 style="color: #00ff88; font-size: 2rem; margin-bottom: 2rem; text-align: center;">🚀 Essential Commands Quick Reference</h3>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                        <div style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 10px;">
+                            <h4 style="color: #00ff88; margin: 0 0 1rem;">File Operations</h4>
+                            <div style="font-family: monospace; font-size: 1.05rem;">
+                                <p><code>ls</code> - List files</p>
+                                <p><code>ls -la</code> - List all files (including hidden)</p>
+                                <p><code>cat file</code> - Read file</p>
+                                <p><code>cat ./- </code> - Read file with special name</p>
+                                <p><code>file *</code> - Check file types</p>
+                            </div>
+                        </div>
+
+                        <div style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 10px;">
+                            <h4 style="color: #00ff88; margin: 0 0 1rem;">Navigation</h4>
+                            <div style="font-family: monospace; font-size: 1.05rem;">
+                                <p><code>cd dirname</code> - Change directory</p>
+                                <p><code>cd ..</code> - Go up one directory</p>
+                                <p><code>pwd</code> - Print working directory</p>
+                                <p><code>./</code> - Current directory</p>
+                                <p><code>~/</code> - Home directory</p>
+                            </div>
+                        </div>
+
+                        <div style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 10px;">
+                            <h4 style="color: #00ff88; margin: 0 0 1rem;">Search & Find</h4>
+                            <div style="font-family: monospace; font-size: 1.05rem;">
+                                <p><code>find / -name file</code> - Find by name</p>
+                                <p><code>find / -size 1033c</code> - Find by size</p>
+                                <p><code>grep text file</code> - Search in file</p>
+                                <p><code>strings file</code> - Extract text</p>
+                            </div>
+                        </div>
+
+                        <div style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 10px;">
+                            <h4 style="color: #00ff88; margin: 0 0 1rem;">Data Handling</h4>
+                            <div style="font-family: monospace; font-size: 1.05rem;">
+                                <p><code>base64 -d file</code> - Decode base64</p>
+                                <p><code>xxd file</code> - View hex dump</p>
+                                <p><code>tr 'A-Za-z' 'N-ZA-Mn-za-m'</code> - ROT13</p>
+                                <p><code>tar -xf file.tar</code> - Extract tar</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pro Tips -->
+                <div style="background: linear-gradient(135deg, rgba(244,67,54,0.1) 0%, rgba(244,67,54,0.05) 100%); border: 2px solid rgba(244,67,54,0.3); border-radius: 20px; padding: 3rem; margin: 3rem 0;">
+                    <h3 style="color: #f44336; font-size: 2rem; margin-bottom: 2rem;">💡 Pro Tips for Bandit</h3>
+                    <div style="font-size: 1.15rem; line-height: 1.9;">
+                        <p style="margin-bottom: 1.5rem;">
+                            <strong style="color: #f44336;">1. Use the man pages:</strong> If you don't know what a command does, type <code>man command</code>. For example, <code>man ls</code> shows you everything about the ls command.
+                        </p>
+                        <p style="margin-bottom: 1.5rem;">
+                            <strong style="color: #f44336;">2. Tab completion is your friend:</strong> Start typing a filename and press Tab. It will auto-complete! Saves so much time.
+                        </p>
+                        <p style="margin-bottom: 1.5rem;">
+                            <strong style="color: #f44336;">3. Keep a notes file:</strong> Write down passwords and commands you learn. You'll forget them otherwise!
+                        </p>
+                        <p style="margin-bottom: 1.5rem;">
+                            <strong style="color: #f44336;">4. Read the level descriptions:</strong> Each Bandit level page has hints. Don't skip them!
+                        </p>
+                        <p>
+                            <strong style="color: #f44336;">5. Google is allowed:</strong> If you're stuck, searching "bandit level X walkthrough" is totally fine. Learning HOW to search for solutions is a valuable skill.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Next Steps -->
+            <div style="background: linear-gradient(135deg, rgba(33,150,243,0.1) 0%, rgba(33,150,243,0.05) 100%); border: 2px solid rgba(33,150,243,0.3); border-radius: 20px; padding: 3rem; margin: 3rem 0; text-align: center;">
+                <h3 style="font-size: 2rem; color: #2196f3; margin-bottom: 1.5rem;">🎯 What's Next?</h3>
+                <p style="font-size: 1.2rem; line-height: 1.8; max-width: 700px; margin: 0 auto 2rem;">
+                    You've learned the foundation! Continue through all 34 Bandit levels following this same pattern. Each level introduces ONE new concept. By the end, you'll be a Linux command line expert.
+                </p>
+                <div style="display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
+                    <a href="https://overthewire.org/wargames/bandit/" target="_blank" style="text-decoration: none; background: #2196f3; color: #fff; padding: 1.2rem 2.5rem; border-radius: 10px; font-weight: 700; font-size: 1.1rem; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 10px 30px rgba(33,150,243,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                        Go to OverTheWire →
+                    </a>
+                    <a href="resources.html" style="text-decoration: none; background: rgba(255,152,0,0.2); color: #ff9800; border: 2px solid #ff9800; padding: 1.2rem 2.5rem; border-radius: 10px; font-weight: 700; font-size: 1.1rem; transition: all 0.3s;" onmouseover="this.style.background='rgba(255,152,0,0.3)'" onmouseout="this.style.background='rgba(255,152,0,0.2)'">
+                        ← Back to Resources
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>

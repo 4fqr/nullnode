@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Resources - NullSector</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .fade-in-up {
+            animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+    </style>
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="twinkling"></div>
+    
+    <!-- Floating Orbs -->
+    <div style="position: fixed; top: -10%; left: -5%; width: 40%; height: 40%; background: radial-gradient(circle, rgba(255,193,7,0.08) 0%, transparent 70%); border-radius: 50%; filter: blur(80px); animation: float 25s ease-in-out infinite; z-index: 0;"></div>
+    <div style="position: fixed; bottom: -10%; right: -5%; width: 50%; height: 50%; background: radial-gradient(circle, rgba(255,87,34,0.06) 0%, transparent 70%); border-radius: 50%; filter: blur(100px); animation: float 30s ease-in-out infinite reverse; z-index: 0;"></div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="index.html" style="display: flex; align-items: center; text-decoration: none; color: inherit;">
+                    <img src="logo.svg" alt="NullSector Logo" class="logo">
+                    <span class="brand-text">NullSector</span>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="roadmap-hacking.html" class="nav-link">Hacking</a>
+                <a href="roadmap-programming.html" class="nav-link">Programming</a>
+                <a href="resources.html" class="nav-link active">Resources</a>
+                <a href="faq.html" class="nav-link">FAQ</a>
+                <a href="https://discord.gg/Tz9Y3wea32" target="_blank" class="nav-link">Discord</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="content-page" style="position: relative; z-index: 1;">
+        <div class="content-container" style="max-width: 1400px;">
+            
+            <!-- Header -->
+            <div class="fade-in-up" style="text-align: center; margin-bottom: 5rem;">
+                <div style="display: inline-block; background: rgba(255,193,7,0.15); border: 2px solid rgba(255,193,7,0.4); padding: 0.75rem 2rem; border-radius: 50px; margin-bottom: 2rem;">
+                    <span style="color: #ffc107; font-weight: 700; font-size: 1rem; letter-spacing: 1px;">🎓 LEARNING RESOURCES</span>
+                </div>
+                <h1 style="font-size: clamp(3rem, 6vw, 5rem); font-weight: 900; margin: 0 0 1.5rem 0; background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                    Practice Platforms
+                </h1>
+                <p style="font-size: 1.4rem; color: rgba(255,255,255,0.85); max-width: 800px; margin: 0 auto; line-height: 1.7;">
+                    Master cybersecurity through hands-on challenges. Complete walkthroughs and solutions for absolute beginners.
+                </p>
+            </div>
+
+            <!-- Resources Grid -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 3rem; margin: 4rem 0;">
+                
+                <!-- OverTheWire -->
+                <a href="resource-overthewire.html" class="fade-in-up delay-1" style="text-decoration: none; background: linear-gradient(135deg, rgba(255,152,0,0.1) 0%, rgba(255,87,34,0.05) 100%); border: 2px solid rgba(255,152,0,0.3); border-radius: 24px; padding: 3rem; transition: all 0.3s; display: block; position: relative; overflow: hidden;" onmouseover="this.style.transform='translateY(-8px)'; this.style.borderColor='#ff9800'; this.style.boxShadow='0 20px 60px rgba(255,152,0,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='rgba(255,152,0,0.3)'; this.style.boxShadow='none'">
+                    <div style="position: absolute; top: 20px; right: 20px; background: rgba(255,152,0,0.2); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 700; color: #ff9800;">BEGINNER FRIENDLY</div>
+                    <div style="font-size: 4rem; margin-bottom: 1.5rem;">🎮</div>
+                    <h3 style="font-size: 2.2rem; font-weight: 900; color: #ff9800; margin-bottom: 1rem;">OverTheWire</h3>
+                    <p style="color: rgba(255,255,255,0.9); font-size: 1.15rem; line-height: 1.7; margin-bottom: 1.5rem;">
+                        The classic wargames platform. Learn Linux commands, privilege escalation, and web exploitation through progressive challenges.
+                    </p>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 2rem;">
+                        <span style="background: rgba(255,152,0,0.2); color: #ff9800; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.95rem; font-weight: 600;">Bandit (SSH)</span>
+                        <span style="background: rgba(255,152,0,0.2); color: #ff9800; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.95rem; font-weight: 600;">Natas (Web)</span>
+                        <span style="background: rgba(255,152,0,0.2); color: #ff9800; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.95rem; font-weight: 600;">Leviathan</span>
+                    </div>
+                    <div style="color: #ff9800; font-weight: 800; display: flex; align-items: center; gap: 0.75rem; font-size: 1.1rem;">
+                        <span>Complete Walkthrough</span>
+                        <span style="transition: transform 0.3s;">→</span>
+                    </div>
+                </a>
+
+                <!-- Pwnable.kr -->
+                <a href="resource-pwnable.html" class="fade-in-up delay-2" style="text-decoration: none; background: linear-gradient(135deg, rgba(244,67,54,0.1) 0%, rgba(233,30,99,0.05) 100%); border: 2px solid rgba(244,67,54,0.3); border-radius: 24px; padding: 3rem; transition: all 0.3s; display: block; position: relative; overflow: hidden;" onmouseover="this.style.transform='translateY(-8px)'; this.style.borderColor='#f44336'; this.style.boxShadow='0 20px 60px rgba(244,67,54,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='rgba(244,67,54,0.3)'; this.style.boxShadow='none'">
+                    <div style="position: absolute; top: 20px; right: 20px; background: rgba(244,67,54,0.2); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 700; color: #f44336;">INTERMEDIATE</div>
+                    <div style="font-size: 4rem; margin-bottom: 1.5rem;">💣</div>
+                    <h3 style="font-size: 2.2rem; font-weight: 900; color: #f44336; margin-bottom: 1rem;">Pwnable.kr</h3>
+                    <p style="color: rgba(255,255,255,0.9); font-size: 1.15rem; line-height: 1.7; margin-bottom: 1.5rem;">
+                        Binary exploitation and reverse engineering challenges. Learn buffer overflows, shellcode, and memory corruption.
+                    </p>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 2rem;">
+                        <span style="background: rgba(244,67,54,0.2); color: #f44336; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.95rem; font-weight: 600;">Buffer Overflow</span>
+                        <span style="background: rgba(244,67,54,0.2); color: #f44336; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.95rem; font-weight: 600;">Reverse Engineering</span>
+                        <span style="background: rgba(244,67,54,0.2); color: #f44336; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.95rem; font-weight: 600;">Pwn</span>
+                    </div>
+                    <div style="color: #f44336; font-weight: 800; display: flex; align-items: center; gap: 0.75rem; font-size: 1.1rem;">
+                        <span>Complete Walkthrough</span>
+                        <span style="transition: transform 0.3s;">→</span>
+                    </div>
+                </a>
+
+                <!-- OWASP Juice Shop -->
+                <a href="resource-juiceshop.html" class="fade-in-up delay-3" style="text-decoration: none; background: linear-gradient(135deg, rgba(76,175,80,0.1) 0%, rgba(139,195,74,0.05) 100%); border: 2px solid rgba(76,175,80,0.3); border-radius: 24px; padding: 3rem; transition: all 0.3s; display: block; position: relative; overflow: hidden;" onmouseover="this.style.transform='translateY(-8px)'; this.style.borderColor='#4caf50'; this.style.boxShadow='0 20px 60px rgba(76,175,80,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='rgba(76,175,80,0.3)'; this.style.boxShadow='none'">
+                    <div style="position: absolute; top: 20px; right: 20px; background: rgba(76,175,80,0.2); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 700; color: #4caf50;">WEB SECURITY</div>
+                    <div style="font-size: 4rem; margin-bottom: 1.5rem;">🧃</div>
+                    <h3 style="font-size: 2.2rem; font-weight: 900; color: #4caf50; margin-bottom: 1rem;">OWASP Juice Shop</h3>
+                    <p style="color: rgba(255,255,255,0.9); font-size: 1.15rem; line-height: 1.7; margin-bottom: 1.5rem;">
+                        Modern insecure web application with OWASP Top 10 vulnerabilities. Perfect for learning web application penetration testing.
+                    </p>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 2rem;">
+                        <span style="background: rgba(76,175,80,0.2); color: #4caf50; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.95rem; font-weight: 600;">SQL Injection</span>
+                        <span style="background: rgba(76,175,80,0.2); color: #4caf50; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.95rem; font-weight: 600;">XSS</span>
+                        <span style="background: rgba(76,175,80,0.2); color: #4caf50; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.95rem; font-weight: 600;">CSRF</span>
+                    </div>
+                    <div style="color: #4caf50; font-weight: 800; display: flex; align-items: center; gap: 0.75rem; font-size: 1.1rem;">
+                        <span>Complete Walkthrough</span>
+                        <span style="transition: transform 0.3s;">→</span>
+                    </div>
+                </a>
+
+            </div>
+
+            <!-- Info Box -->
+            <div class="fade-in-up delay-4" style="background: linear-gradient(135deg, rgba(33,150,243,0.1) 0%, rgba(33,150,243,0.05) 100%); border: 2px solid rgba(33,150,243,0.3); border-radius: 20px; padding: 3rem; margin: 4rem 0; text-align: center;">
+                <h3 style="font-size: 2rem; color: #2196f3; margin-bottom: 1.5rem; font-weight: 800;">📚 Why These Platforms?</h3>
+                <p style="font-size: 1.2rem; color: rgba(255,255,255,0.9); line-height: 1.8; max-width: 900px; margin: 0 auto;">
+                    These three platforms cover the entire spectrum of cybersecurity: <strong style="color: #ff9800;">Linux fundamentals and privilege escalation</strong> (OverTheWire), <strong style="color: #f44336;">binary exploitation and reverse engineering</strong> (Pwnable.kr), and <strong style="color: #4caf50;">modern web application security</strong> (Juice Shop). Master these, and you'll have the skills to tackle any real-world security challenge.
+                </p>
+                <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(33,150,243,0.3);">
+                    <p style="font-size: 1.1rem; color: rgba(255,255,255,0.8);">
+                        💡 <strong>Pro Tip:</strong> Start with OverTheWire Bandit, then move to Juice Shop, and finally tackle Pwnable.kr. This progression builds your skills naturally from fundamentals to advanced exploitation.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
