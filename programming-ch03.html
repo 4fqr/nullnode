@@ -3,831 +3,2107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ch03: Data Types & Variables - NullSector</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="icon" href="favicon.ico">
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <title>Chapter 03: Functions - NullSector</title>
+    <link rel="icon" type="image/svg+xml" href="logo.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg: #000; --bg2: #0a0a0a; --bg3: #111;
+            --text: #fff; --text2: #888; --text3: #555;
+            --border: rgba(255,255,255,0.1);
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; overflow-x: hidden; }
+        .header { position: fixed; top: 0; left: 0; right: 0; height: 70px; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); z-index: 1000; display: flex; align-items: center; padding: 0 2rem; }
+        .header-content { width: 100%; max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .brand { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--text); font-weight: 700; font-size: 1.25rem; }
+        .nav { display: flex; gap: 2rem; }
+        .nav a { color: var(--text2); text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: color 0.3s; }
+        .nav a:hover { color: var(--text); }
+        .sidebar { position: fixed; left: 0; top: 70px; width: 280px; height: calc(100vh - 70px); background: var(--bg2); border-right: 1px solid var(--border); overflow-y: auto; padding: 2rem 0; z-index: 100; }
+        .sidebar::-webkit-scrollbar { width: 6px; }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+        .sidebar-section { padding: 0 1.5rem; margin-bottom: 2rem; }
+        .sidebar-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); margin-bottom: 1rem; }
+        .sidebar-link { display: block; color: var(--text2); text-decoration: none; padding: 0.6rem 1rem; margin: 0.25rem 0; border-radius: 6px; font-size: 0.9rem; transition: all 0.3s; }
+        .sidebar-link:hover { background: rgba(255,255,255,0.05); color: var(--text); transform: translateX(4px); }
+        .sidebar-link.active { background: rgba(255,255,255,0.1); color: var(--text); font-weight: 600; }
+        .main { margin-left: 280px; margin-top: 70px; padding: 4rem 3rem; max-width: 1100px; }
+        .page-header { margin-bottom: 4rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+        .chapter-label { font-size: 0.875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--text3); margin-bottom: 1rem; }
+        .page-title { font-size: 3.5rem; font-weight: 800; line-height: 1.2; margin-bottom: 1rem; letter-spacing: -1px; }
+        .page-subtitle { font-size: 1.25rem; color: var(--text2); font-weight: 400; line-height: 1.6; }
+        .section { margin-bottom: 6rem; scroll-margin-top: 100px; }
+        .section-title { font-size: 2.25rem; font-weight: 700; margin-bottom: 1.5rem; }
+        .section-intro { font-size: 1.125rem; color: var(--text2); margin-bottom: 2rem; line-height: 1.8; }
+        h3 { font-size: 1.75rem; font-weight: 600; margin: 3rem 0 1.5rem; }
+        p { font-size: 1.0625rem; line-height: 1.8; margin-bottom: 1.5rem; }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+        .card { background: var(--bg3); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; transition: all 0.3s; }
+        .card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.2); }
+        .card h4 { font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; }
+        .card p { color: var(--text2); font-size: 0.9375rem; }
+        .info-box { background: var(--bg3); border-left: 3px solid var(--text); padding: 1.5rem; margin: 2rem 0; border-radius: 0 8px 8px 0; }
+        .info-box h4 { font-weight: 600; margin-bottom: 0.75rem; }
+        .info-box p { color: var(--text2); }
+        .code { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.875rem; line-height: 1.7; white-space: pre; }
+        .inline-code { background: rgba(255,255,255,0.1); padding: 0.2rem 0.5rem; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.875em; }
+        .metaphor-box { background: rgba(255,255,255,0.03); border-left: 4px solid var(--text); padding: 1.5rem; margin: 2rem 0; border-radius: 0 8px 8px 0; position: relative; }
+        .metaphor-box::before { content: "💡"; position: absolute; top: 1rem; right: 1rem; font-size: 1.5rem; }
+        ul, ol { margin: 1.5rem 0; padding-left: 2rem; }
+        li { margin: 0.75rem 0; color: var(--text2); }
+        .progress { position: fixed; top: 70px; left: 0; height: 3px; background: linear-gradient(90deg, var(--text) 0%, var(--text2) 100%); transition: width 0.1s; z-index: 1001; }
+        @media (max-width: 1024px) { .sidebar { transform: translateX(-100%); } .main { margin-left: 0; padding: 3rem 2rem; } .page-title { font-size: 2.5rem; } }
+    </style>
 </head>
 <body>
-    <div class="stars"></div>
-    <div class="twinkling"></div>
-    
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-brand">
-                <a href="index.html" style="display: flex; align-items: center; text-decoration: none; color: inherit;">
-                    <img src="logo.svg" alt="NullSector Logo" class="logo">
-                    <span class="brand-text">NullSector</span>
-                </a>
-            </div>
-            <div class="nav-links">
-                <a href="roadmap-hacking.html" class="nav-link ">Hacking</a>
-                <a href="roadmap-programming.html" class="nav-link active">Programming</a>
-                <a href="resources.html" class="nav-link">Resources</a>
-                <a href="faq.html" class="nav-link">FAQ</a>
-                <a href="https://discord.gg/Tz9Y3wea32" target="_blank" class="nav-link">Discord</a>
-            
-                                
-                <div id="userProfile" style="display: none; align-items: center; gap: 0.75rem;">
-                    <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <img id="userAvatar" style="width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--primary-color); cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="" />
-                        <span id="userName" style="color: var(--text-primary); font-weight: 500; font-size: 0.95rem; cursor: default;"></span>
-                    </div>
-                    <button id="logoutButton" class="nav-link" style="background: rgba(255, 95, 87, 0.1); border: 1px solid #ff5f57; padding: 0.4rem 1rem; border-radius: 6px; font-weight: 500; cursor: pointer; color: #ff5f57; transition: all 0.2s;" onmouseover="this.style.background='rgba(255, 95, 87, 0.2)'" onmouseout="this.style.background='rgba(255, 95, 87, 0.1)'">Logout</button>
-                </div>
-            </div>
+    <div class="progress" id="progress"></div>
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="brand">
+                <img src="logo.svg" alt="NullSector" width="36" height="36">
+                <span>NullSector</span>
+            </a>
+            <nav class="nav">
+                <a href="roadmap-hacking.html">Hacking</a>
+                <a href="roadmap-programming.html">Programming</a>
+                <a href="index.html">Home</a>
+            </nav>
         </div>
-    </nav>
+    </header>
 
-    <section class="content-page">
-        <div class="content-container">
-            <div class="breadcrumb">
-                <a href="roadmap-programming.html">Programming Roadmap</a> / <span>Chapter 03</span>
-            </div>
+    <aside class="sidebar">
+        <div class="sidebar-section">
+            <div class="sidebar-title">On This Page</div>
+            <a href="#what-are-functions" class="sidebar-link">What Are Functions?</a>
+            <a href="#defining" class="sidebar-link">Defining Functions</a>
+            <a href="#parameters" class="sidebar-link">Parameters & Arguments</a>
+            <a href="#return" class="sidebar-link">Return Values</a>
+            <a href="#scope" class="sidebar-link">Variable Scope</a>
+            <a href="#default" class="sidebar-link">Default Parameters</a>
+            <a href="#lambda" class="sidebar-link">Lambda Functions</a>
+            <a href="#builtin" class="sidebar-link">Built-in Functions</a>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-title">Navigation</div>
+            <a href="programming-ch04.html" class="sidebar-link">Next: Chapter 04 →</a>
+            <a href="programming-ch02.html" class="sidebar-link">← Previous: Chapter 02</a>
+            <a href="roadmap-programming.html" class="sidebar-link">Back to Roadmap</a>
+        </div>
+    </aside>
+
+    <main class="main">
+        <div class="page-header">
+            <div class="chapter-label">Chapter 03</div>
+            <h1 class="page-title">Functions</h1>
+            <p class="page-subtitle">Functions are reusable blocks of code. Write once, use forever. They're how real programs are organized and how you avoid repeating yourself.</p>
+        </div>
+
+        <section class="section">
+            <p>Up until now, if you wanted to do the same thing twice, you'd have to write the same code twice. Functions solve this - you write the code once, give it a name, and call it whenever you need it.</p>
+            <p>Functions are also how large programs are organized. Instead of thousands of lines in one file, you break code into logical, manageable pieces. Every serious program you'll ever write will be built from functions.</p>
+            <p>This chapter transforms you from someone who writes scripts to someone who writes structured, maintainable code.</p>
             
-            <div class="roadmap-section">
-                <div class="roadmap-number">03</div>
-                <h1 class="page-title">Chapter 03: Algorithms & Problem Solving</h1>
-                <p class="page-subtitle">Mastering Computational Thinking & Efficiency</p>
+            <div class="metaphor-box">
+                <h4>🏭 The Factory Metaphor</h4>
+                <p>Think of functions as machines in a factory:</p>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>Input (parameters):</strong> Raw materials you feed into the machine</li>
+                    <li><strong>Process (function body):</strong> What the machine does with the materials</li>
+                    <li><strong>Output (return value):</strong> The finished product that comes out</li>
+                </ul>
+                <p style="margin-top: 1rem;">You design the machine once. Then you can use it to process any materials, as many times as you want. That's the power of functions.</p>
+            </div>
 
-                <!-- Introduction -->
-                <div style="background: linear-gradient(135deg, rgba(0,255,136,0.1) 0%, rgba(0,204,255,0.1) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0; border-left: 5px solid var(--primary-color);">
-                    <h2 style="color: var(--primary-color); font-size: 1.8rem; margin-bottom: 1.5rem;">🧠 Welcome to Algorithmic Thinking</h2>
-                    <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        Writing code that <em>works</em> is one thing. Writing code that works <strong>efficiently</strong> is what separates beginners from professionals.
-                    </p>
-                    <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        Imagine you're searching for a specific book in a library. You could check <em>every single book</em> one by one (slow). Or you could use the catalog system, narrow down the section, then find it in seconds (fast). That's the difference between a bad algorithm and a good one.
-                    </p>
-                    <p style="font-size: 1.15rem; line-height: 1.8;">
-                        In this chapter, we'll explore <strong>how to think about problems</strong>, measure solution efficiency, and master the fundamental algorithms that power everything from Google Search to Netflix recommendations.
-                    </p>
+            <div class="card-grid">
+                <div class="card">
+                    <h4>🔄 Reusability</h4>
+                    <p>Write once, use everywhere. Need to greet users in 10 places? Write one greet function and call it 10 times.</p>
                 </div>
-
-                <!-- Topic 1: Algorithmic Thinking & Problem Decomposition -->
-                <div style="background: linear-gradient(135deg, rgba(138,43,226,0.15) 0%, rgba(75,0,130,0.15) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0; border: 2px solid rgba(138,43,226,0.3);">
-                    <h2 style="color: #8a2be2; font-size: 1.8rem; margin-bottom: 1.5rem;">🎯 Topic 1: Algorithmic Thinking — Breaking Down Problems</h2>
-                    
-                    <h3 style="color: #9370db; font-size: 1.4rem; margin: 2rem 0 1rem 0;">What IS an Algorithm?</h3>
-                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        An algorithm is simply a <strong>step-by-step recipe</strong> for solving a problem. Think of it like cooking instructions:
-                    </p>
-                    <ul style="font-size: 1.05rem; line-height: 1.9; margin: 0 0 1.5rem 2rem;">
-                        <li><strong>Input:</strong> Raw ingredients (data)</li>
-                        <li><strong>Process:</strong> Cooking steps (operations)</li>
-                        <li><strong>Output:</strong> Finished dish (result)</li>
-                    </ul>
-                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        Every program you write is fundamentally a collection of algorithms working together.
-                    </p>
-
-                    <h3 style="color: #9370db; font-size: 1.4rem; margin: 2rem 0 1rem 0;">Problem Decomposition</h3>
-                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        Complex problems feel overwhelming. The secret? <strong>Break them down</strong> into tiny, manageable pieces.
-                    </p>
-                    <div style="background: rgba(0,0,0,0.3); padding: 2rem; border-radius: 15px; margin: 1.5rem 0;">
-                        <h4 style="color: #00ff88; margin-bottom: 1rem;">Example: Build a Todo List App</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            Instead of thinking "I need to build an app" (scary), break it down:
-                        </p>
-                        <ol style="font-size: 1.05rem; line-height: 1.9; margin: 0 0 1rem 2rem;">
-                            <li>How do I store todos? (Array/List)</li>
-                            <li>How do I add a new todo? (Function: append to array)</li>
-                            <li>How do I display todos? (Loop through array, print each)</li>
-                            <li>How do I mark complete? (Update item property)</li>
-                            <li>How do I delete? (Remove from array)</li>
-                        </ol>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin: 0;">
-                            Each piece is simple. Together, they form the complete solution.
-                        </p>
-                    </div>
-
-                    <h3 style="color: #9370db; font-size: 1.4rem; margin: 2rem 0 1rem 0;">The Problem-Solving Process</h3>
-                    <div style="background: rgba(138,43,226,0.1); padding: 2rem; border-radius: 15px; margin: 1.5rem 0;">
-                        <ol style="font-size: 1.05rem; line-height: 1.9; margin: 0 0 0 2rem;">
-                            <li><strong>Understand:</strong> Read the problem carefully. What's the input? What's the expected output?</li>
-                            <li><strong>Plan:</strong> Sketch a solution on paper. Write pseudocode.</li>
-                            <li><strong>Divide:</strong> Break the problem into smaller subproblems.</li>
-                            <li><strong>Implement:</strong> Code each piece, test individually.</li>
-                            <li><strong>Test:</strong> Try edge cases. What if input is empty? Negative? Huge?</li>
-                            <li><strong>Optimize:</strong> Can you make it faster? Use less memory?</li>
-                        </ol>
-                    </div>
-
-                    <div style="background: rgba(255,200,0,0.15); padding: 1.5rem; border-radius: 10px; margin: 2rem 0; border-left: 4px solid #ffc800;">
-                        <h4 style="color: #ffc800; margin-bottom: 0.5rem;">💡 Why This Matters for Programming</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin: 0;">
-                            Interviews at Google, Facebook, Amazon? They're testing your algorithmic thinking, not syntax memorization. Can you break down a problem? Can you reason about efficiency? Master this, and you'll ace technical interviews and build scalable systems.
-                        </p>
-                    </div>
-
-                    <div style="background: rgba(0,204,255,0.1); padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
-                        <h4 style="color: #00ccff; margin-bottom: 1rem;">🎯 Quick Check</h4>
-                        <ul style="font-size: 1.05rem; line-height: 1.9; margin: 0;">
-                            <li>What's the difference between an algorithm and a program?</li>
-                            <li>Name one benefit of breaking problems into smaller pieces.</li>
-                            <li>Why is testing edge cases important?</li>
-                        </ul>
-                    </div>
+                <div class="card">
+                    <h4>📦 Organization</h4>
+                    <p>Break complex problems into smaller, manageable pieces. Each function does one thing well.</p>
                 </div>
-
-                <!-- Topic 2: Time Complexity & Big O -->
-                <div style="background: linear-gradient(135deg, rgba(0,204,255,0.15) 0%, rgba(0,153,204,0.15) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0; border: 2px solid rgba(0,204,255,0.3);">
-                    <h2 style="color: #00ccff; font-size: 1.8rem; margin-bottom: 1.5rem;">⏱️ Topic 2: Big O Notation — Measuring Efficiency</h2>
-                    
-                    <h3 style="color: #33d4ff; font-size: 1.4rem; margin: 2rem 0 1rem 0;">Why Efficiency Matters</h3>
-                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        Imagine two sorting algorithms: Algorithm A sorts 100 items in 0.01s, Algorithm B in 0.02s. Both seem fast. But scale to 1 million: A takes 2 minutes, B takes 6 hours. <strong>Big O notation</strong> lets us predict this WITHOUT running tests.
-                    </p>
-
-                    <h3 style="color: #33d4ff; font-size: 1.4rem; margin: 2rem 0 1rem 0;">Understanding Big O</h3>
-                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        Big O describes <strong>how runtime grows</strong> as input size increases. It ignores constants and focuses on the <em>dominant factor</em>.
-                    </p>
-
-                    <div style="background: rgba(0,0,0,0.3); padding: 2rem; border-radius: 15px; margin: 1.5rem 0; border-left: 4px solid #00ff88;">
-                        <h4 style="color: #00ff88; margin-bottom: 1rem;">🟢 O(1) — Constant Time</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            <strong>Always takes the same time</strong>, no matter how big the input. Like accessing an array by index:
-                        </p>
-                        <pre style="background: #1a1a2e; padding: 1.5rem; border-radius: 10px; overflow-x: auto; color: #00ff88;"><code>def get_first(arr):
-    return arr[0]  # Always one operation
-
-# Works instantly for 10 items or 10 million</code></pre>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin: 1rem 0 0 0;">
-                            Real-world: Accessing a specific book when you know its shelf number.
-                        </p>
-                    </div>
-
-                    <div style="background: rgba(0,0,0,0.3); padding: 2rem; border-radius: 15px; margin: 1.5rem 0; border-left: 4px solid #33d4ff;">
-                        <h4 style="color: #33d4ff; margin-bottom: 1rem;">🔵 O(log n) — Logarithmic Time</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            <strong>Cuts the problem in half</strong> each step. Like binary search in a sorted phone book:
-                        </p>
-                        <pre style="background: #1a1a2e; padding: 1.5rem; border-radius: 10px; overflow-x: auto; color: #33d4ff;"><code>def binary_search(arr, target):
-    left, right = 0, len(arr) - 1
-    while left <= right:
-        mid = (left + right) // 2
-        if arr[mid] == target:
-            return mid
-        elif arr[mid] < target:
-            left = mid + 1
-        else:
-            right = mid - 1
-    return -1
-
-# 1 million items? Only ~20 checks needed!</code></pre>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin: 1rem 0 0 0;">
-                            Real-world: Looking up a word in the dictionary by opening to the middle, then halving each time.
-                        </p>
-                    </div>
-
-                    <div style="background: rgba(0,0,0,0.3); padding: 2rem; border-radius: 15px; margin: 1.5rem 0; border-left: 4px solid #ffc800;">
-                        <h4 style="color: #ffc800; margin-bottom: 1rem;">🟡 O(n) — Linear Time</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            <strong>Loops through every item once</strong>. Time grows proportionally with input size:
-                        </p>
-                        <pre style="background: #1a1a2e; padding: 1.5rem; border-radius: 10px; overflow-x: auto; color: #ffc800;"><code>def find_max(arr):
-    max_val = arr[0]
-    for num in arr:  # Checks every item
-        if num > max_val:
-            max_val = num
-    return max_val
-
-# 100 items = 100 checks. 10,000 items = 10,000 checks.</code></pre>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin: 1rem 0 0 0;">
-                            Real-world: Reading every page of a book to find a specific sentence.
-                        </p>
-                    </div>
-
-                    <div style="background: rgba(0,0,0,0.3); padding: 2rem; border-radius: 15px; margin: 1.5rem 0; border-left: 4px solid #ff6b6b;">
-                        <h4 style="color: #ff6b6b; margin-bottom: 1rem;">🔴 O(n²) — Quadratic Time</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            <strong>Nested loops</strong> that check every pair of items. Gets slow FAST:
-                        </p>
-                        <pre style="background: #1a1a2e; padding: 1.5rem; border-radius: 10px; overflow-x: auto; color: #ff6b6b;"><code>def find_duplicates(arr):
-    duplicates = []
-    for i in range(len(arr)):       # Outer loop
-        for j in range(i + 1, len(arr)):  # Inner loop
-            if arr[i] == arr[j]:
-                duplicates.append(arr[i])
-    return duplicates
-
-# 100 items = 10,000 comparisons. 1,000 items = 1 MILLION!</code></pre>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin: 1rem 0 0 0;">
-                            Real-world: Comparing every person in a room with every other person (handshakes problem).
-                        </p>
-                    </div>
-
-                    <div style="background: rgba(0,0,0,0.3); padding: 2rem; border-radius: 15px; margin: 1.5rem 0; border-left: 4px solid #9370db;">
-                        <h4 style="color: #9370db; margin-bottom: 1rem;">🟣 O(2ⁿ) — Exponential Time</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            <strong>Doubles with each added input</strong>. Usually means recursion without optimization:
-                        </p>
-                        <pre style="background: #1a1a2e; padding: 1.5rem; border-radius: 10px; overflow-x: auto; color: #9370db;"><code>def fibonacci(n):
-    if n <= 1:
-        return n
-    return fibonacci(n-1) + fibonacci(n-2)
-
-# fibonacci(5) = 15 calls. fibonacci(30) = 2.7 MILLION calls!</code></pre>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin: 1rem 0 0 0;">
-                            Real-world: Trying every possible password combination.
-                        </p>
-                    </div>
-
-                    <h3 style="color: #33d4ff; font-size: 1.4rem; margin: 2rem 0 1rem 0;">Visualizing Growth</h3>
-                    <div style="background: rgba(0,204,255,0.1); padding: 2rem; border-radius: 15px; margin: 1.5rem 0;">
-                        <pre style="background: #1a1a2e; padding: 1.5rem; border-radius: 10px; color: #00ccff;"><code>Input Size (n)   O(1)   O(log n)   O(n)    O(n²)      O(2ⁿ)
-──────────────────────────────────────────────────────────────
-10               1      3          10      100        1,024
-100              1      7          100     10,000     1.3×10³⁰
-1,000            1      10         1,000   1,000,000  ∞ (too big!)
-1,000,000        1      20         1M      1T         ∞ (impossible!)</code></pre>
-                    </div>
-
-                    <div style="background: rgba(255,200,0,0.15); padding: 1.5rem; border-radius: 10px; margin: 2rem 0; border-left: 4px solid #ffc800;">
-                        <h4 style="color: #ffc800; margin-bottom: 0.5rem;">💡 Why This Matters</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin: 0;">
-                            Tech interviews ALWAYS ask about Big O. An O(n²) algorithm works for 100 users but crashes at 10,000. Understanding complexity prevents production disasters. When Instagram loads a feed with millions of posts, they can't use O(n²) algorithms—the app would freeze.
-                        </p>
-                    </div>
-
-                    <div style="background: rgba(0,204,255,0.1); padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
-                        <h4 style="color: #00ccff; margin-bottom: 1rem;">🎯 Quick Check</h4>
-                        <ul style="font-size: 1.05rem; line-height: 1.9; margin: 0;">
-                            <li>What's the Big O of accessing <code>arr[500]</code>?</li>
-                            <li>Why is O(log n) faster than O(n)?</li>
-                            <li>What causes O(n²) complexity?</li>
-                            <li>If an algorithm takes 1 second for n=100, how long for n=1,000 if it's O(n²)?</li>
-                        </ul>
-                    </div>
+                <div class="card">
+                    <h4>🔧 Maintainability</h4>
+                    <p>Bug in your greeting? Fix it in one place (the function), and it's fixed everywhere.</p>
                 </div>
-
-                <!-- Topic 3: Searching Algorithms -->
-                <div style="background: linear-gradient(135deg, rgba(255,200,0,0.15) 0%, rgba(255,150,0,0.15) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0; border: 2px solid rgba(255,200,0,0.3);">
-                    <h2 style="color: #ffc800; font-size: 1.8rem; margin-bottom: 1.5rem;">🔍 Topic 3: Searching Algorithms — Finding Needles in Haystacks</h2>
-                    
-                    <h3 style="color: #ffdb4d; font-size: 1.4rem; margin: 2rem 0 1rem 0;">Linear Search: The Brute Force Approach</h3>
-                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        Check every single item until you find what you're looking for. Simple but slow for large datasets.
-                    </p>
-
-                    <div style="background: rgba(0,0,0,0.3); padding: 2rem; border-radius: 15px; margin: 1.5rem 0;">
-                        <h4 style="color: #00ff88; margin-bottom: 1rem;">Implementation</h4>
-                        <pre style="background: #1a1a2e; padding: 1.5rem; border-radius: 10px; overflow-x: auto; color: #00ff88;"><code>def linear_search(arr, target):
-    """
-    Search for target in arr by checking each element.
-    Returns index if found, -1 otherwise.
-    Time: O(n), Space: O(1)
-    """
-    for i in range(len(arr)):
-        if arr[i] == target:
-            return i  # Found it!
-    return -1  # Not found
-
-# Example usage
-numbers = [64, 34, 25, 12, 22, 11, 90]
-result = linear_search(numbers, 22)
-print(f"Found at index: {result}")  # Output: 4</code></pre>
-                    </div>
-
-                    <div style="background: rgba(255,200,0,0.15); padding: 1.5rem; border-radius: 10px; margin: 1.5rem 0;">
-                        <h4 style="color: #ffc800; margin-bottom: 0.5rem;">⚡ Performance Analysis</h4>
-                        <ul style="font-size: 1.05rem; line-height: 1.9; margin: 0;">
-                            <li><strong>Best case:</strong> O(1) — target is first item</li>
-                            <li><strong>Worst case:</strong> O(n) — target is last or not found</li>
-                            <li><strong>Average case:</strong> O(n/2) = O(n)</li>
-                            <li><strong>When to use:</strong> Small datasets, unsorted data, or when you need to search once</li>
-                        </ul>
-                    </div>
-
-                    <h3 style="color: #ffdb4d; font-size: 1.4rem; margin: 2rem 0 1rem 0;">Binary Search: The Smart Way</h3>
-                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        <strong>Requires sorted data.</strong> Repeatedly divide the search space in half. Like finding a page in a book—you wouldn't start from page 1!
-                    </p>
-
-                    <div style="background: rgba(0,0,0,0.3); padding: 2rem; border-radius: 15px; margin: 1.5rem 0;">
-                        <h4 style="color: #00ccff; margin-bottom: 1rem;">How Binary Search Works</h4>
-                        <ol style="font-size: 1.05rem; line-height: 1.9; margin: 0 0 1rem 2rem;">
-                            <li>Look at the middle element</li>
-                            <li>If it's your target, done!</li>
-                            <li>If target is smaller, search the left half</li>
-                            <li>If target is larger, search the right half</li>
-                            <li>Repeat until found or no elements left</li>
-                        </ol>
-                        <pre style="background: #1a1a2e; padding: 1.5rem; border-radius: 10px; overflow-x: auto; color: #33d4ff;"><code>def binary_search(arr, target):
-    """
-    Search sorted array by repeatedly halving search space.
-    Returns index if found, -1 otherwise.
-    Time: O(log n), Space: O(1)
-    """
-    left, right = 0, len(arr) - 1
-    
-    while left <= right:
-        mid = (left + right) // 2
-        
-        if arr[mid] == target:
-            return mid  # Found it!
-        elif arr[mid] < target:
-            left = mid + 1  # Search right half
-        else:
-            right = mid - 1  # Search left half
-    
-    return -1  # Not found
-
-# Example usage (MUST be sorted!)
-numbers = [11, 12, 22, 25, 34, 64, 90]
-result = binary_search(numbers, 25)
-print(f"Found at index: {result}")  # Output: 3</code></pre>
-                    </div>
-
-                    <div style="background: rgba(0,204,255,0.15); padding: 2rem; border-radius: 15px; margin: 1.5rem 0;">
-                        <h4 style="color: #00ccff; margin-bottom: 1rem;">📊 Binary Search Visualization</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            Searching for 25 in <code>[11, 12, 22, 25, 34, 64, 90]</code>:
-                        </p>
-                        <pre style="background: #1a1a2e; padding: 1.5rem; border-radius: 10px; color: #00ff88;"><code>Step 1: [11, 12, 22, |25|, 34, 64, 90]  mid=25 → Found!
-
-If searching for 64:
-Step 1: [11, 12, 22, |25|, 34, 64, 90]  mid=25 < 64 → go right
-Step 2: [34, |64|, 90]                   mid=64 → Found!
-
-Only 2 steps for 7 items! Linear would take up to 7.</code></pre>
-                    </div>
-
-                    <div style="background: rgba(255,200,0,0.15); padding: 1.5rem; border-radius: 10px; margin: 1.5rem 0;">
-                        <h4 style="color: #ffc800; margin-bottom: 0.5rem;">💡 Real-World Applications</h4>
-                        <ul style="font-size: 1.05rem; line-height: 1.9; margin: 0;">
-                            <li><strong>Databases:</strong> Finding records in indexed tables</li>
-                            <li><strong>Version control:</strong> Git uses binary search to find which commit introduced a bug (<code>git bisect</code>)</li>
-                            <li><strong>Dictionaries:</strong> Looking up words in digital dictionaries</li>
-                            <li><strong>Phone books:</strong> Finding contacts (though who uses those anymore?)</li>
-                        </ul>
-                    </div>
-
-                    <div style="background: rgba(0,204,255,0.1); padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
-                        <h4 style="color: #00ccff; margin-bottom: 1rem;">🎯 Quick Check</h4>
-                        <ul style="font-size: 1.05rem; line-height: 1.9; margin: 0;">
-                            <li>Can you use binary search on <code>[5, 2, 8, 1, 9]</code>? Why/why not?</li>
-                            <li>How many steps to binary search 1 million items?</li>
-                            <li>When would linear search be better than binary search?</li>
-                        </ul>
-                    </div>
+                <div class="card">
+                    <h4>🧪 Testability</h4>
+                    <p>Test individual functions in isolation. Much easier than testing a 500-line script.</p>
                 </div>
+            </div>
 
-                <!-- Topic 4: Sorting Algorithms -->
-                <div style="background: linear-gradient(135deg, rgba(255,107,107,0.15) 0%, rgba(255,69,96,0.15) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0; border: 2px solid rgba(255,107,107,0.3);">
-                    <h2 style="color: #ff6b6b; font-size: 1.8rem; margin-bottom: 1.5rem;">📊 Topic 4: Sorting Algorithms — Organizing Chaos</h2>
-                    
-                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        Sorting is one of the most fundamental operations in computer science. From organizing files by date to ranking search results, sorting powers countless applications.
-                    </p>
+            <div class="info-box">
+                <h4>DRY Principle</h4>
+                <p><strong>D</strong>on't <strong>R</strong>epeat <strong>Y</strong>ourself. If you're copying code, you should probably make a function instead. Functions are the antidote to copy-paste programming.</p>
+            </div>
+        </section>
 
-                    <h3 style="color: #ff8787; font-size: 1.4rem; margin: 2rem 0 1rem 0;">Bubble Sort: The Simplest (But Slowest)</h3>
-                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        Repeatedly swap adjacent elements if they're in wrong order. Like bubbles rising to the surface.
-                    </p>
+        <section id="what-are-functions" class="section">
+            <h2 class="section-title">What Are Functions?</h2>
+            <p class="section-intro">A function is a named block of code that performs a specific task. You define it once and can call it as many times as you want. Functions are the building blocks of all structured programming.</p>
 
-                    <div style="background: rgba(0,0,0,0.3); padding: 2rem; border-radius: 15px; margin: 1.5rem 0;">
-                        <pre style="background: #1a1a2e; padding: 1.5rem; border-radius: 10px; overflow-x: auto; color: #ff6b6b;"><code>def bubble_sort(arr):
-    """
-    Sort array by repeatedly swapping adjacent elements.
-    Time: O(n²), Space: O(1)
-    """
-    n = len(arr)
-    for i in range(n):
-        swapped = False
-        # Last i elements already sorted
-        for j in range(0, n - i - 1):
-            if arr[j] > arr[j + 1]:
-                # Swap if out of order
-                arr[j], arr[j + 1] = arr[j + 1], arr[j]
-                swapped = True
-        # If no swaps, array is sorted
-        if not swapped:
-            break
-    return arr
+            <div class="metaphor-box">
+                <h4>📋 The Recipe Card Metaphor</h4>
+                <p>Think of a function like a recipe card:</p>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>Function name</strong> = Recipe title ("Chocolate Cake")</li>
+                    <li><strong>Parameters</strong> = Ingredients needed (flour, sugar, eggs)</li>
+                    <li><strong>Function body</strong> = The cooking instructions</li>
+                    <li><strong>Return value</strong> = The finished dish</li>
+                </ul>
+                <p style="margin-top: 1rem;">You write the recipe once. Then you can "call" it whenever you want cake - you don't rewrite the whole recipe every time!</p>
+            </div>
 
-# Example
-numbers = [64, 34, 25, 12, 22, 11, 90]
-bubble_sort(numbers)
-print(numbers)  # [11, 12, 22, 25, 34, 64, 90]</code></pre>
-                    </div>
+            <h3>You've Already Used Functions!</h3>
+            <div class="code"># ==================== BUILT-IN FUNCTIONS ====================
 
-                    <div style="background: rgba(255,107,107,0.15); padding: 1.5rem; border-radius: 10px; margin: 1.5rem 0;">
-                        <h4 style="color: #ff6b6b; margin-bottom: 0.5rem;">⚠️ Bubble Sort Analysis</h4>
-                        <ul style="font-size: 1.05rem; line-height: 1.9; margin: 0;">
-                            <li><strong>Time:</strong> O(n²) — nested loops compare all pairs</li>
-                            <li><strong>Space:</strong> O(1) — sorts in-place</li>
-                            <li><strong>Pros:</strong> Simple to understand, stable sort</li>
-                            <li><strong>Cons:</strong> VERY slow for large datasets</li>
-                            <li><strong>Use case:</strong> Teaching, or when n < 10</li>
-                        </ul>
-                    </div>
+# These are all function CALLS:
+print("Hello")        # print is a function - displays output
+len("Hello")          # len is a function - returns length (5)
+int("42")             # int is a function - converts to integer
+float("3.14")         # float is a function - converts to float
+input("Name: ")       # input is a function - gets user input
+type(42)              # type is a function - returns the type
+max(1, 5, 3)          # max is a function - returns maximum
+min(1, 5, 3)          # min is a function - returns minimum
 
-                    <h3 style="color: #ff8787; font-size: 1.4rem; margin: 2rem 0 1rem 0;">Merge Sort: Divide and Conquer</h3>
-                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        Split array in half recursively until single elements, then merge sorted halves. Used by Python's <code>sorted()</code> and JavaScript's <code>Array.sort()</code>.
-                    </p>
+# ==================== THE PATTERN ====================
 
-                    <div style="background: rgba(0,0,0,0.3); padding: 2rem; border-radius: 15px; margin: 1.5rem 0;">
-                        <pre style="background: #1a1a2e; padding: 1.5rem; border-radius: 10px; overflow-x: auto; color: #00ff88;"><code>def merge_sort(arr):
-    """
-    Sort by recursively dividing and merging.
-    Time: O(n log n), Space: O(n)
-    """
-    if len(arr) <= 1:
-        return arr
+# function_name(arguments)
+# ↑              ↑
+# What to call   What to give it
+
+# ==================== CHAINING FUNCTION CALLS ====================
+
+# Functions return values that can be used immediately:
+length = len("Hello")                    # Store the result
+print(len("Hello"))                      # Use directly in another call
+total = sum([1, 2, 3, 4, 5])            # sum() returns a number
+text = str(42) + " is a number"         # str() returns a string
+
+# ==================== NOW YOU'LL LEARN ====================
+
+# These are BUILT-IN functions - Python provides them
+# Now you'll learn to create your OWN functions!
+# This is where programming gets really powerful</div>
+
+            <h3>Anatomy of a Function</h3>
+            <div class="code"># ==================== THE PARTS OF A FUNCTION ====================
+
+def greet(name):              # ← Function DEFINITION
+    """Say hello to someone."""  # ← Docstring (optional but recommended)
+    message = f"Hello, {name}!"  # ← Function BODY
+    return message               # ← RETURN statement
     
-    # Divide
-    mid = len(arr) // 2
-    left = merge_sort(arr[:mid])
-    right = merge_sort(arr[mid:])
-    
-    # Conquer (merge)
-    return merge(left, right)
+result = greet("Alice")       # ← Function CALL
+print(result)                 # Hello, Alice!
 
-def merge(left, right):
-    """Merge two sorted arrays into one sorted array"""
-    result = []
-    i = j = 0
-    
-    # Compare and merge
-    while i < len(left) and j < len(right):
-        if left[i] <= right[j]:
-            result.append(left[i])
-            i += 1
-        else:
-            result.append(right[j])
-            j += 1
-    
-    # Add remaining elements
-    result.extend(left[i:])
-    result.extend(right[j:])
-    return result
+# ==================== BREAKING IT DOWN ====================
 
-# Example
-numbers = [64, 34, 25, 12, 22, 11, 90]
-sorted_nums = merge_sort(numbers)
-print(sorted_nums)  # [11, 12, 22, 25, 34, 64, 90]</code></pre>
-                    </div>
+# 1. def keyword - "I'm defining a function"
+# 2. greet - The function's name (you choose this)
+# 3. (name) - Parameter(s) the function accepts
+# 4. : - Colon ends the function header
+# 5. Indented lines - The function body (what it does)
+# 6. return - What value to send back (optional)
 
-                    <div style="background: rgba(0,204,255,0.15); padding: 2rem; border-radius: 15px; margin: 1.5rem 0;">
-                        <h4 style="color: #00ccff; margin-bottom: 1rem;">📊 Merge Sort Visualization</h4>
-                        <pre style="background: #1a1a2e; padding: 1.5rem; border-radius: 10px; color: #00ff88;"><code>[64, 34, 25, 12, 22, 11, 90]
-        ↓ Divide
-[64, 34, 25]          [12, 22, 11, 90]
-    ↓                      ↓
-[64] [34, 25]       [12, 22] [11, 90]
-        ↓               ↓        ↓
-    [34] [25]       [12] [22] [11] [90]
-        ↓ Merge         ↓           ↓
-    [25, 34]        [12, 22]    [11, 90]
-        ↓               ↓
-[25, 34, 64]      [11, 12, 22, 90]
-        ↓ Final Merge
-[11, 12, 22, 25, 34, 64, 90]</code></pre>
-                    </div>
+# ==================== CALLING THE FUNCTION ====================
 
-                    <h3 style="color: #ff8787; font-size: 1.4rem; margin: 2rem 0 1rem 0;">Quick Sort: The Industry Standard</h3>
-                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        Pick a pivot, partition array so smaller elements go left, larger go right. Recursively sort partitions. Average O(n log n), but O(n²) worst case.
-                    </p>
+# Defining doesn't RUN the code - it just saves it
+# Calling (with parentheses) actually runs it:
 
-                    <div style="background: rgba(0,0,0,0.3); padding: 2rem; border-radius: 15px; margin: 1.5rem 0;">
-                        <pre style="background: #1a1a2e; padding: 1.5rem; border-radius: 10px; overflow-x: auto; color: #ffc800;"><code>def quick_sort(arr):
-    """
-    Sort by partitioning around a pivot.
-    Time: O(n log n) average, O(n²) worst
-    Space: O(log n) for recursion stack
-    """
-    if len(arr) <= 1:
-        return arr
-    
-    pivot = arr[len(arr) // 2]  # Choose middle as pivot
-    left = [x for x in arr if x < pivot]
-    middle = [x for x in arr if x == pivot]
-    right = [x for x in arr if x > pivot]
-    
-    return quick_sort(left) + middle + quick_sort(right)
+greet("Bob")      # Runs the function with "Bob"
+greet("Charlie")  # Runs it again with "Charlie"
 
-# Example
-numbers = [64, 34, 25, 12, 22, 11, 90]
-sorted_nums = quick_sort(numbers)
-print(sorted_nums)  # [11, 12, 22, 25, 34, 64, 90]</code></pre>
-                    </div>
+# Each call is independent - name is "Bob" first, then "Charlie"
 
-                    <div style="background: rgba(255,200,0,0.15); padding: 1.5rem; border-radius: 10px; margin: 1.5rem 0;">
-                        <h4 style="color: #ffc800; margin-bottom: 0.5rem;">⚖️ Sorting Algorithm Comparison</h4>
-                        <pre style="background: #1a1a2e; padding: 1.5rem; border-radius: 10px; color: #00ccff;"><code>Algorithm    Best       Average    Worst      Space    Stable?
-──────────────────────────────────────────────────────────────
-Bubble       O(n)       O(n²)      O(n²)      O(1)     Yes
-Selection    O(n²)      O(n²)      O(n²)      O(1)     No
-Insertion    O(n)       O(n²)      O(n²)      O(1)     Yes
-Merge        O(n log n) O(n log n) O(n log n) O(n)     Yes
-Quick        O(n log n) O(n log n) O(n²)      O(log n) No
-Heap         O(n log n) O(n log n) O(n log n) O(1)     No</code></pre>
-                    </div>
+# ==================== VISUALIZING THE FLOW ====================
 
-                    <div style="background: rgba(255,200,0,0.15); padding: 1.5rem; border-radius: 10px; margin: 2rem 0; border-left: 4px solid #ffc800;">
-                        <h4 style="color: #ffc800; margin-bottom: 0.5rem;">💡 Which Sort Should You Use?</h4>
-                        <ul style="font-size: 1.05rem; line-height: 1.9; margin: 0;">
-                            <li><strong>Small arrays (n < 50):</strong> Insertion sort (simple, fast for small n)</li>
-                            <li><strong>General purpose:</strong> Quick sort (fastest average case)</li>
-                            <li><strong>Guaranteed O(n log n):</strong> Merge sort (no worst case)</li>
-                            <li><strong>In production:</strong> Use built-in <code>sort()</code> — highly optimized!</li>
-                        </ul>
-                    </div>
+# Program flow:
+# 1. Python reads the def and saves the function (doesn't run it)
+# 2. Continues past the function definition
+# 3. Encounters greet("Alice") - JUMPS into the function
+# 4. name becomes "Alice"
+# 5. Executes the body line by line
+# 6. Hits return, sends value back
+# 7. JUMPS back to where it was called
+# 8. Continues from there</div>
 
-                    <div style="background: rgba(0,204,255,0.1); padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
-                        <h4 style="color: #00ccff; margin-bottom: 1rem;">🎯 Quick Check</h4>
-                        <ul style="font-size: 1.05rem; line-height: 1.9; margin: 0;">
-                            <li>Why is bubble sort O(n²)?</li>
-                            <li>What's the key difference between merge sort and quick sort?</li>
-                            <li>When would you choose merge sort over quick sort?</li>
-                            <li>What does "stable sort" mean?</li>
-                        </ul>
-                    </div>
-                </div>
+            <div class="info-box">
+                <h4>💡 Function Naming Best Practices</h4>
+                <ul style="margin-top: 0.5rem;">
+                    <li><strong>Use verbs:</strong> Functions DO things, so name them with action words (calculate_total, get_user, validate_input)</li>
+                    <li><strong>Be descriptive:</strong> calculate_average is better than calc or avg</li>
+                    <li><strong>Use snake_case:</strong> Python convention is lowercase with underscores</li>
+                    <li><strong>Avoid generic names:</strong> process, do_stuff, handle are too vague</li>
+                </ul>
+            </div>
+        </section>
 
-                <!-- Topic 5: Recursion -->
-                <div style="background: linear-gradient(135deg, rgba(138,43,226,0.15) 0%, rgba(218,112,214,0.15) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0; border: 2px solid rgba(138,43,226,0.3);">
-                    <h2 style="color: #8a2be2; font-size: 1.8rem; margin-bottom: 1.5rem;">🔄 Topic 5: Recursion — Functions Calling Themselves</h2>
-                    
-                    <h3 style="color: #9370db; font-size: 1.4rem; margin: 2rem 0 1rem 0;">What IS Recursion?</h3>
-                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        A function that calls itself. Sounds weird? It's like standing between two mirrors—you see infinite reflections. Recursion breaks problems into smaller versions of themselves.
-                    </p>
+        <section id="defining" class="section">
+            <h2 class="section-title">Defining Your First Function</h2>
+            <p class="section-intro">Creating a function is called "defining" it. You use the def keyword. Once defined, a function exists and waits to be called. The code inside doesn't run until you call the function.</p>
 
-                    <div style="background: rgba(138,43,226,0.1); padding: 2rem; border-radius: 15px; margin: 1.5rem 0;">
-                        <h4 style="color: #9370db; margin-bottom: 1rem;">The Anatomy of Recursion</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            Every recursive function needs TWO parts:
-                        </p>
-                        <ol style="font-size: 1.05rem; line-height: 1.9; margin: 0 0 0 2rem;">
-                            <li><strong>Base case:</strong> The stopping condition (prevents infinite loops)</li>
-                            <li><strong>Recursive case:</strong> The function calling itself with a smaller problem</li>
-                        </ol>
-                    </div>
+            <h3>Basic Function Definition</h3>
+            <div class="code"># ==================== BASIC SYNTAX ====================
 
-                    <h3 style="color: #9370db; font-size: 1.4rem; margin: 2rem 0 1rem 0;">Classic Example: Factorial</h3>
-                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        Factorial of n (written n!) = n × (n-1) × (n-2) × ... × 1. Example: 5! = 5 × 4 × 3 × 2 × 1 = 120.
-                    </p>
+def function_name():
+    """Optional docstring describing what the function does."""
+    # code goes here
+    # indented with 4 spaces
+    pass  # placeholder if no code yet
 
-                    <div style="background: rgba(0,0,0,0.3); padding: 2rem; border-radius: 15px; margin: 1.5rem 0;">
-                        <h4 style="color: #00ff88; margin-bottom: 1rem;">Iterative vs Recursive</h4>
-                        <pre style="background: #1a1a2e; padding: 1.5rem; border-radius: 10px; overflow-x: auto; color: #00ff88;"><code># Iterative (using a loop)
-def factorial_iterative(n):
-    result = 1
-    for i in range(1, n + 1):
-        result *= i
-    return result
+# ==================== SIMPLE EXAMPLE ====================
 
-# Recursive (function calls itself)
-def factorial_recursive(n):
-    # Base case: stop when n reaches 1
-    if n <= 1:
-        return 1
-    # Recursive case: n! = n × (n-1)!
-    return n * factorial_recursive(n - 1)
+def say_hello():
+    print("Hello!")
+    print("Welcome to Python!")
+    print("Functions are awesome!")
 
-print(factorial_recursive(5))  # 120</code></pre>
-                    </div>
+# At this point, nothing has been printed yet!
+# We've just DEFINED the function - saved it for later use
 
-                    <div style="background: rgba(138,43,226,0.15); padding: 2rem; border-radius: 15px; margin: 1.5rem 0;">
-                        <h4 style="color: #9370db; margin-bottom: 1rem;">📊 Recursion Visualization</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            How <code>factorial_recursive(5)</code> works:
-                        </p>
-                        <pre style="background: #1a1a2e; padding: 1.5rem; border-radius: 10px; color: #9370db;"><code>factorial(5)
-    → 5 * factorial(4)
-           → 4 * factorial(3)
-                  → 3 * factorial(2)
-                         → 2 * factorial(1)
-                                → 1 (base case!)
-                         → 2 * 1 = 2
-                  → 3 * 2 = 6
-           → 4 * 6 = 24
-    → 5 * 24 = 120</code></pre>
-                    </div>
+# Now let's CALL it:
+say_hello()
 
-                    <h3 style="color: #9370db; font-size: 1.4rem; margin: 2rem 0 1rem 0;">Fibonacci Sequence</h3>
-                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        Each number is the sum of the previous two: 0, 1, 1, 2, 3, 5, 8, 13, 21...
-                    </p>
+# Output:
+# Hello!
+# Welcome to Python!
+# Functions are awesome!
 
-                    <div style="background: rgba(0,0,0,0.3); padding: 2rem; border-radius: 15px; margin: 1.5rem 0;">
-                        <pre style="background: #1a1a2e; padding: 1.5rem; border-radius: 10px; overflow-x: auto; color: #da70d6;"><code>def fibonacci(n):
-    """
-    Return the nth Fibonacci number.
-    Time: O(2ⁿ) - VERY SLOW without optimization!
-    """
-    # Base cases
-    if n <= 0:
-        return 0
-    if n == 1:
-        return 1
-    # Recursive case: fib(n) = fib(n-1) + fib(n-2)
-    return fibonacci(n - 1) + fibonacci(n - 2)
+# ==================== DEFINE VS CALL ====================
 
-print(fibonacci(7))  # 13
-# Sequence: 0, 1, 1, 2, 3, 5, 8, [13]</code></pre>
-                    </div>
+# DEFINITION (with def):
+# - Creates the function
+# - Stores the code for later
+# - Does NOT run the code
 
-                    <div style="background: rgba(255,107,107,0.15); padding: 1.5rem; border-radius: 10px; margin: 1.5rem 0; border-left: 4px solid #ff6b6b;">
-                        <h4 style="color: #ff6b6b; margin-bottom: 0.5rem;">⚠️ The Problem with Naive Fibonacci</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            This recalculates the same values over and over! <code>fibonacci(5)</code> calls <code>fibonacci(3)</code> twice, which calls <code>fibonacci(2)</code> three times... exponential explosion!
-                        </p>
-                        <pre style="background: #1a1a2e; padding: 1.5rem; border-radius: 10px; color: #ff6b6b;"><code>fib(5)
-    → fib(4) + fib(3)
-        → fib(3) + fib(2) + fib(2) + fib(1)
-            → ...so many duplicate calculations!</code></pre>
-                    </div>
+# CALL (with parentheses):
+# - Actually runs the function
+# - Executes the code inside
+# - Can be done multiple times
 
-                    <div style="background: rgba(0,0,0,0.3); padding: 2rem; border-radius: 15px; margin: 1.5rem 0;">
-                        <h4 style="color: #00ff88; margin-bottom: 1rem;">✅ Optimized: Memoization</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            Store calculated values to avoid recalculating. Turns O(2ⁿ) into O(n)!
-                        </p>
-                        <pre style="background: #1a1a2e; padding: 1.5rem; border-radius: 10px; overflow-x: auto; color: #00ff88;"><code>def fibonacci_memo(n, memo={}):
-    """
-    Fibonacci with memoization.
-    Time: O(n), Space: O(n)
-    """
-    if n in memo:
-        return memo[n]  # Already calculated!
-    
-    if n <= 0:
-        return 0
-    if n == 1:
-        return 1
-    
-    memo[n] = fibonacci_memo(n-1, memo) + fibonacci_memo(n-2, memo)
-    return memo[n]
+# ==================== FUNCTION WITHOUT ARGUMENTS ====================
 
-print(fibonacci_memo(50))  # Instant! Would freeze without memo.</code></pre>
-                    </div>
+def print_separator():
+    """Print a visual separator line."""
+    print("=" * 50)
 
-                    <h3 style="color: #9370db; font-size: 1.4rem; margin: 2rem 0 1rem 0;">When to Use Recursion</h3>
-                    <div style="background: rgba(138,43,226,0.1); padding: 2rem; border-radius: 15px; margin: 1.5rem 0;">
-                        <ul style="font-size: 1.05rem; line-height: 1.9; margin: 0;">
-                            <li><strong>Tree/graph traversal:</strong> Navigating file systems, DOM trees, social networks</li>
-                            <li><strong>Divide and conquer:</strong> Merge sort, quick sort, binary search</li>
-                            <li><strong>Backtracking:</strong> Solving mazes, Sudoku, chess problems</li>
-                            <li><strong>Mathematical sequences:</strong> Factorial, Fibonacci, powers</li>
-                        </ul>
-                    </div>
+def print_welcome():
+    """Print a welcome banner."""
+    print_separator()
+    print("    WELCOME TO MY PROGRAM")
+    print_separator()
 
-                    <div style="background: rgba(255,200,0,0.15); padding: 1.5rem; border-radius: 10px; margin: 2rem 0; border-left: 4px solid #ffc800;">
-                        <h4 style="color: #ffc800; margin-bottom: 0.5rem;">💡 Recursion vs Iteration</h4>
-                        <ul style="font-size: 1.05rem; line-height: 1.9; margin: 0;">
-                            <li><strong>Recursion pros:</strong> Elegant, concise, natural for tree problems</li>
-                            <li><strong>Recursion cons:</strong> Stack overflow risk, slower (function call overhead)</li>
-                            <li><strong>Iteration pros:</strong> Faster, no stack overflow</li>
-                            <li><strong>Iteration cons:</strong> Sometimes more complex code</li>
-                            <li><strong>Rule of thumb:</strong> Use recursion when it makes the problem clearer, otherwise use loops</li>
-                        </ul>
-                    </div>
+print_welcome()
+# Output:
+# ==================================================
+#     WELCOME TO MY PROGRAM
+# ==================================================</div>
 
-                    <div style="background: rgba(0,204,255,0.1); padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
-                        <h4 style="color: #00ccff; margin-bottom: 1rem;">🎯 Quick Check</h4>
-                        <ul style="font-size: 1.05rem; line-height: 1.9; margin: 0;">
-                            <li>What happens if you forget the base case?</li>
-                            <li>Why is naive Fibonacci O(2ⁿ)?</li>
-                            <li>What's memoization?</li>
-                            <li>Can every recursive function be written iteratively?</li>
-                        </ul>
-                    </div>
-                </div>
+            <h3>Define Once, Call Many Times</h3>
+            <div class="code"># ==================== REUSABILITY IN ACTION ====================
 
-                <!-- Topic 6: Space Complexity -->
-                <div style="background: linear-gradient(135deg, rgba(0,255,136,0.15) 0%, rgba(0,204,109,0.15) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0; border: 2px solid rgba(0,255,136,0.3);">
-                    <h2 style="color: #00ff88; font-size: 1.8rem; margin-bottom: 1.5rem;">💾 Topic 6: Space Complexity — Memory Matters Too</h2>
-                    
-                    <h3 style="color: #00ff88; font-size: 1.4rem; margin: 2rem 0 1rem 0;">It's Not Just About Speed</h3>
-                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        We've focused on <strong>time complexity</strong> (how fast), but <strong>space complexity</strong> (how much memory) is equally important. Running out of RAM crashes programs!
-                    </p>
+def greet():
+    print("Hello there!")
+    print("Nice to meet you!")
 
-                    <div style="background: rgba(0,0,0,0.3); padding: 2rem; border-radius: 15px; margin: 1.5rem 0;">
-                        <h4 style="color: #00ff88; margin-bottom: 1rem;">O(1) Space — Constant Memory</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            Uses a fixed amount of memory regardless of input size:
-                        </p>
-                        <pre style="background: #1a1a2e; padding: 1.5rem; border-radius: 10px; overflow-x: auto; color: #00ff88;"><code>def sum_array(arr):
-    total = 0  # Only one variable
-    for num in arr:
+# Call it multiple times
+greet()    # First call
+greet()    # Second call
+greet()    # Third call
+
+# Output:
+# Hello there!
+# Nice to meet you!
+# Hello there!
+# Nice to meet you!
+# Hello there!
+# Nice to meet you!
+
+# ==================== IN A LOOP ====================
+
+def announce_round(number):
+    print(f"\n=== ROUND {number} ===")
+
+for i in range(1, 4):
+    announce_round(i)
+    print("Fighting...")
+    print("Round complete!")
+
+# ==================== FROM OTHER FUNCTIONS ====================
+
+def step_one():
+    print("Step 1: Initialize")
+
+def step_two():
+    print("Step 2: Process")
+
+def step_three():
+    print("Step 3: Finalize")
+
+def run_all_steps():
+    """Run the complete procedure."""
+    print("Starting procedure...")
+    step_one()
+    step_two()
+    step_three()
+    print("Procedure complete!")
+
+run_all_steps()
+# Starting procedure...
+# Step 1: Initialize
+# Step 2: Process
+# Step 3: Finalize
+# Procedure complete!</div>
+
+            <h3>Functions Must Be Defined Before Calling</h3>
+            <div class="code"># ==================== ORDER MATTERS ====================
+
+# This WON'T work:
+# greet()          # ❌ NameError: name 'greet' is not defined
+# def greet():
+#     print("Hi")
+
+# This WORKS:
+def greet():       # Define first
+    print("Hi")
+
+greet()            # Then call
+
+# ==================== BUT CALLS INSIDE FUNCTIONS ARE OK ====================
+
+# This works because functions are defined before main() is called:
+
+def helper():
+    print("I'm helping!")
+
+def main():
+    print("Starting...")
+    helper()          # OK because helper is defined when main() runs
+    print("Done!")
+
+main()
+
+# Python doesn't look inside main() until you call it
+# By then, helper() is already defined
+
+# ==================== COMMON PATTERN ====================
+
+# Define all functions first, then call them at the bottom:
+
+def function_a():
+    function_b()     # OK - function_b exists when this runs
+
+def function_b():
+    print("B!")
+
+# Main code at the bottom
+function_a()</div>
+
+            <div class="warning-box">
+                <h4>⚠️ Common Beginner Mistakes</h4>
+                <ul style="margin-top: 0.5rem;">
+                    <li><strong>Forgetting parentheses:</strong> <code>greet</code> refers to the function object, <code>greet()</code> calls it</li>
+                    <li><strong>Wrong indentation:</strong> All code inside the function must be indented equally</li>
+                    <li><strong>Calling before defining:</strong> The def statement must come before the call</li>
+                    <li><strong>Expecting automatic execution:</strong> Defining a function doesn't run it!</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="parameters" class="section">
+            <h2 class="section-title">Parameters and Arguments</h2>
+            <p class="section-intro">Functions become truly powerful when they accept input. Parameters are variables that receive values when the function is called. They let you customize what the function does each time.</p>
+
+            <div class="metaphor-box">
+                <h4>📬 The Mailbox Metaphor</h4>
+                <p>Parameters are like mailboxes on a house:</p>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>Parameter:</strong> The mailbox (a slot to receive something)</li>
+                    <li><strong>Argument:</strong> The letter you put in the mailbox (the actual value)</li>
+                </ul>
+                <p style="margin-top: 1rem;">When you call greet("Alice"), you're putting "Alice" (argument) into the name mailbox (parameter).</p>
+            </div>
+
+            <h3>Single Parameter</h3>
+            <div class="code"># ==================== FUNCTION WITH A PARAMETER ====================
+
+def greet(name):              # 'name' is a PARAMETER (placeholder)
+    print(f"Hello, {name}!")
+
+# Calling with an argument
+greet("Alice")     # "Alice" is the ARGUMENT (actual value)
+greet("Bob")       # "Bob" is the argument
+greet("Charlie")   # "Charlie" is the argument
+
+# Output:
+# Hello, Alice!
+# Hello, Bob!
+# Hello, Charlie!
+
+# ==================== HOW IT WORKS ====================
+
+# When you call greet("Alice"):
+# 1. Python sees greet("Alice")
+# 2. Jumps to the greet function
+# 3. Assigns name = "Alice"
+# 4. Runs the function body with name = "Alice"
+# 5. Returns to where it was called
+
+# Each call gets its own independent 'name'
+
+# ==================== PARAMETER VS ARGUMENT ====================
+
+# People often use these interchangeably, but technically:
+# PARAMETER: Variable in the function definition (name)
+# ARGUMENT: Value passed when calling (Alice)
+
+def add(x, y):     # x and y are PARAMETERS
+    return x + y
+
+add(5, 3)          # 5 and 3 are ARGUMENTS
+
+# ==================== DYNAMIC BEHAVIOR ====================
+
+def double(number):
+    return number * 2
+
+print(double(5))      # 10
+print(double(10))     # 20
+print(double(100))    # 200
+
+# Same function, different results based on input!</div>
+
+            <h3>Multiple Parameters</h3>
+            <div class="code"># ==================== MULTIPLE PARAMETERS ====================
+
+# Separate parameters with commas
+def introduce(name, age, city):
+    print(f"Hi, I'm {name}!")
+    print(f"I'm {age} years old.")
+    print(f"I live in {city}.")
+    print()  # Empty line for spacing
+
+introduce("Alice", 25, "New York")
+introduce("Bob", 30, "London")
+introduce("Charlie", 22, "Tokyo")
+
+# ==================== ORDER MATTERS (POSITIONAL ARGUMENTS) ====================
+
+# Arguments are matched to parameters by POSITION:
+#   introduce(name,    age, city)
+#             ↑        ↑    ↑
+#   introduce("Alice", 25,  "New York")
+
+# If you mix them up:
+introduce(25, "Alice", "New York")  # ⚠️ Works but wrong!
+# Output: Hi, I'm 25!  (not what we wanted)
+
+# ==================== PRACTICAL EXAMPLE ====================
+
+def calculate_area(length, width):
+    """Calculate the area of a rectangle."""
+    area = length * width
+    return area
+
+room1 = calculate_area(10, 12)   # 120
+room2 = calculate_area(15, 8)    # 120
+room3 = calculate_area(20, 20)   # 400
+
+print(f"Room 1: {room1} sq ft")
+print(f"Room 2: {room2} sq ft")
+print(f"Room 3: {room3} sq ft")
+
+# ==================== MANY PARAMETERS ====================
+
+def create_character(name, health, attack, defense, speed, level):
+    """Create an RPG character."""
+    print(f"Creating {name}...")
+    print(f"  HP: {health}")
+    print(f"  ATK: {attack}")
+    print(f"  DEF: {defense}")
+    print(f"  SPD: {speed}")
+    print(f"  LVL: {level}")
+    return {"name": name, "hp": health, "atk": attack, 
+            "def": defense, "spd": speed, "lvl": level}
+
+hero = create_character("Hero", 100, 25, 15, 10, 1)</div>
+
+            <h3>Keyword Arguments</h3>
+            <div class="code"># ==================== NAMED ARGUMENTS ====================
+
+# You can specify which parameter gets which value by name:
+def describe_pet(name, animal, color):
+    print(f"{name} is a {color} {animal}")
+
+# Positional (order matters)
+describe_pet("Fluffy", "cat", "white")
+# Fluffy is a white cat
+
+# Keyword (order doesn't matter!)
+describe_pet(animal="dog", color="brown", name="Rex")
+# Rex is a brown dog
+
+describe_pet(color="orange", name="Nemo", animal="fish")
+# Nemo is an orange fish
+
+# ==================== MIXING POSITIONAL AND KEYWORD ====================
+
+# Positional arguments must come FIRST
+describe_pet("Tweety", animal="bird", color="yellow")  # ✓ OK
+
+# This is wrong:
+# describe_pet(name="Tweety", "bird", "yellow")  # ❌ SyntaxError
+
+# ==================== WHY USE KEYWORD ARGUMENTS? ====================
+
+# 1. Clarity - you know what each value means:
+create_user("alice", 25, "NYC", True, False, "admin")  # What are those bools?
+create_user("alice", age=25, city="NYC", active=True, 
+            verified=False, role="admin")  # Much clearer!
+
+# 2. Order independence - useful for many parameters
+# 3. Self-documenting code - reads like prose
+
+# ==================== PRACTICAL EXAMPLE ====================
+
+def format_price(amount, currency="$", decimals=2, show_symbol=True):
+    """Format a price for display."""
+    if show_symbol:
+        return f"{currency}{amount:.{decimals}f}"
+    else:
+        return f"{amount:.{decimals}f}"
+
+print(format_price(19.99))                           # $19.99
+print(format_price(19.99, currency="€"))             # €19.99
+print(format_price(19.99, decimals=0))               # $20
+print(format_price(19.99, show_symbol=False))        # 19.99
+print(format_price(19.99, "£", 2, True))             # £19.99</div>
+
+            <h3>*args and **kwargs (Variable Arguments)</h3>
+            <div class="code"># ==================== *args - VARIABLE POSITIONAL ARGUMENTS ====================
+
+# *args collects extra positional arguments into a tuple
+def add_all(*numbers):
+    """Add any number of numbers together."""
+    total = 0
+    for num in numbers:
         total += num
-    return total  # O(1) space!</code></pre>
-                    </div>
+    return total
 
-                    <div style="background: rgba(0,0,0,0.3); padding: 2rem; border-radius: 15px; margin: 1.5rem 0;">
-                        <h4 style="color: #33d4ff; margin-bottom: 1rem;">O(n) Space — Linear Memory</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            Memory grows with input size:
-                        </p>
-                        <pre style="background: #1a1a2e; padding: 1.5rem; border-radius: 10px; overflow-x: auto; color: #33d4ff;"><code>def create_copy(arr):
-    new_arr = []
-    for item in arr:
-        new_arr.append(item)  # Creating new array
-    return new_arr  # O(n) space — copied entire input</code></pre>
-                    </div>
+print(add_all(1, 2))           # 3
+print(add_all(1, 2, 3, 4, 5))  # 15
+print(add_all(10))             # 10
+print(add_all())               # 0
 
-                    <div style="background: rgba(0,0,0,0.3); padding: 2rem; border-radius: 15px; margin: 1.5rem 0;">
-                        <h4 style="color: #ffc800; margin-bottom: 1rem;">Recursion & Stack Space</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            Each recursive call uses stack memory:
-                        </p>
-                        <pre style="background: #1a1a2e; padding: 1.5rem; border-radius: 10px; overflow-x: auto; color: #ffc800;"><code>def factorial(n):
-    if n <= 1:
-        return 1
-    return n * factorial(n - 1)
+# numbers is a tuple containing all the arguments
 
-# Space: O(n) — n function calls on the stack!
-# factorial(1000) might cause stack overflow</code></pre>
-                    </div>
+# ==================== **kwargs - VARIABLE KEYWORD ARGUMENTS ====================
 
-                    <div style="background: rgba(255,200,0,0.15); padding: 1.5rem; border-radius: 10px; margin: 2rem 0; border-left: 4px solid #ffc800;">
-                        <h4 style="color: #ffc800; margin-bottom: 0.5rem;">⚖️ Time-Space Tradeoffs</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            Sometimes you can trade memory for speed (or vice versa):
-                        </p>
-                        <ul style="font-size: 1.05rem; line-height: 1.9; margin: 0;">
-                            <li><strong>Memoization:</strong> Use O(n) space to turn O(2ⁿ) time into O(n)</li>
-                            <li><strong>Hash tables:</strong> Use O(n) space for O(1) lookups instead of O(n) search</li>
-                            <li><strong>Caching:</strong> Store expensive calculations in memory</li>
-                        </ul>
-                    </div>
-                </div>
+# **kwargs collects extra keyword arguments into a dictionary
+def print_info(**details):
+    """Print any information provided."""
+    for key, value in details.items():
+        print(f"{key}: {value}")
 
-                <div style="background: linear-gradient(135deg, rgba(0,255,136,0.1) 0%, rgba(0,204,255,0.1) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0; border-left: 5px solid var(--primary-color);">
-                    <h2 style="color: var(--primary-color); font-size: 1.8rem; margin-bottom: 1.5rem;">🎓 You're Now an Algorithm Master</h2>
-                    <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        You've learned to <strong>think algorithmically</strong>, analyze efficiency with Big O, implement searching and sorting algorithms, master recursion, and understand space complexity. These skills separate hobbyist coders from professional software engineers.
-                    </p>
-                    <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        Google, Amazon, Facebook—they all ask algorithm questions in interviews. Why? Because writing <em>fast, scalable</em> code requires understanding these fundamentals. A junior dev might write O(n²) code that works for 100 users. A senior dev writes O(n log n) code that scales to 100 million.
-                    </p>
-                    <div style="background: rgba(0,255,136,0.15); padding: 2rem; border-radius: 15px; margin: 2rem 0;">
-                        <h3 style="color: #00ff88; margin-bottom: 1rem;">🏆 Next Steps & Practice Challenges</h3>
-                        <ul style="font-size: 1.05rem; line-height: 1.9; margin: 0;">
-                            <li><strong>LeetCode:</strong> Solve 10 Easy, 5 Medium problems</li>
-                            <li><strong>Implement from scratch:</strong> Binary search, merge sort, quick sort</li>
-                            <li><strong>Analyze your code:</strong> What's the Big O of your last project's functions?</li>
-                            <li><strong>Read:</strong> "Grokking Algorithms" by Aditya Bhargava (visual, beginner-friendly)</li>
-                            <li><strong>Watch:</strong> MIT OpenCourseWare "Introduction to Algorithms"</li>
-                            <li><strong>Practice recursion:</strong> Solve tree traversal problems on HackerRank</li>
-                            <li><strong>Join:</strong> Competitive programming on Codeforces or AtCoder</li>
-                        </ul>
-                    </div>
-                    <div style="background: rgba(0,204,255,0.15); padding: 2rem; border-radius: 15px; margin: 2rem 0;">
-                        <h3 style="color: #00ccff; margin-bottom: 1rem;">📚 What's Next?</h3>
-                        <p style="font-size: 1.05rem; line-height: 1.8;">
-                            In Chapter 04, we'll explore <strong>data structures</strong>—arrays, linked lists, stacks, queues, hash tables, trees, and graphs. These structures work hand-in-hand with algorithms. A binary search needs a sorted array. Merge sort produces a sorted list. Recursion naturally fits tree structures. Everything connects.
-                        </p>
-                    </div>
-                </div>
+print_info(name="Alice", age=25)
+# name: Alice
+# age: 25
 
-                <div style="background: linear-gradient(135deg, rgba(0,255,136,0.1) 0%, rgba(0,204,255,0.1) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0; border-left: 5px solid var(--primary-color);">
-                    <h2 style="color: var(--primary-color); font-size: 1.8rem; margin-bottom: 1.5rem;">🎓 You're Now Thinking Like a Computer Scientist</h2>
-                    <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        You've mastered algorithmic thinking, Big O, searching, sorting, and recursion. These tools power everything from Google Search to Netflix recommendations. Keep practicing—solve problems on LeetCode, implement algorithms from scratch, and analyze your code's efficiency.
-                    </p>
-                    <div style="background: rgba(0,255,136,0.15); padding: 2rem; border-radius: 15px; margin: 2rem 0;">
-                        <h3 style="color: #00ff88; margin-bottom: 1rem;">🏆 Practice Challenges</h3>
-                        <ul style="font-size: 1.05rem; line-height: 1.9; margin: 0;">
-                            <li>Implement binary search from scratch</li>
-                            <li>Write merge sort and test on arrays</li>
-                            <li>Solve 10 LeetCode Easy problems</li>
-                            <li>Calculate time complexity of your project's functions</li>
-                            <li>Rewrite a recursive function as iterative</li>
-                        </ul>
-                    </div>
-                </div>
+print_info(title="Manager", department="Sales", years=5)
+# title: Manager
+# department: Sales
+# years: 5
 
-                <div style="display: flex; gap: 2rem; margin-top: 3rem;">
-                    <a href="programming-ch02.html" style="flex: 1; background: linear-gradient(135deg, rgba(0,204,255,0.2) 0%, rgba(138,43,226,0.2) 100%); padding: 2rem; border-radius: 15px; text-decoration: none; border: 2px solid rgba(0,204,255,0.4); transition: all 0.3s;">
-                        <div style="color: #00ccff; font-size: 0.9rem; margin-bottom: 0.5rem;">← PREVIOUS</div>
-                        <div style="color: #fff; font-size: 1.1rem; font-weight: 600;">Chapter 02</div>
-                    </a>
-                    <a href="programming-ch04.html" style="flex: 1; background: linear-gradient(135deg, rgba(0,255,136,0.2) 0%, rgba(0,204,255,0.2) 100%); padding: 2rem; border-radius: 15px; text-decoration: none; border: 2px solid rgba(0,255,136,0.4); transition: all 0.3s; text-align: right;">
-                        <div style="color: #00ff88; font-size: 0.9rem; margin-bottom: 0.5rem;">NEXT →</div>
-                        <div style="color: #fff; font-size: 1.1rem; font-weight: 600;">Chapter 04</div>
-                    </a>
+# ==================== COMBINING THEM ====================
+
+def super_function(required, *args, default="value", **kwargs):
+    print(f"Required: {required}")
+    print(f"Extra args: {args}")
+    print(f"Default: {default}")
+    print(f"Extra kwargs: {kwargs}")
+
+super_function("must have", 1, 2, 3, default="custom", 
+               extra="stuff", more="things")
+
+# Required: must have
+# Extra args: (1, 2, 3)
+# Default: custom
+# Extra kwargs: {'extra': 'stuff', 'more': 'things'}
+
+# ==================== ORDER OF PARAMETERS ====================
+
+# The order must be:
+# 1. Regular positional parameters
+# 2. *args
+# 3. Keyword-only parameters (including defaults)
+# 4. **kwargs
+
+def ordered(a, b, *args, c, d="default", **kwargs):
+    pass  # Correct order!</div>
+
+            <div class="info-box">
+                <h4>💡 When to Use Each Type</h4>
+                <ul style="margin-top: 0.5rem;">
+                    <li><strong>Required positional:</strong> Values the function always needs</li>
+                    <li><strong>Default parameters:</strong> Optional values with sensible defaults</li>
+                    <li><strong>*args:</strong> Unknown number of similar items (like numbers to sum)</li>
+                    <li><strong>**kwargs:</strong> Unknown configuration options or metadata</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="return" class="section">
+            <h2 class="section-title">Return Values</h2>
+            <p class="section-intro">Functions can send back a result using the return statement. This is how functions give you useful output that you can store, manipulate, or pass to other functions. Return values are what make functions truly powerful.</p>
+
+            <div class="metaphor-box">
+                <h4>🏭 The Vending Machine</h4>
+                <p>A function with return is like a vending machine:</p>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>Arguments:</strong> Money and button press (what you put in)</li>
+                    <li><strong>Function body:</strong> The machine's internal process</li>
+                    <li><strong>Return value:</strong> The snack that comes out (what you get back)</li>
+                </ul>
+                <p style="margin-top: 1rem;">You don't just want the machine to display "Dispensed!" - you want the actual snack. That's what return does.</p>
+            </div>
+
+            <h3>Basic Return</h3>
+            <div class="code"># ==================== FUNCTION THAT RETURNS A VALUE ====================
+
+def add(a, b):
+    result = a + b
+    return result    # Send the result back to the caller
+
+# Using the returned value
+sum1 = add(5, 3)     # sum1 = 8
+sum2 = add(10, 20)   # sum2 = 30
+
+print(sum1)          # 8
+print(sum2)          # 30
+
+# ==================== USING RETURN VALUES DIRECTLY ====================
+
+# You can use the return value immediately:
+print(add(100, 200))    # 300
+
+# In expressions:
+total = add(5, 3) + add(10, 20)    # 8 + 30 = 38
+
+# As arguments to other functions:
+double_sum = add(add(1, 2), add(3, 4))  # add(3, 7) = 10
+
+# In conditions:
+if add(5, 5) == 10:
+    print("Math works!")
+
+# ==================== SIMPLIFIED RETURN ====================
+
+# You don't need a separate variable:
+def add(a, b):
+    return a + b    # Calculate and return in one line
+
+def multiply(a, b):
+    return a * b
+
+def power(base, exp):
+    return base ** exp
+
+# ==================== FUNCTIONS THAT DON'T RETURN ====================
+
+# If a function doesn't have a return statement, it returns None
+
+def greet(name):
+    print(f"Hello, {name}!")
+    # No return statement
+
+result = greet("Alice")    # Prints "Hello, Alice!"
+print(result)               # None
+
+# This is fine for functions that just DO something
+# But use return for functions that CALCULATE something</div>
+
+            <div class="warning-box">
+                <h4>⚠️ print() vs return - Critical Difference!</h4>
+                <p><span class="inline-code">print()</span> displays text on screen but returns None.</p>
+                <p><span class="inline-code">return</span> sends a value back that you can store and use.</p>
+                <div class="code" style="margin-top: 1rem; font-size: 0.8rem;"># WRONG - uses print
+def add_wrong(a, b):
+    print(a + b)     # Displays result, returns None
+
+result = add_wrong(5, 3)  # Prints "8"
+print(result * 2)          # ERROR! None * 2
+
+# RIGHT - uses return
+def add_right(a, b):
+    return a + b     # Returns the value
+
+result = add_right(5, 3)  # result = 8
+print(result * 2)          # 16</div>
+            </div>
+
+            <h3>Return Ends the Function</h3>
+            <div class="code"># ==================== RETURN EXITS IMMEDIATELY ====================
+
+def test():
+    print("Before return")
+    return "Done"
+    print("After return")    # ⚠️ This NEVER executes!
+
+result = test()
+# Output: Before return
+# result = "Done"
+
+# The code after return is "dead code" - unreachable
+
+# ==================== EARLY RETURNS FOR VALIDATION ====================
+
+def divide(a, b):
+    # Check for error condition first
+    if b == 0:
+        return "Error: Cannot divide by zero"
+    
+    # Only reach here if b != 0
+    return a / b
+
+print(divide(10, 2))    # 5.0
+print(divide(10, 0))    # Error: Cannot divide by zero
+
+# ==================== MULTIPLE EXIT POINTS ====================
+
+def grade(score):
+    if score >= 90:
+        return "A"
+    if score >= 80:
+        return "B"
+    if score >= 70:
+        return "C"
+    if score >= 60:
+        return "D"
+    return "F"
+
+# Each return exits the function immediately
+# No need for elif when using return!
+
+print(grade(95))  # A
+print(grade(82))  # B
+print(grade(50))  # F
+
+# ==================== GUARD CLAUSES PATTERN ====================
+
+def process_user(user):
+    # Handle error cases first (guard clauses)
+    if user is None:
+        return "Error: No user provided"
+    
+    if not user.get("active"):
+        return "Error: User is inactive"
+    
+    if user.get("age", 0) < 18:
+        return "Error: User is underage"
+    
+    # Main logic only runs if all checks pass
+    return f"Processing {user['name']}..."
+
+# Clean and readable - errors handled at the top</div>
+
+            <h3>Returning Multiple Values</h3>
+            <div class="code"># ==================== RETURN MULTIPLE VALUES ====================
+
+# Python can return multiple values as a tuple!
+
+def get_stats(numbers):
+    total = sum(numbers)
+    count = len(numbers)
+    average = total / count
+    minimum = min(numbers)
+    maximum = max(numbers)
+    return total, count, average, minimum, maximum
+
+# Unpack the returned values
+data = [10, 20, 30, 40, 50]
+total, count, avg, low, high = get_stats(data)
+
+print(f"Sum: {total}")       # 150
+print(f"Count: {count}")     # 5
+print(f"Average: {avg}")     # 30.0
+print(f"Range: {low}-{high}") # 10-50
+
+# ==================== HOW IT WORKS ====================
+
+# When you write: return a, b, c
+# Python creates a tuple: (a, b, c)
+# When you write: x, y, z = func()
+# Python unpacks the tuple
+
+result = get_stats(data)
+print(result)  # (150, 5, 30.0, 10, 50) - it's a tuple
+print(type(result))  # &lt;class 'tuple'&gt;
+
+# You can also access by index:
+print(result[0])  # 150 (total)
+print(result[2])  # 30.0 (average)
+
+# ==================== PARTIAL UNPACKING ====================
+
+# If you only need some values:
+total, _, avg, _, _ = get_stats(data)  # _ ignores values
+
+# Or use indexing:
+avg = get_stats(data)[2]
+
+# ==================== RETURNING DICTIONARIES ====================
+
+# For many values, a dictionary is often clearer:
+
+def analyze_text(text):
+    words = text.split()
+    return {
+        "char_count": len(text),
+        "word_count": len(words),
+        "avg_word_length": len(text.replace(" ", "")) / len(words),
+        "longest_word": max(words, key=len)
+    }
+
+stats = analyze_text("The quick brown fox jumps over the lazy dog")
+print(f"Words: {stats['word_count']}")
+print(f"Longest: {stats['longest_word']}")</div>
+
+            <h3>Returning None</h3>
+            <div class="code"># ==================== EXPLICIT NONE RETURN ====================
+
+# Sometimes you explicitly return None to indicate "no result"
+
+def find_user(user_id, users):
+    for user in users:
+        if user["id"] == user_id:
+            return user
+    return None  # Not found
+
+users = [
+    {"id": 1, "name": "Alice"},
+    {"id": 2, "name": "Bob"}
+]
+
+result = find_user(1, users)
+if result:
+    print(f"Found: {result['name']}")
+else:
+    print("User not found")
+
+result = find_user(99, users)  # Returns None
+if result is None:
+    print("User 99 not found")
+
+# ==================== IMPLICIT NONE ====================
+
+# Functions without return (or with bare return) return None
+
+def say_hello():
+    print("Hello!")
+    # No return statement → returns None
+
+def do_nothing():
+    return  # Bare return → returns None
+
+print(say_hello())    # Prints "Hello!" then None
+print(do_nothing())   # None</div>
+
+            <div class="info-box">
+                <h4>💡 Return Value Best Practices</h4>
+                <ul style="margin-top: 0.5rem;">
+                    <li><strong>Be consistent:</strong> Always return the same type (or None for errors)</li>
+                    <li><strong>Document returns:</strong> Use docstrings to explain what's returned</li>
+                    <li><strong>Avoid side effects:</strong> Functions that return should generally not print</li>
+                    <li><strong>Use early returns:</strong> Guard clauses make code cleaner</li>
+                    <li><strong>Consider dictionaries:</strong> Better than tuples when returning many values</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="scope" class="section">
+            <h2 class="section-title">Variable Scope</h2>
+            <p class="section-intro">Variables created inside a function only exist inside that function. This is called "scope" and it's crucial to understand. Scope determines where variables can be accessed and how long they live.</p>
+
+            <div class="metaphor-box">
+                <h4>🏠 The Room Metaphor</h4>
+                <p>Think of each function as a room in a house:</p>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>Local variables</strong> = Items in your room (only you can use them)</li>
+                    <li><strong>Global variables</strong> = Items in the shared living room (everyone can see them)</li>
+                    <li><strong>When the function ends</strong> = You leave the room, and everything in it is cleaned up</li>
+                </ul>
+                <p style="margin-top: 1rem;">Your bedroom's stuff doesn't exist to someone in another room. Similarly, local variables don't exist outside their function.</p>
+            </div>
+
+            <h3>Local Scope</h3>
+            <div class="code"># ==================== LOCAL VARIABLES ====================
+
+# Variables created INSIDE a function are LOCAL
+# They only exist while the function is running
+
+def my_function():
+    x = 10            # x is LOCAL to my_function
+    print(f"Inside function: x = {x}")
+
+my_function()         # Works: Inside function: x = 10
+# print(x)            # ❌ NameError: name 'x' is not defined
+
+# x doesn't exist outside the function!
+
+# ==================== EACH CALL IS FRESH ====================
+
+def counter():
+    count = 0         # Created fresh each call
+    count += 1
+    return count
+
+print(counter())      # 1
+print(counter())      # 1 (not 2!)
+print(counter())      # 1 (still 1!)
+
+# count is destroyed when the function ends
+# Created fresh (at 0) on the next call
+
+# ==================== PARAMETERS ARE LOCAL TOO ====================
+
+def greet(name):
+    # 'name' is a local variable (from parameter)
+    message = f"Hello, {name}!"  # 'message' is also local
+    return message
+
+greet("Alice")
+# print(name)         # ❌ NameError
+# print(message)      # ❌ NameError
+
+# ==================== SAME NAME, DIFFERENT VARIABLES ====================
+
+x = "global"
+
+def my_function():
+    x = "local"       # This is a DIFFERENT x!
+    print(f"Inside: {x}")
+
+my_function()         # Inside: local
+print(f"Outside: {x}")  # Outside: global
+
+# The function created a new local x
+# It didn't change the global x</div>
+
+            <h3>Global Scope</h3>
+            <div class="code"># ==================== GLOBAL VARIABLES ====================
+
+# Variables created OUTSIDE any function are GLOBAL
+# They can be READ from anywhere
+
+message = "Hello, World!"    # Global variable
+
+def greet():
+    print(message)           # Can READ global variables
+
+greet()    # Hello, World!
+
+# ==================== FUNCTIONS CAN'T MODIFY GLOBALS (BY DEFAULT) ====================
+
+counter = 0
+
+def increment():
+    counter = counter + 1    # ❌ UnboundLocalError!
+
+# Why? Python sees "counter = ..." and thinks you're creating
+# a LOCAL variable. But you're trying to read it before creating it.
+
+# ==================== THE GLOBAL KEYWORD ====================
+
+counter = 0
+
+def increment():
+    global counter    # Tell Python: "I want the global counter"
+    counter += 1
+
+increment()
+increment()
+increment()
+print(counter)    # 3
+
+# ==================== READ VS MODIFY ====================
+
+value = 100
+
+def can_read():
+    print(value)      # ✓ Reading global is fine
+
+def cannot_modify():
+    value += 1        # ❌ Error without 'global'
+
+def can_modify():
+    global value
+    value += 1        # ✓ With 'global', can modify
+
+can_read()            # 100
+can_modify()
+print(value)          # 101</div>
+
+            <div class="warning-box">
+                <h4>⚠️ Why Avoid Global Variables?</h4>
+                <ul style="margin-top: 0.5rem;">
+                    <li><strong>Hard to track:</strong> Any function could change them</li>
+                    <li><strong>Hidden dependencies:</strong> Functions secretly depend on external state</li>
+                    <li><strong>Testing nightmare:</strong> Need to set up global state before testing</li>
+                    <li><strong>Name conflicts:</strong> Easy to accidentally reuse names</li>
+                </ul>
+                <p style="margin-top: 1rem;">Better approach: Pass values as parameters and return results!</p>
+            </div>
+
+            <h3>The Right Way: Parameters and Returns</h3>
+            <div class="code"># ==================== BAD: USING GLOBALS ====================
+
+total = 0
+
+def add_to_total_bad(amount):
+    global total
+    total += amount
+
+add_to_total_bad(10)
+add_to_total_bad(20)
+print(total)  # 30
+
+# Problems:
+# - Hard to test add_to_total_bad in isolation
+# - Hidden state makes debugging difficult
+# - Another function could accidentally reset total
+
+# ==================== GOOD: USING PARAMETERS/RETURNS ====================
+
+def add_to_total_good(current_total, amount):
+    return current_total + amount
+
+total = 0
+total = add_to_total_good(total, 10)
+total = add_to_total_good(total, 20)
+print(total)  # 30
+
+# Benefits:
+# - Function is pure - output depends only on input
+# - Easy to test: add_to_total_good(0, 10) should return 10
+# - No hidden state, no surprises
+
+# ==================== PRACTICAL EXAMPLE ====================
+
+# BAD: Game using globals
+lives = 3
+score = 0
+
+def take_damage():
+    global lives
+    lives -= 1
+    
+def add_score(points):
+    global score
+    score += points
+
+# GOOD: Game using objects/classes (Chapter 6)
+# or using dictionaries:
+
+def take_damage(game_state):
+    return {**game_state, "lives": game_state["lives"] - 1}
+
+def add_score(game_state, points):
+    return {**game_state, "score": game_state["score"] + points}
+
+state = {"lives": 3, "score": 0}
+state = take_damage(state)
+state = add_score(state, 100)
+print(state)  # {'lives': 2, 'score': 100}</div>
+
+            <h3>Scope Hierarchy (LEGB Rule)</h3>
+            <div class="code"># ==================== PYTHON'S SCOPE LOOKUP ORDER ====================
+
+# When Python sees a variable name, it searches in this order:
+# L - Local (inside current function)
+# E - Enclosing (inside outer functions, for nested functions)
+# G - Global (module level)
+# B - Built-in (Python's built-in names like print, len)
+
+# ==================== EXAMPLE ====================
+
+x = "global"           # Global scope
+
+def outer():
+    x = "enclosing"    # Enclosing scope (for inner)
+    
+    def inner():
+        x = "local"    # Local scope
+        print(x)       # Prints: local
+    
+    inner()
+    print(x)           # Prints: enclosing
+
+outer()
+print(x)               # Prints: global
+
+# ==================== NONLOCAL KEYWORD ====================
+
+# To modify an enclosing (but not global) variable:
+
+def outer():
+    count = 0
+    
+    def inner():
+        nonlocal count    # Modify the outer function's count
+        count += 1
+        return count
+    
+    return inner
+
+counter = outer()
+print(counter())  # 1
+print(counter())  # 2
+print(counter())  # 3
+
+# This pattern is called a "closure" - inner() "closes over" count</div>
+
+            <div class="info-box">
+                <h4>💡 Scope Best Practices</h4>
+                <ul style="margin-top: 0.5rem;">
+                    <li><strong>Minimize globals:</strong> Use them only for true constants</li>
+                    <li><strong>Pass data explicitly:</strong> Use parameters instead of global reads</li>
+                    <li><strong>Return results:</strong> Instead of modifying global state</li>
+                    <li><strong>Use UPPERCASE:</strong> For constants that should be global (e.g., MAX_SIZE = 100)</li>
+                    <li><strong>Keep functions pure:</strong> Same input → same output, no side effects</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="default" class="section">
+            <h2 class="section-title">Default Parameter Values</h2>
+            <p class="section-intro">You can give parameters default values. If no argument is provided, the default is used. This makes functions more flexible - you can call them with fewer arguments while still having sensible behavior.</p>
+
+            <h3>Basic Default Parameters</h3>
+            <div class="code"># ==================== SINGLE DEFAULT ====================
+
+def greet(name, greeting="Hello"):
+    print(f"{greeting}, {name}!")
+
+greet("Alice")              # Hello, Alice! (uses default)
+greet("Bob", "Hi")          # Hi, Bob! (overrides default)
+greet("Charlie", "Hey")     # Hey, Charlie!
+
+# ==================== HOW IT WORKS ====================
+
+# def greet(name, greeting="Hello")
+#           ↑      ↑
+#           |      └── Has default: optional when calling
+#           └── No default: required when calling
+
+greet("Alice")                 # ✓ greeting defaults to "Hello"
+# greet()                      # ❌ TypeError: missing required 'name'
+greet("Alice", "Howdy")        # ✓ Override the default
+
+# ==================== MULTIPLE DEFAULTS ====================
+
+def create_user(name, age=0, city="Unknown", active=True):
+    return {
+        "name": name,
+        "age": age,
+        "city": city,
+        "active": active
+    }
+
+# All these work:
+user1 = create_user("Alice")
+# {'name': 'Alice', 'age': 0, 'city': 'Unknown', 'active': True}
+
+user2 = create_user("Bob", 25)
+# {'name': 'Bob', 'age': 25, 'city': 'Unknown', 'active': True}
+
+user3 = create_user("Charlie", 30, "NYC")
+# {'name': 'Charlie', 'age': 30, 'city': 'NYC', 'active': True}
+
+user4 = create_user("Diana", 22, "London", False)
+# {'name': 'Diana', 'age': 22, 'city': 'London', 'active': False}
+
+# ==================== SKIPPING DEFAULTS WITH KEYWORDS ====================
+
+# What if you want to set 'active' but not 'age' or 'city'?
+# Use keyword arguments!
+
+user5 = create_user("Eve", active=False)
+# {'name': 'Eve', 'age': 0, 'city': 'Unknown', 'active': False}
+
+user6 = create_user("Frank", city="Paris")
+# {'name': 'Frank', 'age': 0, 'city': 'Paris', 'active': True}</div>
+
+            <h3>Parameter Ordering Rules</h3>
+            <div class="code"># ==================== DEFAULTS MUST COME LAST ====================
+
+# Parameters with defaults MUST come after parameters without:
+
+def good(required, optional="default"):
+    pass  # ✓ OK
+
+# def bad(optional="default", required):
+#     pass  # ❌ SyntaxError!
+
+# Why? Imagine calling bad("hello")
+# Is "hello" for 'optional' or 'required'? Ambiguous!
+
+# ==================== THE CORRECT ORDER ====================
+
+# 1. Required positional parameters
+# 2. Optional parameters with defaults
+# 3. *args (if needed)
+# 4. Keyword-only parameters
+# 5. **kwargs (if needed)
+
+def complete_function(
+    required1,                    # Required positional
+    required2,                    # Required positional
+    optional1="default1",         # Optional with default
+    optional2="default2",         # Optional with default
+    *args,                        # Extra positional args
+    keyword_only="kwdefault",     # After *args: keyword-only
+    **kwargs                      # Extra keyword args
+):
+    pass
+
+# ==================== PRACTICAL EXAMPLE ====================
+
+def format_name(first, last, middle="", title="", suffix=""):
+    """Format a person's full name."""
+    parts = []
+    
+    if title:
+        parts.append(title)
+    parts.append(first)
+    if middle:
+        parts.append(middle)
+    parts.append(last)
+    if suffix:
+        parts.append(suffix)
+    
+    return " ".join(parts)
+
+print(format_name("John", "Doe"))
+# John Doe
+
+print(format_name("John", "Doe", middle="Q"))
+# John Q Doe
+
+print(format_name("John", "Doe", title="Dr.", suffix="Jr."))
+# Dr. John Doe Jr.</div>
+
+            <div class="warning-box">
+                <h4>⚠️ Mutable Default Arguments: A Python Gotcha!</h4>
+                <p>Never use mutable objects (lists, dicts) as default values!</p>
+                <div class="code" style="margin-top: 1rem; font-size: 0.8rem;"># BAD - The list is created ONCE and reused!
+def add_item_bad(item, items=[]):
+    items.append(item)
+    return items
+
+print(add_item_bad("a"))  # ['a']
+print(add_item_bad("b"))  # ['a', 'b']  ← Surprise!
+print(add_item_bad("c"))  # ['a', 'b', 'c']  ← Yikes!
+
+# GOOD - Use None and create inside
+def add_item_good(item, items=None):
+    if items is None:
+        items = []
+    items.append(item)
+    return items
+
+print(add_item_good("a"))  # ['a']
+print(add_item_good("b"))  # ['b'] ✓ Fresh list</div>
+            </div>
+
+            <h3>Common Use Cases</h3>
+            <div class="code"># ==================== CONFIGURATION OPTIONS ====================
+
+def connect_db(host, port=5432, user="admin", password="", ssl=True):
+    """Connect to a database with sensible defaults."""
+    print(f"Connecting to {user}@{host}:{port} (SSL: {ssl})")
+    # ... actual connection code
+
+connect_db("localhost")
+# Connecting to admin@localhost:5432 (SSL: True)
+
+connect_db("db.example.com", user="myapp", password="secret")
+# Connecting to myapp@db.example.com:5432 (SSL: True)
+
+# ==================== OPTIONAL FEATURES ====================
+
+def search(query, case_sensitive=False, max_results=10, include_meta=False):
+    """Search with optional settings."""
+    print(f"Searching: {query}")
+    print(f"  Case sensitive: {case_sensitive}")
+    print(f"  Max results: {max_results}")
+    print(f"  Include metadata: {include_meta}")
+
+search("python")                           # Simple call
+search("Python", case_sensitive=True)      # Exact case
+search("python", max_results=100)          # More results
+
+# ==================== POLYMORPHIC BEHAVIOR ====================
+
+def greet(name, times=1, excited=False):
+    """Greet someone, optionally multiple times with excitement."""
+    greeting = f"Hello, {name}!"
+    if excited:
+        greeting = greeting.upper() + "!!"
+    
+    for _ in range(times):
+        print(greeting)
+
+greet("Alice")                      # Hello, Alice!
+greet("Bob", times=3)               # Hello, Bob! (3 times)
+greet("Charlie", excited=True)      # HELLO, CHARLIE!!!
+greet("Diana", times=2, excited=True)  # HELLO, DIANA!!! (2 times)</div>
+
+            <div class="info-box">
+                <h4>💡 Default Parameter Best Practices</h4>
+                <ul style="margin-top: 0.5rem;">
+                    <li><strong>Use for common cases:</strong> Most calls should work with defaults</li>
+                    <li><strong>Never use mutable defaults:</strong> Use None and create inside function</li>
+                    <li><strong>Document defaults:</strong> Include in docstrings</li>
+                    <li><strong>Keep it simple:</strong> Too many defaults makes function hard to understand</li>
+                    <li><strong>Use keyword arguments:</strong> When skipping some defaults</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="lambda" class="section">
+            <h2 class="section-title">Lambda Functions</h2>
+            <p class="section-intro">Lambda functions are small, anonymous functions defined in one line. They're useful for simple operations that you need to pass around, especially with functions like sort(), filter(), and map().</p>
+
+            <div class="metaphor-box">
+                <h4>📝 The Sticky Note vs Letter</h4>
+                <p>Regular functions are like formal letters - proper heading, body, signature.</p>
+                <p style="margin-top: 0.5rem;">Lambda functions are like sticky notes - quick, disposable, for simple messages.</p>
+                <p style="margin-top: 0.5rem;">Use sticky notes when a full letter is overkill!</p>
+            </div>
+
+            <h3>Lambda Basics</h3>
+            <div class="code"># ==================== LAMBDA SYNTAX ====================
+
+# Regular function:
+def square(x):
+    return x ** 2
+
+# Same thing as lambda:
+square = lambda x: x ** 2
+
+print(square(5))    # 25
+
+# ==================== THE STRUCTURE ====================
+
+# lambda arguments: expression
+#   ↑        ↑          ↑
+#   |        |          └── What to return (single expression)
+#   |        └── Input parameters
+#   └── The lambda keyword
+
+# ==================== EXAMPLES ====================
+
+# One parameter:
+double = lambda x: x * 2
+print(double(5))   # 10
+
+# Two parameters:
+add = lambda a, b: a + b
+print(add(3, 4))   # 7
+
+# No parameters:
+get_pi = lambda: 3.14159
+print(get_pi())    # 3.14159
+
+# Conditional expression:
+absolute = lambda x: x if x >= 0 else -x
+print(absolute(-5))  # 5
+print(absolute(3))   # 3
+
+# ==================== IMPORTANT LIMITATIONS ====================
+
+# Lambdas can only contain a SINGLE expression
+# No statements (no if:, no for:, no =)
+
+# This WON'T work:
+# wrong = lambda x: if x > 0: return x  # ❌ SyntaxError
+
+# Use a regular function for complex logic:
+def complex_logic(x):
+    if x > 0:
+        return x
+    else:
+        return 0</div>
+
+            <h3>Lambda with Built-in Functions</h3>
+            <div class="code"># ==================== SORTING WITH LAMBDA ====================
+
+students = [
+    {"name": "Alice", "grade": 85},
+    {"name": "Bob", "grade": 92},
+    {"name": "Charlie", "grade": 78},
+    {"name": "Diana", "grade": 95}
+]
+
+# Sort by grade (ascending)
+students.sort(key=lambda s: s["grade"])
+print([s["name"] for s in students])
+# ['Charlie', 'Alice', 'Bob', 'Diana']
+
+# Sort by grade (descending)
+students.sort(key=lambda s: s["grade"], reverse=True)
+print([s["name"] for s in students])
+# ['Diana', 'Bob', 'Alice', 'Charlie']
+
+# Sort by name
+students.sort(key=lambda s: s["name"])
+print([s["name"] for s in students])
+# ['Alice', 'Bob', 'Charlie', 'Diana']
+
+# ==================== FILTERING WITH LAMBDA ====================
+
+numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+# Keep only even numbers
+evens = list(filter(lambda x: x % 2 == 0, numbers))
+print(evens)  # [2, 4, 6, 8, 10]
+
+# Keep numbers greater than 5
+big = list(filter(lambda x: x > 5, numbers))
+print(big)    # [6, 7, 8, 9, 10]
+
+# ==================== MAPPING WITH LAMBDA ====================
+
+# Square all numbers
+squared = list(map(lambda x: x ** 2, numbers))
+print(squared)  # [1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
+
+# Convert to strings
+strings = list(map(lambda x: str(x), numbers))
+print(strings)  # ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
+
+# ==================== REDUCE WITH LAMBDA ====================
+
+from functools import reduce
+
+# Sum all numbers (fold left)
+total = reduce(lambda acc, x: acc + x, numbers)
+print(total)  # 55
+
+# Product of all numbers
+product = reduce(lambda acc, x: acc * x, numbers)
+print(product)  # 3628800 (10!)</div>
+
+            <h3>Practical Lambda Examples</h3>
+            <div class="code"># ==================== SORTING COMPLEX DATA ====================
+
+files = ["report.pdf", "photo.jpg", "video.mp4", "doc.txt"]
+
+# Sort by file extension
+files_sorted = sorted(files, key=lambda f: f.split(".")[-1])
+print(files_sorted)
+# ['photo.jpg', 'video.mp4', 'report.pdf', 'doc.txt']
+
+# ==================== QUICK TRANSFORMATIONS ====================
+
+names = ["ALICE", "BOB", "CHARLIE"]
+
+# Capitalize properly
+proper = list(map(lambda n: n.capitalize(), names))
+print(proper)  # ['Alice', 'Bob', 'Charlie']
+
+# ==================== INLINE CALLBACKS ====================
+
+# Using lambda as a quick callback
+def process_data(data, transformer):
+    return [transformer(item) for item in data]
+
+numbers = [1, 2, 3, 4, 5]
+result = process_data(numbers, lambda x: x * 10)
+print(result)  # [10, 20, 30, 40, 50]
+
+# ==================== DICTIONARY SORTING ====================
+
+scores = {"Alice": 85, "Bob": 92, "Charlie": 78}
+
+# Sort by value
+sorted_by_score = sorted(scores.items(), key=lambda item: item[1])
+print(sorted_by_score)
+# [('Charlie', 78), ('Alice', 85), ('Bob', 92)]
+
+# Sort by value descending
+sorted_desc = sorted(scores.items(), key=lambda item: item[1], reverse=True)
+print(sorted_desc)
+# [('Bob', 92), ('Alice', 85), ('Charlie', 78)]</div>
+
+            <div class="info-box">
+                <h4>💡 Lambda vs Regular Functions</h4>
+                <table style="width: 100%; margin-top: 1rem; border-collapse: collapse;">
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.2);">
+                        <td style="padding: 0.5rem;"><strong>Use Lambda</strong></td>
+                        <td style="padding: 0.5rem;"><strong>Use Regular Function</strong></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                        <td style="padding: 0.5rem;">Simple, single expression</td>
+                        <td style="padding: 0.5rem;">Multiple lines or statements</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                        <td style="padding: 0.5rem;">Used once, inline</td>
+                        <td style="padding: 0.5rem;">Reused multiple times</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                        <td style="padding: 0.5rem;">As argument to sort/map/filter</td>
+                        <td style="padding: 0.5rem;">Needs documentation</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.5rem;">Quick and obvious logic</td>
+                        <td style="padding: 0.5rem;">Complex logic needing a name</td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+
+        <section id="builtin" class="section">
+            <h2 class="section-title">Essential Built-in Functions</h2>
+            <p class="section-intro">Python comes with many useful functions built in - no imports needed! These are your everyday tools that you'll use constantly. Understanding them deeply will make your code shorter, cleaner, and more Pythonic.</p>
+
+            <div class="metaphor-box">
+                <h4>🛠️ The Home Toolkit</h4>
+                <p>Built-in functions are like the basic tools everyone has at home - hammer, screwdriver, pliers.</p>
+                <p style="margin-top: 0.5rem;">You don't buy them separately or look for them. They're just there, ready to use.</p>
+                <p style="margin-top: 0.5rem;">Master these first before learning specialized libraries!</p>
+            </div>
+
+            <h3>Type Conversion Functions</h3>
+            <p>These functions convert data from one type to another:</p>
+            <div class="code"># ==================== STRING TO NUMBER ====================
+
+# int() - Convert to integer
+int("42")           # 42
+int("  42  ")       # 42 (strips whitespace)
+int(3.7)            # 3 (truncates, doesn't round!)
+int(3.2)            # 3
+int("1010", 2)      # 10 (binary to decimal)
+int("ff", 16)       # 255 (hex to decimal)
+int("77", 8)        # 63 (octal to decimal)
+
+# float() - Convert to floating point
+float("3.14")       # 3.14
+float("3")          # 3.0
+float("inf")        # inf (infinity)
+float("-inf")       # -inf
+float("1e10")       # 10000000000.0 (scientific notation)
+
+# ==================== TO STRING ====================
+
+# str() - Convert to string
+str(100)            # "100"
+str(3.14)           # "3.14"
+str(True)           # "True"
+str([1, 2, 3])      # "[1, 2, 3]"
+str({"a": 1})       # "{'a': 1}"
+
+# repr() - String representation (for debugging)
+repr("hello")       # "'hello'" (includes quotes)
+repr(42)            # "42"
+
+# ==================== TO BOOLEAN ====================
+
+# bool() - Convert to boolean
+bool(1)             # True
+bool(0)             # False
+bool(-1)            # True (any non-zero = True)
+bool("")            # False (empty string)
+bool("hello")       # True (non-empty string)
+bool([])            # False (empty list)
+bool([1, 2])        # True (non-empty list)
+bool(None)          # False
+
+# "Falsy" values in Python:
+# 0, 0.0, "", [], {}, (), None, False
+
+# ==================== TO COLLECTIONS ====================
+
+# list() - Convert to list
+list("abc")         # ['a', 'b', 'c']
+list((1, 2, 3))     # [1, 2, 3] (tuple to list)
+list({1, 2, 3})     # [1, 2, 3] (set to list)
+list(range(5))      # [0, 1, 2, 3, 4]
+list({"a": 1, "b": 2})  # ['a', 'b'] (keys only)
+
+# tuple() - Convert to tuple
+tuple([1, 2, 3])    # (1, 2, 3)
+tuple("abc")        # ('a', 'b', 'c')
+
+# set() - Convert to set (removes duplicates!)
+set([1, 2, 2, 3])   # {1, 2, 3}
+set("hello")        # {'h', 'e', 'l', 'o'}
+
+# dict() - Create dictionary
+dict([("a", 1), ("b", 2)])  # {'a': 1, 'b': 2}
+dict(a=1, b=2)              # {'a': 1, 'b': 2}</div>
+
+            <h3>Math Functions</h3>
+            <div class="code"># ==================== BASIC MATH ====================
+
+# abs() - Absolute value
+abs(-5)             # 5
+abs(5)              # 5
+abs(-3.14)          # 3.14
+abs(3 + 4j)         # 5.0 (complex number magnitude)
+
+# pow() - Power (exponentiation)
+pow(2, 3)           # 8 (2^3)
+pow(10, 2)          # 100
+pow(2, -1)          # 0.5 (2^-1 = 1/2)
+pow(2, 10, 100)     # 24 (modular: 2^10 % 100)
+
+# round() - Rounding
+round(3.7)          # 4
+round(3.2)          # 3
+round(3.5)          # 4 (banker's rounding)
+round(4.5)          # 4 (rounds to even!)
+round(3.14159, 2)   # 3.14
+round(3.14159, 4)   # 3.1416
+round(1234, -2)     # 1200 (round to hundreds)
+
+# divmod() - Division and modulus at once
+divmod(17, 5)       # (3, 2) - quotient and remainder
+q, r = divmod(17, 5)
+print(f"17 ÷ 5 = {q} remainder {r}")  # 17 ÷ 5 = 3 remainder 2
+
+# ==================== AGGREGATION ====================
+
+numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+# max() - Maximum value
+max(1, 5, 3)        # 5
+max(numbers)        # 10
+max("apple", "banana", "cherry")  # 'cherry' (alphabetically)
+max(numbers, key=lambda x: x % 3)  # 8 (max remainder when /3)
+
+# min() - Minimum value
+min(1, 5, 3)        # 1
+min(numbers)        # 1
+min("apple", "banana")  # 'apple'
+
+# sum() - Add all elements
+sum(numbers)        # 55
+sum([1, 2, 3], 10)  # 16 (start at 10, add 1+2+3)
+sum([[1,2], [3,4]], [])  # [1, 2, 3, 4] (flatten lists)</div>
+
+            <h3>Sequence Functions</h3>
+            <div class="code"># ==================== LENGTH & MEMBERSHIP ====================
+
+# len() - Get length
+len("hello")        # 5
+len([1, 2, 3])      # 3
+len({"a": 1})       # 1 (number of keys)
+len(range(100))     # 100
+
+# ==================== SORTING ====================
+
+# sorted() - Return sorted list
+sorted([3, 1, 2])   # [1, 2, 3]
+sorted([3, 1, 2], reverse=True)  # [3, 2, 1]
+sorted("hello")     # ['e', 'h', 'l', 'l', 'o']
+
+# Sort by key function
+words = ["banana", "pie", "apple"]
+sorted(words)                    # ['apple', 'banana', 'pie']
+sorted(words, key=len)           # ['pie', 'apple', 'banana']
+sorted(words, key=len, reverse=True)  # ['banana', 'apple', 'pie']
+
+# reversed() - Reverse iterator
+list(reversed([1, 2, 3]))  # [3, 2, 1]
+list(reversed("hello"))    # ['o', 'l', 'l', 'e', 'h']
+
+# ==================== RANGE ====================
+
+# range() - Sequence of numbers
+list(range(5))          # [0, 1, 2, 3, 4]
+list(range(2, 7))       # [2, 3, 4, 5, 6]
+list(range(0, 10, 2))   # [0, 2, 4, 6, 8]
+list(range(10, 0, -1))  # [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
+list(range(10, 0, -2))  # [10, 8, 6, 4, 2]
+
+# ==================== ENUMERATE & ZIP ====================
+
+# enumerate() - Add index to iteration
+fruits = ['apple', 'banana', 'cherry']
+
+for i, fruit in enumerate(fruits):
+    print(f"{i}: {fruit}")
+# 0: apple
+# 1: banana
+# 2: cherry
+
+# Start from different number
+for i, fruit in enumerate(fruits, start=1):
+    print(f"{i}. {fruit}")
+# 1. apple
+# 2. banana
+# 3. cherry
+
+# zip() - Combine iterables
+names = ['Alice', 'Bob', 'Charlie']
+scores = [85, 92, 78]
+grades = ['B', 'A', 'C']
+
+for name, score in zip(names, scores):
+    print(f"{name}: {score}")
+# Alice: 85
+# Bob: 92
+# Charlie: 78
+
+# Zip multiple
+for name, score, grade in zip(names, scores, grades):
+    print(f"{name}: {score} ({grade})")
+
+# Create dictionary from two lists
+student_scores = dict(zip(names, scores))
+# {'Alice': 85, 'Bob': 92, 'Charlie': 78}</div>
+
+            <h3>Logic Functions</h3>
+            <div class="code"># ==================== ALL & ANY ====================
+
+numbers = [2, 4, 6, 8, 10]
+
+# all() - True if ALL elements are truthy
+all([True, True, True])     # True
+all([True, False, True])    # False
+all([1, 2, 3])              # True (all non-zero)
+all([1, 0, 3])              # False (0 is falsy)
+all([])                     # True (vacuously true)
+
+# Check if all numbers are even
+all(n % 2 == 0 for n in numbers)  # True
+
+# Check if all positive
+all(n > 0 for n in [1, 2, -3])    # False
+
+# any() - True if ANY element is truthy
+any([False, False, True])   # True
+any([False, False, False])  # False
+any([0, 0, 1])              # True
+any([])                     # False
+
+# Check if any number is negative
+any(n < 0 for n in [-1, 2, 3])  # True
+any(n < 0 for n in [1, 2, 3])   # False
+
+# ==================== PRACTICAL EXAMPLE ====================
+
+def validate_password(password):
+    checks = [
+        len(password) >= 8,                    # At least 8 chars
+        any(c.isupper() for c in password),   # Has uppercase
+        any(c.islower() for c in password),   # Has lowercase
+        any(c.isdigit() for c in password),   # Has digit
+    ]
+    return all(checks)
+
+print(validate_password("Secret123"))  # True
+print(validate_password("secret"))     # False</div>
+
+            <h3>Object Introspection</h3>
+            <div class="code"># ==================== TYPE CHECKING ====================
+
+# type() - Get the type
+type(42)            # <class 'int'>
+type("hello")       # <class 'str'>
+type([1, 2, 3])     # <class 'list'>
+type(print)         # <class 'builtin_function_or_method'>
+
+# isinstance() - Check if instance of type
+isinstance(42, int)           # True
+isinstance("hi", str)         # True
+isinstance([1,2], list)       # True
+isinstance(42, (int, float))  # True (either type)
+
+# ==================== ATTRIBUTES ====================
+
+# dir() - List all attributes/methods
+dir([])   # Shows all list methods
+dir(str)  # Shows all string methods
+
+# hasattr(), getattr(), setattr()
+class Person:
+    name = "Alice"
+
+hasattr(Person, "name")         # True
+hasattr(Person, "age")          # False
+getattr(Person, "name")         # "Alice"
+getattr(Person, "age", 25)      # 25 (default)
+
+# ==================== HELP ====================
+
+# help() - Get documentation
+help(print)    # Shows print function docs
+help(str)      # Shows string class docs
+help([].append)  # Shows list.append docs
+
+# id() - Get object's unique identifier
+x = [1, 2, 3]
+y = x
+z = [1, 2, 3]
+
+id(x) == id(y)  # True (same object)
+id(x) == id(z)  # False (different object)
+
+# callable() - Check if object can be called
+callable(print)        # True
+callable(42)           # False
+callable(lambda x: x)  # True</div>
+
+            <h3>Input/Output</h3>
+            <div class="code"># ==================== PRINTING ====================
+
+# print() - Output to console
+print("Hello")                    # Hello
+print("Hello", "World")           # Hello World
+print("a", "b", "c", sep="-")     # a-b-c
+print("Loading", end="")          # No newline
+print(".", end="")
+print(".", end="")                # Loading...
+
+print("Done!")
+
+# ==================== USER INPUT ====================
+
+# input() - Get user input
+name = input("Enter your name: ")
+print(f"Hello, {name}!")
+
+# Input is always a string!
+age_str = input("Enter age: ")
+age = int(age_str)  # Convert to integer
+
+# One-liner
+age = int(input("Enter age: "))
+
+# ==================== FILE OPERATIONS ====================
+
+# open() - Open files
+# Read entire file
+with open("file.txt", "r") as f:
+    content = f.read()
+
+# Read lines
+with open("file.txt", "r") as f:
+    lines = f.readlines()
+
+# Write to file
+with open("output.txt", "w") as f:
+    f.write("Hello, World!")
+
+# Append to file
+with open("log.txt", "a") as f:
+    f.write("New log entry\n")</div>
+
+            <div class="info-box">
+                <h4>💡 Most Used Built-in Functions</h4>
+                <div class="card-grid" style="margin-top: 1rem;">
+                    <div class="card">
+                        <strong>print()</strong>
+                        <p>Output to console</p>
+                    </div>
+                    <div class="card">
+                        <strong>len()</strong>
+                        <p>Get length of sequence</p>
+                    </div>
+                    <div class="card">
+                        <strong>range()</strong>
+                        <p>Generate number sequences</p>
+                    </div>
+                    <div class="card">
+                        <strong>type()</strong>
+                        <p>Check variable type</p>
+                    </div>
+                    <div class="card">
+                        <strong>int(), str(), float()</strong>
+                        <p>Type conversion</p>
+                    </div>
+                    <div class="card">
+                        <strong>input()</strong>
+                        <p>Get user input</p>
+                    </div>
+                    <div class="card">
+                        <strong>sorted()</strong>
+                        <p>Sort any sequence</p>
+                    </div>
+                    <div class="card">
+                        <strong>enumerate()</strong>
+                        <p>Index + value iteration</p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <script src="script.js"></script>
+            <h3>Complete Example: Building a Calculator</h3>
+            <div class="code"># calculator.py - A complete calculator using functions
+# This demonstrates all the function concepts we've learned
+
+def add(a, b):
+    """Add two numbers."""
+    return a + b
+
+def subtract(a, b):
+    """Subtract b from a."""
+    return a - b
+
+def multiply(a, b):
+    """Multiply two numbers."""
+    return a * b
+
+def divide(a, b):
+    """
+    Divide a by b.
     
-    <!-- Supabase Client & Auth -->
-    </body>
+    Args:
+        a: The dividend
+        b: The divisor
+        
+    Returns:
+        The quotient, or error message if b is zero
+    """
+    if b == 0:
+        return "Error: Division by zero!"
+    return a / b
+
+def power(a, b):
+    """Raise a to the power of b."""
+    return a ** b
+
+def get_number(prompt):
+    """
+    Get a number from the user with validation.
+    Keeps asking until valid input is received.
+    """
+    while True:
+        try:
+            return float(input(prompt))
+        except ValueError:
+            print("Invalid input! Please enter a number.")
+
+def get_numbers():
+    """Get two numbers from user."""
+    a = get_number("First number: ")
+    b = get_number("Second number: ")
+    return a, b
+
+def show_menu():
+    """Display the calculator menu."""
+    print("\n" + "=" * 30)
+    print("       CALCULATOR")
+    print("=" * 30)
+    print("1. Add")
+    print("2. Subtract")
+    print("3. Multiply")
+    print("4. Divide")
+    print("5. Power")
+    print("6. Quit")
+    print("=" * 30)
+
+def calculate(choice, a, b):
+    """
+    Perform calculation based on user choice.
+    Uses a dictionary to map choices to functions.
+    """
+    operations = {
+        "1": ("Addition", add),
+        "2": ("Subtraction", subtract),
+        "3": ("Multiplication", multiply),
+        "4": ("Division", divide),
+        "5": ("Power", power)
+    }
+    
+    if choice in operations:
+        name, func = operations[choice]
+        result = func(a, b)
+        return f"{name}: {result}"
+    return "Invalid operation"
+
+def main():
+    """
+    Main program loop.
+    This is the entry point of the calculator.
+    """
+    print("Welcome to the Python Calculator!")
+    
+    while True:
+        show_menu()
+        choice = input("Choose an option (1-6): ")
+        
+        if choice == "6":
+            print("Thanks for using the calculator. Goodbye!")
+            break
+        
+        if choice not in ["1", "2", "3", "4", "5"]:
+            print("Invalid choice! Please select 1-6.")
+            continue
+        
+        a, b = get_numbers()
+        result = calculate(choice, a, b)
+        print(f"\n>> {result}")
+
+# Only run if this file is executed directly
+if __name__ == "__main__":
+    main()</div>
+
+            <div class="warning-box">
+                <h4>⚠️ Built-in Functions Quick Reference</h4>
+                <p style="margin-top: 0.5rem;">Python has 68 built-in functions. The most essential ones are:</p>
+                <ul style="margin-top: 0.5rem;">
+                    <li><strong>Data Types:</strong> int, float, str, bool, list, tuple, dict, set</li>
+                    <li><strong>Math:</strong> abs, max, min, sum, round, pow, divmod</li>
+                    <li><strong>Sequences:</strong> len, sorted, reversed, range, enumerate, zip</li>
+                    <li><strong>Logic:</strong> all, any, isinstance, type</li>
+                    <li><strong>I/O:</strong> print, input, open</li>
+                    <li><strong>Help:</strong> help, dir, callable, hasattr</li>
+                </ul>
+                <p style="margin-top: 0.5rem;">Learn these well - they'll cover 90% of your needs!</p>
+            </div>
+        </section>
+
+        <div style="margin-top: 6rem; padding-top: 3rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between;">
+            <a href="programming-ch02.html" style="color: var(--text2); text-decoration: none;">← Chapter 02: Control Flow</a>
+            <a href="programming-ch04.html" style="color: var(--text); text-decoration: none; font-weight: 600;">Next: Chapter 04 - Data Structures →</a>
+        </div>
+    </main>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progress').style.width = scrolled + '%';
+        });
+
+        const sections = document.querySelectorAll('.section');
+        const sidebarLinks = document.querySelectorAll('.sidebar-link');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (scrollY >= (sectionTop - 150)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            sidebarLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
 </html>
-
-

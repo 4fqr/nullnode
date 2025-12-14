@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ch01: Computer Fundamentals - NullSector</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="favicon.ico">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="twinkling"></div>
+    
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="index.html" style="display: flex; align-items: center; text-decoration: none; color: inherit;">
+                    <img src="logo.svg" alt="NullSector Logo" class="logo">
+                    <span class="brand-text">NullSector</span>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="roadmap-hacking.html" class="nav-link active">Hacking</a>
+                <a href="roadmap-programming.html" class="nav-link">Programming</a>
+                <a href="resources.html" class="nav-link">Resources</a>
+                <a href="faq.html" class="nav-link">FAQ</a>
+                <a href="https://discord.gg/Tz9Y3wea32" target="_blank" class="nav-link">Discord</a>
+            
+                                
+                <div id="userProfile" style="display: none; align-items: center; gap: 0.75rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <img id="userAvatar" style="width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--primary-color); cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="" />
+                        <span id="userName" style="color: var(--text-primary); font-weight: 500; font-size: 0.95rem; cursor: default;"></span>
+                    </div>
+                    <button id="logoutButton" class="nav-link" style="background: rgba(255, 95, 87, 0.1); border: 1px solid #ff5f57; padding: 0.4rem 1rem; border-radius: 6px; font-weight: 500; cursor: pointer; color: #ff5f57; transition: all 0.2s;" onmouseover="this.style.background='rgba(255, 95, 87, 0.2)'" onmouseout="this.style.background='rgba(255, 95, 87, 0.1)'">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="content-page">
+        <div class="content-container">
+            <div class="breadcrumb">
+                <a href="roadmap-hacking.html">Hacking Roadmap</a> / <span>Chapter 01</span>
+            </div>
+            
+            <div class="roadmap-section">
+                <div class="roadmap-number">01</div>
+                <h1 class="page-title">Chapter 01: Computer Fundamentals</h1>
+                <p class="page-subtitle">Start Here - Complete Beginner Friendly</p>
+
+                <div class="key-takeaways" style="margin-bottom:3rem;">
+                    <h3>What You'll Learn:</h3>
+                    <ul>
+                        <li>What a computer actually is (simple explanation)</li>
+                        <li>The 4 basic parts every computer has</li>
+                        <li>How computers think (spoiler: they don't!)</li>
+                        <li>Why understanding this makes you dangerous</li>
+                    </ul>
+                </div>
+
+<!-- Topic 1 -->
+<div class="topic-section" style="background: linear-gradient(135deg, rgba(0,255,136,0.05) 0%, rgba(0,204,255,0.05) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0;">
+    <h2 style="color: #00ff88; font-size: 2.2rem; margin-bottom: 2rem;">What is a Computer?</h2>
+    
+    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 15px; margin: 2rem 0; font-size: 1.15rem; line-height: 1.9;">
+        <p style="margin: 0; font-size: 1.25rem;">
+            A computer is a machine that follows instructions <strong>really, really fast</strong>. 
+            That's it. It doesn't "think" or "understand" anything. It just does exactly 
+            what you tell it to do, millions of times per second.
+        </p>
+    </div>
+
+    <h3 style="color: #00ccff; font-size: 1.8rem; margin-top: 3rem;">The 4 Basic Parts</h3>
+    
+    <div style="display: grid; gap: 2rem; margin: 2rem 0;">
+        
+        <div style="background: rgba(0,255,136,0.15); padding: 2.5rem; border-radius: 15px;">
+            <h4 style="color: #00ff88; font-size: 1.6rem; margin: 0 0 1rem 0;">1. Input (Getting Info IN)</h4>
+            <p style="font-size: 1.15rem; line-height: 1.8;">How you give the computer information:</p>
+            <ul style="font-size: 1.1rem; line-height: 1.9; margin-top: 1rem;">
+                <li><strong>Keyboard</strong> - you type</li>
+                <li><strong>Mouse</strong> - you click and move</li>
+                <li><strong>Microphone</strong> - you talk</li>
+                <li><strong>Camera</strong> - it sees</li>
+                <li><strong>Network</strong> - it gets data from the internet</li>
+            </ul>
+        </div>
+
+        <div style="background: rgba(0,204,255,0.15); padding: 2.5rem; border-radius: 15px;">
+            <h4 style="color: #00ccff; font-size: 1.6rem; margin: 0 0 1rem 0;">2. Processing (The "Brain")</h4>
+            <p style="font-size: 1.15rem; line-height: 1.8;">
+                The <strong style="color: #00ccff;">CPU</strong> (Central Processing Unit) does the actual work. 
+                It takes input, follows instructions, and produces results.
+            </p>
+            <div style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 10px; margin-top: 1.5rem; font-size: 1.1rem; line-height: 1.8;">
+                <strong>Think of it like a chef:</strong> The recipe is instructions, ingredients are input, 
+                and the chef (CPU) follows the recipe to make food (output).
+            </div>
+        </div>
+
+        <div style="background: rgba(255,100,100,0.15); padding: 2.5rem; border-radius: 15px;">
+            <h4 style="color: #ff6464; font-size: 1.6rem; margin: 0 0 1rem 0;">3. Storage (Memory)</h4>
+            <p style="font-size: 1.15rem; line-height: 1.8;">Computers need to remember things. Two types:</p>
+            <ul style="font-size: 1.1rem; line-height: 1.9; margin-top: 1rem;">
+                <li><strong>RAM (Short-term)</strong> - Fast but temporary. Like remembering a phone number just long enough to dial it.</li>
+                <li><strong>Hard Drive (Long-term)</strong> - Slower but permanent. Like writing in a notebook.</li>
+            </ul>
+        </div>
+
+        <div style="background: rgba(255,200,0,0.15); padding: 2.5rem; border-radius: 15px;">
+            <h4 style="color: #ffc800; font-size: 1.6rem; margin: 0 0 1rem 0;">4. Output (Getting Info OUT)</h4>
+            <p style="font-size: 1.15rem; line-height: 1.8;">How the computer shows you results:</p>
+            <ul style="font-size: 1.1rem; line-height: 1.9; margin-top: 1rem;">
+                <li><strong>Screen</strong> - shows pictures and text</li>
+                <li><strong>Speakers</strong> - plays sounds</li>
+                <li><strong>Printer</strong> - prints on paper</li>
+                <li><strong>Network</strong> - sends data to other computers</li>
+            </ul>
+        </div>
+    </div>
+
+    <h3 style="color: #00ccff; font-size: 1.8rem; margin-top: 3rem;">How Do Computers Work?</h3>
+    
+    <div style="background: rgba(0,0,0,0.5); padding: 2.5rem; border-radius: 15px; margin: 2rem 0; font-size: 1.2rem; line-height: 1.9;">
+        <p style="margin: 0;">
+            Computers only understand <strong style="color: #00ff88;">two things: ON and OFF</strong> (represented as 1 and 0).
+            Everything - your photos, music, videos, games - is just billions of 1s and 0s.
+        </p>
+    </div>
+
+    <div style="background: rgba(0,255,136,0.1); padding: 2.5rem; border-radius: 15px; margin: 2rem 0;">
+        <h4 style="color: #00ff88; margin-top: 0; font-size: 1.5rem;">Example: The Letter "H"</h4>
+        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">When you type "H", the computer sees:</p>
+        <pre style="background: rgba(0,0,0,0.6); padding: 2rem; border-radius: 12px; font-size: 1.3rem; letter-spacing: 2px;"><code>01001000</code></pre>
+        <p style="font-size: 1.15rem; line-height: 1.8; margin-top: 1.5rem;">That's binary (1s and 0s). The word "Hello" looks like:</p>
+        <pre style="background: rgba(0,0,0,0.6); padding: 2rem; border-radius: 12px; font-size: 1.1rem; line-height: 1.7;"><code>H: 01001000
+e: 01100101
+l: 01101100
+l: 01101100
+o: 01101111</code></pre>
+    </div>
+
+    <h3 style="color: #ff0000; font-size: 1.8rem; margin-top: 3rem;">Why This Matters for Hacking</h3>
+    
+    <div style="background: rgba(255,0,0,0.12); padding: 2.5rem; border-radius: 15px; border: 2px solid rgba(255,0,0,0.4); margin: 2rem 0; font-size: 1.15rem; line-height: 1.9;">
+        <p style="margin-bottom: 1.5rem;">
+            <strong style="font-size: 1.3rem;">Here's the secret:</strong> Computers blindly follow instructions. They can't tell the difference between:
+        </p>
+        <ul style="margin: 1.5rem 0; font-size: 1.15rem;">
+            <li style="margin: 0.8rem 0;"><span style="color: #00ff88;"></span> <strong>Legitimate instructions</strong> from the real program</li>
+            <li style="margin: 0.8rem 0;"><span style="color: #ff0000;"></span> <strong>Malicious instructions</strong> from a hacker</li>
+        </ul>
+        <p style="margin-top: 1.5rem; font-size: 1.2rem;">
+            If you can trick a computer into running <strong>YOUR</strong> instructions instead of the original ones, 
+            you've hacked it. That's what this course teaches.
+        </p>
+    </div>
+
+    <div style="background: linear-gradient(135deg, rgba(0,255,136,0.2) 0%, rgba(0,204,255,0.2) 100%); padding: 2.5rem; border-radius: 15px; margin-top: 3rem;">
+        <h4 style="color: #00ff88; margin-top: 0; font-size: 1.5rem;">Quick Check</h4>
+        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1rem;">Can you answer these?</p>
+        <ul style="font-size: 1.1rem; line-height: 1.9;">
+            <li>What are the 4 basic parts of a computer?</li>
+            <li>What does the CPU do?</li>
+            <li>What's the difference between RAM and a hard drive?</li>
+            <li>What are the only two things a computer understands?</li>
+        </ul>
+        <p style="font-size: 1.2rem; line-height: 1.8; margin-top: 1.5rem;">
+            <strong>If yes, you're ready for the next topic!</strong>
+        </p>
+    </div>
+</div>
+
+<!-- Topic 2: How the CPU Actually Works -->
+<div class="topic-section" style="background: linear-gradient(135deg, rgba(0,204,255,0.05) 0%, rgba(138,43,226,0.05) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0;">
+    <h2 style="color: #00ccff; font-size: 2.2rem; margin-bottom: 2rem;">How the CPU Actually Works</h2>
+    
+    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 15px; margin: 2rem 0; font-size: 1.15rem; line-height: 1.9;">
+        <p style="margin: 0; font-size: 1.25rem;">
+            The CPU is the <strong>"brain"</strong> of the computer, but it's actually pretty dumb. 
+            It only knows how to do simple math and move data around. The magic is that it does 
+            this <strong>billions of times per second</strong>.
+        </p>
+    </div>
+
+    <h3 style="color: #00ccff; font-size: 1.8rem; margin-top: 3rem;">The Fetch-Execute Cycle</h3>
+    
+    <div style="background: rgba(0,204,255,0.15); padding: 2.5rem; border-radius: 15px; margin: 2rem 0;">
+        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 2rem;">The CPU does the same 4 steps over and over, billions of times per second:</p>
+        
+        <div style="display: grid; gap: 1.5rem;">
+            <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; border-left: 4px solid #00ff88;">
+                <h4 style="color: #00ff88; margin: 0 0 0.5rem 0; font-size: 1.4rem;">Step 1: FETCH</h4>
+                <p style="font-size: 1.1rem; line-height: 1.8;">Get the next instruction from memory.</p>
+            </div>
+            
+            <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; border-left: 4px solid #00ccff;">
+                <h4 style="color: #00ccff; margin: 0 0 0.5rem 0; font-size: 1.4rem;">Step 2: DECODE</h4>
+                <p style="font-size: 1.1rem; line-height: 1.8;">Figure out what the instruction means.</p>
+            </div>
+            
+            <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; border-left: 4px solid #ffc800;">
+                <h4 style="color: #ffc800; margin: 0 0 0.5rem 0; font-size: 1.4rem;">Step 3: EXECUTE</h4>
+                <p style="font-size: 1.1rem; line-height: 1.8;">Actually do what the instruction says.</p>
+            </div>
+            
+            <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; border-left: 4px solid #ff6464;">
+                <h4 style="color: #ff6464; margin: 0 0 0.5rem 0; font-size: 1.4rem;">Step 4: STORE</h4>
+                <p style="font-size: 1.1rem; line-height: 1.8;">Save the result back to memory.</p>
+            </div>
+        </div>
+        
+        <div style="background: rgba(0,0,0,0.5); padding: 2rem; border-radius: 10px; margin-top: 2rem; font-size: 1.15rem; line-height: 1.8;">
+            <strong>Real Example:</strong> Let's say the instruction is "Add 5 + 3"
+            <ol style="margin-top: 1rem; font-size: 1.1rem; line-height: 1.9;">
+                <li><strong>Fetch:</strong> Get "Add 5 + 3" from memory</li>
+                <li><strong>Decode:</strong> Understand it means addition</li>
+                <li><strong>Execute:</strong> Calculate 5 + 3 = 8</li>
+                <li><strong>Store:</strong> Save the answer (8) back to memory</li>
+            </ol>
+        </div>
+    </div>
+
+    <h3 style="color: #00ccff; font-size: 1.8rem; margin-top: 3rem;">CPU Speed: Why "GHz" Matters</h3>
+    
+    <div style="background: rgba(138,43,226,0.15); padding: 2.5rem; border-radius: 15px; margin: 2rem 0;">
+        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+            You've probably heard of "3.5 GHz CPU" or similar. Here's what that means:
+        </p>
+        
+        <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; font-size: 1.2rem; line-height: 1.9;">
+            <strong style="color: #00ff88;">GHz = Gigahertz = 1 billion cycles per second</strong>
+            <p style="margin-top: 1rem;">A 3.5 GHz CPU can do 3.5 billion "ticks" per second. Each tick can execute an instruction.</p>
+        </div>
+        
+        <div style="background: rgba(0,255,136,0.1); padding: 2rem; border-radius: 10px; margin-top: 2rem;">
+            <h4 style="color: #00ff88; margin-top: 0; font-size: 1.4rem;">Put It In Perspective:</h4>
+            <p style="font-size: 1.15rem; line-height: 1.8;">
+                In the time it takes you to <strong>blink</strong> (about 0.3 seconds), 
+                a 3.5 GHz CPU executes over <strong style="color: #00ff88;">1 BILLION instructions</strong>.
+            </p>
+        </div>
+    </div>
+
+    <h3 style="color: #ff0000; font-size: 1.8rem; margin-top: 3rem;">Why This Matters for Hacking</h3>
+    
+    <div style="background: rgba(255,0,0,0.12); padding: 2.5rem; border-radius: 15px; border: 2px solid rgba(255,0,0,0.4); margin: 2rem 0;">
+        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+            Remember: the CPU just executes instructions from memory. It doesn't care WHERE those instructions came from.
+        </p>
+        
+        <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin-top: 1.5rem;">
+            <p style="font-size: 1.15rem; line-height: 1.8; margin: 0;">
+                <strong style="color: #ff6464;">If you can inject YOUR instructions into memory</strong>, 
+                the CPU will execute them just like any other instructions. This is called 
+                <strong style="color: #00ff88;">code injection</strong> - one of the most powerful hacking techniques.
+            </p>
+        </div>
+    </div>
+
+    <div style="background: linear-gradient(135deg, rgba(0,204,255,0.2) 0%, rgba(138,43,226,0.2) 100%); padding: 2.5rem; border-radius: 15px; margin-top: 3rem;">
+        <h4 style="color: #00ccff; margin-top: 0; font-size: 1.5rem;">Quick Check</h4>
+        <ul style="font-size: 1.1rem; line-height: 1.9;">
+            <li>What are the 4 steps of the fetch-execute cycle?</li>
+            <li>What does GHz stand for?</li>
+            <li>How many instructions can a 3 GHz CPU execute per second?</li>
+            <li>Why can't the CPU tell the difference between legitimate and malicious code?</li>
+        </ul>
+    </div>
+</div>
+
+<!-- Topic 3: Memory - RAM vs Storage -->
+<div class="topic-section" style="background: linear-gradient(135deg, rgba(255,100,100,0.05) 0%, rgba(255,200,0,0.05) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0;">
+    <h2 style="color: #ff6464; font-size: 2.2rem; margin-bottom: 2rem;">Memory: RAM vs Storage (The Confusion Ends Here)</h2>
+    
+    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 15px; margin: 2rem 0; font-size: 1.15rem; line-height: 1.9;">
+        <p style="margin: 0; font-size: 1.25rem;">
+            People confuse these ALL the time. Let's make it crystal clear with a simple analogy:
+        </p>
+    </div>
+
+    <h3 style="color: #ff6464; font-size: 1.8rem; margin-top: 3rem;">The Desk Analogy</h3>
+    
+    <div style="display: grid; gap: 2rem; margin: 2rem 0;">
+        <div style="background: rgba(255,100,100,0.15); padding: 2.5rem; border-radius: 15px;">
+            <h4 style="color: #ff6464; font-size: 1.6rem; margin: 0 0 1rem 0;">RAM = Your Desk Surface</h4>
+            <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1rem;">
+                <strong>Fast but limited space.</strong> This is where you do your actual work.
+            </p>
+            <ul style="font-size: 1.1rem; line-height: 1.9;">
+                <li><strong>Speed:</strong> Super fast (nanoseconds)</li>
+                <li><strong>Size:</strong> Limited (8GB, 16GB, 32GB typical)</li>
+                <li><strong>Duration:</strong> Temporary - disappears when power is off</li>
+                <li><strong>Purpose:</strong> Active work only</li>
+            </ul>
+            <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; margin-top: 1.5rem; font-size: 1.1rem; line-height: 1.8;">
+                <strong>Example:</strong> When you open a game, it loads from storage INTO RAM. 
+                The game runs from RAM because it's fast. Close the game = it leaves RAM.
+            </div>
+        </div>
+
+        <div style="background: rgba(255,200,0,0.15); padding: 2.5rem; border-radius: 15px;">
+            <h4 style="color: #ffc800; font-size: 1.6rem; margin: 0 0 1rem 0;">Storage = Your Filing Cabinet</h4>
+            <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1rem;">
+                <strong>Slower but tons of space.</strong> This is where you keep everything long-term.
+            </p>
+            <ul style="font-size: 1.1rem; line-height: 1.9;">
+                <li><strong>Speed:</strong> Slower (milliseconds for HDD, microseconds for SSD)</li>
+                <li><strong>Size:</strong> Huge (500GB, 1TB, 2TB typical)</li>
+                <li><strong>Duration:</strong> Permanent - stays even when power is off</li>
+                <li><strong>Purpose:</strong> Long-term storage</li>
+            </ul>
+            <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; margin-top: 1.5rem; font-size: 1.1rem; line-height: 1.8;">
+                <strong>Example:</strong> Your photos, videos, games are stored here. 
+                They stay even when your computer is off. But to USE them, they must load into RAM first.
+            </div>
+        </div>
+    </div>
+
+    <h3 style="color: #00ccff; font-size: 1.8rem; margin-top: 3rem;">The Flow: How They Work Together</h3>
+    
+    <div style="background: rgba(0,0,0,0.5); padding: 2.5rem; border-radius: 15px; margin: 2rem 0;">
+        <pre style="background: rgba(0,204,255,0.1); padding: 2rem; border-radius: 10px; font-size: 1.15rem; line-height: 2; color: #fff;"><code>1. You double-click a program on your desktop
+   ?
+2. The program files are on your STORAGE (hard drive/SSD)
+   ?
+3. The computer COPIES the program into RAM
+   ?
+4. The CPU reads instructions from RAM (fast!)
+   ?
+5. Program runs...
+   ?
+6. You close the program
+   ?
+7. RAM is freed up for other programs
+   ?
+8. Program files stay on STORAGE for next time</code></pre>
+    </div>
+
+    <h3 style="color: #ffc800; font-size: 1.8rem; margin-top: 3rem;">Types of Storage</h3>
+    
+    <div style="display: grid; gap: 1.5rem; margin: 2rem 0;">
+        <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; border-left: 4px solid #ff6464;">
+            <h4 style="color: #ff6464; margin: 0 0 1rem 0; font-size: 1.4rem;">HDD (Hard Disk Drive)</h4>
+            <p style="font-size: 1.1rem; line-height: 1.8;">
+                <strong>Mechanical</strong> - uses spinning disks and a moving arm (like a record player).
+                Slower but cheap. Good for storing lots of data you don't access often.
+            </p>
+        </div>
+        
+        <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; border-left: 4px solid #00ff88;">
+            <h4 style="color: #00ff88; margin: 0 0 1rem 0; font-size: 1.4rem;">SSD (Solid State Drive)</h4>
+            <p style="font-size: 1.1rem; line-height: 1.8;">
+                <strong>Electronic</strong> - no moving parts (like a USB drive). Much faster than HDD. 
+                More expensive per GB. This is what you want for your operating system and programs.
+            </p>
+        </div>
+        
+        <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; border-left: 4px solid #00ccff;">
+            <h4 style="color: #00ccff; margin: 0 0 1rem 0; font-size: 1.4rem;">NVMe (Super Fast SSD)</h4>
+            <p style="font-size: 1.1rem; line-height: 1.8;">
+                <strong>Lightning fast</strong> - uses a direct connection to the CPU. 
+                The fastest consumer storage available. Expensive but worth it for performance.
+            </p>
+        </div>
+    </div>
+
+    <h3 style="color: #ff0000; font-size: 1.8rem; margin-top: 3rem;">Why This Matters for Hacking</h3>
+    
+    <div style="background: rgba(255,0,0,0.12); padding: 2.5rem; border-radius: 15px; border: 2px solid rgba(255,0,0,0.4); margin: 2rem 0;">
+        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+            Understanding memory is <strong>critical</strong> for hacking because:
+        </p>
+        <ul style="font-size: 1.1rem; line-height: 1.9; margin: 1.5rem 0;">
+            <li><strong>Buffer overflows</strong> - exploiting how RAM is managed</li>
+            <li><strong>Memory injection</strong> - placing malicious code in RAM</li>
+            <li><strong>RAM dumping</strong> - stealing passwords/data from RAM</li>
+            <li><strong>Rootkits</strong> - hiding malware in RAM to avoid storage scanning</li>
+        </ul>
+        <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin-top: 2rem; font-size: 1.15rem; line-height: 1.8;">
+            <strong style="color: #ff6464;">Key insight:</strong> RAM is where programs are ALIVE and running. 
+            Most attacks target RAM, not storage, because that's where the action happens.
+        </div>
+    </div>
+
+    <div style="background: linear-gradient(135deg, rgba(255,100,100,0.2) 0%, rgba(255,200,0,0.2) 100%); padding: 2.5rem; border-radius: 15px; margin-top: 3rem;">
+        <h4 style="color: #ff6464; margin-top: 0; font-size: 1.5rem;">Quick Check</h4>
+        <ul style="font-size: 1.1rem; line-height: 1.9;">
+            <li>What's the difference between RAM and storage?</li>
+            <li>Which is faster: RAM or SSD?</li>
+            <li>What happens to RAM when you turn off your computer?</li>
+            <li>Why do hackers target RAM instead of storage for attacks?</li>
+        </ul>
+    </div>
+</div>
+
+<!-- Topic 4: Binary & How Computers Store Data -->
+<div class="topic-section" style="background: linear-gradient(135deg, rgba(138,43,226,0.05) 0%, rgba(255,0,255,0.05) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0;">
+    <h2 style="color: #8a2be2; font-size: 2.2rem; margin-bottom: 2rem;">Binary: The Language of Computers</h2>
+    
+    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 15px; margin: 2rem 0; font-size: 1.15rem; line-height: 1.9;">
+        <p style="margin: 0; font-size: 1.25rem;">
+            Computers only understand <strong style="color: #00ff88;">ON (1)</strong> and 
+            <strong style="color: #ff6464;">OFF (0)</strong>. Everything else is built on top of this.
+        </p>
+    </div>
+
+    <h3 style="color: #8a2be2; font-size: 1.8rem; margin-top: 3rem;">Why Binary?</h3>
+    
+    <div style="background: rgba(138,43,226,0.15); padding: 2.5rem; border-radius: 15px; margin: 2rem 0;">
+        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+            Inside a computer are billions of tiny switches (transistors). Each switch can be:
+        </p>
+        <ul style="font-size: 1.15rem; line-height: 1.9;">
+            <li><strong style="color: #00ff88;">ON</strong> = electricity flowing = <strong>1</strong></li>
+            <li><strong style="color: #ff6464;">OFF</strong> = no electricity = <strong>0</strong></li>
+        </ul>
+        <div style="background: rgba(0,0,0,0.5); padding: 2rem; border-radius: 10px; margin-top: 2rem; font-size: 1.15rem; line-height: 1.8;">
+            That's it. Everything - your photos, music, videos, games, this webpage - is just 
+            billions of switches being ON or OFF in specific patterns.
+        </div>
+    </div>
+
+    <h3 style="color: #8a2be2; font-size: 1.8rem; margin-top: 3rem;">Understanding Binary Numbers</h3>
+    
+    <div style="background: rgba(0,0,0,0.5); padding: 2.5rem; border-radius: 15px; margin: 2rem 0;">
+        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 2rem;">
+            You count in <strong>decimal</strong> (base 10): 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, then 10.
+            <br>Computers count in <strong>binary</strong> (base 2): 0, 1, then... 10!
+        </p>
+        
+        <div style="background: rgba(138,43,226,0.2); padding: 2rem; border-radius: 10px;">
+            <h4 style="color: #00ff88; margin-top: 0; font-size: 1.4rem;">Binary Counting:</h4>
+            <pre style="background: rgba(0,0,0,0.6); padding: 2rem; border-radius: 10px; font-size: 1.2rem; line-height: 2;"><code>Decimal ? Binary
+   0    ?    0
+   1    ?    1
+   2    ?   10  (ran out of digits, carry over!)
+   3    ?   11
+   4    ?  100
+   5    ?  101
+   6    ?  110
+   7    ?  111
+   8    ? 1000</code></pre>
+        </div>
+    </div>
+
+    <h3 style="color: #8a2be2; font-size: 1.8rem; margin-top: 3rem;">Converting Binary to Decimal (Easy Method)</h3>
+    
+    <div style="background: rgba(138,43,226,0.15); padding: 2.5rem; border-radius: 15px; margin: 2rem 0;">
+        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+            Each position in binary represents a power of 2. Let's decode <strong style="color: #00ff88;">10110</strong>:
+        </p>
+        
+        <div style="background: rgba(0,0,0,0.5); padding: 2rem; border-radius: 10px;">
+            <pre style="font-size: 1.15rem; line-height: 2; color: #fff;"><code>Position:  4   3   2   1   0     (right to left, starting at 0)
+Value:     16  8   4   2   1     (2^4, 2^3, 2^2, 2^1, 2^0)
+Binary:    1   0   1   1   0
+
+Calculation:
+  1 × 16 = 16
+  0 × 8  = 0
+  1 × 4  = 4
+  1 × 2  = 2
+  0 × 1  = 0
+         ----
+  Total: 22 in decimal!</code></pre>
+        </div>
+    </div>
+
+    <h3 style="color: #8a2be2; font-size: 1.8rem; margin-top: 3rem;">Bits, Bytes, and Bigger</h3>
+    
+    <div style="display: grid; gap: 1.5rem; margin: 2rem 0;">
+        <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; border-left: 4px solid #ff6464;">
+            <h4 style="color: #ff6464; margin: 0 0 0.5rem 0; font-size: 1.4rem;">Bit</h4>
+            <p style="font-size: 1.1rem; line-height: 1.8;">
+                A single 1 or 0. The smallest unit. "Bit" = <strong>B</strong>inary Dig<strong>it</strong>
+            </p>
+        </div>
+        
+        <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; border-left: 4px solid #00ff88;">
+            <h4 style="color: #00ff88; margin: 0 0 0.5rem 0; font-size: 1.4rem;">Byte</h4>
+            <p style="font-size: 1.1rem; line-height: 1.8;">
+                <strong>8 bits</strong>. Example: <code style="background: rgba(0,0,0,0.6); padding: 0.3rem 0.6rem; border-radius: 5px;">01001000</code>
+                <br>Can represent 256 different values (0-255)
+            </p>
+        </div>
+        
+        <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; border-left: 4px solid #00ccff;">
+            <h4 style="color: #00ccff; margin: 0 0 0.5rem 0; font-size: 1.4rem;">Kilobyte (KB)</h4>
+            <p style="font-size: 1.1rem; line-height: 1.8;">
+                1,024 bytes (not 1,000 because computers use powers of 2)
+            </p>
+        </div>
+        
+        <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; border-left: 4px solid #ffc800;">
+            <h4 style="color: #ffc800; margin: 0 0 0.5rem 0; font-size: 1.4rem;">Megabyte (MB)</h4>
+            <p style="font-size: 1.1rem; line-height: 1.8;">
+                1,024 KB = 1,048,576 bytes
+            </p>
+        </div>
+        
+        <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; border-left: 4px solid #8a2be2;">
+            <h4 style="color: #8a2be2; margin: 0 0 0.5rem 0; font-size: 1.4rem;">Gigabyte (GB)</h4>
+            <p style="font-size: 1.1rem; line-height: 1.8;">
+                1,024 MB = 1,073,741,824 bytes (over 1 billion!)
+            </p>
+        </div>
+    </div>
+
+    <h3 style="color: #00ff88; font-size: 1.8rem; margin-top: 3rem;">How Text is Stored (ASCII)</h3>
+    
+    <div style="background: rgba(0,255,136,0.1); padding: 2.5rem; border-radius: 15px; margin: 2rem 0;">
+        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+            Each letter gets a number in the ASCII table. Then that number is stored in binary:
+        </p>
+        
+        <div style="background: rgba(0,0,0,0.6); padding: 2rem; border-radius: 10px;">
+            <pre style="font-size: 1.15rem; line-height: 2;"><code>Letter ? Decimal ? Binary
+  A    ?    65    ? 01000001
+  B    ?    66    ? 01000010
+  C    ?    67    ? 01000011
+  ...
+  a    ?    97    ? 01100001
+  b    ?    98    ? 01100010
+  !    ?    33    ? 00100001
+  @    ?    64    ? 01000000</code></pre>
+        </div>
+        
+        <div style="background: rgba(0,255,136,0.15); padding: 2rem; border-radius: 10px; margin-top: 2rem;">
+            <p style="font-size: 1.15rem; line-height: 1.8; margin: 0;">
+                So when you type <strong>"Hi!"</strong>, the computer stores:
+                <br><code style="background: rgba(0,0,0,0.6); padding: 0.5rem 1rem; border-radius: 5px; font-size: 1.1rem; display: inline-block; margin-top: 1rem;">01001000 01101001 00100001</code>
+            </p>
+        </div>
+    </div>
+
+    <h3 style="color: #ff0000; font-size: 1.8rem; margin-top: 3rem;">Why This Matters for Hacking</h3>
+    
+    <div style="background: rgba(255,0,0,0.12); padding: 2.5rem; border-radius: 15px; border: 2px solid rgba(255,0,0,0.4); margin: 2rem 0;">
+        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+            Understanding binary is fundamental to hacking because:
+        </p>
+        <ul style="font-size: 1.1rem; line-height: 1.9; margin: 1.5rem 0;">
+            <li><strong>Reverse engineering</strong> - reading compiled programs (they're just binary)</li>
+            <li><strong>Buffer overflows</strong> - manipulating memory byte by byte</li>
+            <li><strong>Shellcode</strong> - writing malicious code in raw binary/hex</li>
+            <li><strong>Network protocols</strong> - data packets are binary</li>
+            <li><strong>File formats</strong> - understanding how files are structured</li>
+        </ul>
+        <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin-top: 2rem; font-size: 1.15rem; line-height: 1.8;">
+            <strong style="color: #ff6464;">Bottom line:</strong> To truly control a computer, you need to speak its language. 
+            That language is binary.
+        </div>
+    </div>
+
+    <div style="background: linear-gradient(135deg, rgba(138,43,226,0.2) 0%, rgba(255,0,255,0.2) 100%); padding: 2.5rem; border-radius: 15px; margin-top: 3rem;">
+        <h4 style="color: #8a2be2; margin-top: 0; font-size: 1.5rem;">Quick Check</h4>
+        <ul style="font-size: 1.1rem; line-height: 1.9;">
+            <li>What are the only two values a bit can have?</li>
+            <li>How many bits are in a byte?</li>
+            <li>Convert binary <strong>1010</strong> to decimal</li>
+            <li>How many bytes are in 1 KB?</li>
+            <li>What ASCII value represents the letter 'A'?</li>
+        </ul>
+    </div>
+</div>
+
+<!-- Topic 5: Operating Systems Basics -->
+<div class="topic-section" style="background: linear-gradient(135deg, rgba(0,255,136,0.05) 0%, rgba(0,150,255,0.05) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0;">
+    <h2 style="color: #00ff88; font-size: 2.2rem; margin-bottom: 2rem;">What is an Operating System?</h2>
+    
+    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 15px; margin: 2rem 0; font-size: 1.15rem; line-height: 1.9;">
+        <p style="margin: 0; font-size: 1.25rem;">
+            An <strong style="color: #00ff88;">Operating System (OS)</strong> is the "manager" software that runs your computer. 
+            It sits between the hardware (CPU, RAM, disk) and your programs (games, browser, etc.).
+        </p>
+    </div>
+
+    <h3 style="color: #00ff88; font-size: 1.8rem; margin-top: 3rem;">What Does an OS Do?</h3>
+    
+    <div style="display: grid; gap: 2rem; margin: 2rem 0;">
+        <div style="background: rgba(0,255,136,0.15); padding: 2.5rem; border-radius: 15px;">
+            <h4 style="color: #00ff88; font-size: 1.6rem; margin: 0 0 1rem 0;">1. Manage Hardware</h4>
+            <p style="font-size: 1.15rem; line-height: 1.8;">
+                Programs can't directly talk to hardware. The OS acts as a middleman:
+            </p>
+            <ul style="font-size: 1.1rem; line-height: 1.9; margin-top: 1rem;">
+                <li>Allocates CPU time to programs</li>
+                <li>Manages RAM - gives/takes memory as needed</li>
+                <li>Controls disk reads/writes</li>
+                <li>Handles input devices (keyboard, mouse)</li>
+                <li>Manages output devices (screen, printer)</li>
+            </ul>
+        </div>
+
+        <div style="background: rgba(0,150,255,0.15); padding: 2.5rem; border-radius: 15px;">
+            <h4 style="color: #0096ff; font-size: 1.6rem; margin: 0 0 1rem 0;">2. Run Programs</h4>
+            <p style="font-size: 1.15rem; line-height: 1.8;">
+                The OS loads programs from disk into RAM and tells the CPU to execute them. 
+                It also decides which programs get CPU time (multitasking).
+            </p>
+        </div>
+
+        <div style="background: rgba(255,200,0,0.15); padding: 2.5rem; border-radius: 15px;">
+            <h4 style="color: #ffc800; font-size: 1.6rem; margin: 0 0 1rem 0;">3. Provide Security</h4>
+            <p style="font-size: 1.15rem; line-height: 1.8;">
+                The OS enforces permissions - what files programs can access, what operations they can perform. 
+                This is your first line of defense against malware.
+            </p>
+        </div>
+
+        <div style="background: rgba(255,100,100,0.15); padding: 2.5rem; border-radius: 15px;">
+            <h4 style="color: #ff6464; font-size: 1.6rem; margin: 0 0 1rem 0;">4. User Interface</h4>
+            <p style="font-size: 1.15rem; line-height: 1.8;">
+                The desktop, windows, menus - that's all the OS providing a way for you to interact with the computer.
+            </p>
+        </div>
+    </div>
+
+    <h3 style="color: #00ff88; font-size: 1.8rem; margin-top: 3rem;">The Three Major Operating Systems</h3>
+    
+    <div style="background: rgba(0,0,0,0.5); padding: 2.5rem; border-radius: 15px; margin: 2rem 0;">
+        
+        <div style="background: rgba(0,150,255,0.2); padding: 2rem; border-radius: 10px; margin-bottom: 2rem;">
+            <h4 style="color: #0096ff; margin-top: 0; font-size: 1.5rem;">Windows</h4>
+            <ul style="font-size: 1.1rem; line-height: 1.9;">
+                <li><strong>Market Share:</strong> ~70% of desktops</li>
+                <li><strong>Made By:</strong> Microsoft</li>
+                <li><strong>Best For:</strong> Gaming, general use, business</li>
+                <li><strong>For Hackers:</strong> Most targeted OS (biggest user base). Learn Windows internals for offensive security</li>
+            </ul>
+        </div>
+
+        <div style="background: rgba(200,200,200,0.1); padding: 2rem; border-radius: 10px; margin-bottom: 2rem;">
+            <h4 style="color: #cccccc; margin-top: 0; font-size: 1.5rem;">macOS</h4>
+            <ul style="font-size: 1.1rem; line-height: 1.9;">
+                <li><strong>Market Share:</strong> ~15% of desktops</li>
+                <li><strong>Made By:</strong> Apple</li>
+                <li><strong>Best For:</strong> Creative work, development</li>
+                <li><strong>For Hackers:</strong> Based on Unix (like Linux). Good for development. Harder to hack due to tight security</li>
+            </ul>
+        </div>
+
+        <div style="background: rgba(255,200,0,0.2); padding: 2rem; border-radius: 10px;">
+            <h4 style="color: #ffc800; margin-top: 0; font-size: 1.5rem;">Linux</h4>
+            <ul style="font-size: 1.1rem; line-height: 1.9;">
+                <li><strong>Market Share:</strong> ~3% of desktops, but 90%+ of servers</li>
+                <li><strong>Made By:</strong> Open source community</li>
+                <li><strong>Best For:</strong> Servers, hacking, development, customization</li>
+                <li><strong>For Hackers:</strong> THE OS for security professionals. Most hacking tools run on Linux. Learn this!</li>
+            </ul>
+        </div>
+    </div>
+
+    <h3 style="color: #ff0000; font-size: 1.8rem; margin-top: 3rem;">Why This Matters for Hacking</h3>
+    
+    <div style="background: rgba(255,0,0,0.12); padding: 2.5rem; border-radius: 15px; border: 2px solid rgba(255,0,0,0.4); margin: 2rem 0;">
+        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+            <strong style="font-size: 1.3rem;">The OS is your battleground.</strong> Every hack targets the OS in some way:
+        </p>
+        <ul style="font-size: 1.1rem; line-height: 1.9; margin: 1.5rem 0;">
+            <li><strong>Privilege escalation</strong> - tricking the OS into giving you admin rights</li>
+            <li><strong>Exploiting OS vulnerabilities</strong> - bugs in the OS code</li>
+            <li><strong>Bypassing OS security</strong> - defeating antivirus, firewalls, permissions</li>
+            <li><strong>Understanding how the OS manages memory</strong> - for buffer overflows, code injection</li>
+        </ul>
+        <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin-top: 2rem; font-size: 1.15rem; line-height: 1.8;">
+            <strong style="color: #00ff88;">For ethical hacking, learn Linux deeply.</strong> Most penetration testing 
+            distributions (Kali, Parrot) are Linux-based. Understanding Linux internals = understanding how most servers work.
+        </div>
+    </div>
+
+    <div style="background: linear-gradient(135deg, rgba(0,255,136,0.2) 0%, rgba(0,150,255,0.2) 100%); padding: 2.5rem; border-radius: 15px; margin-top: 3rem;">
+        <h4 style="color: #00ff88; margin-top: 0; font-size: 1.5rem;">Quick Check</h4>
+        <ul style="font-size: 1.1rem; line-height: 1.9;">
+            <li>What is the main job of an operating system?</li>
+            <li>Name the three major desktop operating systems</li>
+            <li>Which OS dominates the server market?</li>
+            <li>Why is Linux preferred for ethical hacking?</li>
+        </ul>
+    </div>
+</div>
+
+<!-- Topic 6: Hexadecimal - The Hacker's Number System -->
+<div class="topic-section" style="background: linear-gradient(135deg, rgba(255,0,255,0.05) 0%, rgba(0,255,255,0.05) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0;">
+    <h2 style="color: #ff00ff; font-size: 2.2rem; margin-bottom: 2rem;">Hexadecimal: The Hacker's Number System</h2>
+    
+    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 15px; margin: 2rem 0; font-size: 1.15rem; line-height: 1.9;">
+        <p style="margin: 0; font-size: 1.25rem;">
+            Binary is tedious to read (too many 1s and 0s). Decimal doesn't align with computer architecture. 
+            <strong style="color: #ff00ff;">Hexadecimal (hex)</strong> is the perfect middle ground - it's what hackers use.
+        </p>
+    </div>
+
+    <h3 style="color: #ff00ff; font-size: 1.8rem; margin-top: 3rem;">What is Hexadecimal?</h3>
+    
+    <div style="background: rgba(255,0,255,0.15); padding: 2.5rem; border-radius: 15px; margin: 2rem 0;">
+        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+            <strong>Hexadecimal = Base 16</strong>. It uses 16 digits instead of 10:
+        </p>
+        
+        <div style="background: rgba(0,0,0,0.5); padding: 2rem; border-radius: 10px; font-size: 1.2rem; line-height: 2;">
+            <strong style="color: #00ff88;">0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F</strong>
+            <p style="margin-top: 1rem; font-size: 1.1rem;">A=10, B=11, C=12, D=13, E=14, F=15</p>
+        </div>
+    </div>
+
+    <h3 style="color: #00ccff; font-size: 1.8rem; margin-top: 3rem;">Hex to Decimal Conversion</h3>
+    
+    <div style="background: rgba(0,204,255,0.15); padding: 2.5rem; border-radius: 15px; margin: 2rem 0;">
+        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">Let's convert <strong style="color: #00ff88;">0x2A9</strong> (the 0x prefix means it's hex):</p>
+        
+        <div style="background: rgba(0,0,0,0.6); padding: 2rem; border-radius: 10px;">
+            <pre style="font-size: 1.15rem; line-height: 2; color: #fff;"><code>Position:  2    1    0     (right to left)
+Value:     256  16   1      (16^2, 16^1, 16^0)
+Hex:       2    A    9
+
+Calculation:
+  2 × 256 = 512
+  A × 16  = 160  (A = 10)
+  9 × 1   = 9
+          -----
+  Total:  681 in decimal!</code></pre>
+        </div>
+    </div>
+
+    <h3 style="color: #ff00ff; font-size: 1.8rem; margin-top: 3rem;">Binary to Hex (The Easy Way)</h3>
+    
+    <div style="background: rgba(255,0,255,0.15); padding: 2.5rem; border-radius: 15px; margin: 2rem 0;">
+        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+            <strong>The secret:</strong> Each hex digit = exactly 4 binary bits. This makes conversion trivial!
+        </p>
+        
+        <div style="background: rgba(0,0,0,0.6); padding: 2rem; border-radius: 10px; margin-bottom: 2rem;">
+            <h4 style="color: #00ff88; margin-top: 0;">Hex to Binary Mapping:</h4>
+            <pre style="font-size: 1.1rem; line-height: 1.8;"><code>Hex ? Binary
+ 0  ?  0000
+ 1  ?  0001
+ 2  ?  0010
+ 3  ?  0011
+ 4  ?  0100
+ 5  ?  0101
+ 6  ?  0110
+ 7  ?  0111
+ 8  ?  1000
+ 9  ?  1001
+ A  ?  1010
+ B  ?  1011
+ C  ?  1100
+ D  ?  1101
+ E  ?  1110
+ F  ?  1111</code></pre>
+        </div>
+        
+        <div style="background: rgba(0,255,136,0.1); padding: 2rem; border-radius: 10px;">
+            <h4 style="color: #00ff88; margin-top: 0; font-size: 1.4rem;">Example: Convert 0x3F to Binary</h4>
+            <pre style="background: rgba(0,0,0,0.6); padding: 1.5rem; border-radius: 8px; font-size: 1.2rem; line-height: 2;"><code>0x3F
+   ??
+   3 = 0011
+   F = 1111
+       --------
+Result: 00111111</code></pre>
+        </div>
+    </div>
+
+    <h3 style="color: #ffc800; font-size: 1.8rem; margin-top: 3rem;">Where You'll See Hex</h3>
+    
+    <div style="display: grid; gap: 1.5rem; margin: 2rem 0;">
+        <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; border-left: 4px solid #00ff88;">
+            <h4 style="color: #00ff88; margin: 0 0 0.5rem 0; font-size: 1.4rem;">Memory Addresses</h4>
+            <p style="font-size: 1.1rem; line-height: 1.8;">
+                <code style="background: rgba(0,0,0,0.6); padding: 0.3rem 0.6rem; border-radius: 5px;">0x7FFE0000</code> 
+                - Every location in RAM has a hex address
+            </p>
+        </div>
+        
+        <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; border-left: 4px solid #00ccff;">
+            <h4 style="color: #00ccff; margin: 0 0 0.5rem 0; font-size: 1.4rem;">Color Codes</h4>
+            <p style="font-size: 1.1rem; line-height: 1.8;">
+                <code style="background: rgba(0,0,0,0.6); padding: 0.3rem 0.6rem; border-radius: 5px;">#FF0000</code> = Red, 
+                <code style="background: rgba(0,0,0,0.6); padding: 0.3rem 0.6rem; border-radius: 5px;">#00FF00</code> = Green
+            </p>
+        </div>
+        
+        <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; border-left: 4px solid #ff6464;">
+            <h4 style="color: #ff6464; margin: 0 0 0.5rem 0; font-size: 1.4rem;">MAC Addresses</h4>
+            <p style="font-size: 1.1rem; line-height: 1.8;">
+                <code style="background: rgba(0,0,0,0.6); padding: 0.3rem 0.6rem; border-radius: 5px;">00:1A:2B:3C:4D:5E</code> 
+                - Hardware addresses in hex
+            </p>
+        </div>
+        
+        <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; border-left: 4px solid #ffc800;">
+            <h4 style="color: #ffc800; margin: 0 0 0.5rem 0; font-size: 1.4rem;">Machine Code</h4>
+            <p style="font-size: 1.1rem; line-height: 1.8;">
+                <code style="background: rgba(0,0,0,0.6); padding: 0.3rem 0.6rem; border-radius: 5px;">48 89 E5</code> 
+                - Assembly instructions in hex
+            </p>
+        </div>
+    </div>
+
+    <h3 style="color: #ff0000; font-size: 1.8rem; margin-top: 3rem;">Why This Matters for Hacking</h3>
+    
+    <div style="background: rgba(255,0,0,0.12); padding: 2.5rem; border-radius: 15px; border: 2px solid rgba(255,0,0,0.4); margin: 2rem 0;">
+        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+            <strong style="font-size: 1.3rem;">Hex is EVERYWHERE in hacking:</strong>
+        </p>
+        <ul style="font-size: 1.1rem; line-height: 1.9; margin: 1.5rem 0;">
+            <li><strong>Memory dumps</strong> - analyzing RAM always shows hex</li>
+            <li><strong>Shellcode</strong> - exploit code is written in hex</li>
+            <li><strong>Packet analysis</strong> - network traffic displayed in hex</li>
+            <li><strong>File signatures</strong> - identifying file types by hex headers</li>
+            <li><strong>Debugging</strong> - all debuggers show memory in hex</li>
+        </ul>
+        <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin-top: 2rem; font-size: 1.15rem; line-height: 1.8;">
+            <strong style="color: #ff6464;">You MUST be fluent in hex.</strong> It's not optional. 
+            Practice converting between hex, binary, and decimal until it becomes second nature.
+        </div>
+    </div>
+
+    <div style="background: linear-gradient(135deg, rgba(255,0,255,0.2) 0%, rgba(0,255,255,0.2) 100%); padding: 2.5rem; border-radius: 15px; margin-top: 3rem;">
+        <h4 style="color: #ff00ff; margin-top: 0; font-size: 1.5rem;">Quick Check</h4>
+        <ul style="font-size: 1.1rem; line-height: 1.9;">
+            <li>What does 0x mean?</li>
+            <li>Convert 0xF to decimal</li>
+            <li>Convert 0x1A to decimal</li>
+            <li>Convert hex A5 to binary</li>
+            <li>Why is hex preferred over binary for displaying memory?</li>
+        </ul>
+    </div>
+</div>
+
+<!-- Topic 7: How Programs Are Stored & Executed -->
+<div class="topic-section" style="background: linear-gradient(135deg, rgba(255,165,0,0.05) 0%, rgba(255,69,0,0.05) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0;">
+    <h2 style="color: #ffa500; font-size: 2.2rem; margin-bottom: 2rem;">How Programs Are Stored & Executed</h2>
+    
+    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 15px; margin: 2rem 0; font-size: 1.15rem; line-height: 1.9;">
+        <p style="margin: 0; font-size: 1.25rem;">
+            Ever wondered what happens when you double-click a program? Let's trace the entire journey from 
+            <strong>disk ? RAM ? CPU</strong> and understand what hackers exploit at each stage.
+        </p>
+    </div>
+
+    <h3 style="color: #ffa500; font-size: 1.8rem; margin-top: 3rem;">Executable Files: What Are They?</h3>
+    
+    <div style="background: rgba(255,165,0,0.15); padding: 2.5rem; border-radius: 15px; margin: 2rem 0;">
+        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+            Programs are stored on disk as <strong>executable files</strong>:
+        </p>
+        <ul style="font-size: 1.1rem; line-height: 1.9;">
+            <li><strong>Windows:</strong> .exe, .dll, .sys</li>
+            <li><strong>Linux:</strong> ELF files (no extension needed)</li>
+            <li><strong>macOS:</strong> Mach-O files</li>
+        </ul>
+        <div style="background: rgba(0,0,0,0.5); padding: 2rem; border-radius: 10px; margin-top: 1.5rem; font-size: 1.15rem; line-height: 1.8;">
+            These files contain <strong>machine code</strong> - binary instructions the CPU can execute directly. 
+            No translation needed. The CPU reads these bytes and does what they say.
+        </div>
+    </div>
+
+    <h3 style="color: #ffa500; font-size: 1.8rem; margin-top: 3rem;">The Execution Process (Step by Step)</h3>
+    
+    <div style="background: rgba(0,0,0,0.5); padding: 2.5rem; border-radius: 15px; margin: 2rem 0;">
+        
+        <div style="background: rgba(0,255,136,0.15); padding: 2rem; border-radius: 10px; margin-bottom: 2rem; border-left: 4px solid #00ff88;">
+            <h4 style="color: #00ff88; margin: 0 0 1rem 0; font-size: 1.5rem;">Step 1: You Double-Click</h4>
+            <p style="font-size: 1.1rem; line-height: 1.8;">
+                The OS receives your request to run a program. It finds the executable file on disk.
+            </p>
+        </div>
+
+        <div style="background: rgba(0,204,255,0.15); padding: 2rem; border-radius: 10px; margin-bottom: 2rem; border-left: 4px solid #00ccff;">
+            <h4 style="color: #00ccff; margin: 0 0 1rem 0; font-size: 1.5rem;">Step 2: OS Creates a Process</h4>
+            <p style="font-size: 1.1rem; line-height: 1.8;">
+                The OS allocates a chunk of RAM for this program. This is called a <strong>"process"</strong> - 
+                a running instance of a program with its own memory space.
+            </p>
+        </div>
+
+        <div style="background: rgba(255,165,0,0.15); padding: 2rem; border-radius: 10px; margin-bottom: 2rem; border-left: 4px solid #ffa500;">
+            <h4 style="color: #ffa500; margin: 0 0 1rem 0; font-size: 1.5rem;">Step 3: Loader Copies Program to RAM</h4>
+            <p style="font-size: 1.1rem; line-height: 1.8;">
+                The OS's "loader" reads the executable from disk and copies it into the process's RAM space. 
+                Different parts go to different sections:
+            </p>
+            <ul style="font-size: 1.05rem; line-height: 1.8; margin-top: 1rem;">
+                <li><strong>.text section:</strong> The actual program code (machine instructions)</li>
+                <li><strong>.data section:</strong> Global variables</li>
+                <li><strong>.stack:</strong> Function calls and local variables</li>
+                <li><strong>.heap:</strong> Dynamically allocated memory</li>
+            </ul>
+        </div>
+
+        <div style="background: rgba(255,200,0,0.15); padding: 2rem; border-radius: 10px; margin-bottom: 2rem; border-left: 4px solid #ffc800;">
+            <h4 style="color: #ffc800; margin: 0 0 1rem 0; font-size: 1.5rem;">Step 4: Set Instruction Pointer</h4>
+            <p style="font-size: 1.1rem; line-height: 1.8;">
+                The OS tells the CPU where to start executing - typically the program's "entry point" 
+                (the first instruction). The CPU's <strong>Instruction Pointer (IP)</strong> register 
+                is set to this address.
+            </p>
+        </div>
+
+        <div style="background: rgba(255,100,100,0.15); padding: 2rem; border-radius: 10px; border-left: 4px solid #ff6464;">
+            <h4 style="color: #ff6464; margin: 0 0 1rem 0; font-size: 1.5rem;">Step 5: CPU Starts Executing</h4>
+            <p style="font-size: 1.1rem; line-height: 1.8;">
+                The CPU begins the fetch-execute cycle, reading instructions from RAM one by one, 
+                executing them at billions of cycles per second. Your program is now RUNNING.
+            </p>
+        </div>
+    </div>
+
+    <h3 style="color: #00ccff; font-size: 1.8rem; margin-top: 3rem;">Process Memory Layout</h3>
+    
+    <div style="background: rgba(0,204,255,0.1); padding: 2.5rem; border-radius: 15px; margin: 2rem 0;">
+        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 2rem;">
+            When a program runs, RAM is organized like this (from low to high addresses):
+        </p>
+        
+        <div style="background: rgba(0,0,0,0.6); padding: 2rem; border-radius: 10px;">
+            <pre style="font-size: 1.1rem; line-height: 2; color: #fff;"><code>HIGH MEMORY (0xFFFFFFFF)
++------------------+
+¦   KERNEL SPACE   ¦ ? OS lives here (protected)
++------------------¦
+¦      STACK       ¦ ? Grows DOWN ?
+¦        ?         ¦   Function calls, local vars
+¦                  ¦
+¦    (free space)  ¦
+¦                  ¦
+¦        ?         ¦   Dynamically allocated memory
+¦      HEAP        ¦ ? Grows UP ?
++------------------¦
+¦   .bss (zeros)   ¦ ? Uninitialized global vars
++------------------¦
+¦   .data          ¦ ? Initialized global vars
++------------------¦
+¦   .text (CODE)   ¦ ? Program instructions (read-only)
++------------------+
+LOW MEMORY (0x00000000)</code></pre>
+        </div>
+    </div>
+
+    <h3 style="color: #8a2be2; font-size: 1.8rem; margin-top: 3rem;">The Stack vs The Heap (Critical!)</h3>
+    
+    <div style="display: grid; gap: 2rem; margin: 2rem 0;">
+        <div style="background: rgba(138,43,226,0.15); padding: 2.5rem; border-radius: 15px;">
+            <h4 style="color: #8a2be2; font-size: 1.6rem; margin: 0 0 1rem 0;">The Stack</h4>
+            <ul style="font-size: 1.1rem; line-height: 1.9;">
+                <li><strong>Purpose:</strong> Function calls and local variables</li>
+                <li><strong>Growth:</strong> Grows downward (toward lower addresses)</li>
+                <li><strong>Speed:</strong> Very fast (simple push/pop operations)</li>
+                <li><strong>Size:</strong> Limited (typically 1-8 MB)</li>
+                <li><strong>Management:</strong> Automatic - variables die when function returns</li>
+            </ul>
+            <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; margin-top: 1.5rem; font-size: 1.1rem; line-height: 1.8;">
+                <strong>Example:</strong> When you call a function, its parameters and local variables go on the stack. 
+                When the function returns, they're automatically cleaned up.
+            </div>
+        </div>
+
+        <div style="background: rgba(255,100,200,0.15); padding: 2.5rem; border-radius: 15px;">
+            <h4 style="color: #ff64c8; font-size: 1.6rem; margin: 0 0 1rem 0;">The Heap</h4>
+            <ul style="font-size: 1.1rem; line-height: 1.9;">
+                <li><strong>Purpose:</strong> Dynamic memory allocation (malloc, new)</li>
+                <li><strong>Growth:</strong> Grows upward (toward higher addresses)</li>
+                <li><strong>Speed:</strong> Slower (complex allocation algorithms)</li>
+                <li><strong>Size:</strong> Much larger (limited only by available RAM)</li>
+                <li><strong>Management:</strong> Manual - YOU must free memory (or garbage collector does)</li>
+            </ul>
+            <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; margin-top: 1.5rem; font-size: 1.1rem; line-height: 1.8;">
+                <strong>Example:</strong> When you create a large array or object that needs to persist, 
+                it's allocated on the heap. YOU must remember to free it or you get a memory leak.
+            </div>
+        </div>
+    </div>
+
+    <h3 style="color: #ff0000; font-size: 1.8rem; margin-top: 3rem;">Why This Matters for Hacking</h3>
+    
+    <div style="background: rgba(255,0,0,0.12); padding: 2.5rem; border-radius: 15px; border: 2px solid rgba(255,0,0,0.4); margin: 2rem 0;">
+        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+            <strong style="font-size: 1.3rem;">This is WHERE hacking happens:</strong>
+        </p>
+        <ul style="font-size: 1.1rem; line-height: 1.9; margin: 1.5rem 0;">
+            <li><strong>Buffer overflow:</strong> Overwrite the stack to hijack function returns</li>
+            <li><strong>Heap spray:</strong> Fill the heap with malicious code, then trigger execution</li>
+            <li><strong>Return-Oriented Programming (ROP):</strong> Chain together existing .text section code</li>
+            <li><strong>Code injection:</strong> Inject shellcode into writable memory sections</li>
+            <li><strong>Format string attacks:</strong> Exploit how stack memory is read</li>
+        </ul>
+        <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin-top: 2rem; font-size: 1.15rem; line-height: 1.8;">
+            <strong style="color: #ff6464;">Every memory corruption exploit targets these structures.</strong> 
+            Understanding process memory layout is MANDATORY for exploitation. You'll spend WEEKS learning 
+            to manipulate stack frames, heap chunks, and memory protections.
+        </div>
+    </div>
+
+    <div style="background: linear-gradient(135deg, rgba(255,165,0,0.2) 0%, rgba(255,69,0,0.2) 100%); padding: 2.5rem; border-radius: 15px; margin-top: 3rem;">
+        <h4 style="color: #ffa500; margin-top: 0; font-size: 1.5rem;">Quick Check</h4>
+        <ul style="font-size: 1.1rem; line-height: 1.9;">
+            <li>What file extensions are executables on Windows?</li>
+            <li>What happens when you double-click a program?</li>
+            <li>Name the 4 main sections of process memory</li>
+            <li>Which direction does the stack grow?</li>
+            <li>What's the difference between stack and heap?</li>
+            <li>Why do buffer overflows target the stack?</li>
+        </ul>
+    </div>
+</div>
+
+<!-- Topic 8: File Systems & How Data is Stored on Disk -->
+<div class="topic-section" style="background: linear-gradient(135deg, rgba(0,200,100,0.05) 0%, rgba(0,100,200,0.05) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0;">
+    <h2 style="color: #00c864; font-size: 2.2rem; margin-bottom: 2rem;">File Systems: How Disks Actually Work</h2>
+    
+    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 15px; margin: 2rem 0; font-size: 1.15rem; line-height: 1.9;">
+        <p style="margin: 0; font-size: 1.25rem;">
+            Your hard drive isn't just a magical box that stores files. There's a complex system organizing 
+            everything. Understanding it helps with <strong>data recovery, hiding files, and forensics evasion</strong>.
+        </p>
+    </div>
+
+    <h3 style="color: #00c864; font-size: 1.8rem; margin-top: 3rem;">What is a File System?</h3>
+    
+    <div style="background: rgba(0,200,100,0.15); padding: 2.5rem; border-radius: 15px; margin: 2rem 0;">
+        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+            A <strong>file system</strong> is the method the OS uses to organize and store files on disk. Think of it like a library catalog system:
+        </p>
+        <ul style="font-size: 1.1rem; line-height: 1.9;">
+            <li><strong>Tracks where files are located</strong> on the physical disk</li>
+            <li><strong>Manages file names and folders</strong></li>
+            <li><strong>Handles permissions</strong> (who can read/write/execute)</li>
+            <li><strong>Keeps metadata</strong> (creation date, size, etc.)</li>
+        </ul>
+    </div>
+
+    <h3 style="color: #00c864; font-size: 1.8rem; margin-top: 3rem;">Common File Systems</h3>
+    
+    <div style="display: grid; gap: 1.5rem; margin: 2rem 0;">
+        <div style="background: rgba(0,150,255,0.15); padding: 2rem; border-radius: 10px; border-left: 4px solid #0096ff;">
+            <h4 style="color: #0096ff; margin: 0 0 1rem 0; font-size: 1.4rem;">NTFS (Windows)</h4>
+            <p style="font-size: 1.1rem; line-height: 1.8;">
+                <strong>New Technology File System</strong> - Default on Windows since Windows NT.
+                Supports large files (16 EB max), permissions, encryption, compression, journaling.
+            </p>
+        </div>
+        
+        <div style="background: rgba(255,200,0,0.15); padding: 2rem; border-radius: 10px; border-left: 4px solid #ffc800;">
+            <h4 style="color: #ffc800; margin: 0 0 1rem 0; font-size: 1.4rem;">ext4 (Linux)</h4>
+            <p style="font-size: 1.1rem; line-height: 1.8;">
+                <strong>Fourth Extended Filesystem</strong> - Most common on Linux. Fast, reliable, 
+                supports huge volumes (1 EB), journaling for crash recovery.
+            </p>
+        </div>
+        
+        <div style="background: rgba(200,200,200,0.15); padding: 2rem; border-radius: 10px; border-left: 4px solid #cccccc;">
+            <h4 style="color: #cccccc; margin: 0 0 1rem 0; font-size: 1.4rem;">APFS (macOS)</h4>
+            <p style="font-size: 1.1rem; line-height: 1.8;">
+                <strong>Apple File System</strong> - Optimized for SSDs, encryption by default, 
+                snapshots, space sharing between volumes.
+            </p>
+        </div>
+        
+        <div style="background: rgba(0,255,136,0.15); padding: 2rem; border-radius: 10px; border-left: 4px solid #00ff88;">
+            <h4 style="color: #00ff88; margin: 0 0 1rem 0; font-size: 1.4rem;">FAT32 (Universal)</h4>
+            <p style="font-size: 1.1rem; line-height: 1.8;">
+                <strong>File Allocation Table</strong> - Old but universally compatible. Used on USB drives. 
+                Major limitation: 4 GB max file size.
+            </p>
+        </div>
+    </div>
+
+    <h3 style="color: #0096ff; font-size: 1.8rem; margin-top: 3rem;">How Files Are Actually Stored</h3>
+    
+    <div style="background: rgba(0,0,0,0.5); padding: 2.5rem; border-radius: 15px; margin: 2rem 0;">
+        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 2rem;">
+            Files aren't stored as one continuous chunk. They're broken into <strong>blocks</strong> (also called clusters or sectors):
+        </p>
+        
+        <div style="background: rgba(0,150,255,0.1); padding: 2rem; border-radius: 10px; margin-bottom: 2rem;">
+            <h4 style="color: #00ff88; margin-top: 0; font-size: 1.4rem;">Block Storage Concept:</h4>
+            <ol style="font-size: 1.1rem; line-height: 1.9;">
+                <li><strong>Disk is divided into blocks</strong> - typically 4 KB each</li>
+                <li><strong>Files are split across multiple blocks</strong> - may not be contiguous</li>
+                <li><strong>File system keeps a map</strong> - tracks which blocks belong to which file</li>
+                <li><strong>Metadata stored separately</strong> - filename, size, permissions, timestamps</li>
+            </ol>
+        </div>
+        
+        <div style="background: rgba(0,0,0,0.6); padding: 2rem; border-radius: 10px;">
+            <h4 style="color: #ffc800; margin-top: 0;">Example: 12 KB file on disk with 4 KB blocks:</h4>
+            <pre style="font-size: 1.1rem; line-height: 2;"><code>File "video.mp4" (12 KB) stored in 3 blocks:
+
+Block 150: [First 4 KB of video]
+Block 892: [Next 4 KB of video]
+Block 143: [Last 4 KB of video]
+
+File system map:
+"video.mp4" ? blocks: 150, 892, 143</code></pre>
+        </div>
+    </div>
+
+    <h3 style="color: #00c864; font-size: 1.8rem; margin-top: 3rem;">Inodes (The Hidden Truth)</h3>
+    
+    <div style="background: rgba(0,200,100,0.15); padding: 2.5rem; border-radius: 15px; margin: 2rem 0;">
+        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+            On Linux (ext4, etc.), every file has an <strong>inode</strong> - a data structure containing:
+        </p>
+        <ul style="font-size: 1.1rem; line-height: 1.9;">
+            <li><strong>File size</strong></li>
+            <li><strong>Permissions</strong> (read/write/execute for user/group/others)</li>
+            <li><strong>Owner and group</strong></li>
+            <li><strong>Timestamps</strong> (created, modified, accessed)</li>
+            <li><strong>Pointers to data blocks</strong> where the actual file content lives</li>
+        </ul>
+        <div style="background: rgba(0,0,0,0.5); padding: 2rem; border-radius: 10px; margin-top: 1.5rem; font-size: 1.15rem; line-height: 1.8;">
+            <strong>Key insight:</strong> The filename is NOT in the inode! Filenames are stored in 
+            directory entries that POINT to inodes. This is why you can have multiple names (hard links) 
+            pointing to the same file.
+        </div>
+    </div>
+
+    <h3 style="color: #ff6464; font-size: 1.8rem; margin-top: 3rem;">What Happens When You Delete a File?</h3>
+    
+    <div style="background: rgba(255,100,100,0.15); padding: 2.5rem; border-radius: 15px; margin: 2rem 0;">
+        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+            <strong style="color: #ff6464;">The file is NOT immediately erased!</strong> Here's what really happens:
+        </p>
+        
+        <ol style="font-size: 1.1rem; line-height: 1.9; margin: 1.5rem 0;">
+            <li><strong>Directory entry removed</strong> - the filename is deleted from the directory</li>
+            <li><strong>Blocks marked as "free"</strong> - but the data is still there!</li>
+            <li><strong>Data remains until overwritten</strong> - could be seconds or months later</li>
+        </ol>
+        
+        <div style="background: rgba(0,0,0,0.5); padding: 2rem; border-radius: 10px; margin-top: 2rem; font-size: 1.15rem; line-height: 1.8;">
+            <strong>This is why data recovery works!</strong> Tools like PhotoRec scan for file signatures 
+            in "free" space and recover files that haven't been overwritten yet.
+            <p style="margin-top: 1rem;">
+                <strong style="color: #00ff88;">For secure deletion:</strong> You must overwrite the blocks 
+                with random data multiple times. Tools: <code style="background: rgba(0,0,0,0.6); padding: 0.3rem 0.6rem; border-radius: 5px;">shred</code> (Linux), 
+                <code style="background: rgba(0,0,0,0.6); padding: 0.3rem 0.6rem; border-radius: 5px;">sdelete</code> (Windows)
+            </p>
+        </div>
+    </div>
+
+    <h3 style="color: #ff0000; font-size: 1.8rem; margin-top: 3rem;">Why This Matters for Hacking</h3>
+    
+    <div style="background: rgba(255,0,0,0.12); padding: 2.5rem; border-radius: 15px; border: 2px solid rgba(255,0,0,0.4); margin: 2rem 0;">
+        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+            <strong style="font-size: 1.3rem;">File system knowledge is critical for:</strong>
+        </p>
+        <ul style="font-size: 1.1rem; line-height: 1.9; margin: 1.5rem 0;">
+            <li><strong>Data recovery:</strong> Recovering "deleted" files from victims or forensic analysis</li>
+            <li><strong>Hiding files:</strong> Alternate Data Streams (NTFS), slack space, hidden partitions</li>
+            <li><strong>Anti-forensics:</strong> Secure file deletion, timestamp manipulation</li>
+            <li><strong>Privilege escalation:</strong> Exploiting file permission misconfigurations</li>
+            <li><strong>Rootkits:</strong> Hiding files/processes by manipulating file system drivers</li>
+        </ul>
+        <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin-top: 2rem; font-size: 1.15rem; line-height: 1.8;">
+            <strong style="color: #ff6464;">Example attack:</strong> NTFS Alternate Data Streams let you hide 
+            data behind legitimate files. <code style="background: rgba(0,0,0,0.6); padding: 0.3rem 0.6rem; border-radius: 5px;">file.txt:hidden.exe</code> 
+            won't show up in normal directory listings but can still execute.
+        </div>
+    </div>
+
+    <div style="background: linear-gradient(135deg, rgba(0,200,100,0.2) 0%, rgba(0,100,200,0.2) 100%); padding: 2.5rem; border-radius: 15px; margin-top: 3rem;">
+        <h4 style="color: #00c864; margin-top: 0; font-size: 1.5rem;">Quick Check</h4>
+        <ul style="font-size: 1.1rem; line-height: 1.9;">
+            <li>What is a file system?</li>
+            <li>Name the default file systems for Windows, Linux, and macOS</li>
+            <li>What are blocks/clusters?</li>
+            <li>What information does an inode contain?</li>
+            <li>Why can deleted files be recovered?</li>
+            <li>How do you securely delete a file?</li>
+        </ul>
+    </div>
+</div>
+
+<!-- Mastery Checklist -->
+<div style="background: linear-gradient(135deg, rgba(0,255,136,0.1) 0%, rgba(138,43,226,0.1) 100%); padding: 3rem; border-radius: 20px; margin: 4rem 0; border: 3px solid rgba(0,255,136,0.3);">
+    <h2 style="color: #00ff88; font-size: 2rem; margin-bottom: 2rem;">?? Chapter 01 Mastery Checklist</h2>
+    
+    <p style="font-size: 1.2rem; line-height: 1.8; margin-bottom: 2rem;">
+        Before moving to Chapter 02, make sure you can confidently answer YES to these:
+    </p>
+    
+    <div style="display: grid; gap: 1rem;">
+        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
+            ? I can explain what a computer is to someone who knows nothing about tech
+        </div>
+        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
+            ? I understand the 4 basic parts (Input, Processing, Storage, Output)
+        </div>
+        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
+            ? I know what the CPU does and how the fetch-execute cycle works
+        </div>
+        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
+            ? I know what GHz means and why CPU speed matters
+        </div>
+        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
+            ? I can explain the difference between RAM and storage (and HDD vs SSD)
+        </div>
+        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
+            ? I understand binary and can convert simple binary numbers to decimal
+        </div>
+        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
+            ? I know what bits, bytes, KB, MB, and GB are
+        </div>
+        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
+            ? I understand hexadecimal and can convert between hex, binary, and decimal
+        </div>
+        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
+            ? I know how programs are loaded from disk into RAM and executed
+        </div>
+        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
+            ? I understand process memory layout (.text, .data, heap, stack)
+        </div>
+        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
+            ? I know the difference between stack and heap memory
+        </div>
+        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
+            ? I understand what a file system is and how files are stored in blocks
+        </div>
+        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
+            ? I know what happens when you delete a file (and why recovery is possible)
+        </div>
+        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
+            ? I understand what an operating system does
+        </div>
+        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
+            ? I can name the 3 major operating systems and their key differences
+        </div>
+        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
+            ? I understand why ALL of these fundamentals are critical for hacking
+        </div>
+    </div>
+    
+    <div style="background: rgba(0,255,136,0.2); padding: 2rem; border-radius: 15px; margin-top: 3rem; border: 2px solid rgba(0,255,136,0.5);">
+        <h3 style="color: #00ff88; margin-top: 0; font-size: 1.6rem;">? Checked Everything?</h3>
+        <p style="font-size: 1.2rem; line-height: 1.8; margin-bottom: 1rem;">
+            <strong>Congratulations!</strong> You now understand computer fundamentals better than 90% of people.
+        </p>
+        <p style="font-size: 1.15rem; line-height: 1.8;">
+            <strong style="color: #00ff88;">Next up:</strong> <a href="hacking-ch02.html" style="color: #00ccff; text-decoration: underline;">Chapter 02: Linux Fundamentals</a>
+            <br>We'll dive deep into the OS that powers most hacking tools and servers.
+        </p>
+    </div>
+</div>
+
+            </div>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+    
+    <!-- Supabase Client & Auth -->
+    </body>
+</html>
+
+
+

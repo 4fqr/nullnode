@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ch1: Python From Absolute Zero - NullSector</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --bg: #000; --text: #fff; --text2: #888; --border: #222; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.8; }
+        header { position: fixed; top: 0; left: 0; right: 0; background: var(--bg); border-bottom: 1px solid var(--border); z-index: 1000; }
+        .header-content { max-width: 1400px; margin: 0 auto; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .brand { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--text); font-weight: 700; font-size: 1.25rem; }
+        .brand-logo { width: 36px; height: 36px; }
+        .header-links { display: flex; gap: 2rem; }
+        .header-links a { color: var(--text2); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+        .header-links a:hover { color: var(--text); }
+        main { margin-top: 70px; padding: 4rem 2rem 6rem; max-width: 900px; margin-left: auto; margin-right: auto; }
+        .breadcrumbs { color: var(--text2); margin-bottom: 2rem; font-size: 0.9rem; }
+        .breadcrumbs a { color: var(--text2); text-decoration: none; }
+        .breadcrumbs a:hover { color: var(--text); }
+        .chapter-num { color: var(--text2); font-weight: 600; font-size: 0.9rem; letter-spacing: 2px; margin-bottom: 0.5rem; }
+        h1 { font-size: 3rem; font-weight: 800; margin-bottom: 1rem; line-height: 1.1; }
+        .subtitle { font-size: 1.4rem; color: var(--text2); margin-bottom: 4rem; line-height: 1.4; }
+        h2 { font-size: 2.2rem; font-weight: 700; margin: 4rem 0 2rem 0; }
+        h3 { font-size: 1.7rem; font-weight: 600; margin: 3rem 0 1.5rem 0; }
+        h4 { font-size: 1.3rem; font-weight: 600; margin: 2rem 0 1rem 0; color: var(--text); }
+        p { margin-bottom: 1.8rem; color: var(--text2); font-size: 1.1rem; line-height: 1.9; }
+        .huge-box { background: #0a0a0a; border: 2px solid var(--border); border-left: 4px solid var(--text); padding: 2.5rem; margin: 3rem 0; border-radius: 8px; }
+        .huge-box strong { color: var(--text); font-size: 1.2rem; }
+        .huge-box p { margin-top: 1rem; font-size: 1.15rem; }
+        code { background: #111; padding: 0.3rem 0.6rem; border-radius: 4px; font-family: 'Courier New', monospace; color: #fff; font-size: 1.05rem; }
+        pre { background: #0a0a0a; border: 1px solid var(--border); padding: 2rem; border-radius: 8px; overflow-x: auto; margin: 2rem 0; font-size: 1.05rem; }
+        pre code { padding: 0; background: none; }
+        .keyword { color: #ff79c6; font-weight: 600; }
+        .string { color: #50fa7b; }
+        .number { color: #bd93f9; }
+        .comment { color: #6272a4; font-style: italic; }
+        .output { color: var(--text2); }
+        ul, ol { margin: 1.5rem 0 2rem 2.5rem; color: var(--text2); }
+        li { margin-bottom: 1rem; font-size: 1.1rem; line-height: 1.8; }
+        li strong { color: var(--text); }
+        .example-box { background: #0a0a0a; border: 1px solid var(--border); padding: 2rem; margin: 2.5rem 0; border-radius: 8px; }
+        .example-box h4 { margin-top: 0; color: #fff; font-size: 1.2rem; }
+        .demo-box { background: #0a0a0a; border: 2px solid var(--text); padding: 2.5rem; margin: 3rem 0; border-radius: 8px; }
+        .demo-box h4 { color: #fff; font-size: 1.3rem; margin-bottom: 1.5rem; }
+        .challenge { background: #111; border: 2px solid var(--text2); padding: 2.5rem; margin: 3rem 0; border-radius: 8px; }
+        .challenge h3 { margin-top: 0; color: #fff; }
+        .nav-buttons { display: flex; gap: 1rem; margin-top: 5rem; }
+        .nav-buttons a { flex: 1; padding: 1.2rem 2rem; background: var(--bg); border: 1px solid var(--border); color: var(--text); text-decoration: none; border-radius: 8px; font-weight: 600; text-align: center; transition: all 0.2s; font-size: 1.05rem; }
+        .nav-buttons a:hover { border-color: var(--text); transform: translateY(-2px); }
+        strong { color: var(--text); font-weight: 700; }
+        em { color: #fff; font-style: italic; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a href="index.html" class="brand">
+                <img src="logo.svg" alt="NullSector" class="brand-logo">
+                <span>NullSector</span>
+            </a>
+            <div class="header-links">
+                <a href="roadmap-hacking.html">Hacking</a>
+                <a href="roadmap-programming.html">Programming</a>
+                <a href="null-terminal.html">Null Terminal</a>
+                <a href="faq.html">FAQs</a>
+                <a href="#">Discord</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="breadcrumbs">
+            <a href="index.html">Home</a> / <a href="roadmap-programming.html">Programming</a> / Chapter 1
+        </div>
+
+        <div class="chapter-num">CHAPTER 01</div>
+        <h1>Python From Absolute Zero</h1>
+        <p class="subtitle">Understanding Programming Like You're Five Years Old - No Assumptions, Just Pure Learning</p>
+
+        <div class="huge-box">
+            <strong>🎯 What You'll ACTUALLY Learn (No BS):</strong>
+            <p>By the end of this chapter, you'll understand what a computer REALLY is, why we need programming, how to "speak" to computers using Python, and you'll write your first REAL program that does something cool. We're going SUPER slow, explaining EVERYTHING.</p>
+        </div>
+
+        <h2>🤔 Part 1: What Even IS a Computer?</h2>
+
+        <p>Before we code ANYTHING, let's understand what you're actually coding ON. A computer is NOT magic. It's a very fast, very stupid machine that does exactly what you tell it.</p>
+
+        <div class="huge-box">
+            <strong>The Lightswitch Analogy:</strong>
+            <p>Imagine a room with a MILLION light switches. Each switch can be ON or OFF. That's it. Just ON or OFF. Now imagine arranging those switches in clever patterns to represent numbers, letters, images, videos, everything.</p>
+            <p>When a switch is ON, we call that "1". When it's OFF, we call that "0". So "1001" might mean four switches arranged as: ON-OFF-OFF-ON.</p>
+            <p>Your entire computer - your games, your browser, your music - is just BILLIONS of these tiny switches flipping on and off MILLIONS of times per second. Wild, right?</p>
+        </div>
+
+        <h3>💡 But How Does Flipping Switches Make Things Happen?</h3>
+
+        <p>Great question! Here's the insane part: we've figured out how to create <strong>patterns</strong> of switches that do math. Some patterns ADD numbers. Some patterns COMPARE numbers. Some patterns MOVE information around.</p>
+
+        <p>For example, imagine you have 8 switches representing the number 5: <code>00000101</code></p>
+        <p>And 8 more switches representing the number 3: <code>00000011</code></p>
+        <p>If you send these through a special circuit called an "adder", it flips switches in a way that gives you: <code>00001000</code> (which is 8 in binary!)</p>
+
+        <p><strong>The computer doesn't "know" it's adding.</strong> It's just flipping switches according to rules we designed. But those rules happen to match the rules of math. Mind-blowing!</p>
+
+        <h2>🗣️ Part 2: Why Programming Exists</h2>
+
+        <p>Okay, so computers are billions of switches. Cool. But do YOU want to manually flip billions of switches every time you want to watch YouTube? HELL NO.</p>
+
+        <div class="huge-box">
+            <strong>The Translation Problem:</strong>
+            <p>Humans think in concepts: "I want to send an email to my friend saying Happy Birthday with a cat emoji."</p>
+            <p>Computers think in: 01010011 01000101 01001110 01000100 (just a bunch of 1s and 0s)</p>
+            <p><strong>Programming languages</strong> are the translators between human-speak and computer-speak. They let you write something humans can read, then automatically convert it into the 1s and 0s the computer understands.</p>
+        </div>
+
+        <h3>📚 The Tower of Languages</h3>
+
+        <p>Programming languages exist in layers, from "closest to the human" to "closest to the metal switches":</p>
+
+        <ol>
+            <li><strong>Machine Code (Binary):</strong> Pure 1s and 0s. Switches. This is what the computer ACTUALLY runs.</li>
+            <li><strong>Assembly Language:</strong> One tiny step up. Instead of "10110010", you write "MOV AX, 2". Still brutal.</li>
+            <li><strong>C/C++:</strong> Much more human-readable. You can say "add these numbers" instead of manually moving bits around.</li>
+            <li><strong>Python (Where We Start!):</strong> Super human-friendly. Reads almost like English. Perfect for beginners.</li>
+        </ol>
+
+        <div class="example-box">
+            <h4>Same Task, Different Languages:</h4>
+            <p><strong>Task:</strong> Print "Hello World" on the screen</p>
+            
+            <p><strong>Machine Code (partial):</strong></p>
+            <pre><code>10110000 01001000
+10110100 00001110
+11001101 00010000</code></pre>
+
+            <p><strong>Assembly:</strong></p>
+            <pre><code>mov ah, 0x0e
+mov al, 'H'
+int 0x10</code></pre>
+
+            <p><strong>C:</strong></p>
+            <pre><code>#include &lt;stdio.h&gt;
+int main() {
+    printf("Hello World");
+    return 0;
+}</code></pre>
+
+            <p><strong>Python (EASIEST!):</strong></p>
+            <pre><code><span class="keyword">print</span>(<span class="string">"Hello World"</span>)</code></pre>
+        </div>
+
+        <p>See why we're starting with Python? It's the closest to human language!</p>
+
+        <h2>🐍 Part 3: What Makes Python Special?</h2>
+
+        <p>Python was created by a dude named Guido van Rossum in 1991. He wanted a language that was FUN to use and EASY to read. He succeeded. Here's why Python rocks for beginners:</p>
+
+        <ul>
+            <li><strong>Readable Syntax:</strong> Code looks like English sentences, not alien hieroglyphics</li>
+            <li><strong>No Semicolons:</strong> Some languages force you to end every line with ; or they crash. Python doesn't care.</li>
+            <li><strong>Automatic Memory Management:</strong> You don't have to manually track computer memory (trust me, that's HUGE)</li>
+            <li><strong>Massive Community:</strong> MILLIONS of Python users. Any problem you face, someone's solved it before.</li>
+            <li><strong>Versatile:</strong> Python does EVERYTHING: web servers, games, AI, hacking tools, data analysis, automation - EVERYTHING.</li>
+        </ul>
+
+        <h2>💻 Part 4: Installing Python (SUPER DETAILED)</h2>
+
+        <h3>Step 1: Download</h3>
+
+        <p>Go to <code>python.org</code> in your browser. Click the big yellow "Download Python" button. As of December 2024, you want Python 3.12 or newer.</p>
+
+        <div class="huge-box">
+            <strong>⚠️ CRITICAL CHECKBOX:</strong>
+            <p>During installation, you'll see a screen with checkboxes. One will say "Add Python to PATH" or "Add python.exe to PATH". <strong>CHECK THIS BOX.</strong></p>
+            <p><strong>What is PATH?</strong> PATH is like your computer's contact list. When you type "python" in a terminal, your computer checks its PATH to find where Python is installed. If Python isn't in PATH, your computer says "never heard of python" even though it's installed. Checking this box adds Python to that contact list automatically.</p>
+        </div>
+
+        <h3>Step 2: Verify Installation</h3>
+
+        <p>Open your terminal:</p>
+        <ul>
+            <li><strong>Windows:</strong> Press Windows Key, type "cmd" or "PowerShell", hit Enter</li>
+            <li><strong>Mac:</strong> Press Cmd+Space, type "Terminal", hit Enter</li>
+            <li><strong>Linux:</strong> Press Ctrl+Alt+T (usually)</li>
+        </ul>
+
+        <p>Type this command:</p>
+        <pre><code>python --version</code></pre>
+
+        <p>You should see something like: <code>Python 3.12.1</code></p>
+
+        <p><strong>If you get an error like "python is not recognized":</strong> Python isn't in your PATH. You need to either reinstall and check that box, or manually add Python to PATH (Google "add Python to PATH" + your OS name).</p>
+
+        <h3>Step 3: The Interactive Shell (REPL)</h3>
+
+        <p>Type this in your terminal:</p>
+        <pre><code>python</code></pre>
+
+        <p>You'll see something like:</p>
+        <pre><code>Python 3.12.1 (tags/v3.12.1:abc1234)
+Type "help", "copyright" or "license" for more information.
+>>></code></pre>
+
+        <p>That <code>>>></code> is called the <strong>Python prompt</strong>. This is the REPL (Read-Eval-Print-Loop). It's a direct line to Python's brain. You type Python code, hit Enter, Python runs it immediately and shows the result.</p>
+
+        <demo-box>
+            <h4>🎮 Try This Right Now:</h4>
+            <p>Type this at the <code>>>></code> prompt:</p>
+            <pre><code>>>> 2 + 2</code></pre>
+            <p>Press Enter. Python responds:</p>
+            <pre><code>4</code></pre>
+            <p>CONGRATS! You just programmed! You told Python to add 2+2, and it did. Try more:</p>
+            <pre><code>>>> 10 * 5
+50
+>>> 100 / 4
+25.0
+>>> 2 ** 8
+256</code></pre>
+            <p>(The <code>**</code> means "to the power of" - so 2**8 is 2 to the power of 8, which is 256!)</p>
+        </demo-box>
+
+        <h2>📦 Part 5: Variables - Your First REAL Concept</h2>
+
+        <h3>What ARE Variables?</h3>
+
+        <div class="huge-box">
+            <strong>The Box Metaphor:</strong>
+            <p>Imagine you have a cardboard box. You put something inside it - maybe a toy car. Then you write "CAR" on the box with a Sharpie. Now whenever you need that toy car, you don't have to remember where it is or what it looks like. You just look for the box labeled "CAR".</p>
+            <p><strong>Variables are labeled boxes for data.</strong> You put a value in the box, give the box a name, and then you can use that name to get the value back anytime.</p>
+        </div>
+
+        <h3>Creating Variables</h3>
+
+        <p>In Python, you create a variable using the <code>=</code> sign. The format is:</p>
+        <pre><code>name_of_box = thing_to_put_inside</code></pre>
+
+        <p>Let's make some variables:</p>
+
+        <pre><code><span class="comment"># Store a number</span>
+age = <span class="number">25</span>
+
+<span class="comment"># Store text</span>
+name = <span class="string">"Alice"</span>
+
+<span class="comment"># Store a yes/no value</span>
+is_student = <span class="keyword">True</span></code></pre>
+
+        <p>Now you have three boxes:</p>
+        <ul>
+            <li>A box labeled <code>age</code> containing the number 25</li>
+            <li>A box labeled <code>name</code> containing the text "Alice"</li>
+            <li>A box labeled <code>is_student</code> containing True (meaning yes)</li>
+        </ul>
+
+        <h3>Using Variables</h3>
+
+        <p>Once you've stored something in a variable, you can use the variable name anywhere you'd use the actual value:</p>
+
+        <pre><code>age = <span class="number">25</span>
+<span class="keyword">print</span>(age)
+<span class="output"># Output: 25</span>
+
+<span class="keyword">print</span>(age + <span class="number">5</span>)
+<span class="output"># Output: 30</span>
+
+<span class="keyword">print</span>(age * <span class="number">2</span>)
+<span class="output"># Output: 50</span></code></pre>
+
+        <h3>Changing Variables</h3>
+
+        <p>Variables can CHANGE (that's why they're called VARIables). You can empty the box and put something else in:</p>
+
+        <pre><code>score = <span class="number">0</span>
+<span class="keyword">print</span>(score)
+<span class="output"># Output: 0</span>
+
+score = <span class="number">10</span>
+<span class="keyword">print</span>(score)
+<span class="output"># Output: 10</span>
+
+score = score + <span class="number">5</span>
+<span class="keyword">print</span>(score)
+<span class="output"># Output: 15</span></code></pre>
+
+        <p>That last line <code>score = score + 5</code> looks weird but makes sense: "Take what's currently in the score box (10), add 5 to it (15), and put the result back in the score box."</p>
+
+        <h2>🎨 Part 6: Data Types - Different Kinds of Boxes</h2>
+
+        <p>Not all boxes hold the same type of stuff. You wouldn't put milk in a paper box or books in a garbage bag. Same with data - different types of information need different types of variables.</p>
+
+        <h3>1. Integers (Whole Numbers)</h3>
+
+        <pre><code>lives = <span class="number">3</span>
+score = <span class="number">9999</span>
+temperature = <span class="number">-5</span></code></pre>
+
+        <p>These are whole numbers - no decimals. Use them for counting, ages, scores, etc.</p>
+
+        <h3>2. Floats (Decimal Numbers)</h3>
+
+        <pre><code>price = <span class="number">19.99</span>
+temperature = <span class="number">98.6</span>
+pi = <span class="number">3.14159</span></code></pre>
+
+        <p>These have decimal points. Use them for prices, measurements, percentages, etc.</p>
+
+        <h3>3. Strings (Text)</h3>
+
+        <pre><code>name = <span class="string">"Alice"</span>
+message = <span class="string">"Hello, World!"</span>
+emoji = <span class="string">"🎉"</span></code></pre>
+
+        <p><strong>CRITICAL:</strong> Strings MUST be wrapped in quotes - either <code>"double quotes"</code> or <code>'single quotes'</code>. Otherwise Python thinks you're talking about a variable!</p>
+
+        <pre><code><span class="comment"># This works:</span>
+name = <span class="string">"Bob"</span>
+
+<span class="comment"># This BREAKS (Python thinks Bob is a variable that doesn't exist):</span>
+name = Bob  <span class="comment"># ERROR!</span></code></pre>
+
+        <h3>4. Booleans (True/False)</h3>
+
+        <pre><code>is_logged_in = <span class="keyword">True</span>
+has_premium = <span class="keyword">False</span>
+is_admin = <span class="keyword">True</span></code></pre>
+
+        <p>Booleans are like on/off switches. Only two options: <code>True</code> or <code>False</code>. Super useful for yes/no questions!</p>
+
+        <p><strong>NOTE:</strong> The T and F MUST be capitalized in Python!</p>
+
+        <h3>5. None (Nothing/Empty)</h3>
+
+        <pre><code>result = <span class="keyword">None</span></code></pre>
+
+        <p><code>None</code> is Python's way of saying "this box is empty" or "this value doesn't exist yet". It's different from 0 or an empty string - it's literally NOTHING.</p>
+
+        <h2>🖨️ Part 7: Print() - Talking to Humans</h2>
+
+        <p>The <code>print()</code> function is how Python talks to YOU. It displays text on the screen.</p>
+
+        <pre><code><span class="keyword">print</span>(<span class="string">"Hello!"</span>)
+<span class="output"># Output: Hello!</span>
+
+<span class="keyword">print</span>(<span class="number">42</span>)
+<span class="output"># Output: 42</span>
+
+age = <span class="number">25</span>
+<span class="keyword">print</span>(age)
+<span class="output"># Output: 25</span></code></pre>
+
+        <h3>Printing Multiple Things</h3>
+
+        <p>You can print multiple items by separating them with commas:</p>
+
+        <pre><code>name = <span class="string">"Alice"</span>
+age = <span class="number">25</span>
+<span class="keyword">print</span>(<span class="string">"Name:"</span>, name, <span class="string">"Age:"</span>, age)
+<span class="output"># Output: Name: Alice Age: 25</span></code></pre>
+
+        <h3>F-Strings (The Modern Way)</h3>
+
+        <p>F-strings are SUPER powerful. You put an <code>f</code> before the quote, then you can stick variables right inside the string using <code>{curly braces}</code>:</p>
+
+        <pre><code>name = <span class="string">"Bob"</span>
+age = <span class="number">30</span>
+city = <span class="string">"New York"</span>
+
+<span class="keyword">print</span>(<span class="string">f"My name is </span>{name}<span class="string">, I am </span>{age}<span class="string"> years old, and I live in </span>{city}<span class="string">."</span>)
+<span class="output"># Output: My name is Bob, I am 30 years old, and I live in New York.</span></code></pre>
+
+        <p>This is WAY cleaner than the old way of concatenating strings with <code>+</code> signs everywhere!</p>
+
+        <h2>⌨️ Part 8: Input() - Listening to Humans</h2>
+
+        <p>If <code>print()</code> is Python talking to you, <code>input()</code> is Python listening to you. It pauses the program and waits for you to type something.</p>
+
+        <pre><code>name = <span class="keyword">input</span>(<span class="string">"What is your name? "</span>)
+<span class="keyword">print</span>(<span class="string">f"Hello, </span>{name}<span class="string">!"</span>)</code></pre>
+
+        <p>When you run this, Python displays "What is your name? " and waits. You type "Alice" and hit Enter. Then Python stores "Alice" in the <code>name</code> variable and continues.</p>
+
+        <h3>⚠️ Input() Always Returns Text</h3>
+
+        <p>CRITICAL GOTCHA: <code>input()</code> ALWAYS gives you text (a string), even if you type a number!</p>
+
+        <pre><code>age = <span class="keyword">input</span>(<span class="string">"How old are you? "</span>)
+<span class="comment"># You type: 25</span>
+
+<span class="keyword">print</span>(age + <span class="number">5</span>)
+<span class="output"># ERROR! Can't add text and numbers!</span></code></pre>
+
+        <p>To fix this, you need to CONVERT the text to a number:</p>
+
+        <pre><code>age = <span class="keyword">input</span>(<span class="string">"How old are you? "</span>)
+age = <span class="keyword">int</span>(age)  <span class="comment"># Convert text to integer</span>
+
+<span class="keyword">print</span>(age + <span class="number">5</span>)
+<span class="output"># Now it works! If you typed 25, this prints 30</span></code></pre>
+
+        <p>Or do it in one line:</p>
+
+        <pre><code>age = <span class="keyword">int</span>(<span class="keyword">input</span>(<span class="string">"How old are you? "</span>))</code></pre>
+
+        <h2>➕ Part 9: Math Operations</h2>
+
+        <p>Python is a calculator on steroids. Here are all the math operations:</p>
+
+        <pre><code><span class="comment"># Addition</span>
+<span class="keyword">print</span>(<span class="number">5</span> + <span class="number">3</span>)  <span class="output"># 8</span>
+
+<span class="comment"># Subtraction</span>
+<span class="keyword">print</span>(<span class="number">10</span> - <span class="number">4</span>)  <span class="output"># 6</span>
+
+<span class="comment"># Multiplication</span>
+<span class="keyword">print</span>(<span class="number">7</span> * <span class="number">6</span>)  <span class="output"># 42</span>
+
+<span class="comment"># Division (always gives decimal)</span>
+<span class="keyword">print</span>(<span class="number">20</span> / <span class="number">4</span>)  <span class="output"># 5.0</span>
+
+<span class="comment"># Floor Division (chops off decimal)</span>
+<span class="keyword">print</span>(<span class="number">20</span> // <span class="number">3</span>)  <span class="output"># 6 (not 6.666...)</span>
+
+<span class="comment"># Modulus (remainder after division)</span>
+<span class="keyword">print</span>(<span class="number">20</span> % <span class="number">3</span>)  <span class="output"># 2 (20 ÷ 3 = 6 remainder 2)</span>
+
+<span class="comment"># Exponentiation (power)</span>
+<span class="keyword">print</span>(<span class="number">2</span> ** <span class="number">8</span>)  <span class="output"># 256 (2 to the power of 8)</span></code></pre>
+
+        <div class="huge-box">
+            <strong>🍪 Modulus Example (The Cookie Analogy):</strong>
+            <p>You have 20 cookies. You want to share them equally among 3 friends. How many does each friend get? How many are left over?</p>
+            <pre><code><span class="keyword">print</span>(<span class="number">20</span> // <span class="number">3</span>)  <span class="output"># 6 (each friend gets 6)</span>
+<span class="keyword">print</span>(<span class="number">20</span> % <span class="number">3</span>)  <span class="output"># 2 (2 cookies left over for you!)</span></code></pre>
+        </div>
+
+        <h2>✂️ Part 10: String Operations</h2>
+
+        <p>You can do fun stuff with text too!</p>
+
+        <h3>Concatenation (Joining Text)</h3>
+
+        <pre><code>first = <span class="string">"Hello"</span>
+second = <span class="string">"World"</span>
+<span class="keyword">print</span>(first + <span class="string">" "</span> + second)
+<span class="output"># Output: Hello World</span></code></pre>
+
+        <h3>Repetition</h3>
+
+        <pre><code><span class="keyword">print</span>(<span class="string">"Ha"</span> * <span class="number">5</span>)
+<span class="output"># Output: HaHaHaHaHa</span>
+
+<span class="keyword">print</span>(<span class="string">"="</span> * <span class="number">20</span>)
+<span class="output"># Output: ====================</span></code></pre>
+
+        <h3>String Methods</h3>
+
+        <pre><code>text = <span class="string">"Hello World"</span>
+
+<span class="keyword">print</span>(text.upper())  <span class="output"># HELLO WORLD</span>
+<span class="keyword">print</span>(text.lower())  <span class="output"># hello world</span>
+<span class="keyword">print</span>(text.replace(<span class="string">"World"</span>, <span class="string">"Python"</span>))  <span class="output"># Hello Python</span>
+<span class="keyword">print</span>(<span class="keyword">len</span>(text))  <span class="output"># 11 (length)</span></code></pre>
+
+        <h2>💬 Part 11: Comments - Notes to Yourself</h2>
+
+        <p>Comments are notes in your code that Python IGNORES. They're for humans reading your code (including future you):</p>
+
+        <pre><code><span class="comment"># This is a comment - Python ignores this line</span>
+
+age = <span class="number">25</span>  <span class="comment"># You can put comments after code too</span>
+
+<span class="comment"># Comments help explain what your code does</span>
+<span class="comment"># Especially helpful when you come back months later and forgot!</span></code></pre>
+
+        <h2>🎮 Part 12: Your First REAL Program</h2>
+
+        <p>Let's combine everything into an actual useful program! We'll make a program that calculates how old someone will be in 10 years.</p>
+
+        <demo-box>
+            <h4>📝 The Complete Program:</h4>
+            <pre><code><span class="comment"># Age Calculator Program</span>
+
+<span class="comment"># Get user's name</span>
+name = <span class="keyword">input</span>(<span class="string">"What is your name? "</span>)
+
+<span class="comment"># Get user's age (convert to number)</span>
+current_age = <span class="keyword">int</span>(<span class="keyword">input</span>(<span class="string">"How old are you? "</span>))
+
+<span class="comment"># Calculate future age</span>
+future_age = current_age + <span class="number">10</span>
+
+<span class="comment"># Display result with nice formatting</span>
+<span class="keyword">print</span>(<span class="string">"="</span> * <span class="number">40</span>)
+<span class="keyword">print</span>(<span class="string">f"Hello, </span>{name}<span class="string">!"</span>)
+<span class="keyword">print</span>(<span class="string">f"You are currently </span>{current_age}<span class="string"> years old."</span>)
+<span class="keyword">print</span>(<span class="string">f"In 10 years, you will be </span>{future_age}<span class="string"> years old!"</span>)
+<span class="keyword">print</span>(<span class="string">"="</span> * <span class="number">40</span>)</code></pre>
+
+            <p><strong>How to run this:</strong></p>
+            <ol>
+                <li>Open a text editor (Notepad, VS Code, etc.)</li>
+                <li>Copy the code above</li>
+                <li>Save it as <code>age_calculator.py</code></li>
+                <li>Open terminal/command prompt in that folder</li>
+                <li>Run: <code>python age_calculator.py</code></li>
+            </ol>
+
+            <p><strong>Example run:</strong></p>
+            <pre><code>What is your name? Alice
+How old are you? 25
+========================================
+Hello, Alice!
+You are currently 25 years old.
+In 10 years, you will be 35 years old!
+========================================</code></pre>
+        </demo-box>
+
+        <h2>🏆 Part 13: Practice Challenges</h2>
+
+        <div class="challenge">
+            <h3>Challenge 1: Temperature Converter</h3>
+            <p>Write a program that asks for a temperature in Celsius and converts it to Fahrenheit.</p>
+            <p><strong>Formula:</strong> F = (C × 9/5) + 32</p>
+            <p><strong>Example:</strong> 25°C should give 77°F</p>
+        </div>
+
+        <div class="challenge">
+            <h3>Challenge 2: Receipt Calculator</h3>
+            <p>Ask the user for:</p>
+            <ul>
+                <li>Item name</li>
+                <li>Item price</li>
+                <li>Quantity</li>
+            </ul>
+            <p>Then calculate and print the total cost (price × quantity).</p>
+        </div>
+
+        <div class="challenge">
+            <h3>Challenge 3: Name Art</h3>
+            <p>Ask the user for their name, then print it 10 times, each time in a different way (uppercase, lowercase, surrounded by stars, etc.)</p>
+        </div>
+
+        <h2>🎯 What You've Learned</h2>
+
+        <ul>
+            <li>What computers actually ARE (billions of switches)</li>
+            <li>Why programming exists (translate human → computer)</li>
+            <li>Why Python is great for beginners</li>
+            <li>How to install Python and use the REPL</li>
+            <li>Variables (labeled boxes for data)</li>
+            <li>Data types (int, float, string, bool, None)</li>
+            <li>print() for output, input() for input</li>
+            <li>Math operations (+, -, *, /, //, %, **)</li>
+            <li>String operations (concatenation, methods)</li>
+            <li>Comments for documenting code</li>
+            <li>Writing and running a complete Python program</li>
+        </ul>
+
+        <p>You're officially no longer a complete beginner! Next chapter, we'll learn about DATA STRUCTURES - ways to store MULTIPLE pieces of information at once (like lists of names, dictionaries of passwords, etc.)</p>
+
+        <div class="nav-buttons">
+            <a href="roadmap-programming.html">← Back to Roadmap</a>
+            <a href="programming-ch02.html">Next: Data Structures →</a>
+        </div>
+    </main>
+</body>
+</html>

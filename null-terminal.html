@@ -1,21 +1,21 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="NullSector Terminal — A secure, feature-rich Kali Linux terminal emulator for learning and practice.">
+    <meta name="description" content="NullSector Terminal "€” A secure, feature-rich Kali Linux terminal emulator for learning and practice.">
     
     <!-- Open Graph / Discord Embed -->
     <meta property="og:title" content="Null Terminal - NullSector">
-    <meta property="og:description" content="NullSector — Cybersecurity learning hub: interactive roadmap, beginner-friendly guides, FAQ, and a safe practice terminal.">
+    <meta property="og:description" content="NullSector "€” Cybersecurity learning hub: interactive roadmap, beginner-friendly guides, FAQ, and a safe practice terminal.">
     <meta property="og:image" content="https://nullnode.vercel.app/favicon.ico">
     <meta property="og:url" content="https://nullnode.vercel.app/null-terminal.html">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Null Terminal - NullSector">
-    <meta name="twitter:description" content="NullSector — Cybersecurity learning hub: interactive roadmap, beginner-friendly guides, FAQ, and a safe practice terminal.">
+    <meta name="twitter:description" content="NullSector "€” Cybersecurity learning hub: interactive roadmap, beginner-friendly guides, FAQ, and a safe practice terminal.">
     <meta name="twitter:image" content="https://nullnode.vercel.app/favicon.ico">
-    <meta name="theme-color" content="#00ff88">
+    <meta name="theme-color" content="#000000">
     
     <title>Null Terminal - NullSector</title>
     <link rel="icon" type="image/svg+xml" href="logo.svg">
@@ -85,7 +85,7 @@
 
         .terminal-header h1 {
             font-size: 2.5rem;
-            background: var(--accent-gradient);
+            background: #000;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -101,8 +101,8 @@
             background: rgba(15, 20, 40, 0.95);
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0, 255, 136, 0.2);
-            border: 1px solid rgba(0, 255, 136, 0.3);
+            box-shadow: none;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(10px);
         }
 
@@ -112,7 +112,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .terminal-buttons {
@@ -167,12 +167,12 @@
         }
 
         .terminal-body::-webkit-scrollbar-thumb {
-            background: rgba(0, 255, 136, 0.3);
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 4px;
         }
 
         .terminal-body::-webkit-scrollbar-thumb:hover {
-            background: rgba(0, 255, 136, 0.5);
+            background: rgba(255, 255, 255, 0.2);
         }
 
         .terminal-output {
@@ -189,7 +189,7 @@
         }
 
         .prompt-user {
-            color: #00ff88;
+            color: #fff;
             font-weight: 600;
         }
 
@@ -208,7 +208,7 @@
         }
 
         .prompt-symbol {
-            color: #00ff88;
+            color: #fff;
             font-weight: bold;
         }
 
@@ -234,7 +234,7 @@
             display: inline-block;
             width: 8px;
             height: 18px;
-            background: #00ff88;
+            background: #fff;
             animation: blink 1s infinite;
             margin-left: 2px;
         }
@@ -245,7 +245,7 @@
         }
 
         .output-success {
-            color: #00ff88;
+            color: #fff;
         }
 
         .output-error {
@@ -282,7 +282,7 @@
         }
 
         .file-item:hover {
-            background: rgba(0, 255, 136, 0.1);
+            background: rgba(255, 255, 255, 0.2);
         }
 
         .file-dir {
@@ -291,7 +291,7 @@
         }
 
         .file-exec {
-            color: #00ff88;
+            color: #fff;
             font-weight: 600;
         }
 
@@ -311,7 +311,7 @@
         }
 
         .help-cmd {
-            color: #00ff88;
+            color: #fff;
             min-width: 150px;
             font-weight: 600;
         }
@@ -321,7 +321,7 @@
         }
 
         .ascii-art {
-            color: #00ff88;
+            color: #fff;
             font-size: 0.8rem;
             line-height: 1.2;
             margin: 1rem 0;
@@ -332,7 +332,7 @@
             border-radius: 12px;
             padding: 2rem;
             margin-top: 2rem;
-            border: 1px solid rgba(0, 255, 136, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .terminal-shortcuts h2 {
@@ -354,17 +354,17 @@
             padding: 0.8rem;
             background: rgba(0, 0, 0, 0.3);
             border-radius: 8px;
-            border: 1px solid rgba(0, 255, 136, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .shortcut-key {
-            background: rgba(0, 255, 136, 0.2);
+            background: rgba(255, 255, 255, 0.2);
             padding: 0.3rem 0.6rem;
             border-radius: 4px;
             font-family: 'Fira Code', monospace;
             font-size: 0.85rem;
-            color: #00ff88;
-            border: 1px solid rgba(0, 255, 136, 0.3);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             min-width: 100px;
             text-align: center;
         }
@@ -376,6 +376,22 @@
     </style>
 </head>
 <body>
+    <header class="header" style="position: fixed; top: 0; left: 0; right: 0; background: #000; border-bottom: 1px solid #222; z-index: 1000;">
+        <div class="header-content" style="max-width: 1400px; margin: 0 auto; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center;">
+            <a href="index.html" class="brand" style="display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: #fff; font-weight: 700; font-size: 1.25rem;">
+                <img src="logo.svg" alt="NullSector" style="width: 36px; height: 36px;">
+                <span>NullSector</span>
+            </a>
+            <nav class="nav" style="display: flex; gap: 2rem;">
+                <a href="roadmap-hacking.html" style="color: #888; text-decoration: none; font-weight: 500; transition: color 0.2s;">Hacking</a>
+                <a href="roadmap-programming.html" style="color: #888; text-decoration: none; font-weight: 500; transition: color 0.2s;">Programming</a>
+                <a href="null-terminal.html" style="color: #fff; text-decoration: none; font-weight: 500;">Null Terminal</a>
+                <a href="faq.html" style="color: #888; text-decoration: none; font-weight: 500; transition: color 0.2s;">FAQs</a>
+                <a href="https://discord.gg/Tz9Y3wea32" target="_blank" style="color: #888; text-decoration: none; font-weight: 500; transition: color 0.2s;">Discord</a>
+            </nav>
+        </div>
+    </header>
+
     <div class="stars"></div>
     <div class="twinkling"></div>
     
@@ -411,9 +427,9 @@
         </div>
     </nav>
 
-    <div class="terminal-container">
+    <div class="terminal-container" style="margin-top: 80px;">
         <div class="terminal-header">
-            <h1>⚡ Null Terminal</h1>
+            <h1>"š¡ Null Terminal</h1>
             <p>A secure, NullSector-modified Kali Linux terminal emulator for learning and practice</p>
         </div>
 
@@ -427,7 +443,7 @@
                 <div class="terminal-title">kali@nullsector: ~/terminal</div>
                 <div class="terminal-info">
                     <span id="terminal-time">00:00:00</span>
-                    <span>⚡ Powered by NullSector</span>
+                    <span>"š¡ Powered by NullSector</span>
                 </div>
             </div>
             <div class="terminal-body" id="terminal-output">
@@ -438,14 +454,14 @@
         </div>
 
         <div class="terminal-shortcuts">
-            <h2>🎯 Terminal Shortcuts & Features</h2>
+            <h2>ðŸŽ¯ Terminal Shortcuts & Features</h2>
             <div class="shortcuts-grid">
                 <div class="shortcut-item">
                     <div class="shortcut-key">Tab</div>
                     <div class="shortcut-desc">Auto-complete commands</div>
                 </div>
                 <div class="shortcut-item">
-                    <div class="shortcut-key">↑ / ↓</div>
+                    <div class="shortcut-key">"†‘ / "†“</div>
                     <div class="shortcut-desc">Navigate command history</div>
                 </div>
                 <div class="shortcut-item">
@@ -476,5 +492,7 @@
     <!-- Supabase Client & Auth -->
     </body>
 </html>
+
+
 
 

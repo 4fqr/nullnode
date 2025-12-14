@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#000000">
+    <title>Chapter 02: Data Structures - NullNode</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Custom styling for this ultra-detailed chapter */
+        .huge-box {
+            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+            padding: 3rem;
+            border-radius: 20px;
+            margin: 3rem 0;
+            border-left: 5px solid rgba(255,255,255,0.3);
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .huge-box h2 {
+            color: rgba(255,255,255,0.95);
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            font-weight: 700;
+        }
+        
+        .huge-box h3 {
+            color: rgba(255,255,255,0.85);
+            font-size: 1.6rem;
+            margin: 2.5rem 0 1.5rem 0;
+            font-weight: 600;
+        }
+        
+        .huge-box p, .huge-box li {
+            font-size: 1.2rem;
+            line-height: 2;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 1.5rem;
+        }
+        
+        .metaphor-box {
+            background: rgba(138, 43, 226, 0.1);
+            border-left: 4px solid rgba(138, 43, 226, 0.5);
+            padding: 2rem;
+            margin: 2rem 0;
+            border-radius: 12px;
+        }
+        
+        .metaphor-box h4 {
+            color: rgba(138, 43, 226, 0.9);
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .demo-box {
+            background: #000000;
+            border: 2px solid rgba(255,255,255,0.2);
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+        }
+        
+        .demo-box h4 {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .example-box {
+            background: #0d0d0d;
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 10px;
+        }
+        
+        .challenge {
+            background: linear-gradient(135deg, rgba(138, 43, 226, 0.15), rgba(138, 43, 226, 0.05));
+            border: 2px solid rgba(138, 43, 226, 0.3);
+            padding: 2.5rem;
+            margin: 3rem 0;
+            border-radius: 15px;
+        }
+        
+        .challenge h3 {
+            color: rgba(138, 43, 226, 0.95);
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        code {
+            background: rgba(255,255,255,0.1);
+            padding: 0.3rem 0.6rem;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            color: rgba(255,255,255,0.95);
+            font-size: 1.1rem;
+        }
+        
+        pre {
+            background: #000000;
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 1.5rem;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        pre code {
+            background: none;
+            padding: 0;
+            color: rgba(255,255,255,0.9);
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+        
+        .keyword { color: #ff6b9d; }
+        .string { color: #98c379; }
+        .number { color: #d19a66; }
+        .comment { color: #5c6370; font-style: italic; }
+        .function { color: #61afef; }
+        .output { color: #56b6c2; }
+        
+        .warning-box {
+            background: rgba(255, 200, 0, 0.1);
+            border-left: 4px solid rgba(255, 200, 0, 0.7);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 10px;
+        }
+        
+        .warning-box h4 {
+            color: rgba(255, 200, 0, 0.95);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .tip-box {
+            background: rgba(0, 200, 100, 0.1);
+            border-left: 4px solid rgba(0, 200, 100, 0.7);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 10px;
+        }
+        
+        .tip-box h4 {
+            color: rgba(0, 200, 100, 0.95);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="index.html" class="nav-logo">
+                <img src="logo.svg" alt="Logo">
+                <span class="logo-text">NullSector</span>
+            </a>
+            <div class="nav-links">
+                <a href="roadmap-hacking.html">Hacking</a>
+                <a href="roadmap-programming.html" class="active">Programming</a>
+                <a href="null-terminal.html">Null Terminal</a>
+                <a href="faq.html">FAQs</a>
+                <a href="https://discord.gg/cMvWkxFbbX" target="_blank" class="discord-link">Discord</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="content-wrapper">
+        <div class="content-container">
+            <div class="roadmap-number">02</div>
+            <h1 class="page-title">Chapter 02: Data Structures</h1>
+            <p class="page-subtitle">Your Containers for Storing Multiple Pieces of Information</p>
+
+            <!-- PART 1: WHAT ARE DATA STRUCTURES? -->
+            <div class="huge-box">
+                <h2>Part 1: What ARE Data Structures?</h2>
+                
+                <p>
+                    Remember in Chapter 1 when we learned about variables? We discovered that a variable is like a <strong>labeled box</strong> that holds ONE piece of information:
+                </p>
+                
+                <pre><code><span class="keyword">name</span> = <span class="string">"Sarah"</span>  <span class="comment"># One box holding one name</span>
+<span class="keyword">age</span> = <span class="number">25</span>       <span class="comment"># One box holding one number</span></code></pre>
+                
+                <p>
+                    But what if you're building a school program and need to store <strong>1,000 student names</strong>? Are you going to make 1,000 separate variables?
+                </p>
+                
+                <pre><code><span class="keyword">student1</span> = <span class="string">"Alice"</span>
+<span class="keyword">student2</span> = <span class="string">"Bob"</span>
+<span class="keyword">student3</span> = <span class="string">"Charlie"</span>
+<span class="comment"># ... 997 more variables? NIGHTMARE!</span></code></pre>
+                
+                <p>
+                    This is where <strong>data structures</strong> come in. They're like <strong>CONTAINERS that can hold MULTIPLE pieces of information</strong> in an organized way.
+                </p>
+                
+                <div class="metaphor-box">
+                    <h4>The Storage Room Metaphor</h4>
+                    <p>
+                        Think of your programming needs like organizing a storage room:
+                    </p>
+                    <ul>
+                        <li><strong>Single variables</strong> = Individual boxes scattered on the floor (hard to manage many)</li>
+                        <li><strong>Data structures</strong> = Shelving units, filing cabinets, and organizers (easy to manage thousands of items)</li>
+                    </ul>
+                    <p>
+                        You wouldn't store 1,000 books by placing each one randomly on the floor. You'd use a BOOKSHELF. Data structures are your "bookshelves" for organizing information in code.
+                    </p>
+                </div>
+                
+                <p>
+                    Python gives us <strong>FOUR main data structures</strong>. Think of them as four different types of storage containers, each perfect for different situations:
+                </p>
+                
+                <ul>
+                    <li><strong>Lists</strong> - An apartment building (numbered floors you can visit, modify, rearrange)</li>
+                    <li><strong>Dictionaries</strong> - A phone book (look things up by name, not by position)</li>
+                    <li><strong>Tuples</strong> - A sealed package (once packed, contents can't change)</li>
+                    <li><strong>Sets</strong> - A VIP club (no duplicates allowed, everyone is unique)</li>
+                </ul>
+                
+                <p>
+                    Each type is a tool designed for specific jobs. Let's explore them ONE AT A TIME with EXTREME detail.
+                </p>
+            </div>
+
+            <!-- PART 2: LISTS - THE APARTMENT BUILDING -->
+            <div class="huge-box">
+                <h2>Part 2: Lists - The Apartment Building</h2>
+                
+                <div class="metaphor-box">
+                    <h4>The Apartment Building Metaphor</h4>
+                    <p>
+                        Imagine an apartment building with numbered floors:
+                    </p>
+                    <ul>
+                        <li><strong>Floor 0</strong> (ground floor) - First resident</li>
+                        <li><strong>Floor 1</strong> - Second resident</li>
+                        <li><strong>Floor 2</strong> - Third resident</li>
+                        <li>And so on...</li>
+                    </ul>
+                    <p>
+                        A Python <strong>list</strong> is EXACTLY like this building:
+                    </p>
+                    <ul>
+                        <li>Each "floor" is an <strong>index</strong> (position number)</li>
+                        <li>Each floor can hold ONE piece of data (the "resident")</li>
+                        <li>You can visit any floor directly by its number</li>
+                        <li>You can kick residents out, move new ones in, rearrange everything</li>
+                        <li><strong>IMPORTANT:</strong> Python buildings start counting at Floor 0, not Floor 1!</li>
+                    </ul>
+                </div>
+                
+                <h3>Creating Your First List</h3>
+                
+                <p>
+                    Lists use <strong>square brackets</strong> <code>[ ]</code> and separate items with commas:
+                </p>
+                
+                <div class="demo-box">
+                    <h4>Demo: Creating Lists</h4>
+                    <pre><code><span class="comment"># A list of student names</span>
+<span class="keyword">students</span> = [<span class="string">"Alice"</span>, <span class="string">"Bob"</span>, <span class="string">"Charlie"</span>, <span class="string">"Diana"</span>]
+
+<span class="comment"># A list of test scores</span>
+<span class="keyword">scores</span> = [<span class="number">95</span>, <span class="number">87</span>, <span class="number">92</span>, <span class="number">88</span>]
+
+<span class="comment"># A list mixing different types (perfectly fine!)</span>
+<span class="keyword">profile</span> = [<span class="string">"Sarah"</span>, <span class="number">25</span>, <span class="string">"Engineer"</span>, <span class="keyword">True</span>]
+
+<span class="comment"># An empty list (like an empty apartment building)</span>
+<span class="keyword">empty_list</span> = []
+
+<span class="function">print</span>(<span class="keyword">students</span>)  <span class="comment"># Output: ['Alice', 'Bob', 'Charlie', 'Diana']</span></code></pre>
+                </div>
+                
+                <h3>Accessing List Items (Visiting Floors)</h3>
+                
+                <p>
+                    To access an item in a list, use its <strong>index</strong> (position number) in square brackets. Remember: <strong>counting starts at 0!</strong>
+                </p>
+                
+                <div class="demo-box">
+                    <h4>Demo: Accessing List Items</h4>
+                    <pre><code><span class="keyword">students</span> = [<span class="string">"Alice"</span>, <span class="string">"Bob"</span>, <span class="string">"Charlie"</span>, <span class="string">"Diana"</span>]
+<span class="comment"># Index:       0         1          2           3</span>
+
+<span class="function">print</span>(<span class="keyword">students</span>[<span class="number">0</span>])  <span class="comment"># Output: Alice (first floor/index 0)</span>
+<span class="function">print</span>(<span class="keyword">students</span>[<span class="number">2</span>])  <span class="comment"># Output: Charlie (third floor/index 2)</span>
+
+<span class="comment"># You can also count BACKWARDS from the end!</span>
+<span class="function">print</span>(<span class="keyword">students</span>[<span class="number">-1</span>])  <span class="comment"># Output: Diana (last item)</span>
+<span class="function">print</span>(<span class="keyword">students</span>[<span class="number">-2</span>])  <span class="comment"># Output: Charlie (second from last)</span></code></pre>
+                </div>
+                
+                <div class="warning-box">
+                    <h4>Common Mistake: Index Out of Range</h4>
+                    <p>
+                        If you try to access an index that doesn't exist (like Floor 10 in a 4-story building), Python will crash with an error:
+                    </p>
+                    <pre><code><span class="keyword">students</span> = [<span class="string">"Alice"</span>, <span class="string">"Bob"</span>]  <span class="comment"># Only 2 items (indexes 0 and 1)</span>
+<span class="function">print</span>(<span class="keyword">students</span>[<span class="number">5</span>])  <span class="comment"># ERROR! No index 5 exists!</span></code></pre>
+                    <p>
+                        Always check how many items your list has using <code>len()</code>:
+                    </p>
+                    <pre><code><span class="function">print</span>(<span class="function">len</span>(<span class="keyword">students</span>))  <span class="comment"># Output: 2 (so valid indexes are 0 and 1)</span></code></pre>
+                </div>
+                
+                <h3>Modifying Lists (Renovating the Apartment)</h3>
+                
+                <p>
+                    Lists are <strong>MUTABLE</strong> (changeable). You can replace items, add new ones, or remove them.
+                </p>
+                
+                <div class="demo-box">
+                    <h4>Demo: Changing List Items</h4>
+                    <pre><code><span class="keyword">students</span> = [<span class="string">"Alice"</span>, <span class="string">"Bob"</span>, <span class="string">"Charlie"</span>]
+
+<span class="comment"># Replace an item (kick Bob out, move Eve in)</span>
+<span class="keyword">students</span>[<span class="number">1</span>] = <span class="string">"Eve"</span>
+<span class="function">print</span>(<span class="keyword">students</span>)  <span class="comment"># Output: ['Alice', 'Eve', 'Charlie']</span>
+
+<span class="comment"># Add item to the END of list</span>
+<span class="keyword">students</span>.<span class="function">append</span>(<span class="string">"Diana"</span>)
+<span class="function">print</span>(<span class="keyword">students</span>)  <span class="comment"># Output: ['Alice', 'Eve', 'Charlie', 'Diana']</span>
+
+<span class="comment"># Insert item at SPECIFIC position</span>
+<span class="keyword">students</span>.<span class="function">insert</span>(<span class="number">1</span>, <span class="string">"Frank"</span>)  <span class="comment"># Insert Frank at index 1</span>
+<span class="function">print</span>(<span class="keyword">students</span>)  <span class="comment"># Output: ['Alice', 'Frank', 'Eve', 'Charlie', 'Diana']</span>
+
+<span class="comment"># Remove item by VALUE</span>
+<span class="keyword">students</span>.<span class="function">remove</span>(<span class="string">"Eve"</span>)
+<span class="function">print</span>(<span class="keyword">students</span>)  <span class="comment"># Output: ['Alice', 'Frank', 'Charlie', 'Diana']</span>
+
+<span class="comment"># Remove item by INDEX and get it back</span>
+<span class="keyword">removed_student</span> = <span class="keyword">students</span>.<span class="function">pop</span>(<span class="number">2</span>)  <span class="comment"># Remove index 2</span>
+<span class="function">print</span>(<span class="keyword">removed_student</span>)  <span class="comment"># Output: Charlie</span>
+<span class="function">print</span>(<span class="keyword">students</span>)  <span class="comment"># Output: ['Alice', 'Frank', 'Diana']</span></code></pre>
+                </div>
+                
+                <h3>List Slicing (Visiting Multiple Floors)</h3>
+                
+                <p>
+                    You can grab a "slice" (range) of items from a list using <code>list[start:end]</code>:
+                </p>
+                
+                <div class="demo-box">
+                    <h4>Demo: List Slicing</h4>
+                    <pre><code><span class="keyword">numbers</span> = [<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>, <span class="number">40</span>, <span class="number">50</span>, <span class="number">60</span>]
+<span class="comment"># Index:    0    1    2    3    4    5</span>
+
+<span class="comment"># Get items from index 1 to 4 (doesn't include 4)</span>
+<span class="function">print</span>(<span class="keyword">numbers</span>[<span class="number">1</span>:<span class="number">4</span>])  <span class="comment"># Output: [20, 30, 40]</span>
+
+<span class="comment"># Get first 3 items (start to index 3)</span>
+<span class="function">print</span>(<span class="keyword">numbers</span>[:<span class="number">3</span>])  <span class="comment"># Output: [10, 20, 30]</span>
+
+<span class="comment"># Get last 3 items (index 3 to end)</span>
+<span class="function">print</span>(<span class="keyword">numbers</span>[<span class="number">3</span>:])  <span class="comment"># Output: [40, 50, 60]</span>
+
+<span class="comment"># Copy entire list</span>
+<span class="keyword">copy</span> = <span class="keyword">numbers</span>[:]
+<span class="function">print</span>(<span class="keyword">copy</span>)  <span class="comment"># Output: [10, 20, 30, 40, 50, 60]</span></code></pre>
+                </div>
+            </div>
+
+            <!-- PART 3: DICTIONARIES - THE PHONE BOOK -->
+            <div class="huge-box">
+                <h2>Part 3: Dictionaries - The Phone Book</h2>
+                
+                <div class="metaphor-box">
+                    <h4>The Phone Book Metaphor</h4>
+                    <p>
+                        Lists work great when you want to access items by POSITION (index). But what if you want to look things up by NAME instead of by number?
+                    </p>
+                    <p>
+                        Think about a phone book:
+                    </p>
+                    <ul>
+                        <li>You DON'T look up "Who's the 347th person in this book?"</li>
+                        <li>You DO look up "What's Alice's phone number?"</li>
+                    </ul>
+                    <p>
+                        A Python <strong>dictionary</strong> works like a phone book:
+                    </p>
+                    <ul>
+                        <li>Each entry has a <strong>KEY</strong> (the person's name)</li>
+                        <li>Each key has a <strong>VALUE</strong> (their phone number)</li>
+                        <li>You look things up by the KEY, not by position</li>
+                        <li>Keys must be UNIQUE (can't have two "Alice" entries)</li>
+                    </ul>
+                </div>
+                
+                <h3>Creating Your First Dictionary</h3>
+                
+                <p>
+                    Dictionaries use <strong>curly braces</strong> <code>{ }</code> and have KEY: VALUE pairs separated by commas:
+                </p>
+                
+                <div class="demo-box">
+                    <h4>Demo: Creating Dictionaries</h4>
+                    <pre><code><span class="comment"># A dictionary of phone numbers</span>
+<span class="keyword">phone_book</span> = {
+    <span class="string">"Alice"</span>: <span class="string">"555-1234"</span>,
+    <span class="string">"Bob"</span>: <span class="string">"555-5678"</span>,
+    <span class="string">"Charlie"</span>: <span class="string">"555-9012"</span>
+}
+
+<span class="comment"># A dictionary for a student profile</span>
+<span class="keyword">student</span> = {
+    <span class="string">"name"</span>: <span class="string">"Sarah"</span>,
+    <span class="string">"age"</span>: <span class="number">20</span>,
+    <span class="string">"major"</span>: <span class="string">"Computer Science"</span>,
+    <span class="string">"gpa"</span>: <span class="number">3.8</span>
+}
+
+<span class="comment"># An empty dictionary</span>
+<span class="keyword">empty_dict</span> = {}
+
+<span class="function">print</span>(<span class="keyword">student</span>)  <span class="comment"># Output: {'name': 'Sarah', 'age': 20, ...}</span></code></pre>
+                </div>
+                
+                <h3>Accessing Dictionary Values (Looking Up in Phone Book)</h3>
+                
+                <p>
+                    To get a value, use its KEY in square brackets:
+                </p>
+                
+                <div class="demo-box">
+                    <h4>Demo: Accessing Dictionary Values</h4>
+                    <pre><code><span class="keyword">student</span> = {
+    <span class="string">"name"</span>: <span class="string">"Sarah"</span>,
+    <span class="string">"age"</span>: <span class="number">20</span>,
+    <span class="string">"major"</span>: <span class="string">"Computer Science"</span>
+}
+
+<span class="function">print</span>(<span class="keyword">student</span>[<span class="string">"name"</span>])   <span class="comment"># Output: Sarah</span>
+<span class="function">print</span>(<span class="keyword">student</span>[<span class="string">"age"</span>])    <span class="comment"># Output: 20</span>
+
+<span class="comment"># Safer way using .get() (returns None if key doesn't exist)</span>
+<span class="function">print</span>(<span class="keyword">student</span>.<span class="function">get</span>(<span class="string">"gpa"</span>))        <span class="comment"># Output: None (key doesn't exist)</span>
+<span class="function">print</span>(<span class="keyword">student</span>.<span class="function">get</span>(<span class="string">"gpa"</span>, <span class="number">0.0</span>))  <span class="comment"># Output: 0.0 (default value)</span></code></pre>
+                </div>
+                
+                <h3>Modifying Dictionaries (Updating the Phone Book)</h3>
+                
+                <div class="demo-box">
+                    <h4>Demo: Modifying Dictionaries</h4>
+                    <pre><code><span class="keyword">student</span> = {<span class="string">"name"</span>: <span class="string">"Sarah"</span>, <span class="string">"age"</span>: <span class="number">20</span>}
+
+<span class="comment"># Change existing value</span>
+<span class="keyword">student</span>[<span class="string">"age"</span>] = <span class="number">21</span>
+<span class="function">print</span>(<span class="keyword">student</span>)  <span class="comment"># Output: {'name': 'Sarah', 'age': 21}</span>
+
+<span class="comment"># Add new key-value pair</span>
+<span class="keyword">student</span>[<span class="string">"major"</span>] = <span class="string">"Engineering"</span>
+<span class="function">print</span>(<span class="keyword">student</span>)  <span class="comment"># Output: {'name': 'Sarah', 'age': 21, 'major': 'Engineering'}</span>
+
+<span class="comment"># Remove key-value pair</span>
+<span class="keyword">del</span> <span class="keyword">student</span>[<span class="string">"age"</span>]
+<span class="function">print</span>(<span class="keyword">student</span>)  <span class="comment"># Output: {'name': 'Sarah', 'major': 'Engineering'}</span>
+
+<span class="comment"># Get all keys</span>
+<span class="function">print</span>(<span class="keyword">student</span>.<span class="function">keys</span>())    <span class="comment"># Output: dict_keys(['name', 'major'])</span>
+
+<span class="comment"># Get all values</span>
+<span class="function">print</span>(<span class="keyword">student</span>.<span class="function">values</span>())  <span class="comment"># Output: dict_values(['Sarah', 'Engineering'])</span></code></pre>
+                </div>
+            </div>
+
+            <!-- PART 4: TUPLES - THE SEALED PACKAGE -->
+            <div class="huge-box">
+                <h2>Part 4: Tuples - The Sealed Package</h2>
+                
+                <div class="metaphor-box">
+                    <h4>The Sealed Package Metaphor</h4>
+                    <p>
+                        Imagine you're mailing a package. Once you seal it with tape, you CAN'T open it and rearrange what's inside. You can still LOOK at the label and know what's in there, but you can't MODIFY the contents without destroying the package.
+                    </p>
+                    <p>
+                        A Python <strong>tuple</strong> is like this sealed package:
+                    </p>
+                    <ul>
+                        <li>It holds multiple items (like a list)</li>
+                        <li>You can ACCESS items by index (like a list)</li>
+                        <li>But you CANNOT change, add, or remove items after creation</li>
+                        <li>They're <strong>IMMUTABLE</strong> (unchangeable)</li>
+                    </ul>
+                    <p>
+                        <strong>Why use tuples?</strong> When you want to protect data from accidental modification. For example, GPS coordinates shouldn't change after you set them!
+                    </p>
+                </div>
+                
+                <h3>Creating Tuples</h3>
+                
+                <p>
+                    Tuples use <strong>parentheses</strong> <code>( )</code> instead of square brackets:
+                </p>
+                
+                <div class="demo-box">
+                    <h4>Demo: Creating and Using Tuples</h4>
+                    <pre><code><span class="comment"># GPS coordinates (latitude, longitude) - shouldn't change!</span>
+<span class="keyword">location</span> = (<span class="number">40.7128</span>, <span class="number">-74.0060</span>)
+
+<span class="comment"># RGB color values (red, green, blue)</span>
+<span class="keyword">color</span> = (<span class="number">255</span>, <span class="number">0</span>, <span class="number">128</span>)
+
+<span class="comment"># Personal info you don't want changed</span>
+<span class="keyword">person</span> = (<span class="string">"Alice"</span>, <span class="number">25</span>, <span class="string">"Engineer"</span>)
+
+<span class="comment"># Access items by index (just like lists)</span>
+<span class="function">print</span>(<span class="keyword">location</span>[<span class="number">0</span>])  <span class="comment"># Output: 40.7128</span>
+<span class="function">print</span>(<span class="keyword">color</span>[<span class="number">1</span>])     <span class="comment"># Output: 0</span>
+
+<span class="comment"># Try to modify (this will CRASH!)</span>
+<span class="keyword">location</span>[<span class="number">0</span>] = <span class="number">50.0</span>  <span class="comment"># ERROR! Tuples can't be changed!</span></code></pre>
+                </div>
+                
+                <div class="tip-box">
+                    <h4>When to Use Tuples vs Lists</h4>
+                    <ul>
+                        <li><strong>Use LISTS</strong> when data might change (student names, shopping cart items)</li>
+                        <li><strong>Use TUPLES</strong> when data should NEVER change (birthdate, coordinates, IDs)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- PART 5: SETS - THE VIP CLUB -->
+            <div class="huge-box">
+                <h2>Part 5: Sets - The VIP Club</h2>
+                
+                <div class="metaphor-box">
+                    <h4>The VIP Club Metaphor</h4>
+                    <p>
+                        Imagine a VIP club with strict rules:
+                    </p>
+                    <ul>
+                        <li><strong>No duplicates allowed</strong> - Alice can't enter twice, even if she tries</li>
+                        <li><strong>No guaranteed order</strong> - People might be at the bar, dance floor, or lounge (not standing in a line)</li>
+                        <li><strong>Membership checking is SUPER FAST</strong> - Bouncer has a list and can instantly say "yes you're in" or "no you're not"</li>
+                    </ul>
+                    <p>
+                        A Python <strong>set</strong> is EXACTLY like this club:
+                    </p>
+                    <ul>
+                        <li>Only unique items (automatically removes duplicates)</li>
+                        <li>No indexes (items aren't in a specific order)</li>
+                        <li>Lightning-fast membership checking</li>
+                    </ul>
+                </div>
+                
+                <h3>Creating Sets</h3>
+                
+                <p>
+                    Sets use <strong>curly braces</strong> <code>{ }</code> like dictionaries, but without KEY: VALUE pairs:
+                </p>
+                
+                <div class="demo-box">
+                    <h4>Demo: Creating and Using Sets</h4>
+                    <pre><code><span class="comment"># Create a set of unique numbers</span>
+<span class="keyword">numbers</span> = {<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>}
+<span class="function">print</span>(<span class="keyword">numbers</span>)  <span class="comment"># Output: {1, 2, 3, 4, 5}</span>
+
+<span class="comment"># Create set with duplicates (they'll be removed automatically!)</span>
+<span class="keyword">numbers</span> = {<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">4</span>}
+<span class="function">print</span>(<span class="keyword">numbers</span>)  <span class="comment"># Output: {1, 2, 3, 4} (duplicates removed!)</span>
+
+<span class="comment"># Convert list to set (removes duplicates)</span>
+<span class="keyword">my_list</span> = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>]
+<span class="keyword">unique_numbers</span> = <span class="function">set</span>(<span class="keyword">my_list</span>)
+<span class="function">print</span>(<span class="keyword">unique_numbers</span>)  <span class="comment"># Output: {1, 2, 3}</span>
+
+<span class="comment"># Check membership (SUPER FAST)</span>
+<span class="keyword">vip_members</span> = {<span class="string">"Alice"</span>, <span class="string">"Bob"</span>, <span class="string">"Charlie"</span>}
+<span class="function">print</span>(<span class="string">"Alice"</span> <span class="keyword">in</span> <span class="keyword">vip_members</span>)   <span class="comment"># Output: True</span>
+<span class="function">print</span>(<span class="string">"Diana"</span> <span class="keyword">in</span> <span class="keyword">vip_members</span>)   <span class="comment"># Output: False</span>
+
+<span class="comment"># Add member</span>
+<span class="keyword">vip_members</span>.<span class="function">add</span>(<span class="string">"Diana"</span>)
+<span class="function">print</span>(<span class="keyword">vip_members</span>)  <span class="comment"># Output: {'Alice', 'Bob', 'Charlie', 'Diana'}</span>
+
+<span class="comment"># Remove member</span>
+<span class="keyword">vip_members</span>.<span class="function">remove</span>(<span class="string">"Bob"</span>)
+<span class="function">print</span>(<span class="keyword">vip_members</span>)  <span class="comment"># Output: {'Alice', 'Charlie', 'Diana'}</span></code></pre>
+                </div>
+            </div>
+
+            <!-- PART 6: REAL PROGRAMS -->
+            <div class="huge-box">
+                <h2>Part 6: Real Programs Using Data Structures</h2>
+                
+                <h3>Program 1: Student Grade Tracker (Lists)</h3>
+                
+                <div class="demo-box">
+                    <h4>Complete Working Program</h4>
+                    <pre><code><span class="comment"># Store student grades</span>
+<span class="keyword">grades</span> = []
+
+<span class="comment"># Add grades</span>
+<span class="keyword">grades</span>.<span class="function">append</span>(<span class="number">95</span>)
+<span class="keyword">grades</span>.<span class="function">append</span>(<span class="number">87</span>)
+<span class="keyword">grades</span>.<span class="function">append</span>(<span class="number">92</span>)
+
+<span class="comment"># Calculate average</span>
+<span class="keyword">average</span> = <span class="function">sum</span>(<span class="keyword">grades</span>) / <span class="function">len</span>(<span class="keyword">grades</span>)
+
+<span class="comment"># Find highest and lowest</span>
+<span class="keyword">highest</span> = <span class="function">max</span>(<span class="keyword">grades</span>)
+<span class="keyword">lowest</span> = <span class="function">min</span>(<span class="keyword">grades</span>)
+
+<span class="function">print</span>(<span class="string">f"Grades: <span class="output">{grades}</span>"</span>)
+<span class="function">print</span>(<span class="string">f"Average: <span class="output">{average:.1f}</span>"</span>)
+<span class="function">print</span>(<span class="string">f"Highest: <span class="output">{highest}</span>"</span>)
+<span class="function">print</span>(<span class="string">f"Lowest: <span class="output">{lowest}</span>"</span>)</code></pre>
+                    <p style="margin-top: 1rem;"><strong>How to run this:</strong></p>
+                    <ol>
+                        <li>Save as <code>grade_tracker.py</code></li>
+                        <li>Run: <code>python grade_tracker.py</code></li>
+                    </ol>
+                    <p><strong>Output:</strong></p>
+                    <pre><code><span class="output">Grades: [95, 87, 92]
+Average: 91.3
+Highest: 95
+Lowest: 87</span></code></pre>
+                </div>
+                
+                <h3>Program 2: Inventory System (Dictionary)</h3>
+                
+                <div class="demo-box">
+                    <h4>Complete Working Program</h4>
+                    <pre><code><span class="comment"># Store inventory with product names and quantities</span>
+<span class="keyword">inventory</span> = {
+    <span class="string">"apples"</span>: <span class="number">50</span>,
+    <span class="string">"bananas"</span>: <span class="number">30</span>,
+    <span class="string">"oranges"</span>: <span class="number">20</span>
+}
+
+<span class="comment"># Sell 10 apples</span>
+<span class="keyword">inventory</span>[<span class="string">"apples"</span>] -= <span class="number">10</span>
+
+<span class="comment"># Add new product</span>
+<span class="keyword">inventory</span>[<span class="string">"grapes"</span>] = <span class="number">25</span>
+
+<span class="comment"># Check if product exists</span>
+<span class="keyword">if</span> <span class="string">"bananas"</span> <span class="keyword">in</span> <span class="keyword">inventory</span>:
+    <span class="function">print</span>(<span class="string">f"We have <span class="output">{inventory['bananas']}</span> bananas"</span>)
+
+<span class="comment"># Show all inventory</span>
+<span class="function">print</span>(<span class="string">"\nCurrent Inventory:"</span>)
+<span class="keyword">for</span> <span class="keyword">product</span>, <span class="keyword">quantity</span> <span class="keyword">in</span> <span class="keyword">inventory</span>.<span class="function">items</span>():
+    <span class="function">print</span>(<span class="string">f"  <span class="output">{product}</span>: <span class="output">{quantity}</span>"</span>)</code></pre>
+                    <p><strong>Output:</strong></p>
+                    <pre><code><span class="output">We have 30 bananas
+
+Current Inventory:
+  apples: 40
+  bananas: 30
+  oranges: 20
+  grapes: 25</span></code></pre>
+                </div>
+            </div>
+
+            <!-- PART 7: PRACTICE CHALLENGES -->
+            <div class="challenge">
+                <h3>Practice Challenges</h3>
+                
+                <h4>Challenge 1: Shopping Cart (List)</h4>
+                <p>Create a program that:</p>
+                <ul>
+                    <li>Starts with an empty shopping cart (list)</li>
+                    <li>Adds 5 items to the cart</li>
+                    <li>Removes one item</li>
+                    <li>Prints the total number of items</li>
+                    <li>Prints all items in the cart</li>
+                </ul>
+                
+                <h4>Challenge 2: Phonebook (Dictionary)</h4>
+                <p>Create a program that:</p>
+                <ul>
+                    <li>Stores 3 contacts with names and phone numbers</li>
+                    <li>Lets you search for a contact by name</li>
+                    <li>Adds a new contact</li>
+                    <li>Prints all contacts</li>
+                </ul>
+                
+                <h4>Challenge 3: Unique Email Collector (Set)</h4>
+                <p>You have a list of emails where some people signed up multiple times:</p>
+                <pre><code><span class="keyword">emails</span> = [<span class="string">"alice@email.com"</span>, <span class="string">"bob@email.com"</span>, <span class="string">"alice@email.com"</span>, 
+         <span class="string">"charlie@email.com"</span>, <span class="string">"bob@email.com"</span>]</code></pre>
+                <p>Write code to:</p>
+                <ul>
+                    <li>Convert the list to a set (removes duplicates)</li>
+                    <li>Print how many UNIQUE people signed up</li>
+                    <li>Print all unique emails</li>
+                </ul>
+                
+                <h4>Challenge 4: Mixed Data Structure</h4>
+                <p>Create a dictionary where each key is a student name, and each value is a LIST of their test scores. Then:</p>
+                <ul>
+                    <li>Add 3 students with 4 test scores each</li>
+                    <li>Calculate and print each student's average</li>
+                    <li>Find who has the highest average</li>
+                </ul>
+            </div>
+
+            <div class="huge-box" style="text-align: center; margin-top: 4rem;">
+                <h2>You've Mastered Data Structures!</h2>
+                <p style="font-size: 1.3rem; margin: 2rem 0;">
+                    You now understand how to store and organize MULTIPLE pieces of information using:
+                </p>
+                <ul style="text-align: left; max-width: 600px; margin: 2rem auto;">
+                    <li><strong>Lists</strong> - Ordered, changeable collections</li>
+                    <li><strong>Dictionaries</strong> - Key-value lookups</li>
+                    <li><strong>Tuples</strong> - Unchangeable, protected data</li>
+                    <li><strong>Sets</strong> - Unique items, no duplicates</li>
+                </ul>
+                <p style="font-size: 1.2rem; margin-top: 2rem;">
+                    Next chapter: Control Flow (if statements, loops, functions)
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

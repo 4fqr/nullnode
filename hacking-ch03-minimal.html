@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ch03: Linux Mastery - NullSector</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="twinkling"></div>
+    
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="index.html" class="nav-logo">
+                <img src="logo.svg" alt="Logo">
+                <span class="logo-text">NullSector</span>
+            </a>
+            <div class="nav-links">
+                <a href="roadmap-hacking.html" class="active">Hacking</a>
+                <a href="roadmap-programming.html">Programming</a>
+                <a href="null-terminal.html">Null Terminal</a>
+                <a href="faq.html">FAQs</a>
+                <a href="https://discord.gg/cMvWkxFbbX" target="_blank" class="discord-link">Discord</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="content-wrapper">
+        <div class="content-container">
+            <div class="roadmap-number">03</div>
+            <h1 class="page-title">Chapter 03: Linux Mastery</h1>
+            <p class="page-subtitle">Complete Linux Expertise - From Distros to System Hardening</p>
+
+            <!-- Introduction -->
+            <div style="background: rgba(0, 0, 0, 0.4); padding: 3rem; border-radius: 20px; margin: 3rem 0; border-left: 5px solid rgba(255, 255, 255, 0.8);">
+                <h2 style="color: rgba(255, 255, 255, 0.95); font-size: 1.8rem; margin-bottom: 1.5rem;">Welcome to the Linux Universe</h2>
+                <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+                    Linux isn't just an operating system - it's the <strong>backbone of the entire cybersecurity world</strong>. From hacking labs to production servers, from bug bounty targets to security research platforms, Linux is <em>everywhere</em>.
+                </p>
+                <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+                    Think of Linux mastery like learning to navigate a vast city where every street leads to a different capability. At first, the terminal feels intimidating - just a blinking cursor waiting for input. But soon, you'll realize this "cursor" is your direct hotline to the machine's brain.
+                </p>
+                <p style="font-size: 1.15rem; line-height: 1.8;">
+                    In this chapter, we'll transform you from a Linux tourist into a <strong>Linux native</strong>. You'll understand the file system, manage permissions, and automate tasks like a pro.
+                </p>
+            </div>
+
+            <!-- Topic 1 -->
+            <div style="background: rgba(0, 0, 0, 0.4); padding: 3rem; border-radius: 20px; margin: 3rem 0; border: 1px solid rgba(255, 255, 255, 0.1);">
+                <h2 style="color: rgba(255, 255, 255, 0.95); font-size: 1.8rem; margin-bottom: 1.5rem;">Topic 1: Linux Distributions</h2>
+                
+                <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
+                    Imagine Linux as a <strong>car engine</strong> (the kernel). A distribution is the entire car - complete with seats, dashboard, and paint job. Different manufacturers take the same engine and build completely different vehicles.
+                </p>
+
+                <h3 style="color: rgba(255, 255, 255, 0.9); font-size: 1.4rem; margin: 2rem 0 1rem 0;">The Main Families</h3>
+                
+                <div style="background: rgba(0, 0, 0, 0.3); padding: 2rem; border-radius: 15px; margin: 1.5rem 0;">
+                    <h4 style="color: rgba(255, 255, 255, 0.95); margin-bottom: 1rem;">Debian Family (apt)</h4>
+                    <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
+                        <strong>Ubuntu:</strong> Beginner-friendly, massive community, great hardware support.
+                    </p>
+                    <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
+                        <strong>Debian:</strong> More stable, minimal, server-focused.
+                    </p>
+                    <p style="font-size: 1.05rem; line-height: 1.8;">
+                        <strong>Kali Linux:</strong> Pre-loaded with 600+ security tools for penetration testing.
+                    </p>
+                </div>
+
+                <div style="background: rgba(0, 0, 0, 0.3); padding: 2rem; border-radius: 15px; margin: 1.5rem 0;">
+                    <h4 style="color: rgba(255, 255, 255, 0.95); margin-bottom: 1rem;">Red Hat Family (dnf/yum)</h4>
+                    <p style="font-size: 1.05rem; line-height: 1.8;">
+                        <strong>Fedora:</strong> Bleeding-edge features for developers.<br>
+                        <strong>RHEL:</strong> Enterprise-grade, ultra-stable.<br>
+                        <strong>CentOS:</strong> Free RHEL alternative.
+                    </p>
+                </div>
+
+                <div style="background: rgba(0, 0, 0, 0.3); padding: 2rem; border-radius: 15px; margin: 1.5rem 0;">
+                    <h4 style="color: rgba(255, 255, 255, 0.95); margin-bottom: 1rem;">Arch Family (pacman)</h4>
+                    <p style="font-size: 1.05rem; line-height: 1.8;">
+                        <strong>Arch Linux:</strong> DIY builder's dream, rolling release.<br>
+                        <strong>Manjaro:</strong> Arch made easy.<br>
+                        <strong>BlackArch:</strong> 2,800+ security tools.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Topic 2 -->
+            <div style="background: rgba(0, 0, 0, 0.4); padding: 3rem; border-radius: 20px; margin: 3rem 0; border: 1px solid rgba(255, 255, 255, 0.1);">
+                <h2 style="color: rgba(255, 255, 255, 0.95); font-size: 1.8rem; margin-bottom: 1.5rem;">Topic 2: File System Hierarchy</h2>
+                
+                <h3 style="color: rgba(255, 255, 255, 0.9); font-size: 1.4rem; margin: 2rem 0 1rem 0;">Everything Starts at Root (/)</h3>
+                <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
+                    Unlike Windows with multiple drives, Linux has only one root: <code style="background: rgba(255, 255, 255, 0.1); padding: 0.2rem 0.5rem; border-radius: 5px;">/</code>
+                </p>
+
+                <div style="background: rgba(0, 0, 0, 0.3); padding: 2rem; border-radius: 15px; margin: 1.5rem 0;">
+                    <h4 style="color: rgba(255, 255, 255, 0.95); margin-bottom: 1rem;">Key Directories</h4>
+                    <ul style="font-size: 1.05rem; line-height: 1.9; margin: 0;">
+                        <li><strong>/bin</strong> - Essential commands (ls, cat, cp)</li>
+                        <li><strong>/etc</strong> - System configuration files</li>
+                        <li><strong>/home</strong> - User directories</li>
+                        <li><strong>/var</strong> - Variable data (logs, web content)</li>
+                        <li><strong>/tmp</strong> - Temporary files (cleared on reboot)</li>
+                        <li><strong>/usr</strong> - User programs and utilities</li>
+                        <li><strong>/root</strong> - Root user's home</li>
+                    </ul>
+                </div>
+
+                <div style="background: rgba(0, 0, 0, 0.3); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
+                    <h4 style="color: rgba(255, 255, 255, 0.95); margin-bottom: 1rem;">Basic Navigation</h4>
+                    <pre style="margin: 0; color: rgba(255, 255, 255, 0.9); font-family: 'JetBrains Mono', monospace; font-size: 1rem; line-height: 1.8;"><code>pwd                    # Print working directory
+ls -lah                # List files with details
+cd /etc                # Change directory
+cd ~                   # Go to home
+cd -                   # Go to previous
+find / -name "*.conf"  # Find files
+grep -r "text" /etc    # Search in files</code></pre>
+                </div>
+            </div>
+
+            <!-- Topic 3 -->
+            <div style="background: rgba(0, 0, 0, 0.4); padding: 3rem; border-radius: 20px; margin: 3rem 0; border: 1px solid rgba(255, 255, 255, 0.1);">
+                <h2 style="color: rgba(255, 255, 255, 0.95); font-size: 1.8rem; margin-bottom: 1.5rem;">Topic 3: Permissions</h2>
+                
+                <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
+                    Every file has three permission sets: <strong>User</strong>, <strong>Group</strong>, and <strong>Others</strong>.
+                </p>
+
+                <div style="background: rgba(0, 0, 0, 0.3); padding: 2rem; border-radius: 15px; margin: 1.5rem 0;">
+                    <h4 style="color: rgba(255, 255, 255, 0.95); margin-bottom: 1rem;">Permission Types</h4>
+                    <ul style="font-size: 1.05rem; line-height: 1.9; margin: 0;">
+                        <li><strong>r (4)</strong> - Read</li>
+                        <li><strong>w (2)</strong> - Write</li>
+                        <li><strong>x (1)</strong> - Execute</li>
+                    </ul>
+                </div>
+
+                <div style="background: rgba(0, 0, 0, 0.3); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
+                    <pre style="margin: 0; color: rgba(255, 255, 255, 0.9); font-family: 'JetBrains Mono', monospace; font-size: 1rem; line-height: 1.8;"><code>chmod 755 script.sh        # rwxr-xr-x
+chmod 644 file.txt         # rw-r--r--
+chmod u+x script.sh        # Add execute for user
+chown alice:dev file.txt   # Change owner and group
+
+# Find SUID binaries (privilege escalation)
+find / -perm -4000 2>/dev/null</code></pre>
+                </div>
+            </div>
+
+            <!-- Topic 4 -->
+            <div style="background: rgba(0, 0, 0, 0.4); padding: 3rem; border-radius: 20px; margin: 3rem 0; border: 1px solid rgba(255, 255, 255, 0.1);">
+                <h2 style="color: rgba(255, 255, 255, 0.95); font-size: 1.8rem; margin-bottom: 1.5rem;">Topic 4: User Management & sudo</h2>
+                
+                <div style="background: rgba(0, 0, 0, 0.3); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
+                    <pre style="margin: 0; color: rgba(255, 255, 255, 0.9); font-family: 'JetBrains Mono', monospace; font-size: 1rem; line-height: 1.8;"><code>sudo useradd -m alice       # Create user
+sudo passwd alice           # Set password
+sudo usermod -aG sudo alice # Add to sudo group
+sudo userdel -r alice       # Delete user
+
+id                          # View current user
+whoami                      # Display username
+sudo -l                     # Check sudo privileges</code></pre>
+                </div>
+
+                <p style="font-size: 1.05rem; line-height: 1.8; margin-top: 1.5rem;">
+                    <strong>Key files:</strong> <code style="background: rgba(255, 255, 255, 0.1); padding: 0.2rem 0.5rem; border-radius: 5px;">/etc/passwd</code> (user info), <code style="background: rgba(255, 255, 255, 0.1); padding: 0.2rem 0.5rem; border-radius: 5px;">/etc/shadow</code> (password hashes)
+                </p>
+            </div>
+
+            <!-- Topic 5 -->
+            <div style="background: rgba(0, 0, 0, 0.4); padding: 3rem; border-radius: 20px; margin: 3rem 0; border: 1px solid rgba(255, 255, 255, 0.1);">
+                <h2 style="color: rgba(255, 255, 255, 0.95); font-size: 1.8rem; margin-bottom: 1.5rem;">Topic 5: Process Management</h2>
+                
+                <div style="background: rgba(0, 0, 0, 0.3); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
+                    <pre style="margin: 0; color: rgba(255, 255, 255, 0.9); font-family: 'JetBrains Mono', monospace; font-size: 1rem; line-height: 1.8;"><code>ps aux                  # List all processes
+top                     # Interactive viewer
+htop                    # Better top
+
+kill 1234               # Terminate process
+kill -9 1234            # Force kill
+killall firefox         # Kill by name
+
+# Services (systemd)
+systemctl start apache2
+systemctl stop apache2
+systemctl status apache2
+systemctl enable apache2  # Autostart on boot</code></pre>
+                </div>
+            </div>
+
+            <!-- Topic 6 -->
+            <div style="background: rgba(0, 0, 0, 0.4); padding: 3rem; border-radius: 20px; margin: 3rem 0; border: 1px solid rgba(255, 255, 255, 0.1);">
+                <h2 style="color: rgba(255, 255, 255, 0.95); font-size: 1.8rem; margin-bottom: 1.5rem;">Topic 6: Package Management</h2>
+                
+                <div style="background: rgba(0, 0, 0, 0.3); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
+                    <h4 style="color: rgba(255, 255, 255, 0.95); margin-bottom: 1rem;">Debian/Ubuntu (apt)</h4>
+                    <pre style="margin: 0; color: rgba(255, 255, 255, 0.9); font-family: 'JetBrains Mono', monospace; font-size: 1rem; line-height: 1.8;"><code>sudo apt update
+sudo apt upgrade
+sudo apt install nmap
+sudo apt remove nmap
+apt search network</code></pre>
+                </div>
+
+                <div style="background: rgba(0, 0, 0, 0.3); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
+                    <h4 style="color: rgba(255, 255, 255, 0.95); margin-bottom: 1rem;">Red Hat/CentOS (dnf)</h4>
+                    <pre style="margin: 0; color: rgba(255, 255, 255, 0.9); font-family: 'JetBrains Mono', monospace; font-size: 1rem; line-height: 1.8;"><code>sudo dnf install nmap
+sudo dnf update
+sudo dnf remove nmap</code></pre>
+                </div>
+
+                <div style="background: rgba(0, 0, 0, 0.3); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
+                    <h4 style="color: rgba(255, 255, 255, 0.95); margin-bottom: 1rem;">Arch (pacman)</h4>
+                    <pre style="margin: 0; color: rgba(255, 255, 255, 0.9); font-family: 'JetBrains Mono', monospace; font-size: 1rem; line-height: 1.8;"><code>sudo pacman -S nmap
+sudo pacman -Syu
+sudo pacman -R nmap</code></pre>
+                </div>
+            </div>
+
+            <!-- Topic 7 -->
+            <div style="background: rgba(0, 0, 0, 0.4); padding: 3rem; border-radius: 20px; margin: 3rem 0; border: 1px solid rgba(255, 255, 255, 0.1);">
+                <h2 style="color: rgba(255, 255, 255, 0.95); font-size: 1.8rem; margin-bottom: 1.5rem;">Topic 7: Bash Scripting</h2>
+                
+                <div style="background: rgba(0, 0, 0, 0.3); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
+                    <h4 style="color: rgba(255, 255, 255, 0.95); margin-bottom: 1rem;">Basic Script Structure</h4>
+                    <pre style="margin: 0; color: rgba(255, 255, 255, 0.9); font-family: 'JetBrains Mono', monospace; font-size: 1rem; line-height: 1.8;"><code>#!/bin/bash
+# My first script
+
+name="Alice"
+echo "Hello, $name"
+
+# Loops
+for i in {1..5}; do
+    echo "Number $i"
+done
+
+# Conditionals
+if [ -f "/etc/passwd" ]; then
+    echo "File exists"
+fi
+
+# Make executable
+chmod +x script.sh
+./script.sh</code></pre>
+                </div>
+            </div>
+
+            <!-- Topic 8 -->
+            <div style="background: rgba(0, 0, 0, 0.4); padding: 3rem; border-radius: 20px; margin: 3rem 0; border: 1px solid rgba(255, 255, 255, 0.1);">
+                <h2 style="color: rgba(255, 255, 255, 0.95); font-size: 1.8rem; margin-bottom: 1.5rem;">Topic 8: Networking & SSH</h2>
+                
+                <div style="background: rgba(0, 0, 0, 0.3); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
+                    <pre style="margin: 0; color: rgba(255, 255, 255, 0.9); font-family: 'JetBrains Mono', monospace; font-size: 1rem; line-height: 1.8;"><code># Network commands
+ip addr show
+netstat -tuln
+ss -tuln
+ping google.com
+traceroute google.com
+
+# SSH
+ssh user@server
+ssh -p 2222 user@server
+scp file.txt user@server:/path
+ssh-keygen -t rsa -b 4096
+ssh-copy-id user@server
+
+# Firewall
+sudo ufw status
+sudo ufw allow 22/tcp
+sudo ufw enable</code></pre>
+                </div>
+            </div>
+
+            <!-- Conclusion -->
+            <div style="background: rgba(0, 0, 0, 0.4); padding: 3rem; border-radius: 20px; margin: 3rem 0; border-left: 5px solid rgba(255, 255, 255, 0.8);">
+                <h2 style="color: rgba(255, 255, 255, 0.95); font-size: 1.8rem; margin-bottom: 1.5rem;">You've Mastered Linux Fundamentals</h2>
+                <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+                    You now understand Linux file systems, permissions, processes, and scripting. Real mastery comes from practice - set up VMs, break things, fix them, and script everything.
+                </p>
+                <p style="font-size: 1.15rem; line-height: 1.8;">
+                    In the next chapters, we'll use this Linux foundation to dive into <strong>networking protocols</strong>, <strong>web application attacks</strong>, and <strong>active exploitation</strong>.
+                </p>
+            </div>
+
+            <div style="display: flex; gap: 2rem; margin-top: 3rem;">
+                <a href="hacking-ch02.html" style="flex: 1; background: rgba(0, 0, 0, 0.4); padding: 2rem; border-radius: 15px; text-decoration: none; border: 1px solid rgba(255, 255, 255, 0.1);">
+                    <div style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem; margin-bottom: 0.5rem;">? PREVIOUS</div>
+                    <div style="color: rgba(255, 255, 255, 0.95); font-size: 1.1rem; font-weight: 600;">Chapter 02</div>
+                </a>
+                <a href="hacking-ch04.html" style="flex: 1; background: rgba(0, 0, 0, 0.4); padding: 2rem; border-radius: 15px; text-decoration: none; border: 1px solid rgba(255, 255, 255, 0.1); text-align: right;">
+                    <div style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem; margin-bottom: 0.5rem;">NEXT ?</div>
+                    <div style="color: rgba(255, 255, 255, 0.95); font-size: 1.1rem; font-weight: 600;">Chapter 04</div>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+
+

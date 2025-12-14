@@ -1,265 +1,98 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="NullSector — Cybersecurity learning hub: interactive roadmap, beginner-friendly guides, FAQ, and a safe practice terminal.">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:">
-    
-    <!-- Open Graph / Discord Embed -->
-    <meta property="og:title" content="NullSector - Cybersecurity and Programming Community">
-    <meta property="og:description" content="NullSector — Cybersecurity learning hub: interactive roadmap, beginner-friendly guides, FAQ, and a safe practice terminal.">
-    <meta property="og:image" content="https://nullnode.vercel.app/favicon.ico">
-    <meta property="og:url" content="https://nullnode.vercel.app/">
-    <meta property="og:type" content="website">
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="NullSector - Cybersecurity and Programming Community">
-    <meta name="twitter:description" content="NullSector — Cybersecurity learning hub: interactive roadmap, beginner-friendly guides, FAQ, and a safe practice terminal.">
-    <meta name="twitter:image" content="https://nullnode.vercel.app/favicon.ico">
-    <meta name="theme-color" content="#00ff88">
-    
     <title>NullSector - Cybersecurity and Programming Community</title>
     <link rel="icon" type="image/svg+xml" href="logo.svg">
-    <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-        @keyframes gradient-shift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-        @keyframes glow {
-            0%, 100% { box-shadow: 0 0 15px rgba(0,255,136,0.3), 0 0 30px rgba(0,255,136,0.15); }
-            50% { box-shadow: 0 0 25px rgba(0,255,136,0.5), 0 0 50px rgba(0,255,136,0.25); }
-        }
-        .fade-in-up {
-            animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            opacity: 0;
-        }
-        .delay-1 { animation-delay: 0.1s; }
-        .delay-2 { animation-delay: 0.2s; }
-        .delay-3 { animation-delay: 0.3s; }
-        .delay-4 { animation-delay: 0.4s; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --bg: #000; --text: #fff; --text2: #888; --border: #222; }
+        body { font-family: 'Inter', sans-serif; background: #000; color: #fff; line-height: 1.6; }
+        .header { position: fixed; top: 0; left: 0; right: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid #222; z-index: 1000; padding: 1rem 2rem; }
+        .header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .brand { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: #fff; font-weight: 700; font-size: 1.25rem; }
+        .brand img { width: 36px; height: 36px; }
+        .nav { display: flex; gap: 2rem; align-items: center; }
+        .nav a { color: #888; text-decoration: none; font-weight: 500; transition: color 0.2s; }
+        .nav a:hover { color: #fff; }
+        .hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 6rem 2rem 2rem; }
+        .hero-content { max-width: 1000px; text-align: center; }
+        .hero h1 { font-size: clamp(3rem, 10vw, 6rem); font-weight: 900; margin-bottom: 1.5rem; line-height: 1.1; }
+        .hero p { font-size: 1.25rem; color: #888; margin-bottom: 3rem; max-width: 700px; margin-left: auto; margin-right: auto; }
+        .cta { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; }
+        .btn { padding: 1rem 2rem; border-radius: 8px; font-weight: 600; text-decoration: none; transition: all 0.2s; border: 2px solid #222; }
+        .btn-primary { background: #fff; color: #000; border-color: #fff; }
+        .btn-primary:hover { background: #e5e5e5; }
+        .btn-secondary { background: transparent; color: #fff; }
+        .btn-secondary:hover { border-color: #fff; background: #111; }
+        .cards { padding: 4rem 2rem; max-width: 1400px; margin: 0 auto; }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; }
+        .card { background: #111; border: 1px solid #222; border-radius: 12px; padding: 2.5rem; text-decoration: none; display: block; transition: all 0.2s; }
+        .card:hover { border-color: #333; transform: translateY(-4px); }
+        .card h3 { font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; color: #fff; }
+        .card p { color: #888; line-height: 1.7; }
     </style>
 </head>
 <body>
-    <div class="stars"></div>
-    <div class="twinkling"></div>
-    
-    <!-- Animated Background Orbs -->
-    <div style="position: fixed; top: -10%; left: -5%; width: 40%; height: 40%; background: radial-gradient(circle, rgba(0,255,136,0.08) 0%, transparent 70%); border-radius: 50%; filter: blur(80px); animation: float 25s ease-in-out infinite; z-index: 0; will-change: transform;"></div>
-    <div style="position: fixed; bottom: -10%; right: -5%; width: 50%; height: 50%; background: radial-gradient(circle, rgba(0,204,255,0.06) 0%, transparent 70%); border-radius: 50%; filter: blur(100px); animation: float 30s ease-in-out infinite reverse; z-index: 0; will-change: transform;"></div>
-    <div style="position: fixed; top: 40%; right: 10%; width: 30%; height: 30%; background: radial-gradient(circle, rgba(156,39,176,0.05) 0%, transparent 70%); border-radius: 50%; filter: blur(70px); animation: float 28s ease-in-out infinite; z-index: 0; will-change: transform;"></div>
-    
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-brand">
-                <img src="logo.svg" alt="NullSector Logo" class="logo">
-                <span class="brand-text">NullSector</span>
-            </div>
-            <div class="nav-links">
-                <a href="roadmap-hacking.html" class="nav-link">Hacking</a>
-                <a href="roadmap-programming.html" class="nav-link">Programming</a>
-                <a href="resources.html" class="nav-link">Resources</a>
-                <a href="null-terminal.html" class="nav-link">Null Terminal</a>
-                <a href="faq.html" class="nav-link">FAQ</a>
-                <a href="https://discord.gg/Tz9Y3wea32" target="_blank" rel="noopener noreferrer" class="nav-link">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"/>
-                    </svg>
-                </a>
-                <a href="https://discord.gg/Tz9Y3wea32" target="_blank" rel="noopener noreferrer" class="nav-link">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                    </svg>
-                </a>
-                                
-                <div id="userProfile" style="display: none; align-items: center; gap: 0.75rem;">
-                    <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <img id="userAvatar" style="width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--primary-color); cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="" />
-                        <span id="userName" style="color: var(--text-primary); font-weight: 500; font-size: 0.95rem; cursor: default;"></span>
-                    </div>
-                    <button id="logoutButton" class="nav-link" style="background: rgba(255, 95, 87, 0.1); border: 1px solid #ff5f57; padding: 0.4rem 1rem; border-radius: 6px; font-weight: 500; cursor: pointer; color: #ff5f57; transition: all 0.2s;" onmouseover="this.style.background='rgba(255, 95, 87, 0.2)'" onmouseout="this.style.background='rgba(255, 95, 87, 0.1)'">Logout</button>
-                </div>
-            </div>
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="brand">
+                <img src="logo.svg" alt="NullSector">
+                <span>NullSector</span>
+            </a>
+                        <nav class="nav">
+                <a href="roadmap-hacking.html">Hacking</a>
+                <a href="roadmap-programming.html">Programming</a>
+                <a href="null-terminal.html">Null Terminal</a>
+                <a href="faq.html">FAQs</a>
+                <a href="https://discord.gg/Tz9Y3wea32" target="_blank">Discord</a>
+            </nav>
         </div>
-    </nav>
+    </header>
 
-    <!-- Hero Section -->
-    <section class="hero fade-in-up" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; padding: 2rem; z-index: 1;">
-        <div style="max-width: 1200px; width: 100%; text-align: center;">
-            <!-- Live Badge -->
-            <div class="fade-in-up delay-1" style="display: inline-flex; align-items: center; gap: 0.75rem; background: rgba(0,20,10,0.9); border: 1px solid rgba(0,255,136,0.4); padding: 0.85rem 2rem; border-radius: 50px; margin-bottom: 3rem; backdrop-filter: blur(20px); box-shadow: 0 8px 32px rgba(0,255,136,0.15); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);" onmouseover="this.style.transform='scale(1.03)'; this.style.borderColor='rgba(0,255,136,0.6)'" onmouseout="this.style.transform='scale(1)'; this.style.borderColor='rgba(0,255,136,0.4)'">
-                <span style="width: 12px; height: 12px; background: #00ff88; border-radius: 50%; box-shadow: 0 0 20px #00ff88, 0 0 40px rgba(0,255,136,0.5); animation: pulse 2s infinite;"></span>
-                <span style="font-size: 1rem; color: #00ff88; font-weight: 700; letter-spacing: 1.5px;">LIVE COMMUNITY</span>
-            </div>
-            
-            <!-- Main Title -->
-            <h1 class="fade-in-up delay-2" style="font-size: clamp(4rem, 12vw, 9rem); font-weight: 900; margin: 0 0 2.5rem 0; line-height: 1; letter-spacing: -0.03em;">
-                <span style="display: block; background: linear-gradient(135deg, #00ff88 0%, #00ccff 50%, #9c27b0 100%); background-size: 200% 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: gradient-shift 8s ease infinite; filter: drop-shadow(0 0 40px rgba(0,255,136,0.3));">NullSector</span>
-            </h1>
-            
-            <!-- Description -->
-            <p class="fade-in-up delay-3" style="font-size: clamp(1.25rem, 2.5vw, 1.85rem); color: rgba(255,255,255,0.95); max-width: 850px; margin: 0 auto 4.5rem; line-height: 1.7; font-weight: 400;">
-                A <span style="color: #00ff88; font-weight: 700; text-shadow: 0 0 20px rgba(0,255,136,0.4);">community</span> of tech and security enthusiasts. We provide comprehensive <span style="color: #00ccff; font-weight: 700; text-shadow: 0 0 20px rgba(0,204,255,0.4);">educational resources</span> and assistance in <span style="color: #ffc800; font-weight: 700; text-shadow: 0 0 20px rgba(255,200,0,0.4);">Cybersecurity</span> and <span style="color: #9c27b0; font-weight: 700; text-shadow: 0 0 20px rgba(156,39,176,0.4);">Programming</span>.
-            </p>
-            
-            <!-- CTA Buttons -->
-            <div class="fade-in-up delay-4" style="display: flex; gap: 1.75rem; justify-content: center; flex-wrap: wrap; margin-bottom: 6rem;">
-                <a href="https://discord.gg/Tz9Y3wea32" target="_blank" rel="noopener noreferrer" style="text-decoration: none; background: linear-gradient(135deg, #5865F2 0%, #4752C4 100%); color: #fff; padding: 1.4rem 3.5rem; border-radius: 16px; font-weight: 900; font-size: 1.2rem; transition: all 0.3s ease; box-shadow: 0 10px 40px rgba(88,101,242,0.4); display: inline-flex; align-items: center; gap: 0.85rem; position: relative; overflow: hidden;" onmouseover="this.style.transform='translateY(-5px) scale(1.02)'; this.style.boxShadow='0 15px 50px rgba(88,101,242,0.6)'" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 10px 40px rgba(88,101,242,0.4)'">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"/>
-                    </svg>
-                    <span>Join Discord Community</span>
-                    <div style="position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: left 0.5s;"></div>
-                </a>
-                <a href="roadmap-hacking.html" style="text-decoration: none; background: rgba(0,255,136,0.12); color: #fff; padding: 1.4rem 3.5rem; border-radius: 16px; font-weight: 900; font-size: 1.2rem; border: 2.5px solid #00ff88; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.85rem; backdrop-filter: blur(20px); box-shadow: 0 10px 40px rgba(0,255,136,0.3); position: relative; overflow: hidden;" onmouseover="this.style.background='rgba(0,255,136,0.2)'; this.style.transform='translateY(-5px) scale(1.02)'; this.style.boxShadow='0 15px 50px rgba(0,255,136,0.5)'" onmouseout="this.style.background='rgba(0,255,136,0.12)'; this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 10px 40px rgba(0,255,136,0.3)'">
-                    <span style="font-size: 1.5rem;">🔒</span>
-                    <span>Explore Roadmaps</span>
-                </a>
-            </div>
-            
-            <!-- Stats -->
-            <div class="fade-in-up delay-4" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 3.5rem; max-width: 800px; margin: 0 auto;">
-                <div style="text-align: center; padding: 2rem; background: rgba(0,255,136,0.05); border-radius: 20px; border: 1px solid rgba(0,255,136,0.2); backdrop-filter: blur(10px); transition: all 0.3s;" onmouseover="this.style.transform='translateY(-10px)'; this.style.borderColor='rgba(0,255,136,0.5)'; this.style.background='rgba(0,255,136,0.1)'" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='rgba(0,255,136,0.2)'; this.style.background='rgba(0,255,136,0.05)'">
-                    <div style="font-size: 3.5rem; font-weight: 900; background: linear-gradient(135deg, #00ff88, #00cc6f); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.75rem; line-height: 1; text-shadow: 0 0 40px rgba(0,255,136,0.4);">🔒</div>
-                    <div style="color: rgba(255,255,255,0.85); font-size: 1.1rem; font-weight: 600; letter-spacing: 0.5px;">Ethical Hacking</div>
-                </div>
-                <div style="text-align: center; padding: 2rem; background: rgba(0,204,255,0.05); border-radius: 20px; border: 1px solid rgba(0,204,255,0.2); backdrop-filter: blur(10px); transition: all 0.3s;" onmouseover="this.style.transform='translateY(-10px)'; this.style.borderColor='rgba(0,204,255,0.5)'; this.style.background='rgba(0,204,255,0.1)'" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='rgba(0,204,255,0.2)'; this.style.background='rgba(0,204,255,0.05)'">
-                    <div style="font-size: 3.5rem; font-weight: 900; background: linear-gradient(135deg, #00ccff, #0099cc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.75rem; line-height: 1; text-shadow: 0 0 40px rgba(0,204,255,0.4);">💻</div>
-                    <div style="color: rgba(255,255,255,0.85); font-size: 1.1rem; font-weight: 600; letter-spacing: 0.5px;">Software Development</div>
-                </div>
-                <div style="text-align: center; padding: 2rem; background: rgba(255,193,7,0.05); border-radius: 20px; border: 1px solid rgba(255,193,7,0.2); backdrop-filter: blur(10px); transition: all 0.3s;" onmouseover="this.style.transform='translateY(-10px)'; this.style.borderColor='rgba(255,193,7,0.5)'; this.style.background='rgba(255,193,7,0.1)'" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='rgba(255,193,7,0.2)'; this.style.background='rgba(255,193,7,0.05)'">
-                    <div style="font-size: 3.5rem; font-weight: 900; background: linear-gradient(135deg, #ffc800, #ff9800); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.75rem; line-height: 1; text-shadow: 0 0 40px rgba(255,193,7,0.4);">⚡</div>
-                    <div style="color: rgba(255,255,255,0.85); font-size: 1.1rem; font-weight: 600; letter-spacing: 0.5px;">Free & Comprehensive</div>
-                </div>
-            </div>
-        </div>
-        
-        <style>
-            @keyframes pulse {
-                0%, 100% { opacity: 1; transform: scale(1); }
-                50% { opacity: 0.6; transform: scale(1.4); }
-            }
-        </style>
-    </section>
-
-    <!-- Cards Section -->
-    <section style="padding: 7rem 2rem; background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 100%); position: relative; z-index: 1;">
-        <div style="max-width: 1200px; margin: 0 auto;">
-            <!-- Section Header -->
-            <div class="fade-in-up" style="text-align: center; margin-bottom: 5rem;">
-                <h2 style="font-size: clamp(2.75rem, 6vw, 4rem); font-weight: 900; background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.7) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 1.25rem; text-shadow: 0 0 60px rgba(255,255,255,0.1);">
-                    Explore Resources
-                </h2>
-                <p style="color: rgba(255,255,255,0.8); font-size: 1.35rem; max-width: 650px; margin: 0 auto; line-height: 1.6;">
-                    Everything you need to master cybersecurity and programming
-                </p>
-            </div>
-            
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 2.5rem;">
-                <!-- Card 1: Hacking -->
-                <a href="roadmap-hacking.html" class="fade-in-up delay-1" style="text-decoration: none; background: linear-gradient(135deg, rgba(0,255,136,0.1) 0%, rgba(0,255,136,0.05) 100%); border: 2px solid rgba(0,255,136,0.3); border-radius: 24px; padding: 3rem; transition: all 0.4s; display: block; backdrop-filter: blur(20px); box-shadow: 0 10px 40px rgba(0,0,0,0.3); position: relative; overflow: hidden;" onmouseover="this.style.transform='translateY(-12px) scale(1.02)'; this.style.borderColor='#00ff88'; this.style.background='linear-gradient(135deg, rgba(0,255,136,0.15) 0%, rgba(0,255,136,0.08) 100%)'; this.style.boxShadow='0 20px 60px rgba(0,255,136,0.4)'" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.borderColor='rgba(0,255,136,0.3)'; this.style.background='linear-gradient(135deg, rgba(0,255,136,0.1) 0%, rgba(0,255,136,0.05) 100%)'; this.style.boxShadow='0 10px 40px rgba(0,0,0,0.3)'">
-                    <div style="position: absolute; top: -50%; right: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(0,255,136,0.15) 0%, transparent 60%); opacity: 0; transition: opacity 0.4s; pointer-events: none;"></div>
-                    <div style="font-size: 3.5rem; margin-bottom: 2rem; filter: drop-shadow(0 0 20px rgba(0,255,136,0.5));">🔒</div>
-                    <h3 style="font-size: 2rem; font-weight: 900; color: #00ff88; margin-bottom: 1.25rem; text-shadow: 0 0 30px rgba(0,255,136,0.4);">Hacking Roadmap</h3>
-                    <p style="color: rgba(255,255,255,0.85); line-height: 1.75; margin-bottom: 2rem; font-size: 1.1rem;">Complete learning path covering everything from computer fundamentals to advanced penetration testing and cloud security</p>
-                    <div style="color: #00ff88; font-weight: 800; display: flex; align-items: center; gap: 0.75rem; font-size: 1.05rem;">
-                        <span>Start Learning</span>
-                        <span style="transition: transform 0.3s;">→</span>
-                    </div>
-                </a>
-
-                <!-- Card 2: Programming -->
-                <a href="roadmap-programming.html" class="fade-in-up delay-2" style="text-decoration: none; background: linear-gradient(135deg, rgba(0,204,255,0.1) 0%, rgba(0,204,255,0.05) 100%); border: 2px solid rgba(0,204,255,0.3); border-radius: 24px; padding: 3rem; transition: all 0.4s; display: block; backdrop-filter: blur(20px); box-shadow: 0 10px 40px rgba(0,0,0,0.3); position: relative; overflow: hidden;" onmouseover="this.style.transform='translateY(-12px) scale(1.02)'; this.style.borderColor='#00ccff'; this.style.background='linear-gradient(135deg, rgba(0,204,255,0.15) 0%, rgba(0,204,255,0.08) 100%)'; this.style.boxShadow='0 20px 60px rgba(0,204,255,0.4)'" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.borderColor='rgba(0,204,255,0.3)'; this.style.background='linear-gradient(135deg, rgba(0,204,255,0.1) 0%, rgba(0,204,255,0.05) 100%)'; this.style.boxShadow='0 10px 40px rgba(0,0,0,0.3)'">
-                    <div style="font-size: 3.5rem; margin-bottom: 2rem; filter: drop-shadow(0 0 20px rgba(0,204,255,0.5));">💻</div>
-                    <h3 style="font-size: 2rem; font-weight: 900; color: #00ccff; margin-bottom: 1.25rem; text-shadow: 0 0 30px rgba(0,204,255,0.4);">Programming Roadmap</h3>
-                    <p style="color: rgba(255,255,255,0.85); line-height: 1.75; margin-bottom: 2rem; font-size: 1.1rem;">Comprehensive curriculum from Python basics to advanced algorithms, web development, and software engineering</p>
-                    <div style="color: #00ccff; font-weight: 800; display: flex; align-items: center; gap: 0.75rem; font-size: 1.05rem;">
-                        <span>Start Learning</span>
-                        <span style="transition: transform 0.3s;">→</span>
-                    </div>
-                </a>
-
-                <!-- Card 3: Terminal -->
-                <a href="null-terminal.html" class="fade-in-up delay-3" style="text-decoration: none; background: linear-gradient(135deg, rgba(156,39,176,0.1) 0%, rgba(156,39,176,0.05) 100%); border: 2px solid rgba(156,39,176,0.3); border-radius: 24px; padding: 3rem; transition: all 0.4s; display: block; backdrop-filter: blur(20px); box-shadow: 0 10px 40px rgba(0,0,0,0.3); position: relative; overflow: hidden;" onmouseover="this.style.transform='translateY(-12px) scale(1.02)'; this.style.borderColor='#9c27b0'; this.style.background='linear-gradient(135deg, rgba(156,39,176,0.15) 0%, rgba(156,39,176,0.08) 100%)'; this.style.boxShadow='0 20px 60px rgba(156,39,176,0.4)'" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.borderColor='rgba(156,39,176,0.3)'; this.style.background='linear-gradient(135deg, rgba(156,39,176,0.1) 0%, rgba(156,39,176,0.05) 100%)'; this.style.boxShadow='0 10px 40px rgba(0,0,0,0.3)'">
-                    <div style="font-size: 3.5rem; margin-bottom: 2rem; filter: drop-shadow(0 0 20px rgba(156,39,176,0.5));">⚡</div>
-                    <h3 style="font-size: 2rem; font-weight: 900; color: #9c27b0; margin-bottom: 1.25rem; text-shadow: 0 0 30px rgba(156,39,176,0.4);">Null Terminal</h3>
-                    <p style="color: rgba(255,255,255,0.85); line-height: 1.75; margin-bottom: 2rem; font-size: 1.1rem;">Practice Linux commands in a safe browser-based terminal environment with real-time feedback</p>
-                    <div style="color: #9c27b0; font-weight: 800; display: flex; align-items: center; gap: 0.75rem; font-size: 1.05rem;">
-                        <span>Launch Terminal</span>
-                        <span style="transition: transform 0.3s;">→</span>
-                    </div>
-                </a>
-
-                <!-- Card 4: FAQ -->
-                <a href="faq.html" class="fade-in-up delay-4" style="text-decoration: none; background: linear-gradient(135deg, rgba(255,193,7,0.1) 0%, rgba(255,193,7,0.05) 100%); border: 2px solid rgba(255,193,7,0.3); border-radius: 24px; padding: 3rem; transition: all 0.4s; display: block; backdrop-filter: blur(20px); box-shadow: 0 10px 40px rgba(0,0,0,0.3); position: relative; overflow: hidden;" onmouseover="this.style.transform='translateY(-12px) scale(1.02)'; this.style.borderColor='#ffc800'; this.style.background='linear-gradient(135deg, rgba(255,193,7,0.15) 0%, rgba(255,193,7,0.08) 100%)'; this.style.boxShadow='0 20px 60px rgba(255,193,7,0.4)'" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.borderColor='rgba(255,193,7,0.3)'; this.style.background='linear-gradient(135deg, rgba(255,193,7,0.1) 0%, rgba(255,193,7,0.05) 100%)'; this.style.boxShadow='0 10px 40px rgba(0,0,0,0.3)'">
-                    <div style="font-size: 3.5rem; margin-bottom: 2rem; filter: drop-shadow(0 0 20px rgba(255,193,7,0.5));">📚</div>
-                    <h3 style="font-size: 2rem; font-weight: 900; color: #ffc800; margin-bottom: 1.25rem; text-shadow: 0 0 30px rgba(255,193,7,0.4);">FAQ</h3>
-                    <p style="color: rgba(255,255,255,0.85); line-height: 1.75; margin-bottom: 2rem; font-size: 1.1rem;">Answers to frequently asked questions from our community of learners and experts</p>
-                    <div style="color: #ffc800; font-weight: 800; display: flex; align-items: center; gap: 0.75rem; font-size: 1.05rem;">
-                        <span>View FAQs</span>
-                        <span style="transition: transform 0.3s;">→</span>
-                    </div>
-                </a>
-
-                <!-- Card 5: Discord -->
-                <a href="https://discord.gg/Tz9Y3wea32" target="_blank" class="fade-in-up delay-1" style="text-decoration: none; background: linear-gradient(135deg, rgba(114,137,218,0.1) 0%, rgba(114,137,218,0.05) 100%); border: 2px solid rgba(114,137,218,0.3); border-radius: 24px; padding: 3rem; transition: all 0.4s; display: block; backdrop-filter: blur(20px); box-shadow: 0 10px 40px rgba(0,0,0,0.3); position: relative; overflow: hidden;" onmouseover="this.style.transform='translateY(-12px) scale(1.02)'; this.style.borderColor='#7289da'; this.style.background='linear-gradient(135deg, rgba(114,137,218,0.15) 0%, rgba(114,137,218,0.08) 100%)'; this.style.boxShadow='0 20px 60px rgba(114,137,218,0.4)'" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.borderColor='rgba(114,137,218,0.3)'; this.style.background='linear-gradient(135deg, rgba(114,137,218,0.1) 0%, rgba(114,137,218,0.05) 100%)'; this.style.boxShadow='0 10px 40px rgba(0,0,0,0.3)'">
-                    <div style="font-size: 3.5rem; margin-bottom: 2rem; filter: drop-shadow(0 0 20px rgba(114,137,218,0.5));">💬</div>
-                    <h3 style="font-size: 2rem; font-weight: 900; color: #7289da; margin-bottom: 1.25rem; text-shadow: 0 0 30px rgba(114,137,218,0.4);">Join Discord</h3>
-                    <p style="color: rgba(255,255,255,0.85); line-height: 1.75; margin-bottom: 2rem; font-size: 1.1rem;">Connect with the community, get help, share your journey, and collaborate with peers</p>
-                    <div style="color: #7289da; font-weight: 800; display: flex; align-items: center; gap: 0.75rem; font-size: 1.05rem;">
-                        <span>Join Now</span>
-                        <span style="transition: transform 0.3s;">→</span>
-                    </div>
-                </a>
-
-                <!-- Card 6: GitHub -->
-                <a href="https://github.com/4fqr/nullnode" target="_blank" class="fade-in-up delay-2" style="text-decoration: none; background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%); border: 2px solid rgba(255,255,255,0.3); border-radius: 24px; padding: 3rem; transition: all 0.4s; display: block; backdrop-filter: blur(20px); box-shadow: 0 10px 40px rgba(0,0,0,0.3); position: relative; overflow: hidden;" onmouseover="this.style.transform='translateY(-12px) scale(1.02)'; this.style.borderColor='#fff'; this.style.background='linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.08) 100%)'; this.style.boxShadow='0 20px 60px rgba(255,255,255,0.3)'" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.borderColor='rgba(255,255,255,0.3)'; this.style.background='linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)'; this.style.boxShadow='0 10px 40px rgba(0,0,0,0.3)'">
-                    <div style="font-size: 3.5rem; margin-bottom: 2rem; filter: drop-shadow(0 0 20px rgba(255,255,255,0.5));">⭐</div>
-                    <h3 style="font-size: 2rem; font-weight: 900; color: #fff; margin-bottom: 1.25rem; text-shadow: 0 0 30px rgba(255,255,255,0.3);">Contribute</h3>
-                    <p style="color: rgba(255,255,255,0.85); line-height: 1.75; margin-bottom: 2rem; font-size: 1.1rem;">Help us build the best learning platform - open source, MIT licensed, and community-driven</p>
-                    <div style="color: #fff; font-weight: 800; display: flex; align-items: center; gap: 0.75rem; font-size: 1.05rem;">
-                        <span>View on GitHub</span>
-                        <span style="transition: transform 0.3s;">→</span>
-                    </div>
-                </a>
+    <section class="hero">
+        <div class="hero-content">
+            <h1>NullSector</h1>
+            <p>A community of tech and security enthusiasts. We provide comprehensive educational resources and assistance in Cybersecurity and Programming.</p>
+            <div class="cta">
+                <a href="https://discord.gg/Tz9Y3wea32" target="_blank" class="btn btn-primary">Join Discord Community</a>
+                <a href="roadmap-hacking.html" class="btn btn-secondary">Explore Roadmaps</a>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-content">
-            <p>&copy; 2025 NullSector. All rights reserved.</p>
-            <div class="footer-links">
-                <a href="https://discord.gg/Tz9Y3wea32" target="_blank" rel="noopener noreferrer">Discord</a>
-                <a href="https://discord.gg/Tz9Y3wea32" target="_blank" rel="noopener noreferrer">Discord</a>
-            </div>
+    <section class="cards">
+        <div class="card-grid">
+            <a href="roadmap-hacking.html" class="card">
+                <h3> Hacking Roadmap</h3>
+                <p>Complete learning path from fundamentals to advanced penetration testing and cloud security</p>
+            </a>
+            <a href="roadmap-programming.html" class="card">
+                <h3> Programming Roadmap</h3>
+                <p>Comprehensive curriculum from Python basics to advanced algorithms and web development</p>
+            </a>
+            <a href="null-terminal.html" class="card">
+                <h3> Null Terminal</h3>
+                <p>Practice Linux commands in a safe browser-based terminal environment</p>
+            </a>
+            <a href="faq.html" class="card">
+                <h3> FAQ</h3>
+                <p>Answers to frequently asked questions from our community</p>
+            </a>
+            <a href="https://discord.gg/Tz9Y3wea32" target="_blank" class="card">
+                <h3> Discord Community</h3>
+                <p>Connect, get help, share your journey, and collaborate with peers</p>
+            </a>
+            <a href="https://github.com/4fqr/nullnode" target="_blank" class="card">
+                <h3> Contribute</h3>
+                <p>Help us build the best learning platform - open source and community-driven</p>
+            </a>
         </div>
-    </footer>
-
-    <script src="script.js"></script>
-    
-    <!-- Supabase Client & Auth -->
-    </body>
+    </section>
+</body>
 </html>
-
-
 

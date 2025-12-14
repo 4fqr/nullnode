@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#000000">
+    <title>Chapter 03: Control Flow & Functions - NullNode</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Custom styling for this ultra-detailed chapter */
+        .huge-box {
+            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+            padding: 3rem;
+            border-radius: 20px;
+            margin: 3rem 0;
+            border-left: 5px solid rgba(255,255,255,0.3);
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .huge-box h2 {
+            color: rgba(255,255,255,0.95);
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            font-weight: 700;
+        }
+        
+        .huge-box h3 {
+            color: rgba(255,255,255,0.85);
+            font-size: 1.6rem;
+            margin: 2.5rem 0 1.5rem 0;
+            font-weight: 600;
+        }
+        
+        .huge-box p, .huge-box li {
+            font-size: 1.2rem;
+            line-height: 2;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 1.5rem;
+        }
+        
+        .metaphor-box {
+            background: rgba(138, 43, 226, 0.1);
+            border-left: 4px solid rgba(138, 43, 226, 0.5);
+            padding: 2rem;
+            margin: 2rem 0;
+            border-radius: 12px;
+        }
+        
+        .metaphor-box h4 {
+            color: rgba(138, 43, 226, 0.9);
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .demo-box {
+            background: #000000;
+            border: 2px solid rgba(255,255,255,0.2);
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+        }
+        
+        .demo-box h4 {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .example-box {
+            background: #0d0d0d;
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 10px;
+        }
+        
+        .challenge {
+            background: linear-gradient(135deg, rgba(138, 43, 226, 0.15), rgba(138, 43, 226, 0.05));
+            border: 2px solid rgba(138, 43, 226, 0.3);
+            padding: 2.5rem;
+            margin: 3rem 0;
+            border-radius: 15px;
+        }
+        
+        .challenge h3 {
+            color: rgba(138, 43, 226, 0.95);
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        code {
+            background: rgba(255,255,255,0.1);
+            padding: 0.3rem 0.6rem;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            color: rgba(255,255,255,0.95);
+            font-size: 1.1rem;
+        }
+        
+        pre {
+            background: #000000;
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 1.5rem;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        pre code {
+            background: none;
+            padding: 0;
+            color: rgba(255,255,255,0.9);
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+        
+        .keyword { color: #ff6b9d; }
+        .string { color: #98c379; }
+        .number { color: #d19a66; }
+        .comment { color: #5c6370; font-style: italic; }
+        .function { color: #61afef; }
+        .output { color: #56b6c2; }
+        
+        .warning-box {
+            background: rgba(255, 200, 0, 0.1);
+            border-left: 4px solid rgba(255, 200, 0, 0.7);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 10px;
+        }
+        
+        .warning-box h4 {
+            color: rgba(255, 200, 0, 0.95);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .tip-box {
+            background: rgba(0, 200, 100, 0.1);
+            border-left: 4px solid rgba(0, 200, 100, 0.7);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 10px;
+        }
+        
+        .tip-box h4 {
+            color: rgba(0, 200, 100, 0.95);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="index.html" class="nav-logo">
+                <img src="logo.svg" alt="Logo">
+                <span class="logo-text">NullSector</span>
+            </a>
+            <div class="nav-links">
+                <a href="roadmap-hacking.html">Hacking</a>
+                <a href="roadmap-programming.html" class="active">Programming</a>
+                <a href="null-terminal.html">Null Terminal</a>
+                <a href="faq.html">FAQs</a>
+                <a href="https://discord.gg/cMvWkxFbbX" target="_blank" class="discord-link">Discord</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="content-wrapper">
+        <div class="content-container">
+            <div class="roadmap-number">03</div>
+            <h1 class="page-title">Chapter 03: Control Flow & Functions</h1>
+            <p class="page-subtitle">Making Decisions and Creating Reusable Code Recipes</p>
+
+            <!-- PART 1: WHAT IS CONTROL FLOW? -->
+            <div class="huge-box">
+                <h2>Part 1: What IS Control Flow?</h2>
+                
+                <p>
+                    So far, your Python programs have been like reading a book - they execute line by line, from top to bottom, no questions asked:
+                </p>
+                
+                <pre><code><span class="keyword">name</span> = <span class="string">"Alice"</span>     <span class="comment"># Line 1 runs first</span>
+<span class="keyword">age</span> = <span class="number">20</span>            <span class="comment"># Line 2 runs second</span>
+<span class="function">print</span>(<span class="keyword">name</span>)        <span class="comment"># Line 3 runs third</span></code></pre>
+                
+                <p>
+                    But real programs need to <strong>MAKE DECISIONS</strong> and <strong>REPEAT ACTIONS</strong>. Think about it:
+                </p>
+                
+                <ul>
+                    <li><strong>ATM machine:</strong> "IF your PIN is correct, THEN show your balance. OTHERWISE, say 'wrong PIN'"</li>
+                    <li><strong>Video game:</strong> "WHILE the player is alive, KEEP checking for enemy attacks"</li>
+                    <li><strong>Login system:</strong> "FOR each failed login attempt, wait longer before allowing another try"</li>
+                </ul>
+                
+                <div class="metaphor-box">
+                    <h4>The Choose Your Own Adventure Book Metaphor</h4>
+                    <p>
+                        Remember "Choose Your Own Adventure" books? They don't go page 1, 2, 3, 4 in order. Instead:
+                    </p>
+                    <ul>
+                        <li>"If you open the door, turn to page 47"</li>
+                        <li>"If you run away, turn to page 82"</li>
+                    </ul>
+                    <p>
+                        <strong>Control flow</strong> is how your program decides which "page" (code) to run next. It's the difference between:
+                    </p>
+                    <ul>
+                        <li><strong>Sequential flow:</strong> Read every page in order (boring, no choices)</li>
+                        <li><strong>Control flow:</strong> Make decisions, skip sections, repeat chapters (exciting, interactive)</li>
+                    </ul>
+                </div>
+                
+                <p>
+                    Python gives us THREE main control flow tools:
+                </p>
+                
+                <ul>
+                    <li><strong>if statements</strong> - Make decisions (the bouncer at a club checking ID)</li>
+                    <li><strong>Loops</strong> - Repeat actions (the assembly line worker doing the same task)</li>
+                    <li><strong>Functions</strong> - Save recipes of code to reuse (the cookbook you reference)</li>
+                </ul>
+                
+                <p>
+                    Let's master each one with EXTREME detail!
+                </p>
+            </div>
+
+            <!-- PART 2: IF STATEMENTS - THE BOUNCER -->
+            <div class="huge-box">
+                <h2>Part 2: if Statements - The Bouncer</h2>
+                
+                <div class="metaphor-box">
+                    <h4>The Bouncer Metaphor</h4>
+                    <p>
+                        Imagine a bouncer at a nightclub entrance. Their job is simple:
+                    </p>
+                    <ul>
+                        <li><strong>IF</strong> your ID shows you're 21 or older → "Come in, enjoy!"</li>
+                        <li><strong>ELSE</strong> (otherwise) → "Sorry, you can't enter"</li>
+                    </ul>
+                    <p>
+                        The bouncer is making a <strong>DECISION</strong> based on a <strong>CONDITION</strong>. Python's <code>if</code> statement works the EXACT same way - it checks a condition and decides what code to run.
+                    </p>
+                </div>
+                
+                <h3>The Basic if Statement</h3>
+                
+                <p>
+                    An <code>if</code> statement has this structure:
+                </p>
+                
+                <pre><code><span class="keyword">if</span> <span class="comment">condition_is_true</span>:
+    <span class="comment"># Run this code (notice the indent!)</span></code></pre>
+                
+                <div class="demo-box">
+                    <h4>Demo: Simple if Statement</h4>
+                    <pre><code><span class="keyword">age</span> = <span class="number">25</span>
+
+<span class="keyword">if</span> <span class="keyword">age</span> >= <span class="number">21</span>:
+    <span class="function">print</span>(<span class="string">"You can enter the club!"</span>)
+    <span class="function">print</span>(<span class="string">"Enjoy your night!"</span>)
+
+<span class="function">print</span>(<span class="string">"Have a great day!"</span>)  <span class="comment"># This ALWAYS runs (not indented)</span></code></pre>
+                    <p><strong>Output:</strong></p>
+                    <pre><code><span class="output">You can enter the club!
+Enjoy your night!
+Have a great day!</span></code></pre>
+                </div>
+                
+                <div class="warning-box">
+                    <h4>CRITICAL: Indentation Matters!</h4>
+                    <p>
+                        Python uses <strong>indentation</strong> (spaces at the start of lines) to show which code belongs to the if statement. This is NOT optional - it's how Python knows what to run!
+                    </p>
+                    <pre><code><span class="comment"># CORRECT (4 spaces or 1 tab indent)</span>
+<span class="keyword">if</span> <span class="keyword">age</span> >= <span class="number">21</span>:
+    <span class="function">print</span>(<span class="string">"This runs if true"</span>)
+
+<span class="comment"># WRONG (no indent = error!)</span>
+<span class="keyword">if</span> <span class="keyword">age</span> >= <span class="number">21</span>:
+<span class="function">print</span>(<span class="string">"ERROR! Python doesn't know this belongs to if"</span>)</code></pre>
+                </div>
+                
+                <h3>The if-else Statement (Two Options)</h3>
+                
+                <p>
+                    What if you want to do something DIFFERENT when the condition is false? Use <code>else</code>:
+                </p>
+                
+                <div class="demo-box">
+                    <h4>Demo: if-else Statement</h4>
+                    <pre><code><span class="keyword">age</span> = <span class="number">18</span>
+
+<span class="keyword">if</span> <span class="keyword">age</span> >= <span class="number">21</span>:
+    <span class="function">print</span>(<span class="string">"Welcome! Come on in!"</span>)
+<span class="keyword">else</span>:
+    <span class="function">print</span>(<span class="string">"Sorry, you must be 21 or older."</span>)
+    <span class="function">print</span>(<span class="string">"Come back in a few years!"</span>)
+
+<span class="function">print</span>(<span class="string">"Goodbye!"</span>)  <span class="comment"># Always runs</span></code></pre>
+                    <p><strong>Output:</strong></p>
+                    <pre><code><span class="output">Sorry, you must be 21 or older.
+Come back in a few years!
+Goodbye!</span></code></pre>
+                </div>
+                
+                <h3>The if-elif-else Statement (Multiple Options)</h3>
+                
+                <p>
+                    What if you have MORE than two options? Use <code>elif</code> (short for "else if"):
+                </p>
+                
+                <div class="metaphor-box">
+                    <h4>The Ticket Booth Metaphor</h4>
+                    <p>
+                        Imagine a movie theater ticket booth:
+                    </p>
+                    <ul>
+                        <li><strong>IF</strong> age < 13 → Child ticket ($5)</li>
+                        <li><strong>ELIF</strong> age < 65 → Adult ticket ($12)</li>
+                        <li><strong>ELSE</strong> → Senior ticket ($7)</li>
+                    </ul>
+                    <p>
+                        Python checks conditions <strong>in order</strong> and runs the FIRST one that's true, then STOPS checking!
+                    </p>
+                </div>
+                
+                <div class="demo-box">
+                    <h4>Demo: if-elif-else Chain</h4>
+                    <pre><code><span class="keyword">age</span> = <span class="number">30</span>
+
+<span class="keyword">if</span> <span class="keyword">age</span> < <span class="number">13</span>:
+    <span class="keyword">price</span> = <span class="number">5</span>
+    <span class="function">print</span>(<span class="string">"Child ticket: $5"</span>)
+<span class="keyword">elif</span> <span class="keyword">age</span> < <span class="number">65</span>:
+    <span class="keyword">price</span> = <span class="number">12</span>
+    <span class="function">print</span>(<span class="string">"Adult ticket: $12"</span>)
+<span class="keyword">else</span>:
+    <span class="keyword">price</span> = <span class="number">7</span>
+    <span class="function">print</span>(<span class="string">"Senior ticket: $7"</span>)
+
+<span class="function">print</span>(<span class="string">f"Total: $<span class="output">{price}</span>"</span>)</code></pre>
+                    <p><strong>Output:</strong></p>
+                    <pre><code><span class="output">Adult ticket: $12
+Total: $12</span></code></pre>
+                </div>
+                
+                <h3>Comparison Operators (How to Check Conditions)</h3>
+                
+                <p>
+                    Here are ALL the ways to compare values in if statements:
+                </p>
+                
+                <div class="example-box">
+                    <pre><code><span class="keyword">==</span>  <span class="comment"># Equal to (Is this EXACTLY the same?)</span>
+<span class="keyword">!=</span>  <span class="comment"># Not equal to (Is this DIFFERENT?)</span>
+<span class="keyword">></span>   <span class="comment"># Greater than</span>
+<span class="keyword"><</span>   <span class="comment"># Less than</span>
+<span class="keyword">>=</span>  <span class="comment"># Greater than or equal to</span>
+<span class="keyword"><=</span>  <span class="comment"># Less than or equal to</span>
+
+<span class="comment"># Examples:</span>
+<span class="keyword">age</span> == <span class="number">21</span>      <span class="comment"># Is age exactly 21?</span>
+<span class="keyword">name</span> != <span class="string">"Bob"</span>  <span class="comment"># Is name NOT Bob?</span>
+<span class="keyword">score</span> > <span class="number">90</span>     <span class="comment"># Is score greater than 90?</span></code></pre>
+                </div>
+                
+                <div class="warning-box">
+                    <h4>Common Mistake: = vs ==</h4>
+                    <ul>
+                        <li><code>=</code> is ASSIGNMENT (put value into variable): <code>age = 21</code></li>
+                        <li><code>==</code> is COMPARISON (check if equal): <code>age == 21</code></li>
+                    </ul>
+                    <pre><code><span class="comment"># WRONG - This CHANGES age to 21!</span>
+<span class="keyword">if</span> <span class="keyword">age</span> = <span class="number">21</span>:  <span class="comment"># ERROR!</span>
+
+<span class="comment"># CORRECT - This CHECKS if age is 21</span>
+<span class="keyword">if</span> <span class="keyword">age</span> == <span class="number">21</span>:  <span class="comment"># Good!</span></code></pre>
+                </div>
+                
+                <h3>Combining Conditions (and, or, not)</h3>
+                
+                <p>
+                    You can combine multiple conditions using <code>and</code>, <code>or</code>, and <code>not</code>:
+                </p>
+                
+                <div class="demo-box">
+                    <h4>Demo: Combining Conditions</h4>
+                    <pre><code><span class="keyword">age</span> = <span class="number">25</span>
+<span class="keyword">has_ticket</span> = <span class="keyword">True</span>
+
+<span class="comment"># AND - Both must be true</span>
+<span class="keyword">if</span> <span class="keyword">age</span> >= <span class="number">18</span> <span class="keyword">and</span> <span class="keyword">has_ticket</span>:
+    <span class="function">print</span>(<span class="string">"Welcome to the concert!"</span>)
+
+<span class="comment"># OR - At least one must be true</span>
+<span class="keyword">is_weekend</span> = <span class="keyword">True</span>
+<span class="keyword">is_holiday</span> = <span class="keyword">False</span>
+
+<span class="keyword">if</span> <span class="keyword">is_weekend</span> <span class="keyword">or</span> <span class="keyword">is_holiday</span>:
+    <span class="function">print</span>(<span class="string">"Yay! No work today!"</span>)
+
+<span class="comment"># NOT - Reverses the condition</span>
+<span class="keyword">is_raining</span> = <span class="keyword">False</span>
+
+<span class="keyword">if</span> <span class="keyword">not</span> <span class="keyword">is_raining</span>:
+    <span class="function">print</span>(<span class="string">"Let's go to the park!"</span>)</code></pre>
+                </div>
+            </div>
+
+            <!-- PART 3: LOOPS - THE ASSEMBLY LINE -->
+            <div class="huge-box">
+                <h2>Part 3: Loops - The Assembly Line</h2>
+                
+                <div class="metaphor-box">
+                    <h4>The Assembly Line Metaphor</h4>
+                    <p>
+                        Imagine a factory assembly line where a worker:
+                    </p>
+                    <ul>
+                        <li>Picks up a box</li>
+                        <li>Puts a sticker on it</li>
+                        <li>Puts it on the conveyor belt</li>
+                        <li><strong>REPEATS</strong> this 1,000 times</li>
+                    </ul>
+                    <p>
+                        You wouldn't write the instructions 1,000 times! Instead: "Do this task, REPEAT until all boxes are done."
+                    </p>
+                    <p>
+                        <strong>Loops</strong> are Python's way of saying "repeat this code multiple times without writing it multiple times."
+                    </p>
+                </div>
+                
+                <h3>The for Loop (Loop a Specific Number of Times)</h3>
+                
+                <p>
+                    Use <code>for</code> when you know EXACTLY how many times to repeat, or when you want to go through each item in a list:
+                </p>
+                
+                <div class="demo-box">
+                    <h4>Demo: Basic for Loop</h4>
+                    <pre><code><span class="comment"># Print numbers 0 through 4</span>
+<span class="keyword">for</span> <span class="keyword">i</span> <span class="keyword">in</span> <span class="function">range</span>(<span class="number">5</span>):
+    <span class="function">print</span>(<span class="keyword">i</span>)
+
+<span class="comment"># Output:</span>
+<span class="comment"># 0</span>
+<span class="comment"># 1</span>
+<span class="comment"># 2</span>
+<span class="comment"># 3</span>
+<span class="comment"># 4</span></code></pre>
+                </div>
+                
+                <p>
+                    <code>range(5)</code> creates numbers from 0 to 4 (5 total numbers). The variable <code>i</code> takes on each value one at a time.
+                </p>
+                
+                <div class="demo-box">
+                    <h4>Demo: Loop Through a List</h4>
+                    <pre><code><span class="keyword">students</span> = [<span class="string">"Alice"</span>, <span class="string">"Bob"</span>, <span class="string">"Charlie"</span>]
+
+<span class="keyword">for</span> <span class="keyword">student</span> <span class="keyword">in</span> <span class="keyword">students</span>:
+    <span class="function">print</span>(<span class="string">f"Hello, <span class="output">{student}</span>!"</span>)
+
+<span class="comment"># Output:</span>
+<span class="comment"># Hello, Alice!</span>
+<span class="comment"># Hello, Bob!</span>
+<span class="comment"># Hello, Charlie!</span></code></pre>
+                </div>
+                
+                <div class="tip-box">
+                    <h4>Understanding range()</h4>
+                    <pre><code><span class="function">range</span>(<span class="number">5</span>)         <span class="comment"># Numbers 0, 1, 2, 3, 4</span>
+<span class="function">range</span>(<span class="number">1</span>, <span class="number">6</span>)      <span class="comment"># Numbers 1, 2, 3, 4, 5 (start at 1, stop before 6)</span>
+<span class="function">range</span>(<span class="number">0</span>, <span class="number">10</span>, <span class="number">2</span>)   <span class="comment"># Numbers 0, 2, 4, 6, 8 (start, stop, step)</span></code></pre>
+                </div>
+                
+                <h3>The while Loop (Loop Until a Condition Changes)</h3>
+                
+                <p>
+                    Use <code>while</code> when you DON'T know exactly how many times to repeat, but you know WHEN to stop:
+                </p>
+                
+                <div class="metaphor-box">
+                    <h4>The Video Game Metaphor</h4>
+                    <p>
+                        Think of a video game:
+                    </p>
+                    <ul>
+                        <li><strong>WHILE</strong> the player has health > 0, KEEP playing</li>
+                        <li>When health reaches 0, STOP (game over)</li>
+                    </ul>
+                    <p>
+                        You don't know HOW MANY attacks it will take to reach 0 health, but you know the condition to check: "Is health > 0?"
+                    </p>
+                </div>
+                
+                <div class="demo-box">
+                    <h4>Demo: while Loop</h4>
+                    <pre><code><span class="keyword">countdown</span> = <span class="number">5</span>
+
+<span class="keyword">while</span> <span class="keyword">countdown</span> > <span class="number">0</span>:
+    <span class="function">print</span>(<span class="keyword">countdown</span>)
+    <span class="keyword">countdown</span> -= <span class="number">1</span>  <span class="comment"># Same as: countdown = countdown - 1</span>
+
+<span class="function">print</span>(<span class="string">"Blast off!"</span>)
+
+<span class="comment"># Output:</span>
+<span class="comment"># 5</span>
+<span class="comment"># 4</span>
+<span class="comment"># 3</span>
+<span class="comment"># 2</span>
+<span class="comment"># 1</span>
+<span class="comment"># Blast off!</span></code></pre>
+                </div>
+                
+                <div class="warning-box">
+                    <h4>Danger: Infinite Loops!</h4>
+                    <p>
+                        If your while condition NEVER becomes false, the loop runs FOREVER (infinite loop):
+                    </p>
+                    <pre><code><span class="keyword">countdown</span> = <span class="number">5</span>
+
+<span class="keyword">while</span> <span class="keyword">countdown</span> > <span class="number">0</span>:
+    <span class="function">print</span>(<span class="keyword">countdown</span>)
+    <span class="comment"># OOPS! Forgot to decrease countdown!</span>
+    <span class="comment"># This will print 5 forever!</span></code></pre>
+                    <p>
+                        <strong>ALWAYS</strong> make sure your while loop has a way to end! (Press Ctrl+C to stop infinite loops)
+                    </p>
+                </div>
+                
+                <h3>Breaking Out of Loops (break and continue)</h3>
+                
+                <p>
+                    Sometimes you need to <strong>exit a loop early</strong> or <strong>skip to the next iteration</strong>:
+                </p>
+                
+                <div class="demo-box">
+                    <h4>Demo: break (Exit Loop Immediately)</h4>
+                    <pre><code><span class="comment"># Find first number divisible by 7</span>
+<span class="keyword">for</span> <span class="keyword">num</span> <span class="keyword">in</span> <span class="function">range</span>(<span class="number">1</span>, <span class="number">100</span>):
+    <span class="keyword">if</span> <span class="keyword">num</span> % <span class="number">7</span> == <span class="number">0</span>:
+        <span class="function">print</span>(<span class="string">f"Found it! <span class="output">{num}</span>"</span>)
+        <span class="keyword">break</span>  <span class="comment"># Stop the loop immediately</span>
+
+<span class="comment"># Output: Found it! 7</span></code></pre>
+                </div>
+                
+                <div class="demo-box">
+                    <h4>Demo: continue (Skip to Next Iteration)</h4>
+                    <pre><code><span class="comment"># Print only odd numbers</span>
+<span class="keyword">for</span> <span class="keyword">num</span> <span class="keyword">in</span> <span class="function">range</span>(<span class="number">1</span>, <span class="number">11</span>):
+    <span class="keyword">if</span> <span class="keyword">num</span> % <span class="number">2</span> == <span class="number">0</span>:  <span class="comment"># If even</span>
+        <span class="keyword">continue</span>  <span class="comment"># Skip this iteration, go to next number</span>
+    <span class="function">print</span>(<span class="keyword">num</span>)
+
+<span class="comment"># Output: 1, 3, 5, 7, 9</span></code></pre>
+                </div>
+            </div>
+
+            <!-- PART 4: FUNCTIONS - THE RECIPE -->
+            <div class="huge-box">
+                <h2>Part 4: Functions - The Recipe</h2>
+                
+                <div class="metaphor-box">
+                    <h4>The Recipe Metaphor</h4>
+                    <p>
+                        Imagine you bake chocolate chip cookies frequently. Do you look up the recipe every time? No! You:
+                    </p>
+                    <ol>
+                        <li><strong>Write down the recipe ONCE</strong> (define the function)</li>
+                        <li><strong>Give it a name:</strong> "Chocolate Chip Cookies"</li>
+                        <li><strong>Use it whenever needed:</strong> "Make Chocolate Chip Cookies" (call the function)</li>
+                    </ol>
+                    <p>
+                        A <strong>function</strong> in Python is EXACTLY like a recipe:
+                    </p>
+                    <ul>
+                        <li>You write code ONCE</li>
+                        <li>Give it a name</li>
+                        <li>Use (call) it as many times as you want</li>
+                        <li>Can accept <strong>inputs</strong> (ingredients) and produce <strong>outputs</strong> (the finished dish)</li>
+                    </ul>
+                </div>
+                
+                <h3>Creating Your First Function</h3>
+                
+                <p>
+                    Use the <code>def</code> keyword (short for "define") to create a function:
+                </p>
+                
+                <div class="demo-box">
+                    <h4>Demo: Basic Function</h4>
+                    <pre><code><span class="comment"># DEFINE the function (write the recipe)</span>
+<span class="keyword">def</span> <span class="function">greet</span>():
+    <span class="function">print</span>(<span class="string">"Hello!"</span>)
+    <span class="function">print</span>(<span class="string">"Welcome to Python!"</span>)
+
+<span class="comment"># CALL the function (use the recipe)</span>
+<span class="function">greet</span>()  <span class="comment"># Output: Hello! \n Welcome to Python!</span>
+<span class="function">greet</span>()  <span class="comment"># Can use it again!</span>
+<span class="function">greet</span>()  <span class="comment"># And again!</span></code></pre>
+                </div>
+                
+                <h3>Functions with Parameters (Adding Ingredients)</h3>
+                
+                <p>
+                    <strong>Parameters</strong> are inputs your function can accept. Think of them as ingredients in a recipe:
+                </p>
+                
+                <div class="demo-box">
+                    <h4>Demo: Function with Parameters</h4>
+                    <pre><code><span class="comment"># Define function that accepts a NAME</span>
+<span class="keyword">def</span> <span class="function">greet_person</span>(<span class="keyword">name</span>):
+    <span class="function">print</span>(<span class="string">f"Hello, <span class="output">{name}</span>!"</span>)
+    <span class="function">print</span>(<span class="string">f"Nice to meet you, <span class="output">{name}</span>!"</span>)
+
+<span class="comment"># Call function with DIFFERENT inputs</span>
+<span class="function">greet_person</span>(<span class="string">"Alice"</span>)   <span class="comment"># Output: Hello, Alice! ...</span>
+<span class="function">greet_person</span>(<span class="string">"Bob"</span>)     <span class="comment"># Output: Hello, Bob! ...</span>
+<span class="function">greet_person</span>(<span class="string">"Charlie"</span>) <span class="comment"># Output: Hello, Charlie! ...</span></code></pre>
+                </div>
+                
+                <div class="demo-box">
+                    <h4>Demo: Function with Multiple Parameters</h4>
+                    <pre><code><span class="keyword">def</span> <span class="function">add_numbers</span>(<span class="keyword">num1</span>, <span class="keyword">num2</span>):
+    <span class="keyword">result</span> = <span class="keyword">num1</span> + <span class="keyword">num2</span>
+    <span class="function">print</span>(<span class="string">f"<span class="output">{num1}</span> + <span class="output">{num2}</span> = <span class="output">{result}</span>"</span>)
+
+<span class="function">add_numbers</span>(<span class="number">5</span>, <span class="number">3</span>)   <span class="comment"># Output: 5 + 3 = 8</span>
+<span class="function">add_numbers</span>(<span class="number">10</span>, <span class="number">20</span>) <span class="comment"># Output: 10 + 20 = 30</span></code></pre>
+                </div>
+                
+                <h3>Functions with Return Values (Getting Results Back)</h3>
+                
+                <p>
+                    So far, our functions just PRINT things. But what if you want to GET a result back to use later? Use <code>return</code>:
+                </p>
+                
+                <div class="metaphor-box">
+                    <h4>The Vending Machine Metaphor</h4>
+                    <p>
+                        When you put money into a vending machine:
+                    </p>
+                    <ul>
+                        <li>You give INPUT (coins)</li>
+                        <li>Machine does work (processes your selection)</li>
+                        <li>You get OUTPUT (your snack)</li>
+                    </ul>
+                    <p>
+                        The <code>return</code> statement is the "snack" that comes out - the result you can use elsewhere in your code!
+                    </p>
+                </div>
+                
+                <div class="demo-box">
+                    <h4>Demo: Function with Return</h4>
+                    <pre><code><span class="keyword">def</span> <span class="function">add_numbers</span>(<span class="keyword">num1</span>, <span class="keyword">num2</span>):
+    <span class="keyword">result</span> = <span class="keyword">num1</span> + <span class="keyword">num2</span>
+    <span class="keyword">return</span> <span class="keyword">result</span>  <span class="comment"># Give back the result</span>
+
+<span class="comment"># Now we can SAVE the result!</span>
+<span class="keyword">total</span> = <span class="function">add_numbers</span>(<span class="number">5</span>, <span class="number">3</span>)
+<span class="function">print</span>(<span class="string">f"The total is: <span class="output">{total}</span>"</span>)  <span class="comment"># Output: The total is: 8</span>
+
+<span class="comment"># Can use it in calculations!</span>
+<span class="keyword">double_total</span> = <span class="function">add_numbers</span>(<span class="number">5</span>, <span class="number">3</span>) * <span class="number">2</span>
+<span class="function">print</span>(<span class="keyword">double_total</span>)  <span class="comment"># Output: 16</span></code></pre>
+                </div>
+                
+                <div class="tip-box">
+                    <h4>print() vs return</h4>
+                    <ul>
+                        <li><code>print()</code> - Shows text to the user (one-way communication)</li>
+                        <li><code>return</code> - Sends value back to your code to use later (two-way communication)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- PART 5: COMPLETE PROGRAM -->
+            <div class="huge-box">
+                <h2>Part 5: Complete Program - Password Strength Checker</h2>
+                
+                <p>
+                    Let's combine EVERYTHING we learned into one complete program:
+                </p>
+                
+                <div class="demo-box">
+                    <h4>Complete Working Program</h4>
+                    <pre><code><span class="keyword">def</span> <span class="function">check_password_strength</span>(<span class="keyword">password</span>):
+    <span class="string">"""Check if a password is strong enough."""</span>
+    
+    <span class="comment"># Check length</span>
+    <span class="keyword">if</span> <span class="function">len</span>(<span class="keyword">password</span>) < <span class="number">8</span>:
+        <span class="keyword">return</span> <span class="string">"Weak - Too short! Use at least 8 characters."</span>
+    
+    <span class="comment"># Check for numbers</span>
+    <span class="keyword">has_number</span> = <span class="keyword">False</span>
+    <span class="keyword">for</span> <span class="keyword">char</span> <span class="keyword">in</span> <span class="keyword">password</span>:
+        <span class="keyword">if</span> <span class="keyword">char</span>.<span class="function">isdigit</span>():
+            <span class="keyword">has_number</span> = <span class="keyword">True</span>
+            <span class="keyword">break</span>
+    
+    <span class="keyword">if</span> <span class="keyword">not</span> <span class="keyword">has_number</span>:
+        <span class="keyword">return</span> <span class="string">"Medium - Add some numbers!"</span>
+    
+    <span class="comment"># Check for uppercase letters</span>
+    <span class="keyword">has_upper</span> = <span class="keyword">False</span>
+    <span class="keyword">for</span> <span class="keyword">char</span> <span class="keyword">in</span> <span class="keyword">password</span>:
+        <span class="keyword">if</span> <span class="keyword">char</span>.<span class="function">isupper</span>():
+            <span class="keyword">has_upper</span> = <span class="keyword">True</span>
+            <span class="keyword">break</span>
+    
+    <span class="keyword">if</span> <span class="keyword">not</span> <span class="keyword">has_upper</span>:
+        <span class="keyword">return</span> <span class="string">"Medium - Add some uppercase letters!"</span>
+    
+    <span class="keyword">return</span> <span class="string">"Strong - Great password!"</span>
+
+<span class="comment"># Main program</span>
+<span class="function">print</span>(<span class="string">"=== Password Strength Checker ==="</span>)
+<span class="function">print</span>()
+
+<span class="comment"># Test different passwords</span>
+<span class="keyword">passwords</span> = [<span class="string">"abc"</span>, <span class="string">"password123"</span>, <span class="string">"SecurePass123"</span>]
+
+<span class="keyword">for</span> <span class="keyword">pwd</span> <span class="keyword">in</span> <span class="keyword">passwords</span>:
+    <span class="keyword">strength</span> = <span class="function">check_password_strength</span>(<span class="keyword">pwd</span>)
+    <span class="function">print</span>(<span class="string">f"Password: '<span class="output">{pwd}</span>'"</span>)
+    <span class="function">print</span>(<span class="string">f"Strength: <span class="output">{strength}</span>"</span>)
+    <span class="function">print</span>()
+
+<span class="comment"># Let user test their own password</span>
+<span class="keyword">user_password</span> = <span class="function">input</span>(<span class="string">"Enter your password to test: "</span>)
+<span class="keyword">result</span> = <span class="function">check_password_strength</span>(<span class="keyword">user_password</span>)
+<span class="function">print</span>(<span class="string">f"\nYour password is: <span class="output">{result}</span>"</span>)</code></pre>
+                    
+                    <p style="margin-top: 1rem;"><strong>How to run this:</strong></p>
+                    <ol>
+                        <li>Save as <code>password_checker.py</code></li>
+                        <li>Run: <code>python password_checker.py</code></li>
+                    </ol>
+                    
+                    <p><strong>Sample Output:</strong></p>
+                    <pre><code><span class="output">=== Password Strength Checker ===
+
+Password: 'abc'
+Strength: Weak - Too short! Use at least 8 characters.
+
+Password: 'password123'
+Strength: Medium - Add some uppercase letters!
+
+Password: 'SecurePass123'
+Strength: Strong - Great password!
+
+Enter your password to test: </span></code></pre>
+                </div>
+                
+                <p>
+                    This program uses:
+                </p>
+                <ul>
+                    <li><strong>Functions</strong> - <code>check_password_strength()</code> is reusable</li>
+                    <li><strong>if-elif-else</strong> - Makes decisions about password strength</li>
+                    <li><strong>for loops</strong> - Checks each character in password</li>
+                    <li><strong>break</strong> - Stops checking once we find what we need</li>
+                    <li><strong>return</strong> - Sends result back to caller</li>
+                </ul>
+            </div>
+
+            <!-- PART 6: PRACTICE CHALLENGES -->
+            <div class="challenge">
+                <h3>Practice Challenges</h3>
+                
+                <h4>Challenge 1: Grade Calculator</h4>
+                <p>Create a function <code>calculate_grade(score)</code> that:</p>
+                <ul>
+                    <li>Takes a test score (0-100)</li>
+                    <li>Returns letter grade:
+                        <ul>
+                            <li>90-100: "A"</li>
+                            <li>80-89: "B"</li>
+                            <li>70-79: "C"</li>
+                            <li>60-69: "D"</li>
+                            <li>Below 60: "F"</li>
+                        </ul>
+                    </li>
+                    <li>Test it with scores: 95, 82, 77, 55</li>
+                </ul>
+                
+                <h4>Challenge 2: Countdown Timer</h4>
+                <p>Create a program that:</p>
+                <ul>
+                    <li>Asks user for a starting number</li>
+                    <li>Counts down from that number to 1</li>
+                    <li>Prints each number</li>
+                    <li>After reaching 0, prints "Time's up!"</li>
+                    <li>Use a <code>while</code> loop</li>
+                </ul>
+                
+                <h4>Challenge 3: Even Number Finder</h4>
+                <p>Create a function <code>find_even_numbers(start, end)</code> that:</p>
+                <ul>
+                    <li>Takes two numbers (start and end)</li>
+                    <li>Returns a LIST of all even numbers between them</li>
+                    <li>Example: <code>find_even_numbers(1, 10)</code> returns <code>[2, 4, 6, 8, 10]</code></li>
+                    <li>Use a <code>for</code> loop and <code>if</code> statement</li>
+                </ul>
+                
+                <h4>Challenge 4: Login System</h4>
+                <p>Create a simple login system that:</p>
+                <ul>
+                    <li>Has a correct username ("admin") and password ("python123")</li>
+                    <li>Gives user 3 attempts to login</li>
+                    <li>If they get it right, print "Login successful!"</li>
+                    <li>If they fail 3 times, print "Account locked!"</li>
+                    <li>Use a <code>while</code> loop and keep track of attempts</li>
+                </ul>
+            </div>
+
+            <div class="huge-box" style="text-align: center; margin-top: 4rem;">
+                <h2>You've Mastered Control Flow!</h2>
+                <p style="font-size: 1.3rem; margin: 2rem 0;">
+                    You now know how to make your programs THINK and REPEAT:
+                </p>
+                <ul style="text-align: left; max-width: 600px; margin: 2rem auto;">
+                    <li><strong>if statements</strong> - Make decisions based on conditions</li>
+                    <li><strong>for loops</strong> - Repeat code a specific number of times</li>
+                    <li><strong>while loops</strong> - Repeat code until a condition changes</li>
+                    <li><strong>Functions</strong> - Write reusable code recipes</li>
+                </ul>
+                <p style="font-size: 1.2rem; margin-top: 2rem;">
+                    Next chapter: Object-Oriented Programming (Classes and Objects)
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

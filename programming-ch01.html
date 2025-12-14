@@ -3,598 +3,1792 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ch01: Programming Fundamentals - NullSector</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="icon" href="favicon.ico">
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <title>Chapter 01: Python From Zero - NullSector</title>
+    <link rel="icon" type="image/svg+xml" href="logo.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg: #000; --bg2: #0a0a0a; --bg3: #111;
+            --text: #fff; --text2: #888; --text3: #555;
+            --border: rgba(255,255,255,0.1);
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; overflow-x: hidden; }
+        .header { position: fixed; top: 0; left: 0; right: 0; height: 70px; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); z-index: 1000; display: flex; align-items: center; padding: 0 2rem; }
+        .header-content { width: 100%; max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .brand { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--text); font-weight: 700; font-size: 1.25rem; }
+        .nav { display: flex; gap: 2rem; }
+        .nav a { color: var(--text2); text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: color 0.3s; }
+        .nav a:hover { color: var(--text); }
+        .sidebar { position: fixed; left: 0; top: 70px; width: 280px; height: calc(100vh - 70px); background: var(--bg2); border-right: 1px solid var(--border); overflow-y: auto; padding: 2rem 0; z-index: 100; }
+        .sidebar::-webkit-scrollbar { width: 6px; }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+        .sidebar-section { padding: 0 1.5rem; margin-bottom: 2rem; }
+        .sidebar-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); margin-bottom: 1rem; }
+        .sidebar-link { display: block; color: var(--text2); text-decoration: none; padding: 0.6rem 1rem; margin: 0.25rem 0; border-radius: 6px; font-size: 0.9rem; transition: all 0.3s; }
+        .sidebar-link:hover { background: rgba(255,255,255,0.05); color: var(--text); transform: translateX(4px); }
+        .sidebar-link.active { background: rgba(255,255,255,0.1); color: var(--text); font-weight: 600; }
+        .main { margin-left: 280px; margin-top: 70px; padding: 4rem 3rem; max-width: 1100px; }
+        .page-header { margin-bottom: 4rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+        .chapter-label { font-size: 0.875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--text3); margin-bottom: 1rem; }
+        .page-title { font-size: 3.5rem; font-weight: 800; line-height: 1.2; margin-bottom: 1rem; letter-spacing: -1px; }
+        .page-subtitle { font-size: 1.25rem; color: var(--text2); font-weight: 400; line-height: 1.6; }
+        .section { margin-bottom: 6rem; scroll-margin-top: 100px; }
+        .section-title { font-size: 2.25rem; font-weight: 700; margin-bottom: 1.5rem; }
+        .section-intro { font-size: 1.125rem; color: var(--text2); margin-bottom: 2rem; line-height: 1.8; }
+        h3 { font-size: 1.75rem; font-weight: 600; margin: 3rem 0 1.5rem; }
+        p { font-size: 1.0625rem; line-height: 1.8; margin-bottom: 1.5rem; }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+        .card { background: var(--bg3); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; transition: all 0.3s; }
+        .card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.2); }
+        .card h4 { font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; }
+        .card p { color: var(--text2); font-size: 0.9375rem; }
+        .info-box { background: var(--bg3); border-left: 3px solid var(--text); padding: 1.5rem; margin: 2rem 0; border-radius: 0 8px 8px 0; }
+        .info-box h4 { font-weight: 600; margin-bottom: 0.75rem; }
+        .info-box p { color: var(--text2); }
+        .code { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.875rem; line-height: 1.7; white-space: pre; }
+        .inline-code { background: rgba(255,255,255,0.1); padding: 0.2rem 0.5rem; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.875em; }
+        .metaphor-box { background: rgba(255,255,255,0.03); border-left: 4px solid var(--text); padding: 1.5rem; margin: 2rem 0; border-radius: 0 8px 8px 0; position: relative; }
+        .metaphor-box::before { content: "💡"; position: absolute; top: 1rem; right: 1rem; font-size: 1.5rem; }
+        ul, ol { margin: 1.5rem 0; padding-left: 2rem; }
+        li { margin: 0.75rem 0; color: var(--text2); }
+        .progress { position: fixed; top: 70px; left: 0; height: 3px; background: linear-gradient(90deg, var(--text) 0%, var(--text2) 100%); transition: width 0.1s; z-index: 1001; }
+        @media (max-width: 1024px) { .sidebar { transform: translateX(-100%); } .main { margin-left: 0; padding: 3rem 2rem; } .page-title { font-size: 2.5rem; } }
+    </style>
 </head>
 <body>
-    <div class="stars"></div>
-    <div class="twinkling"></div>
-    
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-brand">
-                <a href="index.html" style="display: flex; align-items: center; text-decoration: none; color: inherit;">
-                    <img src="logo.svg" alt="NullSector Logo" class="logo">
-                    <span class="brand-text">NullSector</span>
-                </a>
-            </div>
-            <div class="nav-links">
-                <a href="roadmap-hacking.html" class="nav-link ">Hacking</a>
-                <a href="roadmap-programming.html" class="nav-link active">Programming</a>
-                <a href="resources.html" class="nav-link">Resources</a>
-                <a href="faq.html" class="nav-link">FAQ</a>
-                <a href="https://discord.gg/Tz9Y3wea32" target="_blank" class="nav-link">Discord</a>
-                                
-                <div id="userProfile" style="display: none; align-items: center; gap: 0.75rem;">
-                    <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <img id="userAvatar" style="width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--primary-color); cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="" />
-                        <span id="userName" style="color: var(--text-primary); font-weight: 500; font-size: 0.95rem; cursor: default;"></span>
-                    </div>
-                    <button id="logoutButton" class="nav-link" style="background: rgba(255, 95, 87, 0.1); border: 1px solid #ff5f57; padding: 0.4rem 1rem; border-radius: 6px; font-weight: 500; cursor: pointer; color: #ff5f57; transition: all 0.2s;" onmouseover="this.style.background='rgba(255, 95, 87, 0.2)'" onmouseout="this.style.background='rgba(255, 95, 87, 0.1)'">Logout</button>
-                </div>
-            </div>
+    <div class="progress" id="progress"></div>
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="brand">
+                <img src="logo.svg" alt="NullSector" width="36" height="36">
+                <span>NullSector</span>
+            </a>
+            <nav class="nav">
+                <a href="roadmap-hacking.html">Hacking</a>
+                <a href="roadmap-programming.html">Programming</a>
+                <a href="index.html">Home</a>
+            </nav>
         </div>
-    </nav>
+    </header>
 
-    <section class="content-page">
-        <div class="content-container">
-            <div class="breadcrumb">
-                <a href="roadmap-programming.html">Programming Roadmap</a> / <span>Chapter 01</span>
-            </div>
+    <aside class="sidebar">
+        <div class="sidebar-section">
+            <div class="sidebar-title">On This Page</div>
+            <a href="#what-is-programming" class="sidebar-link">What is Programming?</a>
+            <a href="#why-python" class="sidebar-link">Why Python?</a>
+            <a href="#setup" class="sidebar-link">Setup Environment</a>
+            <a href="#first-program" class="sidebar-link">Your First Program</a>
+            <a href="#variables" class="sidebar-link">Variables Explained</a>
+            <a href="#data-types" class="sidebar-link">Data Types</a>
+            <a href="#operators" class="sidebar-link">Operators</a>
+            <a href="#input-output" class="sidebar-link">Input & Output</a>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-title">Navigation</div>
+            <a href="programming-ch02.html" class="sidebar-link">Next: Chapter 02 →</a>
+            <a href="roadmap-programming.html" class="sidebar-link">Back to Roadmap</a>
+        </div>
+    </aside>
+
+    <main class="main">
+        <div class="page-header">
+            <div class="chapter-label">Chapter 01</div>
+            <h1 class="page-title">Python From Absolute Zero</h1>
+            <p class="page-subtitle">You've never written a line of code? Perfect. This chapter assumes you know absolutely nothing and builds your knowledge from the ground up.</p>
+        </div>
+
+        <section class="section">
+            <p>Welcome to programming. By the end of this chapter, you'll understand what programming actually is, why we use Python, and you'll have written your first programs that actually DO something. This isn't just theory - you'll be coding within minutes.</p>
+            <p>Forget everything you've heard about programming being "hard" or requiring a "math brain." Programming is just giving instructions to a computer. If you can follow a recipe, you can program. The only difference is that computers need extremely precise instructions - they won't guess what you meant.</p>
+            <p>We're starting from absolute zero here. No previous experience required. No prior knowledge assumed. Just you, a computer, and the willingness to learn something new.</p>
             
-            <div class="roadmap-section">
-                <div class="roadmap-number">01</div>
-                <h1 class="page-title">Chapter 01: Programming Fundamentals</h1>
-                <p class="page-subtitle">Complete Beginner Friendly - Comprehensive Guide</p>
+            <div class="info-box">
+                <h4>What You'll Achieve</h4>
+                <p>By the end of this chapter, you'll be able to write programs that take input from users, process it, and output results. That's the foundation of ALL software ever written - from simple calculators to complex AI systems.</p>
+            </div>
 
-                <div class="key-takeaways" style="margin-bottom:3rem;">
-                    <h3>What You'll Learn:</h3>
-                    <ul>
-                        <li>What programming actually is (demystified)</li>
-                        <li>How to think like a programmer</li>
-                        <li>The fundamental concepts that apply to ALL languages</li>
-                        <li>Why programming is a superpower</li>
+            <div class="card-grid" style="margin-top: 2rem;">
+                <div class="card">
+                    <h4>🎯 Chapter Goals</h4>
+                    <ul style="margin-top: 1rem; font-size: 0.9rem;">
+                        <li>Understand what programming is</li>
+                        <li>Install Python on your computer</li>
+                        <li>Write and run your first programs</li>
+                        <li>Master variables and data types</li>
+                        <li>Get input and display output</li>
+                        <li>Use operators for calculations</li>
                     </ul>
                 </div>
-
-<!-- PROGRAMMING FUNDAMENTALS CONTENT GOES HERE - COPY STRUCTURE FROM HACKING CH01 -->
-
-<!-- Topic 1: What is Programming? -->
-<div class="topic-section" style="background: linear-gradient(135deg, rgba(0,255,136,0.05) 0%, rgba(0,204,255,0.05) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0;">
-    <h2 style="color: #00ff88; font-size: 2.2rem; margin-bottom: 2rem;">What is Programming?</h2>
-    
-    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 15px; margin: 2rem 0; font-size: 1.15rem; line-height: 1.9;">
-        <p style="margin: 0; font-size: 1.25rem;">
-            Programming is <strong>giving instructions to a computer</strong>. That's it. 
-            You tell the computer exactly what to do, step by step, and it does it. 
-            <strong>Programming = Writing instructions in a language computers understand.</strong>
-        </p>
-    </div>
-
-    <h3 style="color: #00ccff; font-size: 1.8rem; margin-top: 3rem;">The Reality Check</h3>
-    
-    <div style="background: rgba(0,0,0,0.5); padding: 2.5rem; border-radius: 15px; margin: 2rem 0;">
-        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
-            Before we dive deep, let's be brutally honest about what programming is and isn't:
-        </p>
-        
-        <div style="display: grid; gap: 1.5rem; margin-top: 2rem;">
-            <div style="background: rgba(0,255,136,0.15); padding: 2rem; border-radius: 10px; border-left: 4px solid #00ff88;">
-                <h4 style="color: #00ff88; margin: 0 0 1rem 0; font-size: 1.3rem;">✓ Programming IS:</h4>
-                <ul style="font-size: 1.1rem; line-height: 1.8;">
-                    <li>Breaking problems into tiny, logical steps</li>
-                    <li>Telling computers EXACTLY what to do (they're dumb)</li>
-                    <li>Spending 80% of your time debugging (fixing mistakes)</li>
-                    <li>Learning to Google and read documentation</li>
-                    <li>Building tools that make your life easier</li>
-                </ul>
+                <div class="card">
+                    <h4>⏱️ Time Investment</h4>
+                    <ul style="margin-top: 1rem; font-size: 0.9rem;">
+                        <li>Reading: 30-45 minutes</li>
+                        <li>Coding exercises: 1-2 hours</li>
+                        <li>Practice projects: 1-2 hours</li>
+                        <li>Total: ~4 hours for mastery</li>
+                    </ul>
+                    <p style="margin-top: 1rem; font-size: 0.85rem;">Don't rush. Understanding beats speed.</p>
+                </div>
             </div>
+        </section>
+
+        <section id="what-is-programming" class="section">
+            <h2 class="section-title">What is Programming? (The Real Explanation)</h2>
+            <p class="section-intro">Programming is simply writing instructions for a computer to follow. That's it. No magic, no genius required - just clear, precise instructions. But understanding WHY it works the way it does will make you a much better programmer.</p>
+
+            <div class="metaphor-box">
+                <h4>🍳 The Recipe Metaphor</h4>
+                <p>Think of programming like writing a recipe for the world's most obedient but most literal-minded cook:</p>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>You say:</strong> "Make me a sandwich"</li>
+                    <li><strong>Computer thinks:</strong> "What's a sandwich? With what ingredients? What bread? How thick? Toasted? Cut in half or diagonal?"</li>
+                </ul>
+                <p style="margin-top: 1rem;">Computers do EXACTLY what you tell them - no more, no less. If you forget a step, it won't figure it out. If you make a typo, it won't guess what you meant. This is called being "deterministic."</p>
+                <p style="margin-top: 1rem; color: var(--accent);">This is frustrating at first, but it's also incredibly powerful - computers never get tired, never make "judgment calls," and execute your instructions billions of times per second, perfectly, every time.</p>
+            </div>
+
+            <h3>A Brief History (Why This Matters)</h3>
+            <p>In the early days, programmers had to write in binary - patterns of 1s and 0s that computers directly understand. Imagine writing "00110101 01001010" just to add two numbers! This was tedious and error-prone.</p>
+            <p>Then came assembly language - still low-level, but at least human-readable. "ADD A, B" was better than binary but still tied to specific hardware.</p>
+            <p>Finally, high-level languages like Python were created. You write code that looks almost like English, and a "compiler" or "interpreter" translates it to machine code. This is why Python is so beginner-friendly - it's designed for humans first, computers second.</p>
+
+            <div class="code"># The evolution of "add two numbers":
+
+# Binary (1940s):
+# 00000001 00000010 00000011
+
+# Assembly (1950s):
+# MOV AX, 5
+# ADD AX, 3
+
+# C (1970s):
+# int result = 5 + 3;
+
+# Python (1991):
+result = 5 + 3
+
+# Python is MUCH easier to read and write!</div>
+
+            <h3>What Programmers Actually Do</h3>
+            <p>Contrary to what movies show, programmers don't stare at green text on black screens typing furiously. Here's what programming really involves:</p>
             
-            <div style="background: rgba(255,100,100,0.15); padding: 2rem; border-radius: 10px; border-left: 4px solid #ff6464;">
-                <h4 style="color: #ff6464; margin: 0 0 1rem 0; font-size: 1.3rem;">✗ Programming is NOT:</h4>
-                <ul style="font-size: 1.1rem; line-height: 1.8;">
-                    <li>Memorizing syntax (you'll Google it constantly)</li>
-                    <li>Being a "math genius" (basic logic is enough)</li>
-                    <li>Working alone in a dark room (collaboration is key)</li>
-                    <li>Getting it right the first time (you won't)</li>
-                    <li>Only for "tech people" (anyone can learn)</li>
-                </ul>
+            <div class="card-grid">
+                <div class="card">
+                    <h4>1. Understand the Problem</h4>
+                    <p>Before writing code, you need to understand what you're trying to solve. What are the inputs? What output do you want? What are the constraints? 80% of programming is thinking, 20% is typing.</p>
+                    <div class="code" style="margin-top: 1rem; font-size: 0.75rem;"># Problem: Calculate tip at restaurant
+# Inputs: bill amount, tip percentage
+# Output: tip amount, total bill
+# Constraints: positive numbers only</div>
+                </div>
+                <div class="card">
+                    <h4>2. Break It Into Steps</h4>
+                    <p>Big problems become small problems. "Build a website" becomes "show text," "add image," "handle button click." This process is called "decomposition."</p>
+                    <div class="code" style="margin-top: 1rem; font-size: 0.75rem;"># Steps for tip calculator:
+# 1. Get bill amount from user
+# 2. Get tip percentage from user
+# 3. Calculate tip = bill * (percentage/100)
+# 4. Calculate total = bill + tip
+# 5. Display results</div>
+                </div>
+                <div class="card">
+                    <h4>3. Write the Code</h4>
+                    <p>Translate your steps into a programming language the computer understands. This is what most people think programming is, but it's actually the easiest part once you understand the problem.</p>
+                    <div class="code" style="margin-top: 1rem; font-size: 0.75rem;">bill = float(input("Bill: $"))
+tip_pct = float(input("Tip %: "))
+tip = bill * (tip_pct / 100)
+total = bill + tip
+print(f"Tip: ${tip:.2f}")
+print(f"Total: ${total:.2f}")</div>
+                </div>
+                <div class="card">
+                    <h4>4. Test and Debug</h4>
+                    <p>Your code will have bugs. Finding and fixing them is where most programming time goes. This is normal - even experts debug constantly. Embrace it!</p>
+                    <div class="code" style="margin-top: 1rem; font-size: 0.75rem;"># Test with different inputs:
+# Bill: 50, Tip: 20 → Tip: $10.00 ✓
+# Bill: 100, Tip: 15 → Tip: $15.00 ✓
+# Bill: 0, Tip: 20 → Tip: $0.00 ✓
+# Bill: -50, Tip: 20 → Tip: -$10.00 ✗
+# Need to handle invalid input!</div>
+                </div>
             </div>
-        </div>
-    </div>
 
-    <h3 style="color: #00ccff; font-size: 1.8rem; margin-top: 3rem;">Why Learn Programming?</h3>
-    
-    <div style="display: grid; gap: 2rem; margin: 2rem 0;">
-        
-        <div style="background: rgba(0,255,136,0.15); padding: 2.5rem; border-radius: 15px;">
-            <h4 style="color: #00ff88; font-size: 1.6rem; margin: 0 0 1rem 0;">1. Automation (Work Smarter)</h4>
-            <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                Stop doing repetitive tasks manually. Write code once, run it forever. 
-                A programmer can automate in 1 hour what would take days manually.
-            </p>
-            <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem; line-height: 1.8;">
-                <strong>Real example:</strong> Renaming 10,000 files by hand = 10 hours. 
-                Python script = 2 seconds. That's the power of automation.
-            </div>
-        </div>
-
-        <div style="background: rgba(0,204,255,0.15); padding: 2.5rem; border-radius: 15px;">
-            <h4 style="color: #00ccff; font-size: 1.6rem; margin: 0 0 1rem 0;">2. Problem Solving (Life Skill)</h4>
-            <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                Programming teaches you to break down complex problems into small, solvable steps. 
-                This is called <strong>computational thinking</strong> and it applies to EVERYTHING in life - 
-                not just coding.
-            </p>
-            <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem; line-height: 1.8;">
-                <strong>Example:</strong> Planning a trip? Programmers naturally break it down: 
-                book flights → reserve hotels → plan activities → pack bags. 
-                Each step is a "function" with inputs and outputs.
-            </div>
-        </div>
-
-        <div style="background: rgba(255,100,100,0.15); padding: 2.5rem; border-radius: 15px;">
-            <h4 style="color: #ff6464; font-size: 1.6rem; margin: 0 0 1rem 0;">3. Create Anything</h4>
-            <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1rem;">
-                If you can imagine it, you can build it:
-            </p>
-            <ul style="font-size: 1.1rem; line-height: 1.9;">
-                <li><strong>Websites & Apps</strong> - The next Facebook, Twitter, TikTok</li>
-                <li><strong>Games</strong> - From simple 2D to complex 3D worlds</li>
-                <li><strong>AI & Machine Learning</strong> - Chatbots, image recognition, predictions</li>
-                <li><strong>Trading Bots</strong> - Automated crypto/stock trading</li>
-                <li><strong>Automation Scripts</strong> - Anything repetitive = automated</li>
-                <li><strong>IoT Devices</strong> - Smart home, robots, wearables</li>
+            <h3>Programming vs "Coding"</h3>
+            <p>People use these terms interchangeably, but there's a subtle difference:</p>
+            <ul>
+                <li><strong>Coding:</strong> The act of writing code - translating logic into a programming language</li>
+                <li><strong>Programming:</strong> The entire process - understanding problems, designing solutions, writing code, testing, debugging, and maintaining</li>
             </ul>
-        </div>
+            <p>You're learning to be a programmer, not just a coder. That means learning to think logically, break down problems, and create solutions - not just memorizing syntax.</p>
 
-        <div style="background: rgba(255,200,0,0.15); padding: 2.5rem; border-radius: 15px;">
-            <h4 style="color: #ffc800; font-size: 1.6rem; margin: 0 0 1rem 0;">4. Career & Money</h4>
-            <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                Let's talk reality: Programmers make BANK and have incredible job security.
-            </p>
-            <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px;">
-                <ul style="font-size: 1.1rem; line-height: 1.9; margin: 0;">
-                    <li><strong>Average Salary:</strong> $80k-$150k+ (entry to mid-level)</li>
-                    <li><strong>Senior Developers:</strong> $150k-$300k+</li>
-                    <li><strong>Remote Work:</strong> Work from anywhere in the world</li>
-                    <li><strong>Flexible Hours:</strong> Many companies offer flexible schedules</li>
-                    <li><strong>Job Security:</strong> Demand FAR exceeds supply</li>
-                    <li><strong>Freelance Potential:</strong> $50-$200+ per hour</li>
+            <div class="info-box">
+                <h4>The Secret No One Tells Beginners</h4>
+                <p>Professional programmers Google things constantly. They look up syntax they've forgotten, search for solutions to problems, and read documentation every day. Nobody memorizes everything. What matters is understanding concepts and knowing how to find answers. So don't feel bad about looking things up - it's what professionals do!</p>
+            </div>
+        </section>
+
+        <section id="why-python" class="section">
+            <h2 class="section-title">Why Python?</h2>
+            <p class="section-intro">We're teaching Python for very specific reasons. It's not just "easy" - it's strategically the best choice for beginners who want to build real things. Let me explain why Python dominates both education and industry.</p>
+
+            <div class="metaphor-box">
+                <h4>🚗 The Language Choice Metaphor</h4>
+                <p>Choosing a programming language is like choosing a vehicle for a road trip:</p>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>C/C++:</strong> A manual transmission sports car - maximum control and speed, but you need to manage everything yourself</li>
+                    <li><strong>Java:</strong> A reliable sedan - safe and widely used, but comes with a lot of paperwork and ceremony</li>
+                    <li><strong>JavaScript:</strong> A Swiss Army knife on wheels - does everything but was designed in 10 days and it shows</li>
+                    <li><strong>Python:</strong> A smart automatic SUV - gets you where you want to go comfortably, handles most tasks, and is easy to learn</li>
                 </ul>
+                <p style="margin-top: 1rem; color: var(--accent);">Python lets you focus on solving problems rather than fighting with syntax. You'll learn programming concepts that transfer to any language.</p>
             </div>
-        </div>
-    </div>
 
-    <h3 style="color: #8a2be2; font-size: 1.8rem; margin-top: 3rem;">Programming Languages: Choosing Your Tool</h3>
-    
-    <div style="background: rgba(138,43,226,0.15); padding: 2.5rem; border-radius: 15px; margin: 2rem 0;">
-        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
-            Just like humans have English, Spanish, Chinese - computers have programming languages. 
-            Each language has its own <strong>syntax</strong> (grammar rules), but the core concepts 
-            (variables, loops, functions) are universal.
-        </p>
-        
-        <div style="background: rgba(0,0,0,0.5); padding: 2rem; border-radius: 10px; margin: 2rem 0;">
-            <h4 style="color: #00ff88; margin-top: 0; font-size: 1.4rem;">The Big Players:</h4>
-            
-            <div style="display: grid; gap: 1.5rem; margin-top: 1.5rem;">
-                <div style="background: rgba(0,255,136,0.1); padding: 1.5rem; border-radius: 8px; border-left: 3px solid #00ff88;">
-                    <h5 style="color: #00ff88; margin: 0 0 0.5rem 0; font-size: 1.2rem;">Python 🐍 (We'll use this!)</h5>
-                    <p style="font-size: 1.05rem; line-height: 1.7; margin: 0;">
-                        <strong>Best for:</strong> Beginners, AI/ML, automation, web backends, data science<br>
-                        <strong>Why:</strong> Easiest to read (looks like English), massive community, tons of libraries<br>
-                        <strong>Used by:</strong> Google, Netflix, Instagram, NASA
-                    </p>
-                </div>
-                
-                <div style="background: rgba(255,200,0,0.1); padding: 1.5rem; border-radius: 8px; border-left: 3px solid #ffc800;">
-                    <h5 style="color: #ffc800; margin: 0 0 0.5rem 0; font-size: 1.2rem;">JavaScript</h5>
-                    <p style="font-size: 1.05rem; line-height: 1.7; margin: 0;">
-                        <strong>Best for:</strong> Web development (frontend AND backend), mobile apps<br>
-                        <strong>Why:</strong> Runs in EVERY web browser, powers 95% of websites<br>
-                        <strong>Used by:</strong> Literally every website you visit
-                    </p>
-                </div>
-                
-                <div style="background: rgba(255,100,100,0.1); padding: 1.5rem; border-radius: 8px; border-left: 3px solid #ff6464;">
-                    <h5 style="color: #ff6464; margin: 0 0 0.5rem 0; font-size: 1.2rem;">Java</h5>
-                    <p style="font-size: 1.05rem; line-height: 1.7; margin: 0;">
-                        <strong>Best for:</strong> Enterprise applications, Android apps, large systems<br>
-                        <strong>Why:</strong> "Write once, run anywhere", extremely stable<br>
-                        <strong>Used by:</strong> Banks, Amazon, Android apps
-                    </p>
-                </div>
-                
-                <div style="background: rgba(0,204,255,0.1); padding: 1.5rem; border-radius: 8px; border-left: 3px solid #00ccff;">
-                    <h5 style="color: #00ccff; margin: 0 0 0.5rem 0; font-size: 1.2rem;">C / C++</h5>
-                    <p style="font-size: 1.05rem; line-height: 1.7; margin: 0;">
-                        <strong>Best for:</strong> Operating systems, game engines, embedded systems, performance-critical apps<br>
-                        <strong>Why:</strong> Direct hardware control, blazing fast<br>
-                        <strong>Used by:</strong> Windows, Linux, Unreal Engine, Photoshop
-                    </p>
-                </div>
-                
-                <div style="background: rgba(200,200,200,0.1); padding: 1.5rem; border-radius: 8px; border-left: 3px solid #cccccc;">
-                    <h5 style="color: #cccccc; margin: 0 0 0.5rem 0; font-size: 1.2rem;">SQL</h5>
-                    <p style="font-size: 1.05rem; line-height: 1.7; margin: 0;">
-                        <strong>Best for:</strong> Database queries and management<br>
-                        <strong>Why:</strong> Every app with data needs this<br>
-                        <strong>Used by:</strong> Every company with a database (so, everyone)
-                    </p>
-                </div>
-            </div>
-        </div>
-        
-        <div style="background: rgba(0,255,136,0.2); padding: 2rem; border-radius: 10px; margin-top: 2rem; border: 2px solid rgba(0,255,136,0.4);">
-            <h4 style="color: #00ff88; margin-top: 0; font-size: 1.3rem;">Why We're Starting with Python</h4>
-            <p style="font-size: 1.1rem; line-height: 1.8; margin: 0;">
-                <strong>1. Readable:</strong> Python looks like English. <code style="background: rgba(0,0,0,0.6); padding: 0.2rem 0.5rem; border-radius: 4px;">print("Hello")</code> does exactly what you think.<br>
-                <strong>2. Versatile:</strong> Web, AI, automation, games, data - Python does it all.<br>
-                <strong>3. In-Demand:</strong> One of the most sought-after skills in tech.<br>
-                <strong>4. Beginner-Friendly:</strong> Less boilerplate code = faster learning.<br>
-                <strong>5. Massive Ecosystem:</strong> Need to do something? There's probably a library for it.
-            </p>
-        </div>
-    </div>
+            <h3>Python vs Other Languages</h3>
+            <div class="code"># ==================== THE SAME LOGIC IN DIFFERENT LANGUAGES ====================
 
-    <h3 style="color: #00ccff; font-size: 1.8rem; margin-top: 3rem;">How Programming Actually Works</h3>
-    
-    <div style="background: rgba(0,0,0,0.5); padding: 2.5rem; border-radius: 15px; margin: 2rem 0;">
-        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 2rem;">
-            Let's demystify the process. Here's what happens when you write and run code:
-        </p>
-        
-        <div style="display: grid; gap: 1.5rem;">
-            <div style="background: rgba(0,255,136,0.15); padding: 2rem; border-radius: 10px; border-left: 4px solid #00ff88;">
-                <h4 style="color: #00ff88; margin: 0 0 1rem 0; font-size: 1.4rem;">Step 1: You Write Code</h4>
-                <p style="font-size: 1.1rem; line-height: 1.8;">
-                    You write instructions in a text file using a programming language. 
-                    This is called <strong>source code</strong>.
-                </p>
-                <pre style="background: rgba(0,0,0,0.6); padding: 1.5rem; border-radius: 8px; margin-top: 1rem; font-size: 1.1rem;"><code>print("Hello, World!")
-age = 25
-print("You are", age, "years old")</code></pre>
-            </div>
-            
-            <div style="background: rgba(0,204,255,0.15); padding: 2rem; border-radius: 10px; border-left: 4px solid #00ccff;">
-                <h4 style="color: #00ccff; margin: 0 0 1rem 0; font-size: 1.4rem;">Step 2: Interpreter/Compiler Translates</h4>
-                <p style="font-size: 1.1rem; line-height: 1.8;">
-                    The computer doesn't understand Python (or any high-level language). 
-                    An <strong>interpreter</strong> or <strong>compiler</strong> translates your code into 
-                    machine code (binary 1s and 0s) the CPU can execute.
-                </p>
-                <ul style="font-size: 1.05rem; line-height: 1.8; margin-top: 1rem;">
-                    <li><strong>Interpreter (Python, JavaScript):</strong> Translates line-by-line as it runs</li>
-                    <li><strong>Compiler (C, C++, Java):</strong> Translates everything first, then runs</li>
-                </ul>
-            </div>
-            
-            <div style="background: rgba(255,200,0,0.15); padding: 2rem; border-radius: 10px; border-left: 4px solid #ffc800;">
-                <h4 style="color: #ffc800; margin: 0 0 1rem 0; font-size: 1.4rem;">Step 3: CPU Executes</h4>
-                <p style="font-size: 1.1rem; line-height: 1.8;">
-                    The CPU reads the machine code instructions and executes them one by one 
-                    (billions per second). Your program runs!
-                </p>
-            </div>
-            
-            <div style="background: rgba(255,100,100,0.15); padding: 2rem; border-radius: 10px; border-left: 4px solid #ff6464;">
-                <h4 style="color: #ff6464; margin: 0 0 1rem 0; font-size: 1.4rem;">Step 4: Output</h4>
-                <p style="font-size: 1.1rem; line-height: 1.8;">
-                    The program produces output - text on screen, file saved, webpage displayed, etc.
-                </p>
-                <pre style="background: rgba(0,0,0,0.6); padding: 1.5rem; border-radius: 8px; margin-top: 1rem; font-size: 1.1rem;"><code>Hello, World!
-You are 25 years old</code></pre>
-            </div>
-        </div>
-    </div>
-
-    <h3 style="color: #ff0000; font-size: 1.8rem; margin-top: 3rem;">Why This Matters for Programming</h3>
-    
-    <div style="background: rgba(255,0,0,0.12); padding: 2.5rem; border-radius: 15px; border: 2px solid rgba(255,0,0,0.4); margin: 2rem 0;">
-        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
-            <strong style="font-size: 1.3rem;">Understanding these fundamentals is CRITICAL because:</strong>
-        </p>
-        <ul style="font-size: 1.1rem; line-height: 1.9; margin: 1.5rem 0;">
-            <li><strong>Debugging:</strong> When code breaks, you need to understand HOW it executes to fix it</li>
-            <li><strong>Performance:</strong> Knowing how code runs helps you write faster, more efficient programs</li>
-            <li><strong>Language Agnostic:</strong> Once you understand ONE language, learning others is 10x easier</li>
-            <li><strong>Problem Solving:</strong> You'll learn to think in algorithms and data structures</li>
-            <li><strong>Career:</strong> These concepts are what separate junior from senior developers</li>
-        </ul>
-        <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin-top: 2rem; font-size: 1.15rem; line-height: 1.8;">
-            <strong style="color: #ff6464;">Real talk:</strong> Most "programmers" can copy-paste code from StackOverflow. 
-            TRUE programmers understand WHY it works and can adapt it to any situation. That's what this course teaches.
-        </div>
-    </div>
-
-    <div style="background: linear-gradient(135deg, rgba(0,255,136,0.2) 0%, rgba(0,204,255,0.2) 100%); padding: 2.5rem; border-radius: 15px; margin-top: 3rem;">
-        <h4 style="color: #00ff88; margin-top: 0; font-size: 1.5rem;">Quick Check</h4>
-        <ul style="font-size: 1.1rem; line-height: 1.9;">
-            <li>What is programming in simple terms?</li>
-            <li>Name 4 reasons to learn programming</li>
-            <li>What programming language will we focus on and why?</li>
-            <li>What's the difference between an interpreter and a compiler?</li>
-            <li>What are the 4 steps that happen when you run code?</li>
-        </ul>
-    </div>
-</div>
-
-<!-- Topic 2: How to Think Like a Programmer -->
-<div class="topic-section" style="background: linear-gradient(135deg, rgba(0,204,255,0.05) 0%, rgba(138,43,226,0.05) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0;">
-    <h2 style="color: #00ccff; font-size: 2.2rem; margin-bottom: 2rem;">How to Think Like a Programmer</h2>
-    
-    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 15px; margin: 2rem 0; font-size: 1.15rem; line-height: 1.9;">
-        <p style="margin: 0; font-size: 1.25rem;">
-            The hardest part of programming isn't the syntax - it's learning to <strong>think computationally</strong>. 
-            This is a skill that takes time to develop, but once you have it, you can solve ANY problem.
-        </p>
-    </div>
-
-    <h3 style="color: #00ccff; font-size: 1.8rem; margin-top: 3rem;">The 4-Step Problem Solving Process</h3>
-    
-    <div style="background: rgba(0,204,255,0.15); padding: 2.5rem; border-radius: 15px; margin: 2rem 0;">
-        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 2rem;">
-            Every programmer follows this process (whether they realize it or not):
-        </p>
-        
-        <div style="display: grid; gap: 2rem;">
-            <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; border-left: 4px solid #00ff88;">
-                <h4 style="color: #00ff88; margin: 0 0 1rem 0; font-size: 1.5rem;">1. UNDERSTAND the Problem</h4>
-                <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1rem;">
-                    Before writing ANY code, make sure you fully understand what you're trying to solve.
-                </p>
-                <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 8px; margin-top: 1rem;">
-                    <strong>Questions to ask:</strong>
-                    <ul style="font-size: 1.05rem; line-height: 1.8; margin-top: 0.5rem;">
-                        <li>What are the inputs? (data going IN)</li>
-                        <li>What are the outputs? (results coming OUT)</li>
-                        <li>What are the edge cases? (weird scenarios)</li>
-                        <li>Do I have all the information I need?</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; border-left: 4px solid #00ccff;">
-                <h4 style="color: #00ccff; margin: 0 0 1rem 0; font-size: 1.5rem;">2. PLAN the Solution</h4>
-                <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1rem;">
-                    Break the problem into smaller sub-problems. Write pseudocode (plain English steps).
-                </p>
-                <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 8px; margin-top: 1rem;">
-                    <strong>Example: "Make a program that finds if a number is even or odd"</strong>
-                    <pre style="background: rgba(0,0,0,0.6); padding: 1rem; border-radius: 6px; margin-top: 0.5rem; font-size: 1.05rem; line-height: 1.7;"><code>1. Get a number from the user
-2. Divide the number by 2
-3. If remainder is 0, it's even
-4. Otherwise, it's odd
-5. Display the result</code></pre>
-                </div>
-            </div>
-            
-            <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; border-left: 4px solid #ffc800;">
-                <h4 style="color: #ffc800; margin: 0 0 1rem 0; font-size: 1.5rem;">3. IMPLEMENT the Code</h4>
-                <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1rem;">
-                    NOW you write actual code. Translate your pseudocode into the programming language.
-                </p>
-                <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 8px; margin-top: 1rem;">
-                    <pre style="background: rgba(0,0,0,0.6); padding: 1rem; border-radius: 6px; font-size: 1.05rem; line-height: 1.7;"><code>number = int(input("Enter a number: "))
-
-if number % 2 == 0:
-    print("Even")
+# Python - Clean and readable
+if age >= 18:
+    print("You can vote!")
 else:
-    print("Odd")</code></pre>
+    print("Too young to vote")
+
+# Java - Same logic, more syntax (7 lines → 11 lines)
+public class VotingAge {
+    public static void main(String[] args) {
+        if (age >= 18) {
+            System.out.println("You can vote!");
+        } else {
+            System.out.println("Too young to vote");
+        }
+    }
+}
+
+# C++ - Even more ceremony
+#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    if (age >= 18) {
+        cout << "You can vote!" << endl;
+    } else {
+        cout << "Too young to vote" << endl;
+    }
+    return 0;
+}
+
+# JavaScript - Similar to Python but with more punctuation
+if (age >= 18) {
+    console.log("You can vote!");
+} else {
+    console.log("Too young to vote");
+}</div>
+
+            <p>Python reads almost like English. Less time fighting syntax = more time learning concepts. Notice how Python uses indentation (spaces) instead of curly braces - this forces readable code!</p>
+
+            <h3>The Numbers Don't Lie</h3>
+            <div class="card-grid">
+                <div class="card">
+                    <h4>📊 #1 Most Popular</h4>
+                    <p>Python is the #1 most popular language on the TIOBE Index and Stack Overflow survey for 3+ years running.</p>
+                </div>
+                <div class="card">
+                    <h4>💰 High Salaries</h4>
+                    <p>Python developers earn $110K-$150K+ on average. Specialized fields like ML/AI pay even more.</p>
+                </div>
+                <div class="card">
+                    <h4>📈 Fastest Growing</h4>
+                    <p>Python job postings have grown 456% in the last 5 years. Demand far exceeds supply.</p>
+                </div>
+                <div class="card">
+                    <h4>🎓 #1 in Education</h4>
+                    <p>8 of the top 10 CS programs use Python as their intro language. MIT, Stanford, Berkeley, Harvard...</p>
                 </div>
             </div>
+
+            <h3>What Python is Used For</h3>
+            <div class="card-grid">
+                <div class="card">
+                    <h4>🌐 Web Development</h4>
+                    <p>Django, Flask, FastAPI - Instagram, Pinterest, Spotify, Netflix, Reddit, Dropbox all use Python backends. Build anything from simple websites to complex applications.</p>
+                </div>
+                <div class="card">
+                    <h4>🤖 Data Science & AI</h4>
+                    <p>NumPy, Pandas, TensorFlow, PyTorch - Python absolutely dominates machine learning. If you want to work in AI, Python is mandatory.</p>
+                </div>
+                <div class="card">
+                    <h4>⚙️ Automation</h4>
+                    <p>Automate boring tasks - file organization, web scraping, data entry, report generation, email handling. "I'll write a script for that" becomes your superpower.</p>
+                </div>
+                <div class="card">
+                    <h4>🔐 Hacking & Security</h4>
+                    <p>Most security tools are written in Python. Penetration testing, exploit development, malware analysis, network scanning. Ethical hackers love Python.</p>
+                </div>
+                <div class="card">
+                    <h4>🎮 Game Development</h4>
+                    <p>Pygame, Panda3D - great for learning game dev concepts. Many game studios use Python for tools and scripting.</p>
+                </div>
+                <div class="card">
+                    <h4>📱 Desktop Applications</h4>
+                    <p>Tkinter, PyQt, Kivy - build GUI applications that work on Windows, Mac, and Linux.</p>
+                </div>
+            </div>
+
+            <h3>The Philosophy of Python</h3>
+            <p>Python was designed with specific principles in mind. Type <span class="inline-code">import this</span> in Python to see "The Zen of Python." Here are the most important principles:</p>
             
-            <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; border-left: 4px solid #ff6464;">
-                <h4 style="color: #ff6464; margin: 0 0 1rem 0; font-size: 1.5rem;">4. TEST & DEBUG</h4>
-                <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1rem;">
-                    Run your code with different inputs. Find bugs. Fix them. Repeat until it works perfectly.
-                </p>
-                <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 8px; margin-top: 1rem;">
-                    <strong>Test cases:</strong>
-                    <ul style="font-size: 1.05rem; line-height: 1.8; margin-top: 0.5rem;">
-                        <li>Input: 4 → Output: Even ✓</li>
-                        <li>Input: 7 → Output: Odd ✓</li>
-                        <li>Input: 0 → Output: Even ✓</li>
-                        <li>Input: -3 → Output: Odd ✓</li>
+            <div class="code"># The Zen of Python (Selected)
+
+Beautiful is better than ugly.
+Simple is better than complex.
+Readability counts.
+There should be one-- and preferably only one --obvious way to do it.
+If the implementation is hard to explain, it's a bad idea.
+If the implementation is easy to explain, it may be a good idea.
+
+# Translation:
+# Write code that's clean and understandable
+# Simple solutions beat clever ones
+# Other people (including future you) need to read your code</div>
+
+            <div class="warning-box">
+                <h4>⚠️ What Python is NOT Good For</h4>
+                <p>No language is perfect for everything:</p>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>Mobile apps:</strong> Use Swift (iOS) or Kotlin (Android) instead</li>
+                    <li><strong>Performance-critical systems:</strong> Use C/C++/Rust for games, OS kernels, etc.</li>
+                    <li><strong>Browser front-end:</strong> JavaScript is required for browser code</li>
+                </ul>
+                <p style="margin-top: 1rem;">But Python is excellent for learning, automation, web backends, data science, and scripting - which covers most of what beginners need!</p>
+            </div>
+        </section>
+
+        <section id="setup" class="section">
+            <h2 class="section-title">Setting Up Your Environment</h2>
+            <p class="section-intro">Before you can code, you need Python installed and a proper development environment. This takes about 10 minutes and you only do it once. Let's set you up for success.</p>
+
+            <div class="metaphor-box">
+                <h4>🔧 The Workshop Metaphor</h4>
+                <p>Before you can build furniture, you need a workshop with the right tools. Your development environment is your digital workshop:</p>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>Python:</strong> The core tool - your saw, hammer, and drill</li>
+                    <li><strong>Text Editor/IDE:</strong> Your workbench where you build things</li>
+                    <li><strong>Terminal:</strong> Your control panel to run things</li>
+                    <li><strong>pip:</strong> Your tool store to get new tools (packages)</li>
+                </ul>
+            </div>
+
+            <h3>Installing Python</h3>
+            <div class="code"># ==================== WINDOWS ====================
+
+1. Go to python.org/downloads
+2. Click "Download Python 3.x" (latest version)
+3. Run the downloaded installer
+4. ⚠️ CRITICAL: Check "Add Python to PATH" at the bottom! ⚠️
+5. Click "Install Now"
+6. Wait for installation to complete
+7. Click "Close"
+
+# If you forgot to check "Add to PATH":
+# Uninstall Python, redownload, and try again
+# This is important for running Python from anywhere
+
+# ==================== MAC ====================
+
+# Option 1: Download from python.org (easy)
+1. Go to python.org/downloads
+2. Download the macOS installer
+3. Run installer, follow prompts
+
+# Option 2: Use Homebrew (recommended for developers)
+1. Open Terminal
+2. Install Homebrew if you don't have it:
+   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+3. Install Python:
+   brew install python
+
+# Note: Mac comes with Python 2.7 pre-installed (old version)
+# Always use python3 command, not python
+
+# ==================== LINUX (Ubuntu/Debian) ====================
+
+sudo apt update
+sudo apt install python3 python3-pip python3-venv
+
+# For other distros:
+# Fedora: sudo dnf install python3 python3-pip
+# Arch: sudo pacman -S python python-pip</div>
+
+            <h3>Verify Installation</h3>
+            <div class="code"># Open terminal/command prompt and type:
+
+# Windows:
+python --version
+# Expected output: Python 3.11.4 (or similar)
+
+# Mac/Linux (if python shows 2.x, use python3):
+python3 --version
+# Expected output: Python 3.11.4
+
+# Check pip (package manager) is installed:
+pip --version
+# or
+pip3 --version
+# Expected: pip 23.1.2 from ... (python 3.11)
+
+# ==================== TROUBLESHOOTING ====================
+
+# "python is not recognized" on Windows:
+# - Python wasn't added to PATH during installation
+# - Fix: Reinstall with "Add to PATH" checked
+
+# "command not found" on Mac/Linux:
+# - Try python3 instead of python
+# - Or install: sudo apt install python3
+
+# Multiple versions installed:
+# - Use py launcher on Windows: py -3.11 script.py
+# - Use python3 explicitly on Mac/Linux</div>
+
+            <h3>Choosing a Code Editor</h3>
+            <p>You can write Python in any text editor, but a good editor makes coding much easier. Here are your options:</p>
+            
+            <div class="card-grid">
+                <div class="card">
+                    <h4>🌟 VS Code (Recommended)</h4>
+                    <p>Free, powerful, and widely used. Install the Python extension for auto-complete, debugging, and more.</p>
+                    <p style="margin-top: 0.5rem; font-size: 0.85rem;"><strong>Get it:</strong> code.visualstudio.com</p>
+                </div>
+                <div class="card">
+                    <h4>🐍 PyCharm</h4>
+                    <p>Made specifically for Python. Community Edition is free. More features but heavier.</p>
+                    <p style="margin-top: 0.5rem; font-size: 0.85rem;"><strong>Get it:</strong> jetbrains.com/pycharm</p>
+                </div>
+                <div class="card">
+                    <h4>📓 Jupyter Notebook</h4>
+                    <p>Great for data science and learning. Run code in cells, see results immediately.</p>
+                    <p style="margin-top: 0.5rem; font-size: 0.85rem;"><strong>Install:</strong> pip install jupyter</p>
+                </div>
+                <div class="card">
+                    <h4>🖥️ IDLE</h4>
+                    <p>Comes with Python. Simple but limited. OK for absolute beginners but you'll outgrow it fast.</p>
+                    <p style="margin-top: 0.5rem; font-size: 0.85rem;"><strong>Get it:</strong> Already installed with Python</p>
+                </div>
+            </div>
+
+            <h3>Your First Python Command (Interactive Mode)</h3>
+            <div class="code"># Open terminal/command prompt and type:
+python    # (or python3 on Mac/Linux)
+
+# You'll see something like:
+Python 3.11.4 (main, Jun  9 2023, 07:30:55)
+[GCC 9.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>>
+
+# The >>> is the Python prompt - it's waiting for your commands!
+# This is called the REPL (Read-Eval-Print-Loop)
+
+# ==================== TRY THESE COMMANDS ====================
+
+>>> print("Hello, World!")
+Hello, World!
+
+>>> 2 + 2
+4
+
+>>> 10 * 5
+50
+
+>>> "Python" + " is " + "awesome!"
+'Python is awesome!'
+
+>>> 2 ** 10
+1024
+
+>>> exit()    # or Ctrl+D to leave
+
+# ==================== WHAT JUST HAPPENED? ====================
+
+# The REPL is perfect for quick experiments
+# You type something, Python evaluates it, prints the result
+# Then waits for your next input (the Loop part)
+
+# This is great for:
+# - Testing ideas quickly
+# - Using as a calculator
+# - Learning new concepts
+
+# For real programs, you'll write files instead</div>
+
+            <div class="info-box">
+                <h4>Pro Tip: Setting Up VS Code for Python</h4>
+                <ol style="margin-top: 1rem;">
+                    <li>Download and install VS Code from code.visualstudio.com</li>
+                    <li>Open VS Code</li>
+                    <li>Click the Extensions icon (squares) on the left sidebar</li>
+                    <li>Search "Python" and install the Microsoft Python extension</li>
+                    <li>Create a new file with .py extension</li>
+                    <li>VS Code will prompt to select Python interpreter - choose your installed version</li>
+                    <li>You're ready to code!</li>
+                </ol>
+            </div>
+        </section>
+
+        <section id="first-program" class="section">
+            <h2 class="section-title">Your First Real Program</h2>
+            <p class="section-intro">Let's write a program that's saved in a file, not just typed in the terminal. This is how real software is created - you write code in files, save them, and run them whenever you want.</p>
+
+            <div class="metaphor-box">
+                <h4>📄 File vs Interactive Mode</h4>
+                <p><strong>Interactive mode (REPL):</strong> Like having a conversation - say something, get immediate response, repeat. Great for testing, but nothing is saved.</p>
+                <p style="margin-top: 0.5rem;"><strong>Script mode (files):</strong> Like writing a letter - you compose everything, save it, and can send (run) it multiple times. This is how real programs work.</p>
+            </div>
+
+            <h3>Creating a Python File</h3>
+            <div class="code"># ==================== STEP 1: CREATE THE FILE ====================
+
+# Open your text editor (VS Code, Notepad++, or even Notepad)
+# Create a new file called: hello.py
+# The .py extension tells the computer it's a Python file
+
+# ==================== STEP 2: WRITE THE CODE ====================
+
+# Type this code exactly:
+
+print("=====================================")
+print("  Welcome to Python Programming!    ")
+print("=====================================")
+print()
+print("My name is [Your Name]")
+print("I am learning to code!")
+print()
+print("Let me show you some math:")
+print("2 + 2 =", 2 + 2)
+print("10 * 5 =", 10 * 5)
+print("100 / 4 =", 100 / 4)
+print()
+print("I just wrote my first Python program!")
+
+# ==================== STEP 3: SAVE THE FILE ====================
+
+# Save it somewhere you can find it (Desktop is fine for now)
+# Remember where you saved it!
+
+# ==================== STEP 4: RUN THE PROGRAM ====================
+
+# Open terminal/command prompt
+# Navigate to the folder:
+cd Desktop    # or wherever you saved it
+
+# Run your program:
+python hello.py    # or python3 hello.py
+
+# ==================== YOU SHOULD SEE: ====================
+
+=====================================
+  Welcome to Python Programming!    
+=====================================
+
+My name is [Your Name]
+I am learning to code!
+
+Let me show you some math:
+2 + 2 = 4
+10 * 5 = 50
+100 / 4 = 25.0
+
+I just wrote my first Python program!</div>
+
+            <div class="info-box">
+                <h4>🎉 Congratulations!</h4>
+                <p>You just wrote and ran your first Python program! This is a significant milestone. Every programmer started exactly where you are right now.</p>
+            </div>
+
+            <h3>Understanding print()</h3>
+            <div class="code"># ==================== THE PRINT FUNCTION ====================
+
+# print() is a built-in function that outputs text to the screen
+# Whatever you put in the parentheses gets displayed
+
+print("Text in quotes")          # Strings (text) - displays exactly
+print(42)                        # Numbers - displays as-is
+print(3.14159)                   # Decimal numbers (floats)
+print(2 + 2)                     # Expressions - calculates first, then prints
+print("Answer:", 2 + 2)          # Multiple items (comma-separated)
+print()                          # Empty line (no arguments)
+
+# ==================== QUOTES MATTER ====================
+
+print("Hello")     # Double quotes - works
+print('Hello')     # Single quotes - also works!
+print("It's OK")   # Double outside, single inside - works
+print('Say "Hi"')  # Single outside, double inside - works
+
+# This would cause an error:
+# print('It's broken')  # Python sees: print('It' and gets confused
+
+# ==================== SPECIAL CHARACTERS ====================
+
+print("Line 1\nLine 2")     # \n = new line
+print("Tab\tHere")          # \t = tab
+print("Back\\slash")        # \\ = literal backslash
+print("Say \"Hello\"")      # \" = literal quote mark
+
+# ==================== MULTIPLE ARGUMENTS ====================
+
+name = "Alice"
+age = 25
+print("Name:", name, "Age:", age)
+# Output: Name: Alice Age: 25
+# Note: Python adds spaces between arguments automatically
+
+# Use sep to change the separator:
+print("A", "B", "C", sep="-")
+# Output: A-B-C
+
+# Use end to change what comes after:
+print("No", end=" ")
+print("newline", end="!")
+# Output: No newline!</div>
+
+            <h3>Common Beginner Mistakes</h3>
+            <div class="code"># ==================== MISTAKE 1: FORGETTING QUOTES ====================
+
+print(Hello)        # ❌ Error! Python thinks Hello is a variable
+print("Hello")      # ✅ Correct - quotes indicate text
+
+# ==================== MISTAKE 2: MISMATCHED QUOTES ====================
+
+print("Hello')      # ❌ Error! Started with " but ended with '
+print("Hello")      # ✅ Correct
+
+# ==================== MISTAKE 3: FORGETTING PARENTHESES ====================
+
+print "Hello"       # ❌ Error! (This was Python 2 syntax)
+print("Hello")      # ✅ Correct in Python 3
+
+# ==================== MISTAKE 4: CASE SENSITIVITY ====================
+
+Print("Hello")      # ❌ Error! Python is case-sensitive
+PRINT("Hello")      # ❌ Error!
+print("Hello")      # ✅ Correct - lowercase
+
+# ==================== MISTAKE 5: INDENTATION ERRORS ====================
+
+ print("Hello")     # ❌ Error! Unexpected indent (space at start)
+print("Hello")      # ✅ Correct - no leading spaces (for now)</div>
+
+            <h3>Practice: Your Turn!</h3>
+            <div class="card-grid">
+                <div class="card">
+                    <h4>Exercise 1: About Me</h4>
+                    <p>Create about_me.py that prints:</p>
+                    <ul style="margin-top: 0.5rem; font-size: 0.85rem;">
+                        <li>Your name</li>
+                        <li>Your age</li>
+                        <li>Your favorite color</li>
+                        <li>Why you want to learn Python</li>
                     </ul>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <h3 style="color: #8a2be2; font-size: 1.8rem; margin-top: 3rem;">Decomposition: Breaking Down Problems</h3>
-    
-    <div style="background: rgba(138,43,226,0.15); padding: 2.5rem; border-radius: 15px; margin: 2rem 0;">
-        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
-            <strong>Decomposition</strong> = Breaking a complex problem into smaller, manageable pieces. 
-            This is THE most important programming skill.
-        </p>
-        
-        <div style="background: rgba(0,0,0,0.5); padding: 2rem; border-radius: 10px; margin-top: 2rem;">
-            <h4 style="color: #00ff88; margin-top: 0; font-size: 1.4rem;">Example: Build a Calculator</h4>
-            
-            <div style="background: rgba(255,100,100,0.15); padding: 1.5rem; border-radius: 8px; margin-top: 1.5rem; border-left: 3px solid #ff6464;">
-                <p style="font-size: 1.1rem; margin: 0;"><strong style="color: #ff6464;">❌ Bad Approach (Beginner Thinking):</strong></p>
-                <p style="font-size: 1.05rem; line-height: 1.7; margin-top: 0.5rem;">
-                    "I need to build a calculator" → Stares at blank screen → Gets overwhelmed → Gives up
-                </p>
-            </div>
-            
-            <div style="background: rgba(0,255,136,0.15); padding: 1.5rem; border-radius: 8px; margin-top: 1.5rem; border-left: 3px solid #00ff88;">
-                <p style="font-size: 1.1rem; margin: 0;"><strong style="color: #00ff88;">✓ Good Approach (Programmer Thinking):</strong></p>
-                <div style="margin-top: 1rem;">
-                    <p style="font-size: 1.05rem; line-height: 1.7; margin: 0.5rem 0;">Break it down:</p>
-                    <ol style="font-size: 1.05rem; line-height: 1.8;">
-                        <li><strong>Get user input</strong> - two numbers and an operation (+, -, *, /)</li>
-                        <li><strong>Validate input</strong> - make sure they entered valid numbers</li>
-                        <li><strong>Perform calculation</strong>:
-                            <ul style="margin-top: 0.5rem;">
-                                <li>If operation is +, add numbers</li>
-                                <li>If operation is -, subtract</li>
-                                <li>If operation is *, multiply</li>
-                                <li>If operation is /, divide (check for division by zero!)</li>
-                            </ul>
-                        </li>
-                        <li><strong>Display result</strong> - show the answer</li>
-                        <li><strong>Ask to continue</strong> - let user do another calculation or quit</li>
-                    </ol>
+                <div class="card">
+                    <h4>Exercise 2: ASCII Art</h4>
+                    <p>Create art.py that prints a simple picture using text characters:</p>
+                    <div class="code" style="margin-top: 0.5rem; font-size: 0.7rem;">  /\
+ /  \
+/____\
+ |  |
+ |__|</div>
                 </div>
             </div>
-            
-            <p style="font-size: 1.15rem; line-height: 1.8; margin-top: 2rem;">
-                See the difference? Instead of one overwhelming task, you have 5 small, solvable tasks. 
-                Each one is easy to code individually.
-            </p>
-        </div>
-    </div>
+        </section>
 
-    <h3 style="color: #00ccff; font-size: 1.8rem; margin-top: 3rem;">Pattern Recognition</h3>
-    
-    <div style="background: rgba(0,204,255,0.15); padding: 2.5rem; border-radius: 15px; margin: 2rem 0;">
-        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
-            After solving enough problems, you'll start recognizing <strong>patterns</strong>. 
-            Most programming problems fall into common categories:
-        </p>
-        
-        <div style="display: grid; gap: 1.5rem; margin-top: 2rem;">
-            <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 8px;">
-                <h4 style="color: #00ff88; margin: 0 0 0.8rem 0; font-size: 1.2rem;">Iteration (Loops)</h4>
-                <p style="font-size: 1.05rem; line-height: 1.7;">Do something repeatedly. Example: Process every item in a list.</p>
-            </div>
-            
-            <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 8px;">
-                <h4 style="color: #00ccff; margin: 0 0 0.8rem 0; font-size: 1.2rem;">Conditional Logic (If/Else)</h4>
-                <p style="font-size: 1.05rem; line-height: 1.7;">Make decisions based on conditions. Example: If age >= 18, allow access.</p>
-            </div>
-            
-            <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 8px;">
-                <h4 style="color: #ffc800; margin: 0 0 0.8rem 0; font-size: 1.2rem;">Search & Filter</h4>
-                <p style="font-size: 1.05rem; line-height: 1.7;">Find specific data. Example: Find all users with age > 21.</p>
-            </div>
-            
-            <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 8px;">
-                <h4 style="color: #ff6464; margin: 0 0 0.8rem 0; font-size: 1.2rem;">Accumulation</h4>
-                <p style="font-size: 1.05rem; line-height: 1.7;">Build up a result. Example: Sum all numbers in a list.</p>
-            </div>
-            
-            <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 8px;">
-                <h4 style="color: #8a2be2; margin: 0 0 0.8rem 0; font-size: 1.2rem;">Transformation</h4>
-                <p style="font-size: 1.05rem; line-height: 1.7;">Convert data from one form to another. Example: Convert temperatures from Celsius to Fahrenheit.</p>
-            </div>
-        </div>
-        
-        <div style="background: rgba(0,255,136,0.2); padding: 2rem; border-radius: 10px; margin-top: 2rem; border: 2px solid rgba(0,255,136,0.4);">
-            <p style="font-size: 1.1rem; line-height: 1.8; margin: 0;">
-                <strong style="color: #00ff88;">Pro tip:</strong> When you encounter a new problem, ask yourself: 
-                "What pattern does this fit?" Once you identify the pattern, the solution becomes obvious.
-            </p>
-        </div>
-    </div>
+        <section id="variables" class="section">
+            <h2 class="section-title">Variables: Giving Names to Data</h2>
+            <p class="section-intro">Variables are containers that hold data. You give them a name, and later you can use that name to access the data. This is one of the most fundamental concepts in programming - everything builds on this.</p>
 
-    <h3 style="color: #ff0000; font-size: 1.8rem; margin-top: 3rem;">Why This Matters for Programming</h3>
-    
-    <div style="background: rgba(255,0,0,0.12); padding: 2.5rem; border-radius: 15px; border: 2px solid rgba(255,0,0,0.4); margin: 2rem 0;">
-        <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
-            <strong style="font-size: 1.3rem;">This mindset separates professionals from amateurs:</strong>
-        </p>
-        <ul style="font-size: 1.1rem; line-height: 1.9; margin: 1.5rem 0;">
-            <li><strong>Interviews:</strong> Tech interviews test problem-solving, not memorization</li>
-            <li><strong>Real Projects:</strong> You'll spend 90% of your time problem-solving, 10% typing code</li>
-            <li><strong>Debugging:</strong> When code breaks, computational thinking helps you trace the logic</li>
-            <li><strong>Efficiency:</strong> Better algorithms = faster programs = happier users</li>
-            <li><strong>Communication:</strong> You'll need to explain your thought process to teammates</li>
-        </ul>
-        <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin-top: 2rem; font-size: 1.15rem; line-height: 1.8;">
-            <strong style="color: #ff6464;">The truth:</strong> Anyone can learn syntax in a few weeks. 
-            Learning to THINK like a programmer takes months of practice. That's what makes you valuable.
-        </div>
-    </div>
+            <div class="metaphor-box">
+                <h4>📦 The Labeled Box Metaphor</h4>
+                <p>Imagine you have a storage room full of boxes. Each box has a label (the variable name) and contains something (the value).</p>
+                <p style="margin-top: 1rem;"><strong>age = 25</strong> creates a box labeled "age" containing the number 25.</p>
+                <p style="margin-top: 1rem;">Later, when you say <span class="inline-code">print(age)</span>, Python looks for the box labeled "age" and tells you what's inside.</p>
+                <p style="margin-top: 1rem;">You can put new things in the box: <strong>age = 26</strong> replaces the 25 with 26.</p>
+            </div>
 
-    <div style="background: linear-gradient(135deg, rgba(0,204,255,0.2) 0%, rgba(138,43,226,0.2) 100%); padding: 2.5rem; border-radius: 15px; margin-top: 3rem;">
-        <h4 style="color: #00ccff; margin-top: 0; font-size: 1.5rem;">Quick Check</h4>
-        <ul style="font-size: 1.1rem; line-height: 1.9;">
-            <li>What are the 4 steps of problem solving?</li>
-            <li>What is decomposition?</li>
-            <li>Why should you write pseudocode before actual code?</li>
-            <li>Name 3 common programming patterns</li>
-            <li>What separates professional programmers from amateurs?</li>
-        </ul>
-    </div>
-</div>
+            <h3>Creating Variables</h3>
+            <div class="code"># ==================== BASIC VARIABLE CREATION ====================
 
-<!-- Mastery Checklist -->
-<div style="background: linear-gradient(135deg, rgba(0,255,136,0.1) 0%, rgba(138,43,226,0.1) 100%); padding: 3rem; border-radius: 20px; margin: 4rem 0; border: 3px solid rgba(0,255,136,0.3);">
-    <h2 style="color: #00ff88; font-size: 2rem; margin-bottom: 2rem;">🎯 Chapter 01 Mastery Checklist</h2>
-    
-    <p style="font-size: 1.2rem; line-height: 1.8; margin-bottom: 2rem;">
-        Before moving to Chapter 02, make sure you can confidently answer YES to these:
-    </p>
-    
-    <div style="display: grid; gap: 1rem;">
-        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
-            ☐ I can explain what programming is to a complete beginner
-        </div>
-        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
-            ☐ I understand why programming is a valuable skill
-        </div>
-        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
-            ☐ I know the difference between interpreters and compilers
-        </div>
-        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
-            ☐ I can name 5 popular programming languages and their use cases
-        </div>
-        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
-            ☐ I understand the 4 steps of problem solving
-        </div>
-        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
-            ☐ I know what decomposition is and why it matters
-        </div>
-        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
-            ☐ I can identify common programming patterns
-        </div>
-        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
-            ☐ I understand why computational thinking is more important than syntax
-        </div>
-    </div>
-    
-    <div style="background: rgba(0,255,136,0.2); padding: 2rem; border-radius: 15px; margin-top: 3rem; border: 2px solid rgba(0,255,136,0.5);">
-        <h3 style="color: #00ff88; margin-top: 0; font-size: 1.6rem;">✅ Ready for Chapter 02?</h3>
-        <p style="font-size: 1.2rem; line-height: 1.8; margin-bottom: 1rem;">
-            <strong>Congratulations!</strong> You now understand what programming is and how to think like a programmer.
-        </p>
-        <p style="font-size: 1.15rem; line-height: 1.8;">
-            <strong style="color: #00ff88;">Next up:</strong> <a href="programming-ch02.html" style="color: #00ccff; text-decoration: underline;">Chapter 02: Python Basics</a>
-            <br>Time to write actual code and see these concepts in action!
-        </p>
-    </div>
-</div>
+# The = sign is the "assignment operator"
+# It puts the value on the right INTO the variable on the left
 
-                <div style="display: flex; gap: 2rem; margin-top: 3rem;">
-                    <a href="roadmap-programming.html" style="flex: 1; background: linear-gradient(135deg, rgba(0,204,255,0.2) 0%, rgba(138,43,226,0.2) 100%); padding: 2rem; border-radius: 15px; text-decoration: none; border: 2px solid rgba(0,204,255,0.4); transition: all 0.3s;">
-                        <div style="color: #00ccff; font-size: 0.9rem; margin-bottom: 0.5rem;">← PREVIOUS</div>
-                        <div style="color: #fff; font-size: 1.1rem; font-weight: 600;">Roadmap</div>
-                    </a>
-                    <a href="programming-ch02.html" style="flex: 1; background: linear-gradient(135deg, rgba(0,255,136,0.2) 0%, rgba(0,204,255,0.2) 100%); padding: 2rem; border-radius: 15px; text-decoration: none; border: 2px solid rgba(0,255,136,0.4); transition: all 0.3s; text-align: right;">
-                        <div style="color: #00ff88; font-size: 0.9rem; margin-bottom: 0.5rem;">NEXT →</div>
-                        <div style="color: #fff; font-size: 1.1rem; font-weight: 600;">Chapter 02</div>
-                    </a>
+name = "Alice"           # Create variable 'name', assign string "Alice"
+age = 25                 # Create variable 'age', assign integer 25
+height = 5.6             # Create variable 'height', assign float 5.6
+is_student = True        # Create variable 'is_student', assign boolean True
+
+# ==================== USING VARIABLES ====================
+
+print("Name:", name)
+print("Age:", age)
+print("Height:", height)
+print("Student?", is_student)
+
+# Output:
+# Name: Alice
+# Age: 25
+# Height: 5.6
+# Student? True
+
+# ==================== VARIABLES REMEMBER VALUES ====================
+
+# Calculate with variables
+birth_year = 2024 - age
+print("Born in:", birth_year)   # Born in: 1999
+
+# Combine variables
+greeting = "Hello, " + name + "!"
+print(greeting)                  # Hello, Alice!
+
+# ==================== NO DECLARATION NEEDED ====================
+
+# In Python, you don't declare variable types
+# The type is determined by the value you assign
+
+x = 5         # x is an integer
+x = "hello"   # now x is a string
+x = 3.14      # now x is a float
+
+# This flexibility is called "dynamic typing"
+# It's convenient but be careful - know what type you're working with!</div>
+
+            <h3>Variable Naming Rules</h3>
+            <div class="code"># ==================== VALID VARIABLE NAMES ====================
+
+name = "Alice"              # Simple lowercase
+user_name = "bob"           # Snake_case (Python convention!)
+userName = "charlie"        # camelCase (works but not Pythonic)
+age2 = 30                   # Numbers allowed (not at start)
+_private = "secret"         # Underscore start (convention: internal use)
+__dunder__ = "special"      # Double underscore (Python internals)
+MAX_SIZE = 100              # ALL_CAPS (convention: constants)
+
+# ==================== INVALID VARIABLE NAMES ====================
+
+2fast = "error"             # ❌ Can't START with a number
+my-name = "error"           # ❌ No hyphens (Python thinks it's subtraction)
+my name = "error"           # ❌ No spaces
+class = "error"             # ❌ Can't use reserved words
+
+# ==================== RESERVED WORDS (Can't Use These) ====================
+
+# False, True, None
+# and, or, not
+# if, elif, else
+# for, while, break, continue
+# def, return, class, import, from
+# try, except, finally, raise
+# ... and more
+
+# ==================== PYTHON CONVENTIONS (PEP 8) ====================
+
+# Variables: snake_case (lowercase with underscores)
+user_first_name = "John"    # ✅ Pythonic
+userFirstName = "John"      # ⚠️ Works but not Python style
+
+# Constants: UPPER_CASE
+MAX_CONNECTIONS = 100
+PI = 3.14159
+
+# Classes: PascalCase (you'll learn this later)
+# class UserAccount:
+
+# Private: _single_underscore
+_internal_value = "don't touch"
+
+# ==================== BE DESCRIPTIVE ====================
+
+# Bad names (avoid):
+x = 5
+temp = "john@email.com"
+data = [1, 2, 3]
+
+# Good names (prefer):
+user_age = 5
+user_email = "john@email.com"
+scores = [1, 2, 3]</div>
+
+            <h3>Variables Can Change</h3>
+            <div class="code"># ==================== REASSIGNMENT ====================
+
+# Variables can be given new values at any time
+
+score = 0
+print("Starting score:", score)  # 0
+
+score = 10
+print("After level 1:", score)   # 10
+
+score = 50
+print("After level 2:", score)   # 50
+
+# ==================== USING CURRENT VALUE IN CALCULATION ====================
+
+# You can use a variable's current value to calculate its new value
+
+score = score + 15    # Take current score (50), add 15, store result (65)
+print("After bonus:", score)     # 65
+
+score = score * 2     # Take current (65), multiply by 2, store (130)
+print("Doubled:", score)         # 130
+
+# ==================== SHORTHAND OPERATORS ====================
+
+# Python has shortcuts for common operations:
+
+score = 100
+
+score += 10    # Same as: score = score + 10    → 110
+score -= 5     # Same as: score = score - 5     → 105
+score *= 2     # Same as: score = score * 2     → 210
+score /= 3     # Same as: score = score / 3     → 70.0
+score //= 2    # Same as: score = score // 2    → 35.0
+score %= 10    # Same as: score = score % 10    → 5.0
+score **= 2    # Same as: score = score ** 2    → 25.0
+
+# ==================== MULTIPLE ASSIGNMENT ====================
+
+# Assign same value to multiple variables:
+a = b = c = 0
+print(a, b, c)  # 0 0 0
+
+# Assign different values on one line:
+x, y, z = 1, 2, 3
+print(x, y, z)  # 1 2 3
+
+# Swap variables (Python magic!):
+x, y = 10, 20
+print(x, y)     # 10 20
+x, y = y, x     # Swap!
+print(x, y)     # 20 10</div>
+
+            <h3>Variable Scope (Preview)</h3>
+            <div class="info-box">
+                <h4>Where Variables Exist</h4>
+                <p>Variables have a "scope" - the part of your program where they can be used. For now, know that:</p>
+                <ul style="margin-top: 1rem;">
+                    <li>Variables created at the top level of your script are available everywhere</li>
+                    <li>Variables created inside functions are only available inside that function</li>
+                    <li>You must create a variable before you can use it</li>
+                </ul>
+                <p style="margin-top: 1rem;">We'll cover this in depth when we learn about functions in Chapter 03.</p>
+            </div>
+
+            <div class="code"># ==================== COMMON MISTAKES ====================
+
+# Mistake 1: Using a variable before creating it
+print(undefined_variable)    # ❌ NameError: name 'undefined_variable' is not defined
+
+# Mistake 2: Case matters!
+Name = "Alice"
+print(name)                  # ❌ NameError: 'name' is not defined
+print(Name)                  # ✅ Works
+
+# Mistake 3: Forgetting it's assignment, not math equality
+x = 5
+x = x + 1    # This is NOT saying "x equals x plus 1" (impossible!)
+             # This is saying "calculate x+1, then store it in x"</div>
+        </section>
+
+        <section id="data-types" class="section">
+            <h2 class="section-title">Data Types: Different Kinds of Data</h2>
+            <p class="section-intro">Not all data is the same. Numbers, text, and true/false values are fundamentally different, and Python handles them differently. Understanding data types is crucial - many bugs come from mixing types incorrectly.</p>
+
+            <div class="metaphor-box">
+                <h4>🗂️ The Filing Cabinet Metaphor</h4>
+                <p>Think of data types like different types of documents in a filing cabinet:</p>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>Strings:</strong> Letters and documents (text you can read)</li>
+                    <li><strong>Integers:</strong> Whole number counts (how many pages)</li>
+                    <li><strong>Floats:</strong> Measurements with decimals (weight of the file)</li>
+                    <li><strong>Booleans:</strong> Yes/No stamps (approved or not)</li>
+                </ul>
+                <p style="margin-top: 1rem;">You can't "add" a letter to a page count - that doesn't make sense. Same in Python: you can't add a string to a number without converting first.</p>
+            </div>
+
+            <h3>The Core Data Types</h3>
+            <div class="card-grid">
+                <div class="card">
+                    <h4>📝 Strings (str)</h4>
+                    <p>Text data - characters, words, sentences. Always in quotes (single or double).</p>
+                    <div class="code" style="margin-top: 1rem; font-size: 0.8rem;">name = "Alice"
+message = 'Hello!'
+long_text = """Multiple
+lines of
+text"""
+empty = ""</div>
+                </div>
+                <div class="card">
+                    <h4>🔢 Integers (int)</h4>
+                    <p>Whole numbers - positive, negative, or zero. No decimal points.</p>
+                    <div class="code" style="margin-top: 1rem; font-size: 0.8rem;">age = 25
+count = -10
+big = 1000000
+zero = 0
+binary = 0b1010  # 10</div>
+                </div>
+                <div class="card">
+                    <h4>📊 Floats (float)</h4>
+                    <p>Decimal numbers - any number with a decimal point.</p>
+                    <div class="code" style="margin-top: 1rem; font-size: 0.8rem;">price = 19.99
+pi = 3.14159
+temp = -5.5
+sci = 2.5e6  # 2500000.0</div>
+                </div>
+                <div class="card">
+                    <h4>✓/✗ Booleans (bool)</h4>
+                    <p>True or False - only two possible values. Used for logic and decisions.</p>
+                    <div class="code" style="margin-top: 1rem; font-size: 0.8rem;">is_active = True
+game_over = False
+# Note: Capital T and F!</div>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <script src="script.js"></script>
+            <h3>Deep Dive: Strings</h3>
+            <div class="code"># ==================== CREATING STRINGS ====================
+
+# Single or double quotes - both work
+name = "Alice"
+name = 'Alice'
+
+# Use opposite quotes to include quotes in text
+message = "She said 'Hello'"
+message = 'She said "Hello"'
+
+# Triple quotes for multi-line strings
+poem = """Roses are red,
+Violets are blue,
+Python is awesome,
+And so are you."""
+
+# ==================== STRING OPERATIONS ====================
+
+# Concatenation (joining)
+first = "Hello"
+second = "World"
+greeting = first + " " + second   # "Hello World"
+
+# Repetition
+laugh = "Ha" * 3                   # "HaHaHa"
+line = "-" * 20                    # "--------------------"
+
+# Length
+message = "Hello"
+print(len(message))                # 5
+
+# ==================== ACCESSING CHARACTERS ====================
+
+# Strings are indexed (positions start at 0!)
+word = "Python"
+#       012345
+
+print(word[0])    # 'P' (first character)
+print(word[1])    # 'y' (second character)
+print(word[-1])   # 'n' (last character)
+print(word[-2])   # 'o' (second to last)
+
+# Slicing (getting parts of a string)
+print(word[0:3])  # 'Pyt' (characters 0, 1, 2)
+print(word[2:])   # 'thon' (from position 2 to end)
+print(word[:4])   # 'Pyth' (from start to position 3)
+
+# ==================== STRING METHODS ====================
+
+text = "Hello World"
+
+print(text.upper())       # "HELLO WORLD"
+print(text.lower())       # "hello world"
+print(text.title())       # "Hello World"
+print(text.replace("World", "Python"))  # "Hello Python"
+print(text.split())       # ['Hello', 'World'] (list!)
+print(text.find("World")) # 6 (starting position)
+print(text.count("l"))    # 3 (how many times)
+print(text.startswith("Hello"))  # True
+print(text.endswith("!"))        # False
+
+# Strip whitespace
+messy = "   extra spaces   "
+print(messy.strip())      # "extra spaces"</div>
+
+            <h3>Deep Dive: Numbers</h3>
+            <div class="code"># ==================== INTEGERS ====================
+
+count = 42
+negative = -17
+big_number = 1_000_000    # Underscores for readability (Python 3.6+)
+
+# Different bases
+binary = 0b1010      # Binary (base 2) = 10
+octal = 0o17         # Octal (base 8) = 15
+hexadecimal = 0xFF   # Hexadecimal (base 16) = 255
+
+# ==================== FLOATS ====================
+
+price = 19.99
+tiny = 0.000001
+scientific = 2.5e6   # 2.5 × 10^6 = 2500000.0
+negative_exp = 1e-3  # 0.001
+
+# ⚠️ Float precision warning!
+print(0.1 + 0.2)     # 0.30000000000000004 (not exactly 0.3!)
+# This is due to how computers represent decimals
+# For money, use the decimal module instead
+
+# ==================== INTEGER VS FLOAT DIVISION ====================
+
+print(10 / 3)    # 3.3333... (regular division - always float)
+print(10 // 3)   # 3 (floor division - always rounds down to int)
+print(10 % 3)    # 1 (modulo - remainder)
+
+# ==================== NUMBER FUNCTIONS ====================
+
+print(abs(-5))        # 5 (absolute value)
+print(round(3.7))     # 4 (round to nearest int)
+print(round(3.14159, 2))  # 3.14 (round to 2 decimals)
+print(min(1, 5, 3))   # 1 (minimum)
+print(max(1, 5, 3))   # 5 (maximum)
+print(pow(2, 3))      # 8 (2 to the power of 3)
+
+# For more math: import math
+import math
+print(math.sqrt(16))  # 4.0 (square root)
+print(math.floor(3.9)) # 3 (round down)
+print(math.ceil(3.1))  # 4 (round up)</div>
+
+            <h3>Checking Types</h3>
+            <div class="code"># The type() function tells you what type something is
+
+print(type("Hello"))      # &lt;class 'str'&gt;
+print(type(42))           # &lt;class 'int'&gt;
+print(type(3.14))         # &lt;class 'float'&gt;
+print(type(True))         # &lt;class 'bool'&gt;
+
+# ==================== WHY THIS MATTERS ====================
+
+# These look similar but behave VERY differently:
+"5" + "5"       # "55"  (string concatenation)
+5 + 5           # 10    (addition)
+
+"5" * 3         # "555" (string repetition)
+5 * 3           # 15    (multiplication)
+
+# This causes an error:
+# "5" + 5       # ❌ TypeError: can't add str and int
+
+# ==================== CHECKING TYPES IN CODE ====================
+
+value = "42"
+
+if type(value) == str:
+    print("It's a string!")
     
-    <!-- Supabase Client & Auth -->
-    <!-- Supabase Client & Auth -->
-    </body>
+# Better way - isinstance():
+if isinstance(value, str):
+    print("It's a string!")
+    
+if isinstance(value, (int, float)):
+    print("It's a number!")</div>
+
+            <h3>Converting Types (Casting)</h3>
+            <div class="code"># ==================== TYPE CONVERSION FUNCTIONS ====================
+
+# str() - convert to string
+str(42)          # "42"
+str(3.14)        # "3.14"
+str(True)        # "True"
+
+# int() - convert to integer
+int("42")        # 42
+int(3.99)        # 3 (truncates, doesn't round!)
+int(True)        # 1
+int(False)       # 0
+# int("3.14")    # ❌ Error! Can't convert float string directly
+int(float("3.14"))  # 3 (convert to float first, then int)
+
+# float() - convert to float
+float("3.14")    # 3.14
+float(42)        # 42.0
+float("42")      # 42.0
+
+# bool() - convert to boolean
+bool(1)          # True
+bool(0)          # False
+bool("")         # False (empty string)
+bool("hello")    # True (non-empty string)
+bool([])         # False (empty list)
+bool([1, 2])     # True (non-empty list)
+
+# ==================== ESSENTIAL FOR USER INPUT ====================
+
+# input() ALWAYS returns a string!
+age_str = input("Enter your age: ")   # User types "25"
+print(type(age_str))                   # &lt;class 'str'&gt;
+
+# To do math, convert to number:
+age_num = int(age_str)                 # Now it's 25 (integer)
+next_year = age_num + 1                # Can do math now!
+
+# Or convert in one step:
+age = int(input("Enter your age: "))
+
+# For decimals:
+price = float(input("Enter price: "))</div>
+
+            <div class="warning-box">
+                <h4>⚠️ Type Conversion Errors</h4>
+                <p>Not all conversions work! These will crash your program:</p>
+                <div class="code" style="margin-top: 1rem; font-size: 0.8rem;">int("hello")      # ❌ ValueError: invalid literal
+int("3.14")       # ❌ ValueError: invalid literal (use float() first)
+int("")           # ❌ ValueError: invalid literal</div>
+                <p style="margin-top: 1rem;">Always validate user input or use try/except (covered in a later chapter).</p>
+            </div>
+        </section>
+
+        <section id="operators" class="section">
+            <h2 class="section-title">Operators: Doing Things With Data</h2>
+            <p class="section-intro">Operators let you perform actions on data - math, comparisons, logic, and more. They're the verbs of programming. Variables hold nouns (data), operators are the verbs (actions).</p>
+
+            <div class="metaphor-box">
+                <h4>🧮 The Calculator Analogy</h4>
+                <p>Think of operators like buttons on a calculator. Each button (operator) takes numbers (operands) and does something with them. The + button adds, the × button multiplies. Programming operators work the same way, but you type them instead of pressing buttons, and they work on more than just numbers!</p>
+            </div>
+
+            <h3>Arithmetic Operators (Math)</h3>
+            <div class="code"># ==================== BASIC ARITHMETIC ====================
+
+10 + 3      # 13    Addition
+10 - 3      # 7     Subtraction
+10 * 3      # 30    Multiplication
+10 / 3      # 3.333... Division (always returns float!)
+10 // 3     # 3     Floor division (rounds DOWN to integer)
+10 % 3      # 1     Modulo (remainder after division)
+10 ** 3     # 1000  Exponent (10 to the power of 3)
+
+# ==================== UNDERSTANDING FLOOR DIVISION ====================
+
+# Regular division always gives a float:
+15 / 4      # 3.75
+
+# Floor division rounds DOWN to nearest integer:
+15 // 4     # 3 (not 4!)
+-15 // 4    # -4 (rounds towards negative infinity, not towards zero!)
+
+# ==================== UNDERSTANDING MODULO ====================
+
+# Modulo gives the REMAINDER after division
+# Very useful for many programming tasks!
+
+17 % 5      # 2  (17 = 5*3 + 2, remainder is 2)
+20 % 5      # 0  (20 = 5*4 + 0, no remainder - evenly divisible)
+7 % 2       # 1  (7 is odd)
+8 % 2       # 0  (8 is even)
+
+# Common uses of modulo:
+# - Check if number is even or odd: n % 2 == 0 means even
+# - Wrap around (clocks, circular arrays)
+# - Extract digits: 1234 % 10 gives 4 (last digit)
+
+# ==================== ORDER OF OPERATIONS (PEMDAS) ====================
+
+# Just like in math class:
+# P - Parentheses first
+# E - Exponents
+# M/D - Multiplication and Division (left to right)
+# A/S - Addition and Subtraction (left to right)
+
+2 + 3 * 4       # 14 (NOT 20! Multiplication first)
+(2 + 3) * 4     # 20 (Parentheses first)
+2 ** 3 ** 2     # 512 (Exponents: right to left! = 2^9)
+10 - 3 - 2      # 5 (Left to right: (10-3)-2)
+10 / 2 * 5      # 25.0 (Left to right: (10/2)*5)
+
+# When in doubt, use parentheses! Makes code clearer too.
+result = (10 + 5) * (3 - 1) / 2   # Much clearer than 10+5*3-1/2</div>
+
+            <h3>Comparison Operators</h3>
+            <div class="code"># Comparisons always return True or False (booleans)
+# These are fundamental for making decisions in programs
+
+# ==================== THE SIX COMPARISON OPERATORS ====================
+
+10 == 10    # True   Equal to (two equals signs!)
+10 != 5     # True   Not equal to
+10 > 5      # True   Greater than
+10 < 5      # False  Less than
+10 >= 10    # True   Greater than OR equal to
+10 <= 5     # False  Less than OR equal to
+
+# ==================== CRITICAL DISTINCTION ====================
+
+x = 5       # ASSIGNMENT: Put 5 into the variable x
+x == 5      # COMPARISON: Is x equal to 5? Returns True
+
+# This is the #1 mistake beginners make!
+# = assigns, == compares
+
+# ==================== COMPARING DIFFERENT TYPES ====================
+
+# Comparing strings (alphabetical order):
+"apple" < "banana"     # True (a comes before b)
+"Apple" < "banana"     # True (uppercase < lowercase in ASCII)
+"abc" < "abcd"         # True (shorter comes first if prefix matches)
+
+# Comparing with different types:
+5 == 5.0               # True (int and float can be compared)
+"5" == 5               # False (string and int are NEVER equal)
+5 > "5"                # ❌ TypeError! Can't compare str and int
+
+# ==================== CHAINING COMPARISONS ====================
+
+# Python allows this (unique to Python!):
+x = 5
+1 < x < 10             # True (is x between 1 and 10?)
+# This is equivalent to:
+1 < x and x < 10       # True
+
+# You can chain as many as you want:
+1 < 2 < 3 < 4 < 5      # True</div>
+
+            <h3>Logical Operators (Boolean Logic)</h3>
+            <div class="code"># Combine or modify boolean values
+# These are the foundation of decision making
+
+# ==================== AND - Both must be True ====================
+
+True and True      # True
+True and False     # False
+False and True     # False
+False and False    # False
+
+# Real example:
+age = 25
+has_license = True
+can_drive = age >= 16 and has_license    # True
+
+# ==================== OR - At least one must be True ====================
+
+True or True       # True
+True or False      # True
+False or True      # True
+False or False     # False
+
+# Real example:
+is_weekend = True
+is_holiday = False
+day_off = is_weekend or is_holiday    # True
+
+# ==================== NOT - Reverses the boolean ====================
+
+not True           # False
+not False          # True
+
+# Real example:
+logged_in = False
+show_login_button = not logged_in     # True
+
+# ==================== COMBINING OPERATORS ====================
+
+age = 25
+has_id = True
+is_member = False
+
+# Complex condition:
+can_enter = (age >= 18 and has_id) or is_member
+
+# Use parentheses for clarity!
+# Without them, "and" is evaluated before "or"
+
+# ==================== SHORT-CIRCUIT EVALUATION ====================
+
+# Python stops evaluating as soon as result is known:
+
+# With 'and': if first is False, second isn't evaluated
+False and (1/0)    # Returns False (doesn't crash!)
+
+# With 'or': if first is True, second isn't evaluated
+True or (1/0)      # Returns True (doesn't crash!)
+
+# This is useful for safety checks:
+name = ""
+# This won't crash even if name is empty:
+if name and name[0] == "A":
+    print("Name starts with A")</div>
+
+            <h3>Assignment Operators</h3>
+            <div class="code"># ==================== BASIC ASSIGNMENT ====================
+
+x = 10      # Simple assignment
+
+# ==================== COMPOUND ASSIGNMENT (AUGMENTED ASSIGNMENT) ====================
+
+# Instead of:  x = x + 5
+# You can write:
+x += 5      # Add and assign (x is now 15)
+x -= 3      # Subtract and assign (x is now 12)
+x *= 2      # Multiply and assign (x is now 24)
+x /= 4      # Divide and assign (x is now 6.0)
+x //= 2     # Floor divide and assign (x is now 3.0)
+x **= 2     # Power and assign (x is now 9.0)
+x %= 4      # Modulo and assign (x is now 1.0)
+
+# ==================== STRING AUGMENTED ASSIGNMENT ====================
+
+message = "Hello"
+message += " World"    # "Hello World"
+message += "!"         # "Hello World!"
+
+# ==================== WHY USE THESE? ====================
+
+# 1. Shorter to write
+# 2. Clearer intent
+# 3. Slightly more efficient (variable accessed once)
+
+# Real example - counting:
+count = 0
+count += 1    # count is 1
+count += 1    # count is 2
+count += 1    # count is 3</div>
+
+            <h3>Membership & Identity Operators</h3>
+            <div class="code"># ==================== MEMBERSHIP: in, not in ====================
+
+# Check if something exists in a collection
+
+"a" in "apple"              # True
+"x" in "apple"              # False
+"x" not in "apple"          # True
+
+5 in [1, 2, 3, 4, 5]        # True
+6 in [1, 2, 3, 4, 5]        # False
+
+"key" in {"key": "value"}   # True (checks keys in dicts)
+
+# Very readable and Pythonic:
+if username in admin_list:
+    grant_access()
+
+# ==================== IDENTITY: is, is not ====================
+
+# Checks if two variables point to the SAME object in memory
+# Different from == which checks if values are equal
+
+a = [1, 2, 3]
+b = [1, 2, 3]
+c = a
+
+a == b      # True (same values)
+a is b      # False (different objects in memory)
+a is c      # True (c points to same object as a)
+
+# ==================== WHEN TO USE 'is' ====================
+
+# Almost always use == for comparisons
+# Use 'is' only for:
+
+# 1. Comparing to None
+x = None
+if x is None:           # Correct
+    print("x is None")
+# if x == None:         # Works but not recommended
+
+# 2. Comparing to True/False (rare)
+if flag is True:        # Explicit boolean check
+    do_something()
+
+# Why? None, True, False are "singletons" - only one instance exists</div>
+
+            <div class="info-box">
+                <h4>Operator Precedence (from highest to lowest)</h4>
+                <table style="width: 100%; margin-top: 1rem; border-collapse: collapse;">
+                    <tr style="border-bottom: 1px solid rgba(0,255,157,0.3);"><td style="padding: 0.5rem;">( )</td><td>Parentheses</td></tr>
+                    <tr style="border-bottom: 1px solid rgba(0,255,157,0.3);"><td style="padding: 0.5rem;">**</td><td>Exponent</td></tr>
+                    <tr style="border-bottom: 1px solid rgba(0,255,157,0.3);"><td style="padding: 0.5rem;">+x, -x</td><td>Unary plus/minus</td></tr>
+                    <tr style="border-bottom: 1px solid rgba(0,255,157,0.3);"><td style="padding: 0.5rem;">*, /, //, %</td><td>Multiplication, division, modulo</td></tr>
+                    <tr style="border-bottom: 1px solid rgba(0,255,157,0.3);"><td style="padding: 0.5rem;">+, -</td><td>Addition, subtraction</td></tr>
+                    <tr style="border-bottom: 1px solid rgba(0,255,157,0.3);"><td style="padding: 0.5rem;">&lt;, &lt;=, >, >=, ==, !=</td><td>Comparisons</td></tr>
+                    <tr style="border-bottom: 1px solid rgba(0,255,157,0.3);"><td style="padding: 0.5rem;">not</td><td>Logical NOT</td></tr>
+                    <tr style="border-bottom: 1px solid rgba(0,255,157,0.3);"><td style="padding: 0.5rem;">and</td><td>Logical AND</td></tr>
+                    <tr><td style="padding: 0.5rem;">or</td><td>Logical OR</td></tr>
+                </table>
+                <p style="margin-top: 1rem; font-style: italic;">When in doubt, use parentheses to make your intent clear!</p>
+            </div>
+        </section>
+
+        <section id="input-output" class="section">
+            <h2 class="section-title">Input & Output: Interacting with Users</h2>
+            <p class="section-intro">Programs need to communicate with users. Output displays information (print). Input receives information from users (input). Mastering I/O is essential - every useful program needs to interact with the outside world.</p>
+
+            <div class="metaphor-box">
+                <h4>💬 The Conversation Metaphor</h4>
+                <p><strong>Output (print):</strong> The program talking TO you - displaying messages, results, and information.</p>
+                <p style="margin-top: 0.5rem;"><strong>Input (input):</strong> The program listening to you - waiting for you to type something and pressing Enter.</p>
+                <p style="margin-top: 0.5rem;">A program with only output is like someone who talks but never listens. A program with only input is like someone who listens but never responds. Good programs have balanced conversations!</p>
+            </div>
+
+            <h3>The print() Function - Deep Dive</h3>
+            <div class="code"># ==================== BASIC PRINTING ====================
+
+print("Hello, World!")              # Simple text
+print(42)                           # Numbers
+print(3.14159)                      # Floats
+print(True)                         # Booleans
+print()                             # Empty line (blank line)
+
+# ==================== PRINTING MULTIPLE THINGS ====================
+
+name = "Alice"
+age = 25
+
+# Multiple arguments (separated by spaces automatically):
+print("Name:", name, "Age:", age)
+# Output: Name: Alice Age: 25
+
+# How it works:
+# - Each argument is converted to string
+# - Arguments are joined with spaces (default separator)
+# - A newline is added at the end (default ending)
+
+# ==================== CUSTOMIZING PRINT BEHAVIOR ====================
+
+# sep= changes what goes between arguments
+print("A", "B", "C")                # A B C (default space)
+print("A", "B", "C", sep="")        # ABC (no separator)
+print("A", "B", "C", sep="-")       # A-B-C
+print("A", "B", "C", sep="\n")      # Each on new line
+
+# end= changes what goes at the end (default is newline)
+print("Loading", end="")            # No newline after
+print("...")                        # Continues on same line
+# Output: Loading...
+
+# Useful for progress indicators:
+print("Processing", end=" ")
+print(".", end=" ")
+print(".", end=" ")
+print("Done!")
+# Output: Processing . . Done!
+
+# ==================== ESCAPE SEQUENCES ====================
+
+# Special characters in strings:
+print("Hello\nWorld")       # \n = newline
+# Output:
+# Hello
+# World
+
+print("Name:\tAlice")       # \t = tab
+# Output: Name:   Alice
+
+print("She said \"Hi\"")    # \" = literal quote
+# Output: She said "Hi"
+
+print("C:\\Users\\name")    # \\ = literal backslash
+# Output: C:\Users\name
+
+print("Line1\nLine2\nLine3")
+# Output:
+# Line1
+# Line2
+# Line3
+
+# ==================== RAW STRINGS ====================
+
+# r"..." treats backslashes as literal:
+print(r"C:\Users\name")     # No need to escape
+# Output: C:\Users\name
+
+# Useful for: file paths, regex patterns</div>
+
+            <h3>The input() Function - Deep Dive</h3>
+            <div class="code"># ==================== BASIC INPUT ====================
+
+name = input("What is your name? ")
+# What happens:
+# 1. "What is your name? " is displayed (the prompt)
+# 2. Program PAUSES and waits
+# 3. User types something and presses Enter
+# 4. Whatever they typed is returned as a STRING
+# 5. That string is assigned to 'name'
+
+print(f"Hello, {name}!")
+
+# ==================== CRITICAL RULE ====================
+# input() ALWAYS returns a STRING, even if the user types numbers!
+
+user_input = input("Enter a number: ")   # User types: 42
+print(type(user_input))                   # &lt;class 'str'&gt;
+print(user_input + user_input)            # "4242" (string concatenation!)
+
+# To do math, you MUST convert:
+number = int(user_input)                  # Now it's the integer 42
+print(number + number)                    # 84 (actual addition!)
+
+# ==================== CONVERTING INPUT ====================
+
+# For integers:
+age = int(input("Enter your age: "))
+
+# For decimals:
+height = float(input("Enter your height in meters: "))
+
+# For single character (first character only):
+initial = input("Enter your first initial: ")[0]
+
+# For yes/no (convert to boolean):
+response = input("Continue? (y/n): ")
+wants_to_continue = response.lower() == 'y'
+
+# ==================== HANDLING BAD INPUT ====================
+
+# What if the user types "hello" when you ask for a number?
+# int("hello")  → CRASH! ValueError
+
+# Solution 1: Validate the input
+user_input = input("Enter a number: ")
+if user_input.isdigit():
+    number = int(user_input)
+else:
+    print("That's not a valid number!")
+
+# Solution 2: try/except (covered in later chapter)
+try:
+    number = int(input("Enter a number: "))
+except ValueError:
+    print("Invalid number!")
+    number = 0  # default value
+
+# ==================== INPUT WITHOUT A PROMPT ====================
+
+# You can call input() with no argument:
+data = input()  # Just waits, shows nothing
+
+# Usually you want a prompt though for user experience</div>
+
+            <h3>f-Strings: Modern String Formatting</h3>
+            <div class="code"># ==================== THE PROBLEM f-STRINGS SOLVE ====================
+
+name = "Alice"
+age = 25
+balance = 1234.5678
+
+# Old way #1 - Concatenation (ugly, error-prone):
+print("My name is " + name + " and I am " + str(age) + " years old")
+
+# Old way #2 - Multiple print arguments (limited formatting):
+print("My name is", name, "and I am", age, "years old")
+
+# Old way #3 - .format() method (verbose):
+print("My name is {} and I am {} years old".format(name, age))
+
+# ==================== f-STRINGS (BEST WAY) ====================
+
+# Put f before the string, use {variable} to insert values:
+print(f"My name is {name} and I am {age} years old")
+
+# Why f-strings are better:
+# ✓ Variables are right where they appear in the text
+# ✓ Any expression works inside the braces
+# ✓ Powerful formatting options
+# ✓ More readable and maintainable
+
+# ==================== EXPRESSIONS IN f-STRINGS ====================
+
+# You can put ANY Python expression inside {}:
+
+# Math:
+print(f"Next year I'll be {age + 1}")
+print(f"5 squared is {5 ** 2}")
+
+# Method calls:
+print(f"My name in uppercase: {name.upper()}")
+
+# Conditionals (ternary):
+print(f"Status: {'adult' if age >= 18 else 'minor'}")
+
+# Function calls:
+print(f"Length of name: {len(name)}")
+
+# ==================== FORMATTING NUMBERS ====================
+
+# {value:format_spec}
+
+price = 19.99
+big_num = 1234567
+fraction = 0.666666
+
+# Decimal places:
+print(f"Price: ${price:.2f}")        # $19.99 (2 decimals)
+print(f"Precise: {fraction:.4f}")    # 0.6667 (4 decimals)
+
+# Thousands separator:
+print(f"Population: {big_num:,}")    # 1,234,567
+
+# Percentage:
+ratio = 0.75
+print(f"Complete: {ratio:.0%}")      # 75%
+print(f"Complete: {ratio:.1%}")      # 75.0%
+
+# Padding and alignment:
+for i in range(1, 11):
+    print(f"{i:2} squared = {i**2:3}")
+# Output:
+#  1 squared =   1
+#  2 squared =   4
+# 10 squared = 100
+
+# ==================== FORMAT SPEC MINI-LANGUAGE ====================
+
+value = 42
+
+# Width (minimum characters):
+print(f"[{value:5}]")      # [   42] (right-aligned by default)
+print(f"[{value:<5}]")     # [42   ] (left-aligned)
+print(f"[{value:^5}]")     # [ 42  ] (center-aligned)
+print(f"[{value:>5}]")     # [   42] (right-aligned, explicit)
+
+# Fill character:
+print(f"[{value:*<5}]")    # [42***] (fill with *)
+print(f"[{value:0>5}]")    # [00042] (fill with 0, zero-padding)
+
+# Signs:
+pos = 42
+neg = -42
+print(f"{pos:+}")          # +42 (always show sign)
+print(f"{neg:+}")          # -42
+print(f"{pos: }")          # ' 42' (space for positive)</div>
+
+            <h3>Complete Example Program</h3>
+            <div class="code"># ==================== INTERACTIVE CALCULATOR ====================
+# Save this as calculator.py
+
+print("=" * 40)
+print("     🧮 PYTHON CALCULATOR 🧮")
+print("=" * 40)
+print()
+
+# Get user input
+print("Enter two numbers to calculate:")
+num1 = float(input("  First number: "))
+num2 = float(input("  Second number: "))
+
+# Perform calculations
+addition = num1 + num2
+subtraction = num1 - num2
+multiplication = num1 * num2
+
+# Handle division by zero
+if num2 != 0:
+    division = num1 / num2
+    floor_div = num1 // num2
+    modulo = num1 % num2
+else:
+    division = "Cannot divide by zero!"
+    floor_div = "Cannot divide by zero!"
+    modulo = "Cannot divide by zero!"
+
+# Display results
+print()
+print("📊 RESULTS:")
+print("-" * 40)
+print(f"  {num1} + {num2} = {addition}")
+print(f"  {num1} - {num2} = {subtraction}")
+print(f"  {num1} × {num2} = {multiplication}")
+print(f"  {num1} ÷ {num2} = {division}")
+
+if num2 != 0:
+    print(f"  {num1} // {num2} = {floor_div} (floor division)")
+    print(f"  {num1} % {num2} = {modulo} (remainder)")
+
+print()
+print("Thanks for using Python Calculator!")
+
+# ==================== SAMPLE RUN ====================
+# ========================================
+#      🧮 PYTHON CALCULATOR 🧮
+# ========================================
+#
+# Enter two numbers to calculate:
+#   First number: 17
+#   Second number: 5
+#
+# 📊 RESULTS:
+# ----------------------------------------
+#   17.0 + 5.0 = 22.0
+#   17.0 - 5.0 = 12.0
+#   17.0 × 5.0 = 85.0
+#   17.0 ÷ 5.0 = 3.4
+#   17.0 // 5.0 = 3.0 (floor division)
+#   17.0 % 5.0 = 2.0 (remainder)
+#
+# Thanks for using Python Calculator!</div>
+
+            <div class="info-box">
+                <h4>💡 Practice Challenge</h4>
+                <p>Create a "Personal Info Card" program that:</p>
+                <ol style="margin-top: 1rem;">
+                    <li>Asks for the user's name, age, city, and favorite hobby</li>
+                    <li>Calculates birth year from age</li>
+                    <li>Displays a nicely formatted "card" with all the information</li>
+                    <li>Uses f-strings for formatting</li>
+                </ol>
+                <p style="margin-top: 1rem;">Try it yourself before looking at solution in Chapter 2!</p>
+            </div>
+
+            <div class="warning-box">
+                <h4>⚠️ Common Beginner Mistakes</h4>
+                <ul style="margin-top: 0.5rem;">
+                    <li><strong>Forgetting f prefix:</strong> print("{name}") prints literally "{name}", not the variable value</li>
+                    <li><strong>Using wrong quotes:</strong> f'Name: {user's_name}' breaks - use f"Name: {user_name}" or escape</li>
+                    <li><strong>Not converting input:</strong> input("Age: ") + 1 crashes - use int(input("Age: ")) + 1</li>
+                    <li><strong>Forgetting the prompt:</strong> input() with no argument gives no indication to the user</li>
+                </ul>
+            </div>
+        </section>
+
+        <div style="margin-top: 6rem; padding-top: 3rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between;">
+            <a href="roadmap-programming.html" style="color: var(--text2); text-decoration: none;">← Back to Roadmap</a>
+            <a href="programming-ch02.html" style="color: var(--text); text-decoration: none; font-weight: 600;">Next: Chapter 02 - Control Flow →</a>
+        </div>
+    </main>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progress').style.width = scrolled + '%';
+        });
+
+        const sections = document.querySelectorAll('.section');
+        const sidebarLinks = document.querySelectorAll('.sidebar-link');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (scrollY >= (sectionTop - 150)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            sidebarLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
 </html>
-
-
-

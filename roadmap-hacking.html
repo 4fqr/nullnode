@@ -3,218 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="NullSector Ethical Hacking Roadmap — 11 comprehensive chapters, each 500,000+ words. The most detailed cybersecurity learning path ever created.">
-    <title>Ethical Hacking Roadmap - NullSector</title>
+    <meta name="description" content="NullSector Ethical Hacking Roadmap - 11 comprehensive chapters. The most detailed cybersecurity learning path ever created.">
+    <title>Hacking Roadmap - NullSector</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="favicon.ico">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <style>
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
-        }
-        .fade-in-up { animation: fadeInUp 0.6s ease-out forwards; opacity: 0; }
-        .delay-1 { animation-delay: 0.1s; }
-        .delay-2 { animation-delay: 0.2s; }
-        .roadmap-section { opacity: 0; animation: fadeInUp 0.5s ease-out forwards; }
-        .roadmap-section:nth-child(1) { animation-delay: 0.1s; }
-        .roadmap-section:nth-child(2) { animation-delay: 0.2s; }
-        .roadmap-section:nth-child(3) { animation-delay: 0.3s; }
-        .roadmap-section:nth-child(4) { animation-delay: 0.4s; }
-        .roadmap-section:nth-child(5) { animation-delay: 0.5s; }
-    </style>
 </head>
 <body>
-    <div class="stars"></div>
-    <div class="twinkling"></div>
-    
-    <!-- Animated Background Orbs -->
-    <div style="position: fixed; top: -10%; left: -5%; width: 40%; height: 40%; background: radial-gradient(circle, rgba(0,255,136,0.15) 0%, transparent 70%); border-radius: 50%; filter: blur(80px); animation: float 15s ease-in-out infinite; z-index: 0;"></div>
-    <div style="position: fixed; bottom: -10%; right: -5%; width: 50%; height: 50%; background: radial-gradient(circle, rgba(0,204,255,0.1) 0%, transparent 70%); border-radius: 50%; filter: blur(100px); animation: float 20s ease-in-out infinite reverse; z-index: 0;"></div>
-    
     <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-brand">
-                <a href="index.html"><img src="logo.svg" class="logo"><span class="brand-text">NullSector</span></a>
-            </div>
+        <div class="nav-content">
+            <a href="index.html" class="nav-logo">
+                <img src="logo.svg" alt="Logo">
+                <span class="logo-text">NullSector</span>
+            </a>
             <div class="nav-links">
-                <a href="choose-path.html" class="nav-link">Choose Path</a>
-                <a href="roadmap-programming.html" class="nav-link">Programming</a>
-                <a href="roadmap-hacking.html" class="nav-link active">Hacking</a>
-                <a href="resources.html" class="nav-link">Resources</a>
-                <a href="null-terminal.html" class="nav-link">Null Terminal</a>
-                <a href="faq.html" class="nav-link">FAQ</a>
-                <a href="https://discord.gg/Tz9Y3wea32" target="_blank" class="nav-link">Discord</a>
-            
-                                
-                <div id="userProfile" style="display: none; align-items: center; gap: 0.75rem;">
-                    <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <img id="userAvatar" style="width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--primary-color); cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="" />
-                        <span id="userName" style="color: var(--text-primary); font-weight: 500; font-size: 0.95rem; cursor: default;"></span>
-                    </div>
-                    <button id="logoutButton" class="nav-link" style="background: rgba(255, 95, 87, 0.1); border: 1px solid #ff5f57; padding: 0.4rem 1rem; border-radius: 6px; font-weight: 500; cursor: pointer; color: #ff5f57; transition: all 0.2s;" onmouseover="this.style.background='rgba(255, 95, 87, 0.2)'" onmouseout="this.style.background='rgba(255, 95, 87, 0.1)'">Logout</button>
-                </div>
+                <a href="roadmap-hacking.html" class="active">Hacking</a>
+                <a href="roadmap-programming.html">Programming</a>
+                <a href="null-terminal.html">Null Terminal</a>
+                <a href="faq.html">FAQs</a>
+                <a href="https://discord.gg/cMvWkxFbbX" target="_blank" class="discord-link">Discord</a>
             </div>
         </div>
     </nav>
 
-    <section class="content-page" style="position: relative; z-index: 1;">
+    <main class="content-wrapper">
         <div class="content-container">
-            <div class="breadcrumb fade-in-up" style="background: rgba(0,255,136,0.1); border: 1px solid rgba(0,255,136,0.3); padding: 1rem 1.5rem; border-radius: 12px; display: inline-flex; gap: 0.5rem; backdrop-filter: blur(10px);">
-                <a href="index.html" style="color: #00ff88; font-weight: 600; text-decoration: none; transition: all 0.2s;" onmouseover="this.style.color='#00cc6f'" onmouseout="this.style.color='#00ff88'">Home</a>
-                <span style="color: rgba(255,255,255,0.5);">/</span>
-                <a href="choose-path.html" style="color: #00ff88; font-weight: 600; text-decoration: none; transition: all 0.2s;" onmouseover="this.style.color='#00cc6f'" onmouseout="this.style.color='#00ff88'">Choose Path</a>
-                <span style="color: rgba(255,255,255,0.5);">/</span>
-                <span style="color: rgba(255,255,255,0.9); font-weight: 600;">Ethical Hacking</span>
+            <div class="breadcrumb">
+                <a href="index.html">Home</a> / <span>Hacking</span>
             </div>
             
-            <h1 class="page-title fade-in-up delay-1" style="font-size: clamp(3rem, 7vw, 5rem); font-weight: 900; margin: 3rem 0 1.5rem;"><span style="background: linear-gradient(135deg, #00ff88 0%, #00cc6f 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-shadow: 0 0 60px rgba(0,255,136,0.3);">🔒 Ethical Hacking Roadmap</span></h1>
-            <p class="page-subtitle fade-in-up delay-2" style="font-size: 1.4rem; color: rgba(255,255,255,0.85); max-width: 700px; line-height: 1.6; margin-bottom: 3rem;">From Zero to Cybersecurity Expert — Complete Learning Path</p>
+            <h1 class="page-title">Ethical Hacking Roadmap</h1>
+            <p class="page-subtitle" style="font-size: 1.4rem; color: rgba(255,255,255,0.85); max-width: 700px; line-height: 1.6; margin-bottom: 3rem;">From Zero to Cybersecurity Expert - Complete Learning Path</p>
 
-            <div class="key-takeaways" style="margin-bottom:3rem;">
-                <h3>🎯 What Makes This Roadmap Unique:</h3>
-                <ul>
-                    <li><strong>500,000+ words per chapter</strong> — Over 5.5 MILLION words total</li>
-                    <li><strong>Zero assumptions</strong> — Explained for someone who doesn't know how computers work</li>
-                    <li><strong>Metaphors for everything</strong> — Complex concepts made simple</li>
-                    <li><strong>Real-world examples</strong> — Every concept tied to practical applications</li>
-                    <li><strong>Hands-on labs</strong> — Practice exercises throughout</li>
-                    <li><strong>Security-first mindset</strong> — Learn offensive security to build better defenses</li>
+            <div class="key-takeaways" style="margin-bottom:3rem; background: rgba(17,17,17,0.8); padding: 2rem; border-radius: 12px; border: 1px solid #222;">
+                <h3 style="margin-bottom: 1rem;">What Makes This Roadmap Unique:</h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin-bottom: 0.8rem;"><strong>Extremely comprehensive</strong> - Over 5.5 MILLION words total</li>
+                    <li style="margin-bottom: 0.8rem;"><strong>Zero assumptions</strong> - Explained for someone who doesn't know how computers work</li>
+                    <li style="margin-bottom: 0.8rem;"><strong>Metaphors for everything</strong> - Complex concepts made simple</li>
+                    <li style="margin-bottom: 0.8rem;"><strong>Real-world examples</strong> - Every concept tied to practical applications</li>
+                    <li style="margin-bottom: 0.8rem;"><strong>Hands-on labs</strong> - Practice exercises throughout</li>
+                    <li style="margin-bottom: 0.8rem;"><strong>Security-first mindset</strong> - Learn offensive security to build better defenses</li>
                 </ul>
-                <p><strong>Complete Education:</strong> Comprehensive curriculum from fundamentals to advanced techniques.</p>
+                <p style="margin-top: 1.5rem; color: #888;"><strong>Learning Approach:</strong> Take your time, set up labs, and practice. You're building a complete cybersecurity foundation.</p>
+                
+                <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #333;">
+                    <h4 style="margin-bottom: 1rem; color: #fff;">🎯 Our Commitment to Your Success</h4>
+                    <p style="color: #aaa; line-height: 1.8;"><strong>We won't stop without making you learn everything and understand it thoroughly.</strong> This roadmap is just an underestimated outline - the actual depth and breadth of what you'll learn goes far beyond what's listed here.</p>
+                    <p style="color: #aaa; line-height: 1.8; margin-top: 1rem;">Every concept will be explained <strong>from the ground up</strong>, with metaphors, examples, and hands-on practice. No assumptions, no gaps in knowledge. You'll build a <strong>rock-solid foundation</strong> in ethical hacking and cybersecurity.</p>
+                    <p style="color: #888; margin-top: 1rem; font-size: 0.95rem;">💬 <strong>Have questions or doubts?</strong> Join our <a href="https://discord.gg/cMvWkxFbbX" style="color: #5865F2; text-decoration: none; font-weight: 600;">Discord community</a> - we're here to support your journey!</p>
+                </div>
             </div>
 
             <div class="roadmap-content">
                 
-                <!-- Chapter 01 -->
-                <a href="hacking-ch01.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit; transition: all 0.3s;">
+                <a href="hacking-ch01.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit; background: rgba(17,17,17,0.5); padding: 2rem; border-radius: 12px; border: 1px solid #222; margin-bottom: 1.5rem; transition: all 0.3s;">
                     <div class="roadmap-number">01</div>
-                    <h2>Computer Fundamentals</h2>
-                    <p>Understanding computers from absolute zero — hardware, software, binary, operating systems, file systems, permissions, processes, networking basics, command line, and programming introduction.</p>
-                    <p><strong>Topics:</strong> CPU/RAM/Storage, Binary/Hex, OS Internals, Files & Permissions, Processes, Networking, Terminal, Python Basics</p>
-                    <p style="color: var(--primary-color); margin-top: 1rem;">📖 500,000+ words • ⏱️ Recommended Learning Time: 30 mins - 1 hr</p>
+                    <h2 style="margin-top: 1rem;">Computer Fundamentals</h2>
+                    <p>Understanding computers from absolute zero - hardware, software, binary, operating systems, file systems, permissions, processes, networking basics, command line, and programming introduction.</p>
+                    <p><strong>Topics:</strong> Hardware, Software, Binary, OS, File Systems, Permissions, Processes, Networking, CLI</p>
+                    <p style="color: #888; margin-top: 1rem;">Recommended Learning Time: 30 mins - 1 hr</p>
                 </a>
 
-                <!-- Chapter 02 -->
-                <a href="hacking-ch02.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit;">
+                <a href="hacking-ch02.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit; background: rgba(17,17,17,0.5); padding: 2rem; border-radius: 12px; border: 1px solid #222; margin-bottom: 1.5rem; transition: all 0.3s;">
                     <div class="roadmap-number">02</div>
-                    <h2>Deep Dive - Advanced Fundamentals</h2>
-                    <p>Advanced operating system internals, memory management, buffer overflows, OSI model, packet analysis, scripting mastery, version control, containers, debugging tools, and reverse engineering introduction.</p>
-                    <p><strong>Topics:</strong> Kernel Architecture, Memory Management, System Calls, OSI Model, Scripting, Git/Docker, GDB, Binary Analysis</p>
-                    <p style="color: var(--primary-color); margin-top: 1rem;">📖 Not that high • ⏱️ Take your time..</p>
+                    <h2 style="margin-top: 1rem;">Networking Fundamentals</h2>
+                    <p>Deep dive into how networks work - IP addressing, subnets, ports, protocols, TCP/IP model, routing, switching, DNS, DHCP, NAT, firewalls, and packet analysis. Understanding the invisible connections that power the internet.</p>
+                    <p><strong>Topics:</strong> IP Addressing, Subnets, Ports, Protocols, TCP/IP, Routing, DNS, Firewalls</p>
+                    <p style="color: #888; margin-top: 1rem;">Take your time...</p>
                 </a>
 
-                <!-- Chapter 03 -->
-                <a href="hacking-ch03.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit;">
+                <a href="hacking-ch03.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit; background: rgba(17,17,17,0.5); padding: 2rem; border-radius: 12px; border: 1px solid #222; margin-bottom: 1.5rem; transition: all 0.3s;">
                     <div class="roadmap-number">03</div>
-                    <h2>Linux Mastery</h2>
-                    <p>Complete Linux expertise — distributions, file system hierarchy, permissions mastery, user management, sudo, processes, package management, shell scripting, cron jobs, systemd, networking, SSH, and system hardening.</p>
-                    <p><strong>Topics:</strong> Linux Distros, Permissions Deep Dive, Package Management, Shell Scripting, systemd, iptables, SSH, SELinux</p>
-                    <p style="color: var(--primary-color); margin-top: 1rem;">📖 8 Major Topics • ⏱️ 45-60 min read</p>
+                    <h2 style="margin-top: 1rem;">Linux Mastery</h2>
+                    <p>Complete Linux expertise - distributions, file system hierarchy, permissions mastery, user management, sudo, processes, package management, shell scripting, cron jobs, systemd, networking, SSH, and system hardening.</p>
+                    <p><strong>Topics:</strong> Distros, Filesystem, Permissions, Users, Processes, Packages, Scripting, SSH</p>
+                    <p style="color: #888; margin-top: 1rem;">8 Major Topics - 45-60 min read</p>
                 </a>
 
-                <!-- Chapter 04 -->
-                <a href="hacking-ch04.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit;">
+                <a href="hacking-ch04.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit; background: rgba(17,17,17,0.5); padding: 2rem; border-radius: 12px; border: 1px solid #222; margin-bottom: 1.5rem; transition: all 0.3s;">
                     <div class="roadmap-number">04</div>
-                    <h2>Linux Mastery - Part II</h2>
-                    <p>Advanced Linux operations — find, grep, sed, awk mastery, process management (ps, top, kill, jobs), shell scripting (variables, loops, functions, automation), permissions deep dive (SUID, SGID, sticky bit), system administration, and cron jobs.</p>
-                    <p><strong>Topics:</strong> Advanced File Ops, Process Management, Shell Scripting, Permissions, System Admin, Network Tools</p>
-                    <p style="color: var(--primary-color); margin-top: 1rem;">📖 6 Major Topics • ⏱️ 40-55 min read</p>
+                    <h2 style="margin-top: 1rem;">Web Security Fundamentals</h2>
+                    <p>Understanding web application security - HTTP protocol, cookies, sessions, authentication, OWASP Top 10, common vulnerabilities (XSS, SQLi, CSRF), secure coding practices, web security tools, and defensive techniques.</p>
+                    <p><strong>Topics:</strong> HTTP, Cookies, Sessions, OWASP Top 10, XSS, SQLi, CSRF, Security Tools</p>
+                    <p style="color: #888; margin-top: 1rem;">8 Major Topics - 55-70 min read</p>
                 </a>
 
-                <!-- Chapter 05 -->
-                <a href="hacking-ch05.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit;">
+                <a href="hacking-ch05.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit; background: rgba(17,17,17,0.5); padding: 2rem; border-radius: 12px; border: 1px solid #222; margin-bottom: 1.5rem; transition: all 0.3s;">
                     <div class="roadmap-number">05</div>
-                    <h2>Networking Deep Dive</h2>
-                    <p>Advanced networking concepts — Ethernet, switching, VLANs, IP addressing, subnetting, routing, TCP/UDP deep dive, Wireshark analysis, nmap scanning, firewalls, IDS/IPS, and wireless security.</p>
-                    <p><strong>Topics:</strong> Data Link Layer, Subnetting, Routing Protocols, Wireshark, nmap, Firewalls, Wireless Hacking</p>
-                    <p style="color: var(--primary-color); margin-top: 1rem;">📖 Coming soon • ⏱️ Coming soon</p>
+                    <h2 style="margin-top: 1rem;">Networking Deep Dive</h2>
+                    <p>Advanced networking concepts - Ethernet, switching, VLANs, IP addressing, subnetting, routing, TCP/UDP deep dive, Wireshark analysis, nmap scanning, firewalls, IDS/IPS, and wireless security.</p>
+                    <p><strong>Topics:</strong> Ethernet, Switching, Routing, TCP/UDP, Wireshark, Nmap, Firewalls, Wireless</p>
+                    <p style="color: #888; margin-top: 1rem;">Coming soon</p>
                 </a>
 
-                <!-- Chapter 05 -->
-                <a href="hacking-ch05.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit;">
-                    <div class="roadmap-number">05</div>
-                    <h2>Programming for Hackers</h2>
-                    <p>Master Python, C, and Assembly for security work — socket programming, HTTP requests, parsing, C pointers, compilation, x86/x64 assembly, GDB debugging, exploit development, shellcode, and tool creation.</p>
-                    <p><strong>Topics:</strong> Python Mastery, C Programming, Assembly Language, Debugging, Exploit Writing, Automation Scripts</p>
-                    <p style="color: var(--primary-color); margin-top: 1rem;">📖 Coming soon • ⏱️ Coming soon</p>
-                </a>
-
-                <!-- Chapter 06 -->
-                <a href="hacking-ch06.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit;">
+                <a href="hacking-ch06.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit; background: rgba(17,17,17,0.5); padding: 2rem; border-radius: 12px; border: 1px solid #222; margin-bottom: 1.5rem; transition: all 0.3s;">
                     <div class="roadmap-number">06</div>
-                    <h2>Web Application Security</h2>
-                    <p>Complete web security mastery — HTTP protocol, OWASP Top 10, SQL injection, XSS, CSRF, authentication, authorization, Burp Suite, ZAP, API security, JWT, and cloud security.</p>
-                    <p><strong>Topics:</strong> HTTP Deep Dive, OWASP Top 10, SQL Injection, XSS, Burp Suite, API Security, SSRF, XXE</p>
-                    <p style="color: var(--primary-color); margin-top: 1rem;">📖 Coming soon • ⏱️ Coming soon</p>
+                    <h2 style="margin-top: 1rem;">Programming for Hackers</h2>
+                    <p>Master Python, C, and Assembly for security work - socket programming, HTTP requests, parsing, C pointers, compilation, x86/x64 assembly, GDB debugging, exploit development, shellcode, and tool creation.</p>
+                    <p><strong>Topics:</strong> Python, Sockets, C, Assembly, GDB, Shellcode, Tool Development</p>
+                    <p style="color: #888; margin-top: 1rem;">Coming soon</p>
                 </a>
 
-                <!-- Chapter 07 -->
-                <a href="hacking-ch07.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit;">
+                <a href="hacking-ch07.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit; background: rgba(17,17,17,0.5); padding: 2rem; border-radius: 12px; border: 1px solid #222; margin-bottom: 1.5rem; transition: all 0.3s;">
                     <div class="roadmap-number">07</div>
-                    <h2>Exploitation & Post-Exploitation</h2>
-                    <p>Advanced exploitation techniques — buffer overflows, ROP chains, ASLR/DEP bypass, privilege escalation (Linux/Windows), lateral movement, persistence, data exfiltration, Metasploit mastery.</p>
-                    <p><strong>Topics:</strong> Buffer Overflows, ROP, Privilege Escalation, Lateral Movement, Persistence, Metasploit</p>
-                    <p style="color: var(--primary-color); margin-top: 1rem;">📖 Coming soon • ⏱️ Coming soon</p>
+                    <h2 style="margin-top: 1rem;">Web Application Security</h2>
+                    <p>Complete web security mastery - HTTP protocol, OWASP Top 10, SQL injection, XSS, CSRF, authentication, authorization, Burp Suite, ZAP, API security, JWT, and cloud security.</p>
+                    <p><strong>Topics:</strong> HTTP, OWASP, SQLi, XSS, CSRF, Burp Suite, API Security, JWT</p>
+                    <p style="color: #888; margin-top: 1rem;">Coming soon</p>
                 </a>
 
-                <!-- Chapter 08 -->
-                <a href="hacking-ch08.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit;">
+                <a href="hacking-ch08.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit; background: rgba(17,17,17,0.5); padding: 2rem; border-radius: 12px; border: 1px solid #222; margin-bottom: 1.5rem; transition: all 0.3s;">
                     <div class="roadmap-number">08</div>
-                    <h2>Reverse Engineering</h2>
-                    <p>Master binary analysis and malware reversing — disassemblers (IDA, Ghidra, Binary Ninja), static/dynamic analysis, x86/x64/ARM assembly, malware analysis, unpacking, anti-debugging, patching binaries.</p>
-                    <p><strong>Topics:</strong> IDA Pro, Ghidra, Assembly Deep Dive, Malware Analysis, Unpacking, Patching, radare2</p>
-                    <p style="color: var(--primary-color); margin-top: 1rem;">📖 Coming soon • ⏱️ Coming soon</p>
+                    <h2 style="margin-top: 1rem;">System Exploitation</h2>
+                    <p>Advanced exploitation techniques - buffer overflows, ROP chains, ASLR/DEP bypass, privilege escalation (Linux/Windows), lateral movement, persistence, data exfiltration, Metasploit mastery.</p>
+                    <p><strong>Topics:</strong> Buffer Overflows, ROP, Priv Esc, Lateral Movement, Metasploit</p>
+                    <p style="color: #888; margin-top: 1rem;">Coming soon</p>
                 </a>
 
-                <!-- Chapter 09 -->
-                <a href="hacking-ch09.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit;">
+                <a href="hacking-ch09.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit; background: rgba(17,17,17,0.5); padding: 2rem; border-radius: 12px; border: 1px solid #222; margin-bottom: 1.5rem; transition: all 0.3s;">
                     <div class="roadmap-number">09</div>
-                    <h2>Active Directory</h2>
-                    <p>Enterprise environment domination — AD fundamentals, domain structure, Kerberos, LDAP, enumeration (BloodHound, PowerView), Kerberoasting, Golden/Silver Tickets, DCSync, domain persistence, hardening.</p>
-                    <p><strong>Topics:</strong> AD Fundamentals, Kerberos, BloodHound, Kerberoasting, Golden Tickets, DCSync, AD Security</p>
-                    <p style="color: var(--primary-color); margin-top: 1rem;">📖 Coming soon • ⏱️ Coming soon</p>
+                    <h2 style="margin-top: 1rem;">Reverse Engineering</h2>
+                    <p>Master binary analysis and malware reversing - disassemblers (IDA, Ghidra, Binary Ninja), static/dynamic analysis, x86/x64/ARM assembly, malware analysis, unpacking, anti-debugging, patching binaries.</p>
+                    <p><strong>Topics:</strong> IDA, Ghidra, Static/Dynamic Analysis, Malware, Anti-Debugging</p>
+                    <p style="color: #888; margin-top: 1rem;">Coming soon</p>
                 </a>
 
-                <!-- Chapter 10 -->
-                <a href="hacking-ch10.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit;">
+                <a href="hacking-ch10.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit; background: rgba(17,17,17,0.5); padding: 2rem; border-radius: 12px; border: 1px solid #222; margin-bottom: 1.5rem; transition: all 0.3s;">
                     <div class="roadmap-number">10</div>
-                    <h2>Cloud Security</h2>
-                    <p>Cloud penetration testing mastery — AWS/Azure/GCP fundamentals, IAM policies, S3/EC2/container security, cloud misconfigurations, Kubernetes security, serverless attacks, cloud forensics, monitoring.</p>
-                    <p><strong>Topics:</strong> AWS/Azure/GCP, IAM, S3 Security, Kubernetes, Serverless, Cloud Misconfigurations</p>
-                    <p style="color: var(--primary-color); margin-top: 1rem;">📖 Coming soon • ⏱️ Coming soon</p>
+                    <h2 style="margin-top: 1rem;">Active Directory</h2>
+                    <p>Enterprise environment domination - AD fundamentals, domain structure, Kerberos, LDAP, enumeration (BloodHound, PowerView), Kerberoasting, Golden/Silver Tickets, DCSync, domain persistence, hardening.</p>
+                    <p><strong>Topics:</strong> AD, Kerberos, BloodHound, Kerberoasting, Golden Tickets, DCSync</p>
+                    <p style="color: #888; margin-top: 1rem;">Coming soon</p>
                 </a>
 
-                <!-- Chapter 11 -->
-                <a href="hacking-ch11.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit;">
+                <a href="hacking-ch11.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit; background: rgba(17,17,17,0.5); padding: 2rem; border-radius: 12px; border: 1px solid #222; margin-bottom: 1.5rem; transition: all 0.3s;">
                     <div class="roadmap-number">11</div>
-                    <h2>Certifications & Career</h2>
-                    <p>Professional certification paths and career development — eJPT, OSCP, PNPT preparation, practice platforms (TryHackMe, HTB), CTFs, bug bounties, portfolio building, resume tips, interview prep, continuous learning.</p>
-                    <p><strong>Topics:</strong> Certification Paths, OSCP Prep, TryHackMe, Bug Bounties, Portfolio, Resume, Interviews, Networking</p>
-                    <p style="color: var(--primary-color); margin-top: 1rem;">📖 500,000+ words • ⏱️ 50-80 hours</p>
+                    <h2 style="margin-top: 1rem;">Certifications & Career</h2>
+                    <p>Professional certification paths and career development - eJPT, OSCP, PNPT preparation, practice platforms (TryHackMe, HTB), CTFs, bug bounties, portfolio building, resume tips, interview prep, continuous learning.</p>
+                    <p><strong>Topics:</strong> eJPT, OSCP, TryHackMe, HTB, CTFs, Bug Bounty, Career</p>
+                    <p style="color: #888; margin-top: 1rem;">50-80 hours</p>
                 </a>
 
-                <div class="roadmap-cta" style="margin-top:3rem;">
-                    <h2>🚀 Ready to Start Your Journey?</h2>
-                    <p>Join thousands of aspiring hackers in our Discord community!</p>
-                    <a href="https://discord.gg/Tz9Y3wea32" target="_blank" class="cta-button">Join Discord →</a>
-                    <a href="choose-path.html" class="cta-button" style="margin-left:1rem;">← Back to Path Selection</a>
+                <div style="margin-top: 3rem; text-align: center; padding: 2rem; background: rgba(17,17,17,0.8); border-radius: 12px; border: 1px solid #222;">
+                    <h2 style="margin-bottom: 1rem;">Ready to Start Your Hacking Journey?</h2>
+                    <p style="color: #888; margin-bottom: 2rem;">Join thousands of aspiring hackers in our Discord community!</p>
+                    <a href="https://discord.gg/cMvWkxFbbX" target="_blank" style="display: inline-block; padding: 1rem 2rem; background: #fff; color: #000; text-decoration: none; border-radius: 8px; font-weight: 600; margin-right: 1rem;">Join Discord</a>
+                    <a href="choose-path.html" style="display: inline-block; padding: 1rem 2rem; background: transparent; color: #fff; text-decoration: none; border-radius: 8px; font-weight: 600; border: 1px solid #444;">Back to Path Selection</a>
                 </div>
 
             </div>
         </div>
-    </section>
+    </main>
 
     <script src="script.js"></script>
-    
-    <!-- Supabase Client & Auth -->
-    </body>
+</body>
 </html>
+
 
 
 

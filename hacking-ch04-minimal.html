@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ch04: Advanced Linux - NullSector</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="twinkling"></div>
+    
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="index.html" class="nav-logo">
+                <img src="logo.svg" alt="Logo">
+                <span class="logo-text">NullSector</span>
+            </a>
+            <div class="nav-links">
+                <a href="roadmap-hacking.html" class="active">Hacking</a>
+                <a href="roadmap-programming.html">Programming</a>
+                <a href="null-terminal.html">Null Terminal</a>
+                <a href="faq.html">FAQs</a>
+                <a href="https://discord.gg/cMvWkxFbbX" target="_blank" class="discord-link">Discord</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="content-wrapper">
+        <div class="content-container">
+            <div class="roadmap-number">04</div>
+            <h1 class="page-title">Chapter 04: Advanced Linux Commands</h1>
+            <p class="page-subtitle">Mastering Command-Line Power Tools</p>
+
+            <!-- Introduction -->
+            <div style="background: rgba(0, 0, 0, 0.4); padding: 3rem; border-radius: 20px; margin: 3rem 0; border-left: 5px solid rgba(255, 255, 255, 0.8);">
+                <h2 style="color: rgba(255, 255, 255, 0.95); font-size: 1.8rem; margin-bottom: 1.5rem;">Beyond the Basics</h2>
+                <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+                    You've learned the fundamentals. Now it's time to level up with advanced commands that separate beginners from professionals. These tools will make you faster, more efficient, and deadlier during penetration tests.
+                </p>
+                <p style="font-size: 1.15rem; line-height: 1.8;">
+                    Every command in this chapter is explained from scratch - no assumptions, no skipped steps.
+                </p>
+            </div>
+
+            <!-- Topic 1: Text Processing -->
+            <div style="background: rgba(0, 0, 0, 0.4); padding: 3rem; border-radius: 20px; margin: 3rem 0; border: 1px solid rgba(255, 255, 255, 0.1);">
+                <h2 style="color: rgba(255, 255, 255, 0.95); font-size: 1.8rem; margin-bottom: 1.5rem;">Topic 1: Text Processing Masters</h2>
+                
+                <h3 style="color: rgba(255, 255, 255, 0.9); font-size: 1.4rem; margin: 2rem 0 1rem 0;">grep - Global Regular Expression Print</h3>
+                <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
+                    Search for patterns in files. Essential for finding specific information in logs, configs, or command output.
+                </p>
+                <div style="background: rgba(0, 0, 0, 0.3); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
+                    <pre style="margin: 0; color: rgba(255, 255, 255, 0.9); font-family: 'JetBrains Mono', monospace; font-size: 1rem; line-height: 1.8;"><code># Basic search
+grep "password" file.txt
+
+# Case-insensitive
+grep -i "PASSWORD" file.txt
+
+# Recursive (search all files in directory)
+grep -r "admin" /etc/
+
+# Show line numbers
+grep -n "error" log.txt
+
+# Invert match (show lines NOT containing pattern)
+grep -v "success" log.txt
+
+# Multiple patterns
+grep -e "error" -e "fail" log.txt
+
+# Count matches
+grep -c "login" log.txt</code></pre>
+                </div>
+
+                <h3 style="color: rgba(255, 255, 255, 0.9); font-size: 1.4rem; margin: 2rem 0 1rem 0;">awk - Pattern Scanning and Processing</h3>
+                <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
+                    Process text column by column. Perfect for parsing logs and extracting specific fields.
+                </p>
+                <div style="background: rgba(0, 0, 0, 0.3); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
+                    <pre style="margin: 0; color: rgba(255, 255, 255, 0.9); font-family: 'JetBrains Mono', monospace; font-size: 1rem; line-height: 1.8;"><code># Print first column
+awk '{print $1}' file.txt
+
+# Print multiple columns
+awk '{print $1, $3}' file.txt
+
+# With custom delimiter
+awk -F: '{print $1}' /etc/passwd
+
+# Conditional processing
+awk '$3 > 100 {print $1}' file.txt
+
+# Sum numbers in column
+awk '{sum+=$1} END {print sum}' numbers.txt</code></pre>
+                </div>
+
+                <h3 style="color: rgba(255, 255, 255, 0.9); font-size: 1.4rem; margin: 2rem 0 1rem 0;">sed - Stream Editor</h3>
+                <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
+                    Edit text streams without opening files. Great for find-and-replace operations.
+                </p>
+                <div style="background: rgba(0, 0, 0, 0.3); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
+                    <pre style="margin: 0; color: rgba(255, 255, 255, 0.9); font-family: 'JetBrains Mono', monospace; font-size: 1rem; line-height: 1.8;"><code># Replace first occurrence
+sed 's/old/new/' file.txt
+
+# Replace all occurrences
+sed 's/old/new/g' file.txt
+
+# Delete lines containing pattern
+sed '/pattern/d' file.txt
+
+# Print specific line
+sed -n '5p' file.txt
+
+# Print range of lines
+sed -n '1,10p' file.txt
+
+# In-place editing
+sed -i 's/old/new/g' file.txt</code></pre>
+                </div>
+            </div>
+
+            <!-- Topic 2: File Manipulation -->
+            <div style="background: rgba(0, 0, 0, 0.4); padding: 3rem; border-radius: 20px; margin: 3rem 0; border: 1px solid rgba(255, 255, 255, 0.1);">
+                <h2 style="color: rgba(255, 255, 255, 0.95); font-size: 1.8rem; margin-bottom: 1.5rem;">Topic 2: Advanced File Operations</h2>
+                
+                <h3 style="color: rgba(255, 255, 255, 0.9); font-size: 1.4rem; margin: 2rem 0 1rem 0;">find - Locate Files</h3>
+                <div style="background: rgba(0, 0, 0, 0.3); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
+                    <pre style="margin: 0; color: rgba(255, 255, 255, 0.9); font-family: 'JetBrains Mono', monospace; font-size: 1rem; line-height: 1.8;"><code># Find by name
+find / -name "config.php"
+
+# Case-insensitive
+find / -iname "Config.PHP"
+
+# Find by type (f=file, d=directory)
+find /var -type f
+
+# Find by size
+find / -size +100M              # Larger than 100MB
+find / -size -10k               # Smaller than 10KB
+
+# Find by permissions
+find / -perm 777
+find / -perm -4000              # SUID files
+
+# Find by modification time
+find / -mtime -7                # Modified in last 7 days
+
+# Execute command on results
+find / -name "*.log" -exec rm {} \;</code></pre>
+                </div>
+
+                <h3 style="color: rgba(255, 255, 255, 0.9); font-size: 1.4rem; margin: 2rem 0 1rem 0;">tar - Archive Files</h3>
+                <div style="background: rgba(0, 0, 0, 0.3); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
+                    <pre style="margin: 0; color: rgba(255, 255, 255, 0.9); font-family: 'JetBrains Mono', monospace; font-size: 1rem; line-height: 1.8;"><code># Create archive
+tar -cvf archive.tar files/
+
+# Create compressed archive (gzip)
+tar -czvf archive.tar.gz files/
+
+# Extract archive
+tar -xvf archive.tar
+
+# Extract compressed archive
+tar -xzvf archive.tar.gz
+
+# List archive contents
+tar -tvf archive.tar
+
+# Extract to specific directory
+tar -xzvf archive.tar.gz -C /destination/</code></pre>
+                </div>
+
+                <h3 style="color: rgba(255, 255, 255, 0.9); font-size: 1.4rem; margin: 2rem 0 1rem 0;">rsync - Sync Files</h3>
+                <div style="background: rgba(0, 0, 0, 0.3); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
+                    <pre style="margin: 0; color: rgba(255, 255, 255, 0.9); font-family: 'JetBrains Mono', monospace; font-size: 1rem; line-height: 1.8;"><code># Basic sync
+rsync source/ destination/
+
+# With archive mode (preserve permissions, timestamps)
+rsync -av source/ destination/
+
+# With progress and compression
+rsync -avz --progress source/ destination/
+
+# Remote sync over SSH
+rsync -avz source/ user@server:/path/
+
+# Delete files in destination not in source
+rsync -av --delete source/ destination/</code></pre>
+                </div>
+            </div>
+
+            <!-- Topic 3: System Monitoring -->
+            <div style="background: rgba(0, 0, 0, 0.4); padding: 3rem; border-radius: 20px; margin: 3rem 0; border: 1px solid rgba(255, 255, 255, 0.1);">
+                <h2 style="color: rgba(255, 255, 255, 0.95); font-size: 1.8rem; margin-bottom: 1.5rem;">Topic 3: System Monitoring</h2>
+                
+                <h3 style="color: rgba(255, 255, 255, 0.9); font-size: 1.4rem; margin: 2rem 0 1rem 0;">df - Disk Space</h3>
+                <div style="background: rgba(0, 0, 0, 0.3); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
+                    <pre style="margin: 0; color: rgba(255, 255, 255, 0.9); font-family: 'JetBrains Mono', monospace; font-size: 1rem; line-height: 1.8;"><code># Show disk space
+df -h                   # Human-readable
+
+# Show specific filesystem
+df -h /home
+
+# Show inodes
+df -i</code></pre>
+                </div>
+
+                <h3 style="color: rgba(255, 255, 255, 0.9); font-size: 1.4rem; margin: 2rem 0 1rem 0;">du - Directory Usage</h3>
+                <div style="background: rgba(0, 0, 0, 0.3); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
+                    <pre style="margin: 0; color: rgba(255, 255, 255, 0.9); font-family: 'JetBrains Mono', monospace; font-size: 1rem; line-height: 1.8;"><code># Show directory size
+du -sh /var/log
+
+# Show all subdirectories
+du -h /var/log
+
+# Sort by size
+du -h /var | sort -h
+
+# Top 10 largest
+du -h / | sort -rh | head -n 10</code></pre>
+                </div>
+
+                <h3 style="color: rgba(255, 255, 255, 0.9); font-size: 1.4rem; margin: 2rem 0 1rem 0;">lsof - List Open Files</h3>
+                <div style="background: rgba(0, 0, 0, 0.3); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
+                    <pre style="margin: 0; color: rgba(255, 255, 255, 0.9); font-family: 'JetBrains Mono', monospace; font-size: 1rem; line-height: 1.8;"><code># All open files
+lsof
+
+# Files opened by user
+lsof -u alice
+
+# Files opened by process
+lsof -p 1234
+
+# Network connections
+lsof -i
+lsof -i :80              # Port 80 specifically
+
+# Who's using a file
+lsof /var/log/syslog</code></pre>
+                </div>
+            </div>
+
+            <!-- Topic 4: Networking Tools -->
+            <div style="background: rgba(0, 0, 0, 0.4); padding: 3rem; border-radius: 20px; margin: 3rem 0; border: 1px solid rgba(255, 255, 255, 0.1);">
+                <h2 style="color: rgba(255, 255, 255, 0.95); font-size: 1.8rem; margin-bottom: 1.5rem;">Topic 4: Advanced Networking</h2>
+                
+                <h3 style="color: rgba(255, 255, 255, 0.9); font-size: 1.4rem; margin: 2rem 0 1rem 0;">netcat - TCP/UDP Swiss Army Knife</h3>
+                <div style="background: rgba(0, 0, 0, 0.3); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
+                    <pre style="margin: 0; color: rgba(255, 255, 255, 0.9); font-family: 'JetBrains Mono', monospace; font-size: 1rem; line-height: 1.8;"><code># Listen on port
+nc -lvp 4444
+
+# Connect to port
+nc target.com 80
+
+# Transfer file
+# Receiver:
+nc -lvp 4444 > received_file
+# Sender:
+nc target_ip 4444 < file_to_send
+
+# Port scanning
+nc -zv target.com 20-80
+
+# Reverse shell (listener)
+nc -lvp 4444 -e /bin/bash
+
+# Bind shell (target)
+nc -lvp 4444 -e /bin/bash</code></pre>
+                </div>
+
+                <h3 style="color: rgba(255, 255, 255, 0.9); font-size: 1.4rem; margin: 2rem 0 1rem 0;">tcpdump - Packet Capture</h3>
+                <div style="background: rgba(0, 0, 0, 0.3); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
+                    <pre style="margin: 0; color: rgba(255, 255, 255, 0.9); font-family: 'JetBrains Mono', monospace; font-size: 1rem; line-height: 1.8;"><code># Capture on interface
+sudo tcpdump -i eth0
+
+# Save to file
+sudo tcpdump -i eth0 -w capture.pcap
+
+# Filter by port
+sudo tcpdump -i eth0 port 80
+
+# Filter by host
+sudo tcpdump -i eth0 host 192.168.1.100
+
+# Filter by protocol
+sudo tcpdump -i eth0 icmp
+
+# Verbose output
+sudo tcpdump -i eth0 -vv</code></pre>
+                </div>
+
+                <h3 style="color: rgba(255, 255, 255, 0.9); font-size: 1.4rem; margin: 2rem 0 1rem 0;">curl - Transfer Data</h3>
+                <div style="background: rgba(0, 0, 0, 0.3); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
+                    <pre style="margin: 0; color: rgba(255, 255, 255, 0.9); font-family: 'JetBrains Mono', monospace; font-size: 1rem; line-height: 1.8;"><code># GET request
+curl http://example.com
+
+# Save output
+curl -o page.html http://example.com
+
+# Follow redirects
+curl -L http://example.com
+
+# POST request
+curl -X POST -d "user=alice&pass=123" http://example.com/login
+
+# Custom headers
+curl -H "User-Agent: Mozilla" http://example.com
+
+# Authentication
+curl -u username:password http://example.com
+
+# View headers
+curl -I http://example.com</code></pre>
+                </div>
+            </div>
+
+            <!-- Topic 5: Process Management -->
+            <div style="background: rgba(0, 0, 0, 0.4); padding: 3rem; border-radius: 20px; margin: 3rem 0; border: 1px solid rgba(255, 255, 255, 0.1);">
+                <h2 style="color: rgba(255, 255, 255, 0.95); font-size: 1.8rem; margin-bottom: 1.5rem;">Topic 5: Advanced Process Control</h2>
+                
+                <h3 style="color: rgba(255, 255, 255, 0.9); font-size: 1.4rem; margin: 2rem 0 1rem 0;">screen - Terminal Multiplexer</h3>
+                <div style="background: rgba(0, 0, 0, 0.3); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
+                    <pre style="margin: 0; color: rgba(255, 255, 255, 0.9); font-family: 'JetBrains Mono', monospace; font-size: 1rem; line-height: 1.8;"><code># Start new session
+screen
+
+# Detach from session (Ctrl+A, then D)
+
+# List sessions
+screen -ls
+
+# Reattach to session
+screen -r
+
+# Create named session
+screen -S mysession
+
+# Reattach to named session
+screen -r mysession
+
+# Kill session
+screen -X -S mysession quit</code></pre>
+                </div>
+
+                <h3 style="color: rgba(255, 255, 255, 0.9); font-size: 1.4rem; margin: 2rem 0 1rem 0;">tmux - Terminal Multiplexer (Better)</h3>
+                <div style="background: rgba(0, 0, 0, 0.3); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
+                    <pre style="margin: 0; color: rgba(255, 255, 255, 0.9); font-family: 'JetBrains Mono', monospace; font-size: 1rem; line-height: 1.8;"><code># Start new session
+tmux
+
+# Detach (Ctrl+B, then D)
+
+# List sessions
+tmux ls
+
+# Attach to session
+tmux attach
+
+# Create named session
+tmux new -s mysession
+
+# Split panes
+Ctrl+B, then "       # Horizontal split
+Ctrl+B, then %       # Vertical split
+
+# Navigate panes
+Ctrl+B, then arrow keys</code></pre>
+                </div>
+            </div>
+
+            <!-- Conclusion -->
+            <div style="background: rgba(0, 0, 0, 0.4); padding: 3rem; border-radius: 20px; margin: 3rem 0; border-left: 5px solid rgba(255, 255, 255, 0.8);">
+                <h2 style="color: rgba(255, 255, 255, 0.95); font-size: 1.8rem; margin-bottom: 1.5rem;">Command-Line Mastery Achieved</h2>
+                <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
+                    These advanced commands are your power tools. Practice combining them with pipes and redirects to create powerful one-liners.
+                </p>
+                <p style="font-size: 1.15rem; line-height: 1.8;">
+                    Next, we'll apply these skills to <strong>network reconnaissance</strong> and <strong>vulnerability scanning</strong>.
+                </p>
+            </div>
+
+            <div style="display: flex; gap: 2rem; margin-top: 3rem;">
+                <a href="hacking-ch03.html" style="flex: 1; background: rgba(0, 0, 0, 0.4); padding: 2rem; border-radius: 15px; text-decoration: none; border: 1px solid rgba(255, 255, 255, 0.1);">
+                    <div style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem; margin-bottom: 0.5rem;">? PREVIOUS</div>
+                    <div style="color: rgba(255, 255, 255, 0.95); font-size: 1.1rem; font-weight: 600;">Chapter 03</div>
+                </a>
+                <a href="hacking-ch05.html" style="flex: 1; background: rgba(0, 0, 0, 0.4); padding: 2rem; border-radius: 15px; text-decoration: none; border: 1px solid rgba(255, 255, 255, 0.1); text-align: right;">
+                    <div style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem; margin-bottom: 0.5rem;">NEXT ?</div>
+                    <div style="color: rgba(255, 255, 255, 0.95); font-size: 1.1rem; font-weight: 600;">Chapter 05</div>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
+

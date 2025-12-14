@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#000000">
+    <title>Chapter 04: Object-Oriented Programming - NullNode</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Custom styling for this ultra-detailed chapter */
+        .huge-box {
+            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+            padding: 3rem;
+            border-radius: 20px;
+            margin: 3rem 0;
+            border-left: 5px solid rgba(255,255,255,0.3);
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .huge-box h2 {
+            color: rgba(255,255,255,0.95);
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            font-weight: 700;
+        }
+        
+        .huge-box h3 {
+            color: rgba(255,255,255,0.85);
+            font-size: 1.6rem;
+            margin: 2.5rem 0 1.5rem 0;
+            font-weight: 600;
+        }
+        
+        .huge-box p, .huge-box li {
+            font-size: 1.2rem;
+            line-height: 2;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 1.5rem;
+        }
+        
+        .metaphor-box {
+            background: rgba(138, 43, 226, 0.1);
+            border-left: 4px solid rgba(138, 43, 226, 0.5);
+            padding: 2rem;
+            margin: 2rem 0;
+            border-radius: 12px;
+        }
+        
+        .metaphor-box h4 {
+            color: rgba(138, 43, 226, 0.9);
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .demo-box {
+            background: #000000;
+            border: 2px solid rgba(255,255,255,0.2);
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+        }
+        
+        .demo-box h4 {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .example-box {
+            background: #0d0d0d;
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 10px;
+        }
+        
+        .challenge {
+            background: linear-gradient(135deg, rgba(138, 43, 226, 0.15), rgba(138, 43, 226, 0.05));
+            border: 2px solid rgba(138, 43, 226, 0.3);
+            padding: 2.5rem;
+            margin: 3rem 0;
+            border-radius: 15px;
+        }
+        
+        .challenge h3 {
+            color: rgba(138, 43, 226, 0.95);
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        code {
+            background: rgba(255,255,255,0.1);
+            padding: 0.3rem 0.6rem;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            color: rgba(255,255,255,0.95);
+            font-size: 1.1rem;
+        }
+        
+        pre {
+            background: #000000;
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 1.5rem;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        pre code {
+            background: none;
+            padding: 0;
+            color: rgba(255,255,255,0.9);
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+        
+        .keyword { color: #ff6b9d; }
+        .string { color: #98c379; }
+        .number { color: #d19a66; }
+        .comment { color: #5c6370; font-style: italic; }
+        .function { color: #61afef; }
+        .output { color: #56b6c2; }
+        .class-name { color: #e5c07b; }
+        
+        .warning-box {
+            background: rgba(255, 200, 0, 0.1);
+            border-left: 4px solid rgba(255, 200, 0, 0.7);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 10px;
+        }
+        
+        .warning-box h4 {
+            color: rgba(255, 200, 0, 0.95);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .tip-box {
+            background: rgba(0, 200, 100, 0.1);
+            border-left: 4px solid rgba(0, 200, 100, 0.7);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 10px;
+        }
+        
+        .tip-box h4 {
+            color: rgba(0, 200, 100, 0.95);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="index.html" class="nav-logo">
+                <img src="logo.svg" alt="Logo">
+                <span class="logo-text">NullSector</span>
+            </a>
+            <div class="nav-links">
+                <a href="roadmap-hacking.html">Hacking</a>
+                <a href="roadmap-programming.html" class="active">Programming</a>
+                <a href="null-terminal.html">Null Terminal</a>
+                <a href="faq.html">FAQs</a>
+                <a href="https://discord.gg/cMvWkxFbbX" target="_blank" class="discord-link">Discord</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="content-wrapper">
+        <div class="content-container">
+            <div class="roadmap-number">04</div>
+            <h1 class="page-title">Chapter 04: Object-Oriented Programming</h1>
+            <p class="page-subtitle">Creating Blueprints and Building Complex Systems</p>
+
+            <!-- PART 1: WHAT IS OOP? -->
+            <div class="huge-box">
+                <h2>Part 1: What IS Object-Oriented Programming?</h2>
+                
+                <p>
+                    So far, you've been writing <strong>procedural code</strong> - step-by-step instructions that run from top to bottom:
+                </p>
+                
+                <pre><code><span class="keyword">name</span> = <span class="string">"Alice"</span>
+<span class="keyword">health</span> = <span class="number">100</span>
+<span class="keyword">damage</span> = <span class="number">20</span>
+<span class="function">print</span>(<span class="string">f"<span class="output">{name}</span> has <span class="output">{health}</span> health"</span>)</code></pre>
+                
+                <p>
+                    But what if you're building a game with 50 characters? You'd need 50 name variables, 50 health variables, 50 damage variables... CHAOS!
+                </p>
+                
+                <div class="metaphor-box">
+                    <h4>The Blueprint Metaphor</h4>
+                    <p>
+                        Imagine you're a builder who needs to construct 100 houses. Do you:
+                    </p>
+                    <ul>
+                        <li><strong>Option A:</strong> Measure and plan each house individually from scratch (exhausting!)</li>
+                        <li><strong>Option B:</strong> Create ONE blueprint, then build 100 houses from that blueprint (smart!)</li>
+                    </ul>
+                    <p>
+                        <strong>Object-Oriented Programming (OOP)</strong> is Option B for code:
+                    </p>
+                    <ul>
+                        <li>You create a <strong>CLASS</strong> (the blueprint)</li>
+                        <li>You build <strong>OBJECTS</strong> (the actual houses) from that class</li>
+                        <li>Each object has the same structure but different details (same floor plan, different paint color)</li>
+                    </ul>
+                </div>
+                
+                <p>
+                    Think of OOP as organizing code like you organize the real world:
+                </p>
+                
+                <ul>
+                    <li><strong>Dogs</strong> are a CLASS - all dogs have name, breed, age</li>
+                    <li><strong>Your dog "Buddy"</strong> is an OBJECT - a specific dog with name="Buddy", breed="Golden Retriever", age=3</li>
+                    <li><strong>Cars</strong> are a CLASS - all cars have model, color, speed</li>
+                    <li><strong>Your car</strong> is an OBJECT - a specific car with model="Tesla", color="red", speed=0</li>
+                </ul>
+                
+                <div class="metaphor-box">
+                    <h4>The Cookie Cutter Metaphor</h4>
+                    <p>
+                        Another way to think about it:
+                    </p>
+                    <ul>
+                        <li><strong>CLASS</strong> = Cookie cutter (the shape/template)</li>
+                        <li><strong>OBJECTS</strong> = The actual cookies you make (each is a separate cookie, but all have the same shape)</li>
+                    </ul>
+                    <p>
+                        You design the cookie cutter ONCE, then stamp out as many cookies as you need!
+                    </p>
+                </div>
+            </div>
+
+            <!-- PART 2: CREATING YOUR FIRST CLASS -->
+            <div class="huge-box">
+                <h2>Part 2: Creating Your First Class</h2>
+                
+                <p>
+                    Let's create a <code>Dog</code> class (the blueprint) and then make actual dog objects from it:
+                </p>
+                
+                <div class="demo-box">
+                    <h4>Demo: Basic Class</h4>
+                    <pre><code><span class="comment"># DEFINE the class (create the blueprint)</span>
+<span class="keyword">class</span> <span class="class-name">Dog</span>:
+    <span class="keyword">def</span> <span class="function">__init__</span>(<span class="keyword">self</span>, <span class="keyword">name</span>, <span class="keyword">breed</span>, <span class="keyword">age</span>):
+        <span class="keyword">self</span>.<span class="keyword">name</span> = <span class="keyword">name</span>      <span class="comment"># Attribute: the dog's name</span>
+        <span class="keyword">self</span>.<span class="keyword">breed</span> = <span class="keyword">breed</span>    <span class="comment"># Attribute: the dog's breed</span>
+        <span class="keyword">self</span>.<span class="keyword">age</span> = <span class="keyword">age</span>        <span class="comment"># Attribute: the dog's age</span>
+    
+    <span class="keyword">def</span> <span class="function">bark</span>(<span class="keyword">self</span>):
+        <span class="function">print</span>(<span class="string">f"<span class="output">{self.name}</span> says: Woof! Woof!"</span>)
+    
+    <span class="keyword">def</span> <span class="function">celebrate_birthday</span>(<span class="keyword">self</span>):
+        <span class="keyword">self</span>.<span class="keyword">age</span> += <span class="number">1</span>
+        <span class="function">print</span>(<span class="string">f"<span class="output">{self.name}</span> is now <span class="output">{self.age}</span> years old!"</span>)
+
+<span class="comment"># CREATE objects (build actual dogs from the blueprint)</span>
+<span class="keyword">dog1</span> = <span class="class-name">Dog</span>(<span class="string">"Buddy"</span>, <span class="string">"Golden Retriever"</span>, <span class="number">3</span>)
+<span class="keyword">dog2</span> = <span class="class-name">Dog</span>(<span class="string">"Max"</span>, <span class="string">"German Shepherd"</span>, <span class="number">5</span>)
+
+<span class="comment"># USE the objects</span>
+<span class="keyword">dog1</span>.<span class="function">bark</span>()                 <span class="comment"># Output: Buddy says: Woof! Woof!</span>
+<span class="keyword">dog2</span>.<span class="function">bark</span>()                 <span class="comment"># Output: Max says: Woof! Woof!</span>
+<span class="keyword">dog1</span>.<span class="function">celebrate_birthday</span>()  <span class="comment"># Output: Buddy is now 4 years old!</span></code></pre>
+                </div>
+                
+                <h3>Understanding the Parts</h3>
+                
+                <div class="example-box">
+                    <h4>1. The Class Definition</h4>
+                    <pre><code><span class="keyword">class</span> <span class="class-name">Dog</span>:</code></pre>
+                    <p>
+                        This line says "I'm creating a new blueprint called Dog". Class names always start with a CAPITAL letter by convention.
+                    </p>
+                </div>
+                
+                <div class="example-box">
+                    <h4>2. The __init__ Method (Constructor)</h4>
+                    <pre><code><span class="keyword">def</span> <span class="function">__init__</span>(<span class="keyword">self</span>, <span class="keyword">name</span>, <span class="keyword">breed</span>, <span class="keyword">age</span>):
+    <span class="keyword">self</span>.<span class="keyword">name</span> = <span class="keyword">name</span>
+    <span class="keyword">self</span>.<span class="keyword">breed</span> = <span class="keyword">breed</span>
+    <span class="keyword">self</span>.<span class="keyword">age</span> = <span class="keyword">age</span></code></pre>
+                    <p>
+                        <code>__init__</code> is a special method that runs AUTOMATICALLY when you create a new object. Think of it as the "setup instructions" - it sets the initial values for your object.
+                    </p>
+                    <ul>
+                        <li><code>self</code> - Refers to "this specific object" (we'll explain more below)</li>
+                        <li><code>name, breed, age</code> - The information you need to provide when creating a dog</li>
+                        <li><code>self.name = name</code> - Store the name inside this specific dog object</li>
+                    </ul>
+                </div>
+                
+                <div class="example-box">
+                    <h4>3. Attributes (Properties)</h4>
+                    <pre><code><span class="keyword">self</span>.<span class="keyword">name</span> = <span class="keyword">name</span>
+<span class="keyword">self</span>.<span class="keyword">breed</span> = <span class="keyword">breed</span>
+<span class="keyword">self</span>.<span class="keyword">age</span> = <span class="keyword">age</span></code></pre>
+                    <p>
+                        <strong>Attributes</strong> are the characteristics/properties of an object. Every dog has these qualities stored inside it.
+                    </p>
+                </div>
+                
+                <div class="example-box">
+                    <h4>4. Methods (Actions)</h4>
+                    <pre><code><span class="keyword">def</span> <span class="function">bark</span>(<span class="keyword">self</span>):
+    <span class="function">print</span>(<span class="string">f"<span class="output">{self.name}</span> says: Woof!"</span>)</code></pre>
+                    <p>
+                        <strong>Methods</strong> are functions that belong to a class. They define what an object can DO. Dogs can bark, celebrate birthdays, etc.
+                    </p>
+                </div>
+                
+                <h3>What is "self"?</h3>
+                
+                <div class="metaphor-box">
+                    <h4>The Name Tag Metaphor</h4>
+                    <p>
+                        Imagine you're at a party with 10 people all named "Alex". When you say "Hey Alex!", how do they know WHICH Alex you mean?
+                    </p>
+                    <p>
+                        In Python, when you have multiple dog objects, <code>self</code> is like pointing and saying "THIS specific dog right here, not the other dogs."
+                    </p>
+                    <ul>
+                        <li>When you call <code>dog1.bark()</code>, inside the method <code>self</code> refers to <code>dog1</code></li>
+                        <li>When you call <code>dog2.bark()</code>, inside the method <code>self</code> refers to <code>dog2</code></li>
+                    </ul>
+                    <p>
+                        <code>self</code> is Python's way of saying "the object that called this method."
+                    </p>
+                </div>
+            </div>
+
+            <!-- PART 3: MORE REALISTIC EXAMPLE -->
+            <div class="huge-box">
+                <h2>Part 3: Game Character System</h2>
+                
+                <p>
+                    Let's build something more practical - a video game character system:
+                </p>
+                
+                <div class="demo-box">
+                    <h4>Demo: Game Character Class</h4>
+                    <pre><code><span class="keyword">class</span> <span class="class-name">Character</span>:
+    <span class="keyword">def</span> <span class="function">__init__</span>(<span class="keyword">self</span>, <span class="keyword">name</span>, <span class="keyword">health</span>, <span class="keyword">attack_power</span>):
+        <span class="keyword">self</span>.<span class="keyword">name</span> = <span class="keyword">name</span>
+        <span class="keyword">self</span>.<span class="keyword">health</span> = <span class="keyword">health</span>
+        <span class="keyword">self</span>.<span class="keyword">attack_power</span> = <span class="keyword">attack_power</span>
+        <span class="keyword">self</span>.<span class="keyword">is_alive</span> = <span class="keyword">True</span>
+    
+    <span class="keyword">def</span> <span class="function">attack</span>(<span class="keyword">self</span>, <span class="keyword">target</span>):
+        <span class="string">"""Attack another character."""</span>
+        <span class="keyword">if</span> <span class="keyword">not</span> <span class="keyword">self</span>.<span class="keyword">is_alive</span>:
+            <span class="function">print</span>(<span class="string">f"<span class="output">{self.name}</span> is dead and can't attack!"</span>)
+            <span class="keyword">return</span>
+        
+        <span class="function">print</span>(<span class="string">f"<span class="output">{self.name}</span> attacks <span class="output">{target.name}</span> for <span class="output">{self.attack_power}</span> damage!"</span>)
+        <span class="keyword">target</span>.<span class="function">take_damage</span>(<span class="keyword">self</span>.<span class="keyword">attack_power</span>)
+    
+    <span class="keyword">def</span> <span class="function">take_damage</span>(<span class="keyword">self</span>, <span class="keyword">damage</span>):
+        <span class="string">"""Reduce health when taking damage."""</span>
+        <span class="keyword">self</span>.<span class="keyword">health</span> -= <span class="keyword">damage</span>
+        
+        <span class="keyword">if</span> <span class="keyword">self</span>.<span class="keyword">health</span> <= <span class="number">0</span>:
+            <span class="keyword">self</span>.<span class="keyword">health</span> = <span class="number">0</span>
+            <span class="keyword">self</span>.<span class="keyword">is_alive</span> = <span class="keyword">False</span>
+            <span class="function">print</span>(<span class="string">f"<span class="output">{self.name}</span> has been defeated!"</span>)
+        <span class="keyword">else</span>:
+            <span class="function">print</span>(<span class="string">f"<span class="output">{self.name}</span> has <span class="output">{self.health}</span> health remaining."</span>)
+    
+    <span class="keyword">def</span> <span class="function">heal</span>(<span class="keyword">self</span>, <span class="keyword">amount</span>):
+        <span class="string">"""Restore health."""</span>
+        <span class="keyword">if</span> <span class="keyword">not</span> <span class="keyword">self</span>.<span class="keyword">is_alive</span>:
+            <span class="function">print</span>(<span class="string">f"<span class="output">{self.name}</span> is dead and can't be healed!"</span>)
+            <span class="keyword">return</span>
+        
+        <span class="keyword">self</span>.<span class="keyword">health</span> += <span class="keyword">amount</span>
+        <span class="function">print</span>(<span class="string">f"<span class="output">{self.name}</span> healed for <span class="output">{amount}</span>! Health: <span class="output">{self.health}</span>"</span>)
+    
+    <span class="keyword">def</span> <span class="function">show_stats</span>(<span class="keyword">self</span>):
+        <span class="string">"""Display character information."""</span>
+        <span class="keyword">status</span> = <span class="string">"ALIVE"</span> <span class="keyword">if</span> <span class="keyword">self</span>.<span class="keyword">is_alive</span> <span class="keyword">else</span> <span class="string">"DEAD"</span>
+        <span class="function">print</span>(<span class="string">f"\n--- <span class="output">{self.name}</span> ---"</span>)
+        <span class="function">print</span>(<span class="string">f"Health: <span class="output">{self.health}</span>"</span>)
+        <span class="function">print</span>(<span class="string">f"Attack Power: <span class="output">{self.attack_power}</span>"</span>)
+        <span class="function">print</span>(<span class="string">f"Status: <span class="output">{status}</span>"</span>)
+
+<span class="comment"># Create characters</span>
+<span class="keyword">hero</span> = <span class="class-name">Character</span>(<span class="string">"Aragorn"</span>, <span class="number">100</span>, <span class="number">25</span>)
+<span class="keyword">enemy</span> = <span class="class-name">Character</span>(<span class="string">"Orc"</span>, <span class="number">60</span>, <span class="number">15</span>)
+
+<span class="comment"># Show initial stats</span>
+<span class="keyword">hero</span>.<span class="function">show_stats</span>()
+<span class="keyword">enemy</span>.<span class="function">show_stats</span>()
+
+<span class="comment"># Battle!</span>
+<span class="function">print</span>(<span class="string">"\n=== BATTLE START ==="</span>)
+<span class="keyword">hero</span>.<span class="function">attack</span>(<span class="keyword">enemy</span>)
+<span class="keyword">enemy</span>.<span class="function">attack</span>(<span class="keyword">hero</span>)
+<span class="keyword">hero</span>.<span class="function">attack</span>(<span class="keyword">enemy</span>)
+<span class="keyword">hero</span>.<span class="function">attack</span>(<span class="keyword">enemy</span>)
+
+<span class="comment"># Show final stats</span>
+<span class="function">print</span>(<span class="string">"\n=== BATTLE END ==="</span>)
+<span class="keyword">hero</span>.<span class="function">show_stats</span>()
+<span class="keyword">enemy</span>.<span class="function">show_stats</span>()</code></pre>
+                    
+                    <p style="margin-top: 1rem;"><strong>How to run this:</strong></p>
+                    <ol>
+                        <li>Save as <code>game_characters.py</code></li>
+                        <li>Run: <code>python game_characters.py</code></li>
+                    </ol>
+                    
+                    <p><strong>Sample Output:</strong></p>
+                    <pre><code><span class="output">--- Aragorn ---
+Health: 100
+Attack Power: 25
+Status: ALIVE
+
+--- Orc ---
+Health: 60
+Attack Power: 15
+Status: ALIVE
+
+=== BATTLE START ===
+Aragorn attacks Orc for 25 damage!
+Orc has 35 health remaining.
+Orc attacks Aragorn for 15 damage!
+Aragorn has 85 health remaining.
+Aragorn attacks Orc for 25 damage!
+Orc has 10 health remaining.
+Aragorn attacks Orc for 25 damage!
+Orc has been defeated!
+
+=== BATTLE END ===
+--- Aragorn ---
+Health: 85
+Attack Power: 25
+Status: ALIVE
+
+--- Orc ---
+Health: 0
+Attack Power: 15
+Status: DEAD</span></code></pre>
+                </div>
+            </div>
+
+            <!-- PART 4: INHERITANCE -->
+            <div class="huge-box">
+                <h2>Part 4: Inheritance - The Family Tree</h2>
+                
+                <div class="metaphor-box">
+                    <h4>The Family Tree Metaphor</h4>
+                    <p>
+                        Think about how traits are passed down in families:
+                    </p>
+                    <ul>
+                        <li>You inherit traits from your parents (hair color, height genes)</li>
+                        <li>You also have your OWN unique traits (your personality, skills)</li>
+                        <li>You're not EXACTLY like your parents, but you share some characteristics</li>
+                    </ul>
+                    <p>
+                        <strong>Inheritance</strong> in OOP works the same way:
+                    </p>
+                    <ul>
+                        <li>A <strong>child class</strong> inherits attributes and methods from a <strong>parent class</strong></li>
+                        <li>The child can ADD its own unique attributes and methods</li>
+                        <li>The child can OVERRIDE parent methods to change behavior</li>
+                    </ul>
+                </div>
+                
+                <p>
+                    Let's expand our game to have different character TYPES (Warrior, Mage, Archer):
+                </p>
+                
+                <div class="demo-box">
+                    <h4>Demo: Inheritance in Action</h4>
+                    <pre><code><span class="comment"># PARENT class - shared by all characters</span>
+<span class="keyword">class</span> <span class="class-name">Character</span>:
+    <span class="keyword">def</span> <span class="function">__init__</span>(<span class="keyword">self</span>, <span class="keyword">name</span>, <span class="keyword">health</span>, <span class="keyword">attack_power</span>):
+        <span class="keyword">self</span>.<span class="keyword">name</span> = <span class="keyword">name</span>
+        <span class="keyword">self</span>.<span class="keyword">health</span> = <span class="keyword">health</span>
+        <span class="keyword">self</span>.<span class="keyword">attack_power</span> = <span class="keyword">attack_power</span>
+    
+    <span class="keyword">def</span> <span class="function">attack</span>(<span class="keyword">self</span>):
+        <span class="function">print</span>(<span class="string">f"<span class="output">{self.name}</span> attacks for <span class="output">{self.attack_power}</span> damage!"</span>)
+
+<span class="comment"># CHILD class - inherits from Character, adds unique abilities</span>
+<span class="keyword">class</span> <span class="class-name">Warrior</span>(<span class="class-name">Character</span>):
+    <span class="keyword">def</span> <span class="function">__init__</span>(<span class="keyword">self</span>, <span class="keyword">name</span>, <span class="keyword">health</span>, <span class="keyword">attack_power</span>, <span class="keyword">armor</span>):
+        <span class="function">super</span>().<span class="function">__init__</span>(<span class="keyword">name</span>, <span class="keyword">health</span>, <span class="keyword">attack_power</span>)  <span class="comment"># Call parent constructor</span>
+        <span class="keyword">self</span>.<span class="keyword">armor</span> = <span class="keyword">armor</span>  <span class="comment"># Unique to Warrior</span>
+    
+    <span class="keyword">def</span> <span class="function">shield_bash</span>(<span class="keyword">self</span>):
+        <span class="string">"""Special ability only Warriors have."""</span>
+        <span class="keyword">damage</span> = <span class="keyword">self</span>.<span class="keyword">attack_power</span> + <span class="keyword">self</span>.<span class="keyword">armor</span>
+        <span class="function">print</span>(<span class="string">f"<span class="output">{self.name}</span> uses Shield Bash for <span class="output">{damage}</span> damage!"</span>)
+
+<span class="keyword">class</span> <span class="class-name">Mage</span>(<span class="class-name">Character</span>):
+    <span class="keyword">def</span> <span class="function">__init__</span>(<span class="keyword">self</span>, <span class="keyword">name</span>, <span class="keyword">health</span>, <span class="keyword">attack_power</span>, <span class="keyword">mana</span>):
+        <span class="function">super</span>().<span class="function">__init__</span>(<span class="keyword">name</span>, <span class="keyword">health</span>, <span class="keyword">attack_power</span>)
+        <span class="keyword">self</span>.<span class="keyword">mana</span> = <span class="keyword">mana</span>  <span class="comment"># Unique to Mage</span>
+    
+    <span class="keyword">def</span> <span class="function">fireball</span>(<span class="keyword">self</span>):
+        <span class="string">"""Special ability only Mages have."""</span>
+        <span class="keyword">if</span> <span class="keyword">self</span>.<span class="keyword">mana</span> >= <span class="number">20</span>:
+            <span class="keyword">self</span>.<span class="keyword">mana</span> -= <span class="number">20</span>
+            <span class="keyword">damage</span> = <span class="keyword">self</span>.<span class="keyword">attack_power</span> * <span class="number">2</span>
+            <span class="function">print</span>(<span class="string">f"<span class="output">{self.name}</span> casts Fireball for <span class="output">{damage}</span> damage! (Mana: <span class="output">{self.mana}</span>)"</span>)
+        <span class="keyword">else</span>:
+            <span class="function">print</span>(<span class="string">f"<span class="output">{self.name}</span> doesn't have enough mana!"</span>)
+
+<span class="keyword">class</span> <span class="class-name">Archer</span>(<span class="class-name">Character</span>):
+    <span class="keyword">def</span> <span class="function">__init__</span>(<span class="keyword">self</span>, <span class="keyword">name</span>, <span class="keyword">health</span>, <span class="keyword">attack_power</span>, <span class="keyword">arrows</span>):
+        <span class="function">super</span>().<span class="function">__init__</span>(<span class="keyword">name</span>, <span class="keyword">health</span>, <span class="keyword">attack_power</span>)
+        <span class="keyword">self</span>.<span class="keyword">arrows</span> = <span class="keyword">arrows</span>  <span class="comment"># Unique to Archer</span>
+    
+    <span class="keyword">def</span> <span class="function">multi_shot</span>(<span class="keyword">self</span>):
+        <span class="string">"""Special ability only Archers have."""</span>
+        <span class="keyword">if</span> <span class="keyword">self</span>.<span class="keyword">arrows</span> >= <span class="number">3</span>:
+            <span class="keyword">self</span>.<span class="keyword">arrows</span> -= <span class="number">3</span>
+            <span class="keyword">damage</span> = <span class="keyword">self</span>.<span class="keyword">attack_power</span> * <span class="number">3</span>
+            <span class="function">print</span>(<span class="string">f"<span class="output">{self.name}</span> fires Multi-Shot for <span class="output">{damage}</span> damage! (Arrows: <span class="output">{self.arrows}</span>)"</span>)
+        <span class="keyword">else</span>:
+            <span class="function">print</span>(<span class="string">f"<span class="output">{self.name}</span> doesn't have enough arrows!"</span>)
+
+<span class="comment"># Create different character types</span>
+<span class="keyword">warrior</span> = <span class="class-name">Warrior</span>(<span class="string">"Thorgrim"</span>, <span class="number">150</span>, <span class="number">20</span>, <span class="number">50</span>)
+<span class="keyword">mage</span> = <span class="class-name">Mage</span>(<span class="string">"Gandalf"</span>, <span class="number">80</span>, <span class="number">15</span>, <span class="number">100</span>)
+<span class="keyword">archer</span> = <span class="class-name">Archer</span>(<span class="string">"Legolas"</span>, <span class="number">100</span>, <span class="number">18</span>, <span class="number">50</span>)
+
+<span class="comment"># All can use basic attack (inherited from Character)</span>
+<span class="keyword">warrior</span>.<span class="function">attack</span>()
+<span class="keyword">mage</span>.<span class="function">attack</span>()
+<span class="keyword">archer</span>.<span class="function">attack</span>()
+
+<span class="function">print</span>(<span class="string">"\n=== SPECIAL ABILITIES ==="</span>)
+
+<span class="comment"># Each has unique special ability</span>
+<span class="keyword">warrior</span>.<span class="function">shield_bash</span>()
+<span class="keyword">mage</span>.<span class="function">fireball</span>()
+<span class="keyword">archer</span>.<span class="function">multi_shot</span>()</code></pre>
+                    
+                    <p><strong>Output:</strong></p>
+                    <pre><code><span class="output">Thorgrim attacks for 20 damage!
+Gandalf attacks for 15 damage!
+Legolas attacks for 18 damage!
+
+=== SPECIAL ABILITIES ===
+Thorgrim uses Shield Bash for 70 damage!
+Gandalf casts Fireball for 30 damage! (Mana: 80)
+Legolas fires Multi-Shot for 54 damage! (Arrows: 47)</span></code></pre>
+                </div>
+                
+                <div class="tip-box">
+                    <h4>Benefits of Inheritance</h4>
+                    <ul>
+                        <li><strong>Code reuse:</strong> Don't repeat the same code in every class</li>
+                        <li><strong>Organization:</strong> Group similar objects under a parent class</li>
+                        <li><strong>Extensibility:</strong> Easy to add new character types without rewriting everything</li>
+                    </ul>
+                    <p>
+                        Think of it like a company: All employees share basic traits (name, ID, salary), but Managers, Developers, and Designers each have unique responsibilities and tools.
+                    </p>
+                </div>
+            </div>
+
+            <!-- PART 5: ENCAPSULATION -->
+            <div class="huge-box">
+                <h2>Part 5: Encapsulation - Protecting Data</h2>
+                
+                <div class="metaphor-box">
+                    <h4>The Bank Vault Metaphor</h4>
+                    <p>
+                        Imagine a bank:
+                    </p>
+                    <ul>
+                        <li>Your money is stored in a <strong>vault</strong> (protected, you can't just walk in and grab it)</li>
+                        <li>You interact through a <strong>teller</strong> (safe, controlled access)</li>
+                        <li>The teller can <strong>deposit</strong> money (controlled way to add)</li>
+                        <li>The teller can <strong>withdraw</strong> money (controlled way to remove)</li>
+                    </ul>
+                    <p>
+                        <strong>Encapsulation</strong> is the same idea for code:
+                    </p>
+                    <ul>
+                        <li>Hide sensitive data inside the object (the vault)</li>
+                        <li>Provide controlled methods to interact with that data (the teller)</li>
+                        <li>Prevent direct access that could break things</li>
+                    </ul>
+                </div>
+                
+                <div class="demo-box">
+                    <h4>Demo: Bank Account with Encapsulation</h4>
+                    <pre><code><span class="keyword">class</span> <span class="class-name">BankAccount</span>:
+    <span class="keyword">def</span> <span class="function">__init__</span>(<span class="keyword">self</span>, <span class="keyword">account_holder</span>, <span class="keyword">initial_balance</span>=<span class="number">0</span>):
+        <span class="keyword">self</span>.<span class="keyword">account_holder</span> = <span class="keyword">account_holder</span>
+        <span class="keyword">self</span>.<span class="keyword">__balance</span> = <span class="keyword">initial_balance</span>  <span class="comment"># __ makes it PRIVATE</span>
+        <span class="keyword">self</span>.<span class="keyword">__transaction_history</span> = []
+    
+    <span class="keyword">def</span> <span class="function">deposit</span>(<span class="keyword">self</span>, <span class="keyword">amount</span>):
+        <span class="string">"""Safely add money."""</span>
+        <span class="keyword">if</span> <span class="keyword">amount</span> > <span class="number">0</span>:
+            <span class="keyword">self</span>.<span class="keyword">__balance</span> += <span class="keyword">amount</span>
+            <span class="keyword">self</span>.<span class="keyword">__transaction_history</span>.<span class="function">append</span>(<span class="string">f"Deposited: $<span class="output">{amount}</span>"</span>)
+            <span class="function">print</span>(<span class="string">f"Deposited: $<span class="output">{amount}</span>"</span>)
+        <span class="keyword">else</span>:
+            <span class="function">print</span>(<span class="string">"Invalid deposit amount!"</span>)
+    
+    <span class="keyword">def</span> <span class="function">withdraw</span>(<span class="keyword">self</span>, <span class="keyword">amount</span>):
+        <span class="string">"""Safely remove money."""</span>
+        <span class="keyword">if</span> <span class="number">0</span> < <span class="keyword">amount</span> <= <span class="keyword">self</span>.<span class="keyword">__balance</span>:
+            <span class="keyword">self</span>.<span class="keyword">__balance</span> -= <span class="keyword">amount</span>
+            <span class="keyword">self</span>.<span class="keyword">__transaction_history</span>.<span class="function">append</span>(<span class="string">f"Withdrew: $<span class="output">{amount}</span>"</span>)
+            <span class="function">print</span>(<span class="string">f"Withdrew: $<span class="output">{amount}</span>"</span>)
+        <span class="keyword">else</span>:
+            <span class="function">print</span>(<span class="string">"Insufficient funds or invalid amount!"</span>)
+    
+    <span class="keyword">def</span> <span class="function">get_balance</span>(<span class="keyword">self</span>):
+        <span class="string">"""Safely check balance."""</span>
+        <span class="keyword">return</span> <span class="keyword">self</span>.<span class="keyword">__balance</span>
+    
+    <span class="keyword">def</span> <span class="function">show_transactions</span>(<span class="keyword">self</span>):
+        <span class="string">"""Show transaction history."""</span>
+        <span class="function">print</span>(<span class="string">f"\n=== Transaction History for <span class="output">{self.account_holder}</span> ==="</span>)
+        <span class="keyword">for</span> <span class="keyword">transaction</span> <span class="keyword">in</span> <span class="keyword">self</span>.<span class="keyword">__transaction_history</span>:
+            <span class="function">print</span>(<span class="keyword">transaction</span>)
+        <span class="function">print</span>(<span class="string">f"Current Balance: $<span class="output">{self.__balance}</span>\n"</span>)
+
+<span class="comment"># Create account</span>
+<span class="keyword">account</span> = <span class="class-name">BankAccount</span>(<span class="string">"Alice"</span>, <span class="number">1000</span>)
+
+<span class="comment"># Use SAFE methods</span>
+<span class="keyword">account</span>.<span class="function">deposit</span>(<span class="number">500</span>)
+<span class="keyword">account</span>.<span class="function">withdraw</span>(<span class="number">200</span>)
+<span class="keyword">account</span>.<span class="function">withdraw</span>(<span class="number">5000</span>)  <span class="comment"># This will be rejected!</span>
+
+<span class="comment"># Check balance SAFELY</span>
+<span class="function">print</span>(<span class="string">f"Balance: $<span class="output">{account.get_balance()}</span>"</span>)
+<span class="keyword">account</span>.<span class="function">show_transactions</span>()
+
+<span class="comment"># Try to access private data directly (BAD! Will fail or cause issues)</span>
+<span class="comment"># account.__balance = 999999999  # This won't work as expected!</span></code></pre>
+                </div>
+                
+                <div class="warning-box">
+                    <h4>Why Encapsulation Matters</h4>
+                    <p>
+                        Without encapsulation, anyone could do:
+                    </p>
+                    <pre><code><span class="keyword">account</span>.<span class="keyword">balance</span> = -<span class="number">1000000</span>  <span class="comment"># Negative balance? That makes no sense!</span>
+<span class="keyword">account</span>.<span class="keyword">balance</span> = <span class="string">"banana"</span>  <span class="comment"># Balance is text? BROKEN!</span></code></pre>
+                    <p>
+                        With encapsulation using methods (<code>deposit()</code>, <code>withdraw()</code>), you control HOW data changes, preventing invalid states!
+                    </p>
+                </div>
+            </div>
+
+            <!-- PART 6: PRACTICE CHALLENGES -->
+            <div class="challenge">
+                <h3>Practice Challenges</h3>
+                
+                <h4>Challenge 1: Student Class</h4>
+                <p>Create a <code>Student</code> class with:</p>
+                <ul>
+                    <li>Attributes: <code>name</code>, <code>student_id</code>, <code>grades</code> (empty list)</li>
+                    <li>Method <code>add_grade(grade)</code> - adds a grade to the list</li>
+                    <li>Method <code>calculate_average()</code> - returns average of all grades</li>
+                    <li>Method <code>show_report()</code> - prints student info and average</li>
+                </ul>
+                <p>Create 2 students, add grades, and show their reports.</p>
+                
+                <h4>Challenge 2: Car Class</h4>
+                <p>Create a <code>Car</code> class with:</p>
+                <ul>
+                    <li>Attributes: <code>model</code>, <code>color</code>, <code>speed</code> (starts at 0)</li>
+                    <li>Method <code>accelerate(amount)</code> - increases speed</li>
+                    <li>Method <code>brake(amount)</code> - decreases speed (can't go below 0)</li>
+                    <li>Method <code>honk()</code> - prints "BEEP BEEP!"</li>
+                </ul>
+                <p>Create a car, accelerate it, brake it, and make it honk.</p>
+                
+                <h4>Challenge 3: Inheritance - Animals</h4>
+                <p>Create an <code>Animal</code> parent class with:</p>
+                <ul>
+                    <li>Attributes: <code>name</code>, <code>age</code></li>
+                    <li>Method <code>make_sound()</code> - prints "Some generic sound"</li>
+                </ul>
+                <p>Create child classes <code>Dog</code>, <code>Cat</code>, <code>Bird</code> that:</p>
+                <ul>
+                    <li>Inherit from Animal</li>
+                    <li>OVERRIDE <code>make_sound()</code> to print their specific sound ("Woof!", "Meow!", "Tweet!")</li>
+                    <li>Add one unique method each (dog: <code>fetch()</code>, cat: <code>scratch()</code>, bird: <code>fly()</code>)</li>
+                </ul>
+                
+                <h4>Challenge 4: RPG Inventory System</h4>
+                <p>Create a <code>Inventory</code> class that:</p>
+                <ul>
+                    <li>Has private attribute <code>__items</code> (dictionary: item name → quantity)</li>
+                    <li>Method <code>add_item(name, quantity)</code> - adds items</li>
+                    <li>Method <code>remove_item(name, quantity)</code> - removes items (check if enough exist!)</li>
+                    <li>Method <code>show_inventory()</code> - prints all items and quantities</li>
+                    <li>Method <code>get_item_count(name)</code> - returns quantity of specific item</li>
+                </ul>
+                <p>Create an inventory, add/remove items, and display it.</p>
+            </div>
+
+            <div class="huge-box" style="text-align: center; margin-top: 4rem;">
+                <h2>You've Mastered Object-Oriented Programming!</h2>
+                <p style="font-size: 1.3rem; margin: 2rem 0;">
+                    You now understand how to organize code like the real world:
+                </p>
+                <ul style="text-align: left; max-width: 700px; margin: 2rem auto;">
+                    <li><strong>Classes</strong> - Blueprints for creating objects</li>
+                    <li><strong>Objects</strong> - Actual instances built from classes</li>
+                    <li><strong>Attributes</strong> - Characteristics that objects have</li>
+                    <li><strong>Methods</strong> - Actions that objects can perform</li>
+                    <li><strong>Inheritance</strong> - Child classes inheriting from parents</li>
+                    <li><strong>Encapsulation</strong> - Protecting data with controlled access</li>
+                </ul>
+                <p style="font-size: 1.2rem; margin-top: 2rem; color: rgba(255,255,255,0.9);">
+                    <strong>You've completed the Python Programming fundamentals!</strong>
+                </p>
+                <p style="font-size: 1.1rem; margin-top: 1rem;">
+                    Next: Build real projects, explore libraries (web scraping, automation, data science), and keep coding!
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

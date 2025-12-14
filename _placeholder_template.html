@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{TITLE}} - NullSector</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --bg: #000; --text: #fff; --text2: #888; --border: #222; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+        header { position: fixed; top: 0; left: 0; right: 0; background: var(--bg); border-bottom: 1px solid var(--border); z-index: 1000; }
+        .header-content { max-width: 1400px; margin: 0 auto; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .brand { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--text); font-weight: 700; font-size: 1.25rem; }
+        .brand-logo { width: 36px; height: 36px; }
+        .header-links { display: flex; gap: 2rem; }
+        .header-links a { color: var(--text2); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+        .header-links a:hover { color: var(--text); }
+        main { margin-top: 70px; padding: 4rem 2rem; max-width: 900px; margin-left: auto; margin-right: auto; min-height: calc(100vh - 70px); display: flex; flex-direction: column; justify-content: center; }
+        h1 { font-size: 3rem; font-weight: 800; margin-bottom: 1rem; }
+        .subtitle { font-size: 1.3rem; color: var(--text2); margin-bottom: 3rem; }
+        .coming-soon-box { background: linear-gradient(135deg, #111 0%, #1a1a1a 100%); border: 1px solid var(--border); padding: 3rem; border-radius: 12px; }
+        .coming-soon-box h2 { font-size: 1.8rem; margin-bottom: 1.5rem; }
+        .coming-soon-box p { color: var(--text2); margin-bottom: 1rem; font-size: 1.05rem; }
+        .coming-soon-box ul { margin: 1.5rem 0; padding-left: 2rem; color: var(--text2); }
+        .coming-soon-box li { margin-bottom: 0.75rem; }
+        .nav-buttons { display: flex; gap: 1rem; margin-top: 3rem; }
+        .nav-buttons a { flex: 1; padding: 1rem 1.5rem; background: var(--bg); border: 1px solid var(--border); color: var(--text); text-decoration: none; border-radius: 8px; font-weight: 600; text-align: center; transition: all 0.2s; }
+        .nav-buttons a:hover { border-color: var(--text); }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a href="index.html" class="brand">
+                <img src="logo.svg" alt="NullSector" class="brand-logo">
+                <span>NullSector</span>
+            </a>
+            <div class="header-links">
+                <a href="{{ROADMAP_LINK}}">{{ROADMAP_NAME}} Roadmap</a>
+                <a href="index.html">Home</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <h1>{{CHAPTER_TITLE}}</h1>
+        <p class="subtitle">{{CHAPTER_SUBTITLE}}</p>
+
+        <div class="coming-soon-box">
+            <h2>📚 Chapter Content Coming Soon</h2>
+            <p>This chapter will contain <strong>comprehensive coverage</strong> of {{TOPIC}} with extreme detail for absolute beginners.</p>
+            <p><strong>What to expect:</strong></p>
+            <ul>
+                <li>Complete beginner-friendly explanations with metaphors</li>
+                <li>Colorful code examples with syntax highlighting</li>
+                <li>Real working demonstrations and hands-on exercises</li>
+                <li>Step-by-step walkthroughs</li>
+                <li>Security implications and hacker perspectives</li>
+                <li>Practice challenges and quick checks</li>
+            </ul>
+            <p style="margin-top: 1.5rem;"><strong>Expected content:</strong> Massive scrollable chapter with extensive examples and teaching material.</p>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="{{PREV_CHAPTER}}">← Previous Chapter</a>
+            <a href="{{NEXT_CHAPTER}}">Next Chapter →</a>
+        </div>
+    </main>
+</body>
+</html>

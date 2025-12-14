@@ -3,327 +3,2190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ch02: Programming Fundamentals II - NullSector</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="icon" href="favicon.ico">
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <title>Chapter 02: Control Flow - NullSector</title>
+    <link rel="icon" type="image/svg+xml" href="logo.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg: #000; --bg2: #0a0a0a; --bg3: #111;
+            --text: #fff; --text2: #888; --text3: #555;
+            --border: rgba(255,255,255,0.1);
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; overflow-x: hidden; }
+        .header { position: fixed; top: 0; left: 0; right: 0; height: 70px; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); z-index: 1000; display: flex; align-items: center; padding: 0 2rem; }
+        .header-content { width: 100%; max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .brand { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--text); font-weight: 700; font-size: 1.25rem; }
+        .nav { display: flex; gap: 2rem; }
+        .nav a { color: var(--text2); text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: color 0.3s; }
+        .nav a:hover { color: var(--text); }
+        .sidebar { position: fixed; left: 0; top: 70px; width: 280px; height: calc(100vh - 70px); background: var(--bg2); border-right: 1px solid var(--border); overflow-y: auto; padding: 2rem 0; z-index: 100; }
+        .sidebar::-webkit-scrollbar { width: 6px; }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+        .sidebar-section { padding: 0 1.5rem; margin-bottom: 2rem; }
+        .sidebar-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); margin-bottom: 1rem; }
+        .sidebar-link { display: block; color: var(--text2); text-decoration: none; padding: 0.6rem 1rem; margin: 0.25rem 0; border-radius: 6px; font-size: 0.9rem; transition: all 0.3s; }
+        .sidebar-link:hover { background: rgba(255,255,255,0.05); color: var(--text); transform: translateX(4px); }
+        .sidebar-link.active { background: rgba(255,255,255,0.1); color: var(--text); font-weight: 600; }
+        .main { margin-left: 280px; margin-top: 70px; padding: 4rem 3rem; max-width: 1100px; }
+        .page-header { margin-bottom: 4rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+        .chapter-label { font-size: 0.875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--text3); margin-bottom: 1rem; }
+        .page-title { font-size: 3.5rem; font-weight: 800; line-height: 1.2; margin-bottom: 1rem; letter-spacing: -1px; }
+        .page-subtitle { font-size: 1.25rem; color: var(--text2); font-weight: 400; line-height: 1.6; }
+        .section { margin-bottom: 6rem; scroll-margin-top: 100px; }
+        .section-title { font-size: 2.25rem; font-weight: 700; margin-bottom: 1.5rem; }
+        .section-intro { font-size: 1.125rem; color: var(--text2); margin-bottom: 2rem; line-height: 1.8; }
+        h3 { font-size: 1.75rem; font-weight: 600; margin: 3rem 0 1.5rem; }
+        p { font-size: 1.0625rem; line-height: 1.8; margin-bottom: 1.5rem; }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+        .card { background: var(--bg3); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; transition: all 0.3s; }
+        .card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.2); }
+        .card h4 { font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; }
+        .card p { color: var(--text2); font-size: 0.9375rem; }
+        .info-box { background: var(--bg3); border-left: 3px solid var(--text); padding: 1.5rem; margin: 2rem 0; border-radius: 0 8px 8px 0; }
+        .info-box h4 { font-weight: 600; margin-bottom: 0.75rem; }
+        .info-box p { color: var(--text2); }
+        .code { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.875rem; line-height: 1.7; white-space: pre; }
+        .inline-code { background: rgba(255,255,255,0.1); padding: 0.2rem 0.5rem; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.875em; }
+        .metaphor-box { background: rgba(255,255,255,0.03); border-left: 4px solid var(--text); padding: 1.5rem; margin: 2rem 0; border-radius: 0 8px 8px 0; position: relative; }
+        .metaphor-box::before { content: "💡"; position: absolute; top: 1rem; right: 1rem; font-size: 1.5rem; }
+        ul, ol { margin: 1.5rem 0; padding-left: 2rem; }
+        li { margin: 0.75rem 0; color: var(--text2); }
+        .progress { position: fixed; top: 70px; left: 0; height: 3px; background: linear-gradient(90deg, var(--text) 0%, var(--text2) 100%); transition: width 0.1s; z-index: 1001; }
+        @media (max-width: 1024px) { .sidebar { transform: translateX(-100%); } .main { margin-left: 0; padding: 3rem 2rem; } .page-title { font-size: 2.5rem; } }
+    </style>
 </head>
 <body>
-    <div class="stars"></div>
-    <div class="twinkling"></div>
-    
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-brand">
-                <a href="index.html" style="display: flex; align-items: center; text-decoration: none; color: inherit;">
-                    <img src="logo.svg" alt="NullSector Logo" class="logo">
-                    <span class="brand-text">NullSector</span>
-                </a>
-            </div>
-            <div class="nav-links">
-                <a href="roadmap-hacking.html" class="nav-link">Hacking</a>
-                <a href="roadmap-programming.html" class="nav-link active">Programming</a>
-                <a href="resources.html" class="nav-link">Resources</a>
-                <a href="faq.html" class="nav-link">FAQ</a>
-                <a href="https://discord.gg/Tz9Y3wea32" target="_blank" class="nav-link">Discord</a>
-                                
-                <div id="userProfile" style="display: none; align-items: center; gap: 0.75rem;">
-                    <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <img id="userAvatar" style="width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--primary-color); cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="" />
-                        <span id="userName" style="color: var(--text-primary); font-weight: 500; font-size: 0.95rem; cursor: default;"></span>
-                    </div>
-                    <button id="logoutButton" class="nav-link" style="background: rgba(255, 95, 87, 0.1); border: 1px solid #ff5f57; padding: 0.4rem 1rem; border-radius: 6px; font-weight: 500; cursor: pointer; color: #ff5f57; transition: all 0.2s;" onmouseover="this.style.background='rgba(255, 95, 87, 0.2)'" onmouseout="this.style.background='rgba(255, 95, 87, 0.1)'">Logout</button>
-                </div>
-            </div>
+    <div class="progress" id="progress"></div>
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="brand">
+                <img src="logo.svg" alt="NullSector" width="36" height="36">
+                <span>NullSector</span>
+            </a>
+            <nav class="nav">
+                <a href="roadmap-hacking.html">Hacking</a>
+                <a href="roadmap-programming.html">Programming</a>
+                <a href="index.html">Home</a>
+            </nav>
         </div>
-    </nav>
+    </header>
 
-    <section class="content-page">
-        <div class="content-container">
-            <div class="breadcrumb">
-                <a href="roadmap-programming.html">Programming Roadmap</a> / <span>Chapter 02</span>
-            </div>
+    <aside class="sidebar">
+        <div class="sidebar-section">
+            <div class="sidebar-title">On This Page</div>
+            <a href="#conditionals" class="sidebar-link">If Statements</a>
+            <a href="#comparison" class="sidebar-link">Comparison Operators</a>
+            <a href="#logical" class="sidebar-link">Logical Operators</a>
+            <a href="#elif-else" class="sidebar-link">elif and else</a>
+            <a href="#nested" class="sidebar-link">Nested Conditions</a>
+            <a href="#while-loops" class="sidebar-link">While Loops</a>
+            <a href="#for-loops" class="sidebar-link">For Loops</a>
+            <a href="#break-continue" class="sidebar-link">Break & Continue</a>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-title">Navigation</div>
+            <a href="programming-ch03.html" class="sidebar-link">Next: Chapter 03 →</a>
+            <a href="programming-ch01.html" class="sidebar-link">← Previous: Chapter 01</a>
+            <a href="roadmap-programming.html" class="sidebar-link">Back to Roadmap</a>
+        </div>
+    </aside>
+
+    <main class="main">
+        <div class="page-header">
+            <div class="chapter-label">Chapter 02</div>
+            <h1 class="page-title">Control Flow</h1>
+            <p class="page-subtitle">Make your programs smart. Control flow lets your code make decisions and repeat actions - the two things that make programs actually useful.</p>
+        </div>
+
+        <section class="section">
+            <p>Up until now, your programs run from top to bottom, line by line, every time. But real programs need to make decisions: "If the password is correct, let them in. Otherwise, show an error."</p>
+            <p>They also need to repeat actions: "Keep asking for input until they type 'quit'" or "Process every item in this list."</p>
+            <p>Control flow is what separates a simple calculator from a smart assistant. It's the difference between a dumb script and an intelligent program. Master these concepts and you can build almost anything.</p>
             
-            <div class="roadmap-section">
-                <div class="roadmap-number">02</div>
-                <h1 class="page-title">Chapter 02: The Engine Room</h1>
-                <p class="page-subtitle">Memory, Hardware, Algorithms & The "Hard" Stuff</p>
+            <div class="metaphor-box">
+                <h4>🚦 Traffic Lights of Code</h4>
+                <p>Think of control flow like traffic lights controlling the flow of cars:</p>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>If statements (red/green):</strong> Stop or go based on conditions</li>
+                    <li><strong>Loops (roundabouts):</strong> Keep going in circles until your exit appears</li>
+                    <li><strong>Break (turn off):</strong> Emergency exit from the roundabout</li>
+                </ul>
+                <p style="margin-top: 1rem;">Without traffic lights, cars would crash. Without control flow, programs would be useless - just doing the same thing every time regardless of circumstances.</p>
+            </div>
 
-                <div class="key-takeaways" style="margin-bottom:3rem;">
-                    <h3>What You'll Learn:</h3>
-                    <ul>
-                        <li><strong>The Hardware:</strong> CPU, Binary, and Hexadecimal</li>
-                        <li><strong>Memory Deep Dive:</strong> The Stack vs The Heap (and Pointers)</li>
-                        <li><strong>Data Structures:</strong> Arrays, Lists, Maps, Trees, and Graphs</li>
-                        <li><strong>Algorithms:</strong> Big O, Sorting, and Recursion</li>
-                        <li><strong>Bitwise Logic:</strong> Thinking in 1s and 0s</li>
+            <div class="card-grid">
+                <div class="card">
+                    <h4>🔀 Conditionals</h4>
+                    <p>Make decisions based on conditions. Different inputs = different behavior.</p>
+                    <ul style="margin-top: 1rem; color: var(--text2); font-size: 0.9rem;">
+                        <li>if statements</li>
+                        <li>else and elif</li>
+                        <li>Comparison operators</li>
+                        <li>Logical operators (and, or, not)</li>
                     </ul>
                 </div>
-
-                <!-- Topic 1: The Hardware Layer -->
-                <div class="topic-section" style="background: linear-gradient(135deg, rgba(255,200,0,0.05) 0%, rgba(255,100,100,0.05) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0;">
-                    <h2 style="color: #ffc800; font-size: 2.2rem; margin-bottom: 2rem;">1. The Hardware: How Computers Think</h2>
-                    
-                    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 15px; margin: 2rem 0; font-size: 1.15rem; line-height: 1.9;">
-                        <p style="margin: 0; font-size: 1.25rem;">
-                            Before we talk about code, we must talk about the machine. 
-                            Your computer is just a rock that we tricked into thinking by putting lightning inside it.
-                        </p>
-                    </div>
-
-                    <div style="display: grid; gap: 2rem; margin-top: 2rem;">
-                        <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; border-left: 4px solid #ffc800;">
-                            <h4 style="color: #ffc800; margin: 0 0 1rem 0; font-size: 1.6rem;">Binary & Hexadecimal</h4>
-                            <p style="font-size: 1.1rem; line-height: 1.8;">
-                                Computers only understand <strong>Voltage</strong> (On/Off). We represent this as <strong>1</strong> and <strong>0</strong> (Binary).
-                            </p>
-                            <ul style="font-size: 1.1rem; line-height: 1.8; margin-top: 1rem;">
-                                <li><strong>Bit:</strong> A single 1 or 0.</li>
-                                <li><strong>Byte:</strong> 8 bits (e.g., <code>10110011</code>). Can represent numbers 0-255.</li>
-                                <li><strong>Hexadecimal (Hex):</strong> Binary is hard for humans to read. Hex is a shortcut. Instead of 0-9, we use 0-9 and A-F.
-                                    <br><code>1111 1111</code> (Binary) = <code>255</code> (Decimal) = <code>FF</code> (Hex).
-                                    <br>You'll see Hex everywhere in colors (<code>#FFFFFF</code>) and memory addresses (<code>0x7fff5b</code>).
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; border-left: 4px solid #ff6464;">
-                            <h4 style="color: #ff6464; margin: 0 0 1rem 0; font-size: 1.6rem;">The CPU Cycle</h4>
-                            <p style="font-size: 1.1rem; line-height: 1.8;">
-                                The CPU is the brain. It does three things, billions of times per second:
-                            </p>
-                            <ol style="font-size: 1.1rem; line-height: 1.8; margin-top: 1rem;">
-                                <li><strong>Fetch:</strong> Get the next instruction from RAM.</li>
-                                <li><strong>Decode:</strong> Figure out what the instruction means (e.g., "Add these two numbers").</li>
-                                <li><strong>Execute:</strong> Do it.</li>
-                            </ol>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Topic 2: Memory Management -->
-                <div class="topic-section" style="background: linear-gradient(135deg, rgba(0,255,136,0.05) 0%, rgba(0,204,255,0.05) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0;">
-                    <h2 style="color: #00ff88; font-size: 2.2rem; margin-bottom: 2rem;">2. Memory: The Stack vs The Heap</h2>
-                    
-                    <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 2rem;">
-                        RAM isn't just a bucket. It's organized into two regions. Understanding this prevents crashes.
-                    </p>
-
-                    <div style="display: grid; gap: 2rem; margin: 2rem 0;">
-                        <div style="background: rgba(0,255,136,0.15); padding: 2.5rem; border-radius: 15px;">
-                            <h4 style="color: #00ff88; font-size: 1.6rem; margin: 0 0 1rem 0;">The Stack (Fast & Strict)</h4>
-                            <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1rem;">
-                                <strong>Analogy:</strong> A stack of plates. You can only touch the top one.
-                            </p>
-                            <ul style="font-size: 1.1rem; line-height: 1.9;">
-                                <li><strong>Storage:</strong> Local variables, function calls.</li>
-                                <li><strong>Speed:</strong> Instant. The CPU has a special register pointing to the top.</li>
-                                <li><strong>Limit:</strong> Small. If you recurse too deep, you get a <strong>Stack Overflow</strong>.</li>
-                                <li><strong>Cleanup:</strong> Automatic. When a function ends, its data is popped off.</li>
-                            </ul>
-                        </div>
-
-                        <div style="background: rgba(0,204,255,0.15); padding: 2.5rem; border-radius: 15px;">
-                            <h4 style="color: #00ccff; font-size: 1.6rem; margin: 0 0 1rem 0;">The Heap (Big & Messy)</h4>
-                            <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1rem;">
-                                <strong>Analogy:</strong> A giant warehouse where you can put boxes anywhere.
-                            </p>
-                            <ul style="font-size: 1.1rem; line-height: 1.9;">
-                                <li><strong>Storage:</strong> Large objects, global data, things that need to live a long time.</li>
-                                <li><strong>Speed:</strong> Slower. You need a "Pointer" (address) to find your data.</li>
-                                <li><strong>Cleanup:</strong> Manual (C++) or Garbage Collected (Python/Java). If you forget to clean up, you get a <strong>Memory Leak</strong>.</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; border-left: 4px solid #00ff88; margin-top: 2rem;">
-                        <h4 style="color: #00ff88; margin: 0 0 1rem 0; font-size: 1.4rem;">What is a Pointer?</h4>
-                        <p style="font-size: 1.1rem; line-height: 1.8;">
-                            A pointer is just a variable that holds a <strong>memory address</strong> instead of a value.
-                            <br>Instead of holding the number <code>42</code>, it holds <code>0x7fff5b</code> (the location where 42 is stored).
-                            <br><em>Why?</em> Passing a pointer to a 1GB video file is instant. Passing the file itself copies 1GB of data (slow).
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Topic 3: Data Structures -->
-                <div class="topic-section" style="background: linear-gradient(135deg, rgba(0,204,255,0.05) 0%, rgba(138,43,226,0.05) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0;">
-                    <h2 style="color: #00ccff; font-size: 2.2rem; margin-bottom: 2rem;">3. Data Structures: The Toolbox</h2>
-                    
-                    <div style="display: grid; gap: 2rem; margin-top: 2rem;">
-                        <!-- Array -->
-                        <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; border-left: 4px solid #00ff88;">
-                            <h4 style="color: #00ff88; margin: 0 0 1rem 0; font-size: 1.6rem;">1. Arrays (The Egg Carton)</h4>
-                            <p style="font-size: 1.1rem; line-height: 1.8;">
-                                Fixed size, contiguous memory.
-                                <br><strong>Good:</strong> Instant access (O(1)).
-                                <br><strong>Bad:</strong> Can't grow easily. Inserting in the middle is slow (O(n)).
-                            </p>
-                        </div>
-
-                        <!-- Linked List -->
-                        <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; border-left: 4px solid #00ccff;">
-                            <h4 style="color: #00ccff; margin: 0 0 1rem 0; font-size: 1.6rem;">2. Linked Lists (The Treasure Hunt)</h4>
-                            <p style="font-size: 1.1rem; line-height: 1.8;">
-                                Nodes scattered in memory, each pointing to the next.
-                                <br><strong>Good:</strong> Fast insertion/deletion (O(1)).
-                                <br><strong>Bad:</strong> Slow access (O(n)) - you have to walk the chain.
-                            </p>
-                        </div>
-
-                        <!-- Hash Map -->
-                        <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; border-left: 4px solid #ffc800;">
-                            <h4 style="color: #ffc800; margin: 0 0 1rem 0; font-size: 1.6rem;">3. Hash Maps (The Teleporter)</h4>
-                            <p style="font-size: 1.1rem; line-height: 1.8;">
-                                Key-Value pairs. Uses math to find location.
-                                <br><strong>Good:</strong> Instant lookup (O(1)).
-                                <br><strong>Bad:</strong> Unordered. Collisions can happen.
-                            </p>
-                        </div>
-
-                        <!-- Trees -->
-                        <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; border-left: 4px solid #ff6464;">
-                            <h4 style="color: #ff6464; margin: 0 0 1rem 0; font-size: 1.6rem;">4. Trees (The Hierarchy)</h4>
-                            <p style="font-size: 1.1rem; line-height: 1.8;">
-                                Data with a parent-child relationship.
-                                <br><strong>Example:</strong> Your computer's file system (Folders inside folders). The HTML DOM.
-                                <br><strong>Binary Search Tree:</strong> A sorted tree where left is smaller, right is bigger. Allows super fast searching (O(log n)).
-                            </p>
-                        </div>
-
-                        <!-- Graphs -->
-                        <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; border-left: 4px solid #8a2be2;">
-                            <h4 style="color: #8a2be2; margin: 0 0 1rem 0; font-size: 1.6rem;">5. Graphs (The Network)</h4>
-                            <p style="font-size: 1.1rem; line-height: 1.8;">
-                                Nodes connected by edges. No hierarchy.
-                                <br><strong>Example:</strong> Social Networks (Friends connected to friends). Google Maps (Cities connected by roads).
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Topic 4: Algorithms -->
-                <div class="topic-section" style="background: linear-gradient(135deg, rgba(138,43,226,0.05) 0%, rgba(255,100,100,0.05) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0;">
-                    <h2 style="color: #ff6464; font-size: 2.2rem; margin-bottom: 2rem;">4. Algorithms: The Recipes</h2>
-                    
-                    <div style="display: grid; gap: 1.5rem; margin-top: 2rem;">
-                        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 8px;">
-                            <h5 style="color: #ff6464; margin: 0 0 0.5rem 0; font-size: 1.4rem;">Big O Notation</h5>
-                            <p style="font-size: 1.1rem; line-height: 1.7;">
-                                Measuring how code slows down as data grows.
-                                <br><strong>O(1):</strong> Instant.
-                                <br><strong>O(log n):</strong> Fast (halving the problem).
-                                <br><strong>O(n):</strong> Linear (reading a book).
-                                <br><strong>O(n²):</strong> Slow (nested loops).
-                            </p>
-                        </div>
-
-                        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 8px;">
-                            <h5 style="color: #ff6464; margin: 0 0 0.5rem 0; font-size: 1.4rem;">Sorting Algorithms</h5>
-                            <p style="font-size: 1.1rem; line-height: 1.7;">
-                                <strong>Bubble Sort:</strong> Swapping neighbors repeatedly. Slow (O(n²)).
-                                <br><strong>Merge Sort:</strong> Splitting list in half, sorting, and merging. Fast (O(n log n)).
-                                <br><em>Why sort?</em> You can't use Binary Search on unsorted data.
-                            </p>
-                        </div>
-
-                        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 8px;">
-                            <h5 style="color: #ff6464; margin: 0 0 0.5rem 0; font-size: 1.4rem;">Recursion</h5>
-                            <p style="font-size: 1.1rem; line-height: 1.7;">
-                                A function that calls itself.
-                                <br>Used for traversing Trees and Graphs.
-                                <br><strong>Danger:</strong> Infinite recursion = Stack Overflow.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Topic 5: Bitwise Operations -->
-                <div class="topic-section" style="background: linear-gradient(135deg, rgba(0,255,136,0.05) 0%, rgba(255,200,0,0.05) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0;">
-                    <h2 style="color: #00ff88; font-size: 2.2rem; margin-bottom: 2rem;">5. Bitwise Operations: Hacker Math</h2>
-                    
-                    <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 2rem;">
-                        Manipulating individual bits. This is how encryption and compression work.
-                    </p>
-
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-                        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 8px;">
-                            <strong style="color: #00ff88; font-size: 1.2rem;">AND (&)</strong>
-                            <p>Both must be 1.<br>1 & 1 = 1<br>1 & 0 = 0</p>
-                        </div>
-                        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 8px;">
-                            <strong style="color: #00ff88; font-size: 1.2rem;">OR (|)</strong>
-                            <p>Either can be 1.<br>1 | 0 = 1<br>0 | 0 = 0</p>
-                        </div>
-                        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 8px;">
-                            <strong style="color: #00ff88; font-size: 1.2rem;">XOR (^)</strong>
-                            <p>Must be different.<br>1 ^ 0 = 1<br>1 ^ 1 = 0</p>
-                        </div>
-                        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 8px;">
-                            <strong style="color: #00ff88; font-size: 1.2rem;">NOT (~)</strong>
-                            <p>Flip everything.<br>~1 = 0<br>~0 = 1</p>
-                        </div>
-                    </div>
-                    <p style="margin-top: 1rem; font-size: 1.1rem;">
-                        <strong>Fun Fact:</strong> XOR is used in encryption because it's reversible. <code>(A ^ Key) ^ Key = A</code>.
-                    </p>
-                </div>
-
-                <!-- Mastery Checklist -->
-                <div style="background: linear-gradient(135deg, rgba(0,255,136,0.1) 0%, rgba(138,43,226,0.1) 100%); padding: 3rem; border-radius: 20px; margin: 4rem 0; border: 3px solid rgba(0,255,136,0.3);">
-                    <h2 style="color: #00ff88; font-size: 2rem; margin-bottom: 2rem;">🎯 Chapter 02 Mastery Checklist</h2>
-                    
-                    <div style="display: grid; gap: 1rem;">
-                        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
-                            ☐ I understand Binary, Hex, and how the CPU fetches instructions.
-                        </div>
-                        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
-                            ☐ I know the difference between Stack (Static) and Heap (Dynamic) memory.
-                        </div>
-                        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
-                            ☐ I can explain Arrays, Linked Lists, Hash Maps, Trees, and Graphs.
-                        </div>
-                        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
-                            ☐ I understand Big O notation and why O(n²) is bad.
-                        </div>
-                        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
-                            ☐ I know how XOR works and why it's useful.
-                        </div>
-                    </div>
-                    
-                    <div style="background: rgba(0,255,136,0.2); padding: 2rem; border-radius: 15px; margin-top: 3rem; border: 2px solid rgba(0,255,136,0.5);">
-                        <h3 style="color: #00ff88; margin-top: 0; font-size: 1.6rem;">✅ Level Up!</h3>
-                        <p style="font-size: 1.2rem; line-height: 1.8; margin-bottom: 1rem;">
-                            <strong>Congratulations!</strong> This was a massive chapter. You now know more about computer science than many bootcamp graduates.
-                        </p>
-                        <p style="font-size: 1.15rem; line-height: 1.8;">
-                            <strong style="color: #00ff88;">Next up:</strong> <a href="programming-ch03.html" style="color: #00ccff; text-decoration: underline;">Chapter 03: Algorithms & Problem Solving</a>
-                        </p>
-                    </div>
-                </div>
-
-                <div style="display: flex; gap: 2rem; margin-top: 3rem;">
-                    <a href="programming-ch01.html" style="flex: 1; background: linear-gradient(135deg, rgba(0,204,255,0.2) 0%, rgba(138,43,226,0.2) 100%); padding: 2rem; border-radius: 15px; text-decoration: none; border: 2px solid rgba(0,204,255,0.4); transition: all 0.3s;">
-                        <div style="color: #00ccff; font-size: 0.9rem; margin-bottom: 0.5rem;">← PREVIOUS</div>
-                        <div style="color: #fff; font-size: 1.1rem; font-weight: 600;">Chapter 01</div>
-                    </a>
-                    <a href="programming-ch03.html" style="flex: 1; background: linear-gradient(135deg, rgba(0,255,136,0.2) 0%, rgba(0,204,255,0.2) 100%); padding: 2rem; border-radius: 15px; text-decoration: none; border: 2px solid rgba(0,255,136,0.4); transition: all 0.3s; text-align: right;">
-                        <div style="color: #00ff88; font-size: 0.9rem; margin-bottom: 0.5rem;">NEXT →</div>
-                        <div style="color: #fff; font-size: 1.1rem; font-weight: 600;">Chapter 03</div>
-                    </a>
+                <div class="card">
+                    <h4>🔄 Loops</h4>
+                    <p>Repeat actions multiple times. Process collections item by item.</p>
+                    <ul style="margin-top: 1rem; color: var(--text2); font-size: 0.9rem;">
+                        <li>while loops (repeat while true)</li>
+                        <li>for loops (iterate over items)</li>
+                        <li>range() function</li>
+                        <li>break and continue</li>
+                    </ul>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <script src="script.js"></script>
+            <div class="info-box">
+                <h4>The Power of Control Flow</h4>
+                <p>With variables + control flow, you can build almost anything. Games, apps, automation scripts, websites - they're all just decisions and loops. The Tic-Tac-Toe game at the end of this chapter uses only concepts from Ch01 and Ch02!</p>
+            </div>
+        </section>
+
+        <section id="conditionals" class="section">
+            <h2 class="section-title">Conditional Statements: Making Decisions</h2>
+            <p class="section-intro">The if statement is the most important control structure. It lets your code take different paths based on conditions. Without conditionals, every run of your program would be identical - boring and useless.</p>
+
+            <div class="metaphor-box">
+                <h4>🛤️ The Crossroads Metaphor</h4>
+                <p>Imagine you're walking and reach a fork in the road. You check your map (the condition):</p>
+                <ul style="margin-top: 1rem;">
+                    <li>If the destination is north, go left</li>
+                    <li>Otherwise (else), go right</li>
+                </ul>
+                <p style="margin-top: 1rem;">That's exactly what <span class="inline-code">if</span> statements do - they check a condition and choose which code path to follow.</p>
+            </div>
+
+            <h3>The Anatomy of an If Statement</h3>
+            <div class="code"># ==================== BASIC STRUCTURE ====================
+
+# if condition:
+#     code to run if condition is True
+
+# The key parts:
+# 1. The 'if' keyword
+# 2. A condition that evaluates to True or False
+# 3. A colon : at the end of the if line
+# 4. INDENTED code (4 spaces) that runs when True
+
+age = 18
+
+if age >= 18:
+    print("You are an adult")          # Runs if condition is True
+    print("You can vote")              # Also runs (same indentation)
+
+print("This always runs")              # Not indented = not part of if
+
+# ==================== INDENTATION IS CRUCIAL ====================
+
+# Python uses indentation to know what's "inside" the if
+# This is different from most other languages!
+
+if True:
+    print("Inside the if")
+    print("Still inside")
+    print("Yep, still inside")
+print("Outside - this runs regardless")
+
+# ⚠️ WRONG - IndentationError!
+# if True:
+# print("No indentation = error")
+
+# ==================== WHAT COUNTS AS TRUE/FALSE? ====================
+
+# Booleans:
+if True:                    # Runs
+    print("This runs")
+if False:                   # Doesn't run
+    print("This doesn't")
+
+# Comparison results:
+if 5 > 3:                   # True, so runs
+    print("Math works!")
+
+# Variables containing booleans:
+is_sunny = True
+if is_sunny:
+    print("Wear sunglasses")
+
+# ==================== TRUTHY AND FALSY VALUES ====================
+
+# Python considers these "falsy" (treated as False):
+if 0:           pass  # 0 is falsy
+if "":          pass  # Empty string is falsy
+if []:          pass  # Empty list is falsy
+if None:        pass  # None is falsy
+if False:       pass  # Obviously
+
+# Everything else is "truthy":
+if 1:           print("Truthy!")  # Any non-zero number
+if -42:         print("Truthy!")  # Even negative
+if "hello":     print("Truthy!")  # Non-empty string
+if [1, 2, 3]:   print("Truthy!")  # Non-empty list
+
+# This is useful for checking if something exists:
+name = input("Enter your name: ")
+if name:                    # If they typed something
+    print(f"Hello, {name}!")
+else:
+    print("You didn't enter a name!")</div>
+
+            <h3>If-Else: Two Paths</h3>
+            <div class="code"># ==================== IF-ELSE STRUCTURE ====================
+
+# if condition:
+#     code for True
+# else:
+#     code for False
+
+age = 15
+
+if age >= 18:
+    print("You are an adult")        # Path 1
+else:
+    print("You are a minor")         # Path 2
+
+# EXACTLY ONE of these blocks will run - never both, never neither
+
+# ==================== VISUALIZING THE FLOW ====================
+
+#                 [age >= 18?]
+#                 /          \
+#              True         False
+#               |             |
+#         "adult"        "minor"
+#               \            /
+#                \          /
+#              [continue program]
+
+# ==================== PRACTICAL EXAMPLE ====================
+
+# Password checker
+password = input("Enter password: ")
+
+if password == "secret123":
+    print("="*30)
+    print("   ACCESS GRANTED")
+    print("="*30)
+    print("Welcome to the system.")
+    print("Loading dashboard...")
+else:
+    print("="*30)
+    print("   ACCESS DENIED")
+    print("="*30)
+    print("Incorrect password.")
+    print("Please try again.")
+
+# ==================== COMMON PATTERNS ====================
+
+# 1. Checking if input is valid
+user_input = input("Enter a number: ")
+if user_input.isdigit():
+    number = int(user_input)
+    print(f"Your number is {number}")
+else:
+    print("That's not a valid number!")
+
+# 2. Checking boundaries
+score = 85
+if score >= 50:
+    print("You passed!")
+else:
+    print("You failed.")
+
+# 3. Either/or situations
+coin = "heads"  # or "tails"
+if coin == "heads":
+    print("You win!")
+else:
+    print("You lose!")</div>
+
+            <div class="warning-box">
+                <h4>⚠️ Common Beginner Mistakes</h4>
+                <ul style="margin-top: 0.5rem;">
+                    <li><strong>Forgetting the colon:</strong> <code>if age >= 18</code> ❌ → <code>if age >= 18:</code> ✓</li>
+                    <li><strong>Wrong indentation:</strong> Must be exactly 4 spaces (or consistent tabs)</li>
+                    <li><strong>Using = instead of ==:</strong> <code>if x = 5:</code> ❌ → <code>if x == 5:</code> ✓</li>
+                    <li><strong>Comparing strings without quotes:</strong> <code>if name == Alice:</code> ❌ → <code>if name == "Alice":</code> ✓</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="comparison" class="section">
+            <h2 class="section-title">Comparison Operators: The Foundation of Conditions</h2>
+            <p class="section-intro">Conditions use comparisons. Every if statement boils down to asking a yes/no question. Comparison operators are how you ask those questions. They compare two values and return True or False.</p>
+
+            <div class="metaphor-box">
+                <h4>⚖️ The Scales of Justice</h4>
+                <p>Think of comparison operators like scales - you put something on each side and they tell you how they relate:</p>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>== </strong> Are both sides equal? (balanced)</li>
+                    <li><strong>!= </strong> Are the sides different? (unbalanced)</li>
+                    <li><strong>> < </strong> Which side is heavier? (which is greater)</li>
+                </ul>
+                <p style="margin-top: 1rem;">The scales always give you a yes (True) or no (False) answer - never maybe!</p>
+            </div>
+
+            <h3>The Six Comparison Operators</h3>
+            <div class="code"># ==================== ALL COMPARISON OPERATORS ====================
+
+x = 10
+
+x == 10    # True    Equal to (is x exactly 10?)
+x != 5     # True    Not equal to (is x different from 5?)
+x > 5      # True    Greater than (is x more than 5?)
+x < 5      # False   Less than (is x less than 5?)
+x >= 10    # True    Greater than OR equal to (is x at least 10?)
+x <= 10    # True    Less than OR equal to (is x at most 10?)
+
+# ==================== REMEMBER: == vs = ====================
+
+# = is ASSIGNMENT (storing a value)
+x = 5      # Put 5 into x
+
+# == is COMPARISON (asking a question)
+x == 5     # Is x equal to 5? Returns True
+
+# This is THE most common mistake:
+# if x = 5:     # ❌ SyntaxError! You're assigning, not comparing
+# if x == 5:    # ✓ Correct comparison
+
+# ==================== USING IN CONDITIONS ====================
+
+age = 25
+
+if age >= 18:
+    print("Adult")
     
-    <!-- Supabase Client & Auth -->
-    <!-- Supabase Client & Auth -->
-    </body>
+if age != 0:
+    print("Age is set")
+
+if age == 25:
+    print("Exactly 25")
+
+# ==================== CHAINING COMPARISONS ====================
+
+# Python lets you chain comparisons (unique feature!)
+score = 75
+
+# Instead of:
+if score >= 70 and score < 80:
+    print("C grade")
+
+# You can write:
+if 70 <= score < 80:
+    print("C grade")
+
+# This reads more naturally: "Is 70 less-than-or-equal score less-than 80?"
+
+# More examples:
+x = 5
+1 < x < 10          # True (x is between 1 and 10)
+1 < x < 3           # False (x is not between 1 and 3)
+10 >= x >= 1        # True (x is between 1 and 10, inclusive)
+
+# You can chain as many as you want:
+a, b, c, d = 1, 2, 3, 4
+a < b < c < d       # True (they're in ascending order)</div>
+
+            <h3>Comparing Different Types</h3>
+            <div class="code"># ==================== COMPARING STRINGS ====================
+
+name = "Alice"
+
+name == "Alice"    # True (exact match)
+name == "alice"    # False (CASE SENSITIVE!)
+name == "ALICE"    # False (case matters)
+name.lower() == "alice"  # True (convert to lowercase first)
+
+# String comparisons are lexicographic (dictionary order):
+"apple" < "banana"      # True (a comes before b)
+"apple" < "apricot"     # True (compare character by character)
+"Apple" < "apple"       # True (uppercase letters come before lowercase!)
+
+# Why? It uses ASCII/Unicode values:
+# 'A' = 65, 'Z' = 90
+# 'a' = 97, 'z' = 122
+# So all uppercase < all lowercase
+
+"10" < "9"              # True! (string comparison, not numeric)
+                        # "1" comes before "9" in first character
+
+# ==================== COMPARING NUMBERS ====================
+
+5 == 5.0               # True (int and float can be equal)
+10 > 3                 # True
+-5 < 0                 # True
+3.14159 >= 3.14        # True
+
+# Be careful with floats!
+0.1 + 0.2 == 0.3       # False! (floating point precision)
+# 0.1 + 0.2 is actually 0.30000000000000004
+
+# For floats, use approximate comparison:
+import math
+math.isclose(0.1 + 0.2, 0.3)  # True
+
+# ==================== TYPES THAT CAN'T BE COMPARED ====================
+
+# Comparing incompatible types causes TypeError:
+# 5 < "5"              # ❌ TypeError: '<' not supported between int and str
+# [1, 2] < "hello"     # ❌ TypeError
+
+# == works on different types but returns False:
+5 == "5"               # False (different types = not equal)
+True == 1              # True (special case: True is 1, False is 0)
+False == 0             # True</div>
+
+            <h3>Checking Types and Existence</h3>
+            <div class="code"># ==================== CHECKING IF VALUE EXISTS ====================
+
+# Check if variable has a "real" value (not empty/zero):
+name = "Alice"
+if name:                # True because non-empty string
+    print("Name exists")
+
+count = 0
+if count:               # False because 0 is falsy
+    print("Count exists")  # This won't print!
+
+# Better for numbers:
+if count is not None:   # Check if it's actually set
+    print(f"Count is {count}")
+
+# ==================== CHECKING DATA TYPES ====================
+
+value = "42"
+
+# Using type():
+if type(value) == str:
+    print("It's a string")
+if type(value) == int:
+    print("It's an integer")  # Won't print
+
+# Better way - isinstance():
+if isinstance(value, str):
+    print("It's a string")
+if isinstance(value, (int, float)):  # Check multiple types
+    print("It's a number")
+
+# ==================== MEMBERSHIP TESTING ====================
+
+# 'in' operator checks if something is inside something else:
+"a" in "apple"          # True
+"x" in "apple"          # False
+3 in [1, 2, 3, 4, 5]    # True
+"key" in {"key": "val"} # True (checks keys in dictionaries)
+
+# Use with if statements:
+letter = "e"
+vowels = "aeiou"
+
+if letter in vowels:
+    print(f"{letter} is a vowel")
+else:
+    print(f"{letter} is a consonant")</div>
+
+            <div class="info-box">
+                <h4>💡 Comparison Best Practices</h4>
+                <ul style="margin-top: 0.5rem;">
+                    <li>Always use <code>==</code> for comparison, never <code>=</code></li>
+                    <li>For None, use <code>is None</code> instead of <code>== None</code></li>
+                    <li>For string comparison, decide if case matters and use <code>.lower()</code> if needed</li>
+                    <li>Avoid comparing floats with <code>==</code>; use <code>math.isclose()</code></li>
+                    <li>Use chained comparisons for ranges: <code>0 <= x < 100</code></li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="logical" class="section">
+            <h2 class="section-title">Logical Operators: Combining Conditions</h2>
+            <p class="section-intro">Sometimes you need to check multiple conditions at once. Logical operators let you combine conditions into more complex expressions. This is how you build sophisticated decision-making into your programs.</p>
+
+            <div class="metaphor-box">
+                <h4>🚪 The Nightclub Bouncer</h4>
+                <p>Imagine a bouncer checking entry requirements:</p>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>AND:</strong> "You need to be 21+ AND have valid ID" (both required)</li>
+                    <li><strong>OR:</strong> "VIP pass OR on the guest list gets you in" (either works)</li>
+                    <li><strong>NOT:</strong> "NOT on the banned list" (reverses the check)</li>
+                </ul>
+                <p style="margin-top: 1rem;">Logical operators work exactly the same way - combining conditions to make a final yes/no decision.</p>
+            </div>
+
+            <h3>The Three Logical Operators</h3>
+            <div class="card-grid">
+                <div class="card">
+                    <h4>AND - Both Must Be True</h4>
+                    <p>Returns True only if ALL conditions are True. If any is False, the result is False.</p>
+                    <div class="code" style="margin-top: 1rem; font-size: 0.8rem;">age = 25
+has_license = True
+
+if age >= 18 and has_license:
+    print("You can drive")
+    
+# age >= 18? True ✓
+# has_license? True ✓
+# Both True → Result: True</div>
+                </div>
+                <div class="card">
+                    <h4>OR - At Least One True</h4>
+                    <p>Returns True if ANY condition is True. Only False if ALL are False.</p>
+                    <div class="code" style="margin-top: 1rem; font-size: 0.8rem;">is_weekend = True
+is_holiday = False
+
+if is_weekend or is_holiday:
+    print("No work today!")
+    
+# is_weekend? True ✓
+# is_holiday? False ✗
+# At least one True → Result: True</div>
+                </div>
+                <div class="card">
+                    <h4>NOT - Reverses the Value</h4>
+                    <p>Flips True to False and False to True. Inverts any condition.</p>
+                    <div class="code" style="margin-top: 1rem; font-size: 0.8rem;">is_raining = False
+
+if not is_raining:
+    print("Go outside!")
+
+# is_raining? False
+# not False → True
+# Condition is True → Code runs</div>
+                </div>
+            </div>
+
+            <h3>Truth Tables - How They Work</h3>
+            <div class="code"># ==================== AND TRUTH TABLE ====================
+
+# Both must be True to get True
+True and True      # True   ✓ + ✓ = ✓
+True and False     # False  ✓ + ✗ = ✗
+False and True     # False  ✗ + ✓ = ✗
+False and False    # False  ✗ + ✗ = ✗
+
+# Think of it as: "Do I have EVERYTHING I need?"
+
+# ==================== OR TRUTH TABLE ====================
+
+# Only need one True to get True
+True or True       # True   (both work)
+True or False      # True   (first works)
+False or True      # True   (second works)
+False or False     # False  (neither works)
+
+# Think of it as: "Do I have AT LEAST ONE thing I need?"
+
+# ==================== NOT TRUTH TABLE ====================
+
+# Simply flips the value
+not True           # False
+not False          # True
+
+# Think of it as: "The opposite"
+
+# ==================== COMBINING THEM ====================
+
+# You can chain multiple logical operators:
+a = True
+b = False
+c = True
+
+a and b and c      # False (b is False)
+a or b or c        # True (a is True)
+a and (b or c)     # True (b or c is True, a is True)
+not (a and b)      # True (a and b is False, not makes it True)</div>
+
+            <h3>Order of Operations (Precedence)</h3>
+            <div class="code"># ==================== OPERATOR PRECEDENCE ====================
+
+# Order (highest to lowest):
+# 1. Parentheses ()
+# 2. Comparison operators (==, !=, <, >, <=, >=)
+# 3. not
+# 4. and
+# 5. or
+
+# This means:
+a = True
+b = False
+c = True
+
+# This:
+a or b and c
+# Is evaluated as:
+a or (b and c)  # 'and' happens first!
+# = True or (False and True)
+# = True or False
+# = True
+
+# NOT as:
+(a or b) and c  # This would also be True, but for different reasons
+
+# ==================== USE PARENTHESES FOR CLARITY ====================
+
+# Even if you know the precedence, parentheses make code clearer:
+age = 25
+has_id = True
+is_vip = False
+
+# Hard to read:
+if age >= 21 and has_id or is_vip:
+    print("Enter")
+
+# Much clearer:
+if (age >= 21 and has_id) or is_vip:
+    print("Enter")
+
+# Or even better, use intermediate variables:
+meets_requirements = age >= 21 and has_id
+if meets_requirements or is_vip:
+    print("Enter")</div>
+
+            <h3>Short-Circuit Evaluation</h3>
+            <div class="code"># ==================== WHAT IS SHORT-CIRCUITING? ====================
+
+# Python is "lazy" - it stops evaluating as soon as the result is known
+
+# With AND:
+# If the first condition is False, the whole thing is False
+# So Python doesn't even look at the second condition!
+
+False and (1/0)     # Returns False (doesn't crash!)
+# 1/0 would cause ZeroDivisionError, but Python never evaluates it
+
+# With OR:
+# If the first condition is True, the whole thing is True
+# So Python doesn't look at the second condition!
+
+True or (1/0)       # Returns True (doesn't crash!)
+
+# ==================== PRACTICAL USES ====================
+
+# 1. Safe checking (avoid errors):
+name = ""  # Empty string
+# This would crash if name is empty:
+# if name[0] == "A":
+
+# This is safe:
+if name and name[0] == "A":
+    print("Name starts with A")
+# If name is empty (falsy), Python short-circuits and never tries name[0]
+
+# 2. Default values:
+user_input = ""
+username = user_input or "Guest"  # "Guest" (because user_input is falsy)
+
+user_input = "Alice"
+username = user_input or "Guest"  # "Alice"
+
+# 3. Safe division:
+denominator = 0
+if denominator != 0 and (100 / denominator) > 10:
+    print("Big result")
+# Won't crash because first condition is False → short-circuits</div>
+
+            <h3>Practical Examples</h3>
+            <div class="code"># ==================== LOGIN SYSTEM ====================
+
+username = input("Username: ")
+password = input("Password: ")
+
+# Check both username AND password
+if username == "admin" and password == "secret123":
+    print("✓ Login successful!")
+    print("Welcome, admin.")
+elif username == "admin" and password != "secret123":
+    print("✗ Wrong password!")
+elif username != "admin":
+    print("✗ User not found!")
+
+# ==================== AGE VERIFICATION ====================
+
+age = int(input("Enter age: "))
+has_permission = input("Parental permission? (yes/no): ").lower() == "yes"
+
+# Adult OR has permission
+if age >= 18 or has_permission:
+    print("✓ Access granted")
+else:
+    print("✗ Access denied")
+
+# ==================== COMPLEX CONDITIONS ====================
+
+score = 85
+attendance = 0.92  # 92%
+has_extra_credit = True
+
+# Passing requires:
+# - Score >= 60 AND attendance >= 80%
+# OR
+# - Has extra credit
+
+if (score >= 60 and attendance >= 0.80) or has_extra_credit:
+    print("You passed the course!")
+else:
+    print("You did not pass.")
+
+# ==================== FILTERING DATA ====================
+
+products = ["laptop", "phone", "tablet", "watch"]
+cart = []
+
+for product in products:
+    # Add if it's a phone OR tablet, but NOT if already in cart
+    if (product == "phone" or product == "tablet") and product not in cart:
+        cart.append(product)
+        print(f"Added {product} to cart")</div>
+
+            <div class="warning-box">
+                <h4>⚠️ Common Logical Operator Mistakes</h4>
+                <ul style="margin-top: 0.5rem;">
+                    <li><strong>Using 'and' when you mean 'or':</strong> "age is 18 or 21" should be <code>age == 18 or age == 21</code></li>
+                    <li><strong>Forgetting to repeat the variable:</strong> <code>if age == 18 or 21</code> ❌ → <code>if age == 18 or age == 21</code> ✓</li>
+                    <li><strong>Double negatives:</strong> <code>if not (not is_valid)</code> → just use <code>if is_valid</code></li>
+                    <li><strong>Overcomplicating:</strong> <code>if condition == True</code> → just use <code>if condition</code></li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="elif-else" class="section">
+            <h2 class="section-title">Multiple Conditions with elif</h2>
+            <p class="section-intro">What if you have more than two possible paths? Use elif (else if) to check multiple conditions in sequence. This is how you handle situations with many possible outcomes.</p>
+
+            <div class="metaphor-box">
+                <h4>🎰 The Sorting Machine</h4>
+                <p>Imagine a machine that sorts packages by size:</p>
+                <ul style="margin-top: 1rem;">
+                    <li>If weight > 50kg → Heavy bin</li>
+                    <li>Else if weight > 20kg → Medium bin</li>
+                    <li>Else if weight > 5kg → Light bin</li>
+                    <li>Else → Tiny bin</li>
+                </ul>
+                <p style="margin-top: 1rem;">The machine checks each condition in order and sends the package to the FIRST matching bin. Once matched, it doesn't check the rest.</p>
+            </div>
+
+            <h3>The elif Structure</h3>
+            <div class="code"># ==================== BASIC STRUCTURE ====================
+
+# if condition1:
+#     code for condition1
+# elif condition2:
+#     code for condition2
+# elif condition3:
+#     code for condition3
+# else:
+#     code if nothing matched
+
+# ==================== GRADING SYSTEM EXAMPLE ====================
+
+score = int(input("Enter score (0-100): "))
+
+if score >= 90:
+    grade = "A"
+    comment = "Excellent!"
+elif score >= 80:
+    grade = "B"
+    comment = "Good job!"
+elif score >= 70:
+    grade = "C"
+    comment = "Satisfactory"
+elif score >= 60:
+    grade = "D"
+    comment = "Needs improvement"
+else:
+    grade = "F"
+    comment = "Failed - see me after class"
+
+print(f"Score: {score}")
+print(f"Grade: {grade}")
+print(f"Comment: {comment}")
+
+# ==================== HOW IT WORKS ====================
+
+# For score = 85:
+# 1. Is 85 >= 90? No → skip
+# 2. Is 85 >= 80? Yes! → grade = "B", stop checking
+# 3. Never reaches score >= 70, 60, or else
+
+# Only ONE block ever runs!
+
+# ==================== THE FLOW ====================
+
+#         [score >= 90?]
+#              |
+#         No   ↓   Yes → "A"
+#         [score >= 80?]
+#              |
+#         No   ↓   Yes → "B"
+#         [score >= 70?]
+#              |
+#         No   ↓   Yes → "C"
+#         [score >= 60?]
+#              |
+#         No   ↓   Yes → "D"
+#              ↓
+#             "F"</div>
+
+            <div class="warning-box">
+                <h4>⚠️ Order Matters Critically!</h4>
+                <p>Python checks conditions from top to bottom and runs the FIRST matching block.</p>
+                <div class="code" style="margin-top: 1rem; font-size: 0.8rem;"># WRONG ORDER - Everyone gets D!
+score = 95
+
+if score >= 60:     # 95 >= 60? Yes! Gets D
+    grade = "D"
+elif score >= 70:   # Never reached
+    grade = "C"
+elif score >= 80:   # Never reached
+    grade = "B"
+elif score >= 90:   # Never reached
+    grade = "A"
+
+# Always order from most restrictive to least!</div>
+            </div>
+
+            <h3>elif vs Multiple ifs</h3>
+            <div class="code"># ==================== ELIF - MUTUALLY EXCLUSIVE ====================
+
+# Use elif when only ONE condition should match:
+age = 25
+
+if age < 13:
+    category = "child"
+elif age < 20:
+    category = "teenager"
+elif age < 65:
+    category = "adult"
+else:
+    category = "senior"
+
+print(category)  # "adult"
+
+# Only ONE category is printed
+
+# ==================== MULTIPLE IFS - INDEPENDENT CHECKS ====================
+
+# Use separate ifs when conditions are independent:
+score = 85
+achievements = []
+
+if score >= 50:
+    achievements.append("Passed")
+if score >= 70:
+    achievements.append("Good student")
+if score >= 90:
+    achievements.append("Honor roll")
+
+print(achievements)  # ['Passed', 'Good student']
+
+# Multiple can be true!
+
+# ==================== THE KEY DIFFERENCE ====================
+
+# elif: "Check this only if previous conditions were False"
+# if:   "Check this regardless of previous conditions"
+
+# Wrong use of elif when you want all matches:
+score = 95
+if score >= 50:
+    print("Passed")
+elif score >= 70:        # This won't print!
+    print("Good student")  # Because first condition was True
+elif score >= 90:        # This won't print either!
+    print("Honor roll")
+
+# Correct - use separate ifs:
+score = 95
+if score >= 50:
+    print("Passed")       # Prints
+if score >= 70:
+    print("Good student") # Prints
+if score >= 90:
+    print("Honor roll")   # Prints</div>
+
+            <h3>Real-World Example: Menu System</h3>
+            <div class="code"># ==================== CALCULATOR MENU ====================
+
+print("=" * 40)
+print("       🧮 PYTHON CALCULATOR")
+print("=" * 40)
+print("1. ➕ Add")
+print("2. ➖ Subtract")
+print("3. ✖️ Multiply")
+print("4. ➗ Divide")
+print("5. 🔢 Modulo (Remainder)")
+print("6. ⬆️ Power")
+print("=" * 40)
+
+choice = input("Choose operation (1-6): ")
+
+if choice in ["1", "2", "3", "4", "5", "6"]:
+    a = float(input("First number: "))
+    b = float(input("Second number: "))
+    
+    if choice == "1":
+        result = a + b
+        operation = "+"
+    elif choice == "2":
+        result = a - b
+        operation = "-"
+    elif choice == "3":
+        result = a * b
+        operation = "×"
+    elif choice == "4":
+        if b != 0:
+            result = a / b
+            operation = "÷"
+        else:
+            print("❌ Error: Cannot divide by zero!")
+            result = None
+            operation = None
+    elif choice == "5":
+        if b != 0:
+            result = a % b
+            operation = "mod"
+        else:
+            print("❌ Error: Cannot modulo by zero!")
+            result = None
+            operation = None
+    elif choice == "6":
+        result = a ** b
+        operation = "^"
+    
+    if result is not None:
+        print(f"\n📊 Result: {a} {operation} {b} = {result}")
+else:
+    print("❌ Invalid choice! Please enter 1-6.")</div>
+
+            <h3>Ternary Operator (Conditional Expression)</h3>
+            <div class="code"># ==================== ONE-LINE IF-ELSE ====================
+
+# Sometimes you just need a simple if-else to assign a value
+# Python has a shorthand for this:
+
+# value_if_true if condition else value_if_false
+
+age = 20
+status = "adult" if age >= 18 else "minor"
+print(status)  # "adult"
+
+# This is equivalent to:
+if age >= 18:
+    status = "adult"
+else:
+    status = "minor"
+
+# ==================== PRACTICAL EXAMPLES ====================
+
+# Absolute value:
+num = -5
+absolute = num if num >= 0 else -num
+print(absolute)  # 5
+
+# Min/max:
+a, b = 10, 25
+maximum = a if a > b else b
+minimum = a if a < b else b
+
+# Pluralization:
+count = 1
+message = f"{count} item" if count == 1 else f"{count} items"
+print(message)  # "1 item"
+
+count = 5
+message = f"{count} item" if count == 1 else f"{count} items"
+print(message)  # "5 items"
+
+# Default values:
+username = ""
+display_name = username if username else "Anonymous"
+print(display_name)  # "Anonymous"
+
+# ==================== NESTED TERNARY (AVOID!) ====================
+
+# You CAN nest them, but it gets ugly fast:
+score = 75
+grade = "A" if score >= 90 else "B" if score >= 80 else "C" if score >= 70 else "F"
+
+# This is hard to read! Use if-elif-else instead for complex conditions.</div>
+
+            <div class="info-box">
+                <h4>💡 When to Use What</h4>
+                <ul style="margin-top: 0.5rem;">
+                    <li><strong>if-else:</strong> Two possible paths</li>
+                    <li><strong>if-elif-else:</strong> Multiple mutually exclusive paths</li>
+                    <li><strong>Multiple ifs:</strong> Independent conditions that can all be true</li>
+                    <li><strong>Ternary:</strong> Simple value assignment based on condition</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="nested" class="section">
+            <h2 class="section-title">Nested Conditions</h2>
+            <p class="section-intro">You can put if statements inside other if statements. This is called nesting. It's useful when decisions depend on previous decisions, but too much nesting makes code hard to read.</p>
+
+            <div class="metaphor-box">
+                <h4>🏢 The Security Checkpoint</h4>
+                <p>Imagine entering a secure building:</p>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>First check:</strong> Do you have an ID badge?</li>
+                    <li style="margin-left: 2rem;"><strong>If yes:</strong> Is it still valid (not expired)?</li>
+                    <li style="margin-left: 4rem;"><strong>If yes:</strong> Do you have clearance for this floor?</li>
+                </ul>
+                <p style="margin-top: 1rem;">Each check only happens if the previous check passed. That's nesting in action.</p>
+            </div>
+
+            <h3>Basic Nested If</h3>
+            <div class="code"># ==================== NESTED IF STRUCTURE ====================
+
+age = int(input("Enter age: "))
+has_id = input("Do you have ID? (yes/no): ").lower() == "yes"
+
+if age >= 18:
+    # Only check ID if they're old enough
+    if has_id:
+        print("✓ Welcome to the club!")
+    else:
+        print("✗ Adult but no ID - cannot enter")
+else:
+    print("✗ Too young to enter")
+
+# ==================== HOW IT FLOWS ====================
+
+#        [age >= 18?]
+#           /    \
+#         Yes     No
+#          |       |
+#    [has_id?]    "Too young"
+#       /   \
+#     Yes   No
+#      |     |
+#  "Welcome" "No ID"
+
+# ==================== MULTIPLE LEVELS ====================
+
+user_type = "admin"
+is_logged_in = True
+has_2fa = True
+
+if is_logged_in:
+    print("You are logged in")
+    if user_type == "admin":
+        print("You have admin privileges")
+        if has_2fa:
+            print("Full access granted")
+        else:
+            print("Please enable 2FA for full access")
+    else:
+        print("Standard user access")
+else:
+    print("Please log in first")</div>
+
+            <h3>When Nesting is Appropriate</h3>
+            <div class="code"># ==================== GOOD USE: DEPENDENT CONDITIONS ====================
+
+# Checking a file before processing it
+import os
+
+filename = "data.txt"
+
+if os.path.exists(filename):
+    print(f"File {filename} exists")
+    if os.path.isfile(filename):
+        print("It's a file (not a directory)")
+        # Now safe to read the file
+        with open(filename) as f:
+            content = f.read()
+            if content:
+                print(f"File has {len(content)} characters")
+            else:
+                print("File is empty")
+    else:
+        print("It's a directory, not a file")
+else:
+    print(f"File {filename} does not exist")
+
+# ==================== GOOD USE: VALIDATION CHAIN ====================
+
+# Form validation - each check depends on previous passing
+email = input("Email: ")
+password = input("Password: ")
+confirm = input("Confirm password: ")
+
+if email:  # Not empty
+    if "@" in email and "." in email:  # Basic format check
+        if password:  # Not empty
+            if len(password) >= 8:  # Long enough
+                if password == confirm:  # Matches confirmation
+                    print("✓ Account created successfully!")
+                else:
+                    print("✗ Passwords don't match")
+            else:
+                print("✗ Password must be 8+ characters")
+        else:
+            print("✗ Password is required")
+    else:
+        print("✗ Invalid email format")
+else:
+    print("✗ Email is required")</div>
+
+            <h3>Flattening Nested Conditions</h3>
+            <div class="code"># ==================== TOO MUCH NESTING (PYRAMID OF DOOM) ====================
+
+# This is hard to read and maintain:
+if condition1:
+    if condition2:
+        if condition3:
+            if condition4:
+                do_something()  # Deeply nested!
+
+# ==================== TECHNIQUE 1: USE AND ====================
+
+# Instead of:
+if age >= 18:
+    if has_id:
+        print("Welcome")
+
+# Use:
+if age >= 18 and has_id:
+    print("Welcome")
+
+# ==================== TECHNIQUE 2: EARLY RETURNS ====================
+
+# Instead of deep nesting, return/exit early on failures:
+# (This works best in functions)
+
+def check_access(age, has_id, has_pass):
+    if age < 18:
+        return "Too young"
+    if not has_id:
+        return "No ID"
+    if not has_pass:
+        return "No pass"
+    return "Welcome!"  # Only reached if all checks pass
+
+# ==================== TECHNIQUE 3: GUARD CLAUSES ====================
+
+# Check for invalid cases first, then proceed:
+email = "test@example.com"
+password = "secretpassword"
+
+# Guard clauses (check failures first):
+if not email:
+    print("Email required")
+elif "@" not in email:
+    print("Invalid email")
+elif not password:
+    print("Password required")
+elif len(password) < 8:
+    print("Password too short")
+else:
+    # All validations passed - proceed with the main logic
+    print("Creating account...")
+
+# Much flatter than nested ifs!
+
+# ==================== TECHNIQUE 4: INTERMEDIATE VARIABLES ====================
+
+# Break complex conditions into named pieces:
+user = {"age": 25, "verified": True, "subscription": "premium"}
+
+# Hard to read:
+if user["age"] >= 18 and user["verified"] and user["subscription"] in ["premium", "enterprise"]:
+    print("Full access")
+
+# Better with variables:
+is_adult = user["age"] >= 18
+is_verified = user["verified"]
+has_premium = user["subscription"] in ["premium", "enterprise"]
+
+if is_adult and is_verified and has_premium:
+    print("Full access")</div>
+
+            <div class="info-box">
+                <h4>💡 Nesting Best Practices</h4>
+                <ul style="margin-top: 0.5rem;">
+                    <li><strong>Max 3 levels:</strong> If you're nesting deeper, refactor</li>
+                    <li><strong>Use <code>and</code>:</strong> Combine simple conditions instead of nesting</li>
+                    <li><strong>Guard clauses:</strong> Handle error cases first, then proceed</li>
+                    <li><strong>Extract functions:</strong> Move nested logic into separate functions</li>
+                    <li><strong>Meaningful names:</strong> Use intermediate variables for complex conditions</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="while-loops" class="section">
+            <h2 class="section-title">While Loops: Repeat While True</h2>
+            <p class="section-intro">Loops repeat code. A while loop keeps running as long as its condition is True. Use while loops when you don't know how many times you'll need to repeat - you just know when to stop.</p>
+
+            <div class="metaphor-box">
+                <h4>🚿 The Shower Metaphor</h4>
+                <p>A while loop is like taking a shower:</p>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>while</strong> you're still soapy...</li>
+                    <li style="margin-left: 2rem;">...keep rinsing</li>
+                </ul>
+                <p style="margin-top: 1rem;">You don't know exactly how many rinses you'll need. You just keep going until you're clean (condition becomes False). That's the essence of a while loop.</p>
+            </div>
+
+            <h3>The Anatomy of a While Loop</h3>
+            <div class="code"># ==================== BASIC STRUCTURE ====================
+
+# while condition:
+#     code to repeat
+#     (something should eventually make condition False!)
+
+# ==================== SIMPLE COUNTING EXAMPLE ====================
+
+count = 1
+
+while count <= 5:
+    print(count)
+    count += 1      # CRUCIAL: Update the variable!
+
+print("Done!")
+
+# Output:
+# 1
+# 2
+# 3
+# 4
+# 5
+# Done!
+
+# ==================== STEP BY STEP ====================
+
+# Iteration 1: count=1, 1<=5? Yes → print 1, count=2
+# Iteration 2: count=2, 2<=5? Yes → print 2, count=3
+# Iteration 3: count=3, 3<=5? Yes → print 3, count=4
+# Iteration 4: count=4, 4<=5? Yes → print 4, count=5
+# Iteration 5: count=5, 5<=5? Yes → print 5, count=6
+# Iteration 6: count=6, 6<=5? No → EXIT LOOP
+# Print "Done!"
+
+# ==================== THE THREE PARTS OF A WHILE LOOP ====================
+
+# 1. INITIALIZATION: Set up the variable(s) before the loop
+count = 1
+
+# 2. CONDITION: Check if we should continue
+while count <= 5:
+    print(count)
+    
+    # 3. UPDATE: Change something so the condition eventually becomes False
+    count += 1
+
+# Missing any of these three causes problems!</div>
+
+            <div class="warning-box">
+                <h4>⚠️ Infinite Loop Warning!</h4>
+                <p>If the condition never becomes False, the loop runs FOREVER! This freezes your program.</p>
+                <div class="code" style="margin-top: 1rem; font-size: 0.8rem;"># INFINITE LOOP - DON'T DO THIS:
+count = 1
+while count <= 5:
+    print(count)
+    # Forgot to increment! count stays 1 forever
+
+# Another infinite loop:
+while True:
+    print("Forever...")  # Never stops
+
+# To stop an infinite loop: Ctrl+C in terminal</div>
+                <p style="margin-top: 1rem;">Always make sure something in your loop eventually makes the condition False!</p>
+            </div>
+
+            <h3>Common While Loop Patterns</h3>
+            <div class="code"># ==================== PATTERN 1: INPUT VALIDATION ====================
+
+# Keep asking until valid input
+password = ""
+
+while password != "secret":
+    password = input("Enter password: ")
+    if password != "secret":
+        print("❌ Wrong! Try again.")
+
+print("✓ Access granted!")
+
+# ==================== PATTERN 2: SENTINEL VALUE ====================
+
+# Keep going until a special "stop" value
+print("Enter numbers to add (type 'done' to finish):")
+total = 0
+
+while True:
+    user_input = input("> ")
+    if user_input.lower() == "done":
+        break  # Exit the loop
+    total += float(user_input)
+
+print(f"Total: {total}")
+
+# ==================== PATTERN 3: COUNTDOWN ====================
+
+print("Launching in...")
+countdown = 5
+
+while countdown > 0:
+    print(countdown)
+    countdown -= 1
+    # In real code: import time; time.sleep(1)
+
+print("🚀 LIFTOFF!")
+
+# ==================== PATTERN 4: PROCESSING UNTIL EMPTY ====================
+
+tasks = ["Email", "Meeting", "Code review", "Lunch"]
+
+while tasks:  # While list is not empty
+    current = tasks.pop(0)  # Remove and get first item
+    print(f"Working on: {current}")
+    print(f"  Remaining: {len(tasks)} tasks")
+
+print("All done!")
+
+# ==================== PATTERN 5: RETRY WITH LIMIT ====================
+
+max_attempts = 3
+attempts = 0
+success = False
+
+while attempts < max_attempts and not success:
+    password = input(f"Password (attempt {attempts + 1}/{max_attempts}): ")
+    attempts += 1
+    
+    if password == "secret":
+        success = True
+        print("✓ Login successful!")
+    else:
+        remaining = max_attempts - attempts
+        if remaining > 0:
+            print(f"❌ Wrong. {remaining} attempts left.")
+
+if not success:
+    print("🔒 Account locked!")</div>
+
+            <h3>Practical Examples</h3>
+            <div class="code"># ==================== NUMBER GUESSING GAME ====================
+
+import random
+
+secret = random.randint(1, 100)
+guess = 0
+attempts = 0
+
+print("=" * 40)
+print("  🎯 GUESS THE NUMBER GAME")
+print("=" * 40)
+print("I'm thinking of a number between 1-100.")
+print()
+
+while guess != secret:
+    guess = int(input("Your guess: "))
+    attempts += 1
+    
+    if guess < secret:
+        print("📉 Too low!")
+    elif guess > secret:
+        print("📈 Too high!")
+    else:
+        print()
+        print("🎉 CORRECT!")
+        print(f"You got it in {attempts} attempts!")
+
+# ==================== DICE GAME ====================
+
+import random
+
+money = 100
+print("🎲 DICE BETTING GAME 🎲")
+print(f"Starting money: ${money}")
+
+while money > 0:
+    print(f"\nBalance: ${money}")
+    bet = input("Bet amount (or 'quit'): ")
+    
+    if bet.lower() == 'quit':
+        break
+    
+    bet = int(bet)
+    if bet > money or bet <= 0:
+        print("Invalid bet!")
+        continue
+    
+    player = random.randint(1, 6)
+    computer = random.randint(1, 6)
+    
+    print(f"You rolled: {player}")
+    print(f"Computer rolled: {computer}")
+    
+    if player > computer:
+        money += bet
+        print(f"You win ${bet}!")
+    elif player < computer:
+        money -= bet
+        print(f"You lose ${bet}!")
+    else:
+        print("Tie! No change.")
+
+if money <= 0:
+    print("\n💸 You're broke! Game over.")
+else:
+    print(f"\n💰 You're leaving with ${money}!")</div>
+
+            <h3>While with Else</h3>
+            <div class="code"># ==================== WHILE-ELSE STRUCTURE ====================
+
+# Python has a unique feature: else clause on loops
+# The else runs if the loop completes normally (no break)
+
+attempts = 0
+max_attempts = 3
+
+while attempts < max_attempts:
+    password = input("Password: ")
+    attempts += 1
+    
+    if password == "secret":
+        print("✓ Access granted!")
+        break
+else:
+    # This runs if while condition became False (not if break)
+    print("✗ Too many attempts! Account locked.")
+
+# ==================== HOW IT WORKS ====================
+
+# If user enters correct password:
+#   → break is executed
+#   → else block is SKIPPED
+#   → "Access granted!" is printed
+
+# If user fails 3 times:
+#   → attempts becomes 3, then 4
+#   → 4 < 3 is False, loop ends normally
+#   → else block RUNS
+#   → "Account locked" is printed
+
+# The else is like saying: "If we got through the whole loop without breaking..."</div>
+
+            <div class="info-box">
+                <h4>💡 While vs For: When to Use Which?</h4>
+                <ul style="margin-top: 0.5rem;">
+                    <li><strong>Use while when:</strong> You don't know how many iterations you need</li>
+                    <li><strong>Use while when:</strong> Looping until some condition changes</li>
+                    <li><strong>Use while True when:</strong> You'll break out based on complex conditions</li>
+                    <li><strong>Use for when:</strong> You know the number of iterations</li>
+                    <li><strong>Use for when:</strong> Iterating over a collection</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="for-loops" class="section">
+            <h2 class="section-title">For Loops: Iterate Over Collections</h2>
+            <p class="section-intro">For loops are used when you know what you're iterating over - a range of numbers, characters in a string, items in a list. They're the most commonly used loop in Python because most real-world tasks involve processing collections.</p>
+
+            <div class="metaphor-box">
+                <h4>📋 The Checklist Metaphor</h4>
+                <p>A for loop is like going through a checklist:</p>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>for</strong> each item <strong>in</strong> the list...</li>
+                    <li style="margin-left: 2rem;">...do something with that item</li>
+                    <li style="margin-left: 2rem;">...then move to the next item</li>
+                </ul>
+                <p style="margin-top: 1rem;">You don't need to track the count yourself - Python handles it automatically.</p>
+            </div>
+
+            <h3>The range() Function</h3>
+            <div class="code"># ==================== UNDERSTANDING RANGE() ====================
+
+# range() generates a sequence of numbers
+# It's the most common way to loop a specific number of times
+
+# range(stop) - from 0 to stop-1
+for i in range(5):
+    print(i)
+# Output: 0, 1, 2, 3, 4 (5 numbers, starting at 0)
+
+# range(start, stop) - from start to stop-1
+for i in range(1, 6):
+    print(i)
+# Output: 1, 2, 3, 4, 5 (from 1 up to but not including 6)
+
+# range(start, stop, step) - count by step
+for i in range(0, 10, 2):
+    print(i)
+# Output: 0, 2, 4, 6, 8 (every other number)
+
+for i in range(5, 0, -1):
+    print(i)
+# Output: 5, 4, 3, 2, 1 (counting backwards)
+
+# ==================== WHY RANGE EXCLUDES THE END ====================
+
+# This makes the length match the count:
+for i in range(5):   # Loops 5 times (0,1,2,3,4)
+    pass
+
+# And makes ranges easy to chain:
+for i in range(0, 3):   # 0, 1, 2
+    print(i)
+for i in range(3, 6):   # 3, 4, 5
+    print(i)
+# Covers 0-5 without overlap or gap
+
+# ==================== COMMON PATTERNS ====================
+
+# Count from 1 to n:
+n = 10
+for i in range(1, n + 1):  # Add 1 to include n
+    print(i)
+
+# Loop n times (when you don't need i):
+for _ in range(3):
+    print("Hello!")  # Prints 3 times
+
+# Generate list of numbers:
+numbers = list(range(1, 11))  # [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</div>
+
+            <h3>Iterating Over Strings</h3>
+            <div class="code"># ==================== CHARACTER BY CHARACTER ====================
+
+word = "Python"
+
+for letter in word:
+    print(letter)
+# Output:
+# P
+# y
+# t
+# h
+# o
+# n
+
+# ==================== WITH INDEX (ENUMERATE) ====================
+
+for index, letter in enumerate(word):
+    print(f"Position {index}: {letter}")
+# Output:
+# Position 0: P
+# Position 1: y
+# Position 2: t
+# Position 3: h
+# Position 4: o
+# Position 5: n
+
+# Start counting from 1:
+for index, letter in enumerate(word, start=1):
+    print(f"Letter #{index}: {letter}")
+# Letter #1: P
+# Letter #2: y
+# ...
+
+# ==================== PRACTICAL: COUNT VOWELS ====================
+
+text = "Hello, World!"
+vowels = "aeiouAEIOU"
+vowel_count = 0
+
+for char in text:
+    if char in vowels:
+        vowel_count += 1
+
+print(f"'{text}' has {vowel_count} vowels")  # 3 vowels
+
+# ==================== PRACTICAL: REVERSE A STRING ====================
+
+original = "Python"
+reversed_str = ""
+
+for char in original:
+    reversed_str = char + reversed_str  # Add to front
+
+print(reversed_str)  # "nohtyP"
+
+# (Python has easier ways: original[::-1])</div>
+
+            <h3>Iterating Over Lists</h3>
+            <div class="code"># ==================== BASIC ITERATION ====================
+
+fruits = ["apple", "banana", "cherry", "date"]
+
+for fruit in fruits:
+    print(f"I like {fruit}")
+
+# ==================== WITH INDEX ====================
+
+for i, fruit in enumerate(fruits):
+    print(f"{i + 1}. {fruit}")
+# 1. apple
+# 2. banana
+# ...
+
+# ==================== MODIFYING WHILE ITERATING (CAREFUL!) ====================
+
+# DON'T modify a list while iterating over it:
+numbers = [1, 2, 3, 4, 5]
+# for num in numbers:
+#     if num % 2 == 0:
+#         numbers.remove(num)  # DANGEROUS! Skips elements
+
+# INSTEAD, iterate over a copy or use list comprehension:
+numbers = [1, 2, 3, 4, 5]
+for num in numbers[:]:  # [:] creates a copy
+    if num % 2 == 0:
+        numbers.remove(num)  # Safe
+
+# OR better - filter to new list:
+numbers = [1, 2, 3, 4, 5]
+odd_numbers = [n for n in numbers if n % 2 != 0]
+
+# ==================== COMMON LIST OPERATIONS ====================
+
+numbers = [10, 20, 30, 40, 50]
+
+# Sum
+total = 0
+for n in numbers:
+    total += n
+print(f"Sum: {total}")  # 150 (or just use sum(numbers))
+
+# Find maximum
+maximum = numbers[0]
+for n in numbers:
+    if n > maximum:
+        maximum = n
+print(f"Max: {maximum}")  # 50 (or just use max(numbers))
+
+# Filter
+even = []
+for n in numbers:
+    if n % 2 == 0:
+        even.append(n)
+print(f"Even: {even}")  # All of them in this case
+
+# Transform
+doubled = []
+for n in numbers:
+    doubled.append(n * 2)
+print(f"Doubled: {doubled}")  # [20, 40, 60, 80, 100]</div>
+
+            <h3>Nested Loops</h3>
+            <div class="code"># ==================== MULTIPLICATION TABLE ====================
+
+print("Multiplication Table:")
+print("-" * 40)
+
+for i in range(1, 11):
+    for j in range(1, 11):
+        print(f"{i * j:4}", end="")  # :4 means 4 character width
+    print()  # New line after each row
+
+# ==================== PATTERN PRINTING ====================
+
+# Right triangle:
+for i in range(1, 6):
+    print("*" * i)
+# *
+# **
+# ***
+# ****
+# *****
+
+# Inverted triangle:
+for i in range(5, 0, -1):
+    print("*" * i)
+
+# Square:
+size = 5
+for row in range(size):
+    for col in range(size):
+        print("*", end=" ")
+    print()
+
+# ==================== PROCESSING 2D DATA ====================
+
+matrix = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9]
+]
+
+for row in matrix:
+    for cell in row:
+        print(cell, end=" ")
+    print()
+
+# With indices:
+for i in range(len(matrix)):
+    for j in range(len(matrix[i])):
+        print(f"matrix[{i}][{j}] = {matrix[i][j]}")</div>
+
+            <h3>Practical Examples</h3>
+            <div class="code"># ==================== FACTORIAL ====================
+
+n = 5
+factorial = 1
+
+for i in range(1, n + 1):
+    factorial *= i
+
+print(f"{n}! = {factorial}")  # 5! = 120
+
+# ==================== FIBONACCI SEQUENCE ====================
+
+n_terms = 10
+a, b = 0, 1
+
+print(f"First {n_terms} Fibonacci numbers:")
+for _ in range(n_terms):
+    print(a, end=" ")
+    a, b = b, a + b
+print()  # 0 1 1 2 3 5 8 13 21 34
+
+# ==================== PRIME NUMBER CHECKER ====================
+
+num = 29
+is_prime = True
+
+if num < 2:
+    is_prime = False
+else:
+    for i in range(2, int(num ** 0.5) + 1):
+        if num % i == 0:
+            is_prime = False
+            break
+
+if is_prime:
+    print(f"{num} is prime")
+else:
+    print(f"{num} is not prime")
+
+# ==================== FIND ALL PRIMES UP TO N ====================
+
+limit = 50
+primes = []
+
+for num in range(2, limit + 1):
+    is_prime = True
+    for i in range(2, int(num ** 0.5) + 1):
+        if num % i == 0:
+            is_prime = False
+            break
+    if is_prime:
+        primes.append(num)
+
+print(f"Primes up to {limit}: {primes}")</div>
+
+            <div class="info-box">
+                <h4>💡 For Loop Pro Tips</h4>
+                <ul style="margin-top: 0.5rem;">
+                    <li><strong>Use <code>_</code></strong> as the variable name when you don't need the value</li>
+                    <li><strong>Use <code>enumerate()</code></strong> when you need both index and value</li>
+                    <li><strong>Use <code>zip()</code></strong> to iterate over multiple lists simultaneously</li>
+                    <li><strong>Built-in functions</strong> like <code>sum()</code>, <code>min()</code>, <code>max()</code> often replace manual loops</li>
+                    <li><strong>List comprehensions</strong> (next chapter) are often cleaner than loops</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="break-continue" class="section">
+            <h2 class="section-title">Break and Continue: Loop Control</h2>
+            <p class="section-intro">Sometimes you need to exit a loop early or skip certain iterations. That's what break and continue are for. They give you fine-grained control over loop execution.</p>
+
+            <div class="metaphor-box">
+                <h4>🏃 The Race Metaphor</h4>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>break:</strong> You stop running and leave the track entirely (exit the loop)</li>
+                    <li><strong>continue:</strong> You skip this lap but keep running (skip to next iteration)</li>
+                </ul>
+                <p style="margin-top: 1rem;">Both are useful for different situations. Use break when you've found what you need or an error occurred. Use continue when this particular item isn't relevant.</p>
+            </div>
+
+            <h3>Break - Exit Loop Immediately</h3>
+            <div class="code"># ==================== BASIC BREAK ====================
+
+# break immediately exits the entire loop
+
+for i in range(10):
+    if i == 5:
+        break          # Exit when i is 5
+    print(i)
+
+# Output: 0, 1, 2, 3, 4 (stops before printing 5)
+
+# ==================== SEARCH AND FIND ====================
+
+# Find first even number
+for num in [1, 3, 5, 8, 9, 10]:
+    if num % 2 == 0:
+        print(f"First even number: {num}")  # 8
+        break
+
+# Find item in list
+items = ["apple", "banana", "cherry", "date"]
+search = "cherry"
+
+for i, item in enumerate(items):
+    if item == search:
+        print(f"Found '{search}' at index {i}")
+        break
+else:
+    # This else belongs to the for loop!
+    # It runs ONLY if the loop completed without break
+    print(f"'{search}' not found")
+
+# ==================== BREAK IN NESTED LOOPS ====================
+
+# break only exits the INNERMOST loop!
+
+for i in range(3):
+    print(f"Outer loop i = {i}")
+    for j in range(3):
+        if j == 1:
+            break  # Only breaks inner loop
+        print(f"  Inner loop j = {j}")
+
+# Output:
+# Outer loop i = 0
+#   Inner loop j = 0    (j=1 breaks, inner loop restarts for i=1)
+# Outer loop i = 1
+#   Inner loop j = 0
+# Outer loop i = 2
+#   Inner loop j = 0
+
+# ==================== EARLY EXIT ON ERROR ====================
+
+data = [10, 20, "error", 30]
+
+total = 0
+for item in data:
+    if not isinstance(item, (int, float)):
+        print(f"Error: Non-numeric value '{item}' found!")
+        break
+    total += item
+
+print(f"Sum of valid items: {total}")  # 30</div>
+
+            <h3>Continue - Skip to Next Iteration</h3>
+            <div class="code"># ==================== BASIC CONTINUE ====================
+
+# continue skips the rest of THIS iteration and goes to the next
+
+for i in range(10):
+    if i % 2 == 0:
+        continue       # Skip even numbers
+    print(i)
+
+# Output: 1, 3, 5, 7, 9 (only odd numbers)
+
+# ==================== SKIP INVALID DATA ====================
+
+data = [10, -5, 20, -3, 15, 0, 25]
+
+total = 0
+for value in data:
+    if value <= 0:
+        continue    # Skip non-positive numbers
+    total += value
+
+print(f"Sum of positive numbers: {total}")  # 70
+
+# ==================== SKIP WITH MESSAGE ====================
+
+numbers = [1, 2, "three", 4, None, 6]
+
+for num in numbers:
+    if not isinstance(num, (int, float)):
+        print(f"Skipping invalid value: {num}")
+        continue
+    
+    # This code only runs for valid numbers
+    print(f"Processing: {num}, squared = {num ** 2}")
+
+# ==================== FILTERING PATTERN ====================
+
+# Process only items meeting criteria
+users = [
+    {"name": "Alice", "active": True, "age": 25},
+    {"name": "Bob", "active": False, "age": 30},
+    {"name": "Charlie", "active": True, "age": 17},
+    {"name": "Diana", "active": True, "age": 22},
+]
+
+print("Active adult users:")
+for user in users:
+    # Skip inactive users
+    if not user["active"]:
+        continue
+    
+    # Skip minors
+    if user["age"] < 18:
+        continue
+    
+    # Only active adults reach here
+    print(f"  {user['name']}, age {user['age']}")</div>
+
+            <h3>Break vs Continue Comparison</h3>
+            <div class="code"># ==================== SIDE BY SIDE COMPARISON ====================
+
+print("=== With break ===")
+for i in range(1, 6):
+    if i == 3:
+        break
+    print(i)
+# Output: 1, 2 (stops at 3)
+
+print("\n=== With continue ===")
+for i in range(1, 6):
+    if i == 3:
+        continue
+    print(i)
+# Output: 1, 2, 4, 5 (skips 3, continues loop)
+
+# ==================== WHEN TO USE WHICH ====================
+
+# BREAK when:
+# - You found what you were searching for
+# - An error occurred and you can't continue
+# - A condition means remaining iterations are useless
+# - You want to exit a while True loop
+
+# CONTINUE when:
+# - This specific item should be skipped
+# - You're filtering within a loop
+# - You want to avoid deep nesting in the loop body
+
+# ==================== AVOID DEEP NESTING WITH CONTINUE ====================
+
+# Without continue (deep nesting):
+for user in users:
+    if user["active"]:
+        if user["age"] >= 18:
+            if user["name"]:
+                # Finally, the actual logic
+                process(user)
+
+# With continue (flat structure):
+for user in users:
+    if not user["active"]:
+        continue
+    if user["age"] < 18:
+        continue
+    if not user["name"]:
+        continue
+    
+    # Clean, readable - only the happy path here
+    process(user)</div>
+
+            <h3>Complete Example: Interactive Menu</h3>
+            <div class="code"># ==================== MENU WITH LOOP CONTROL ====================
+
+print("=" * 50)
+print("       🎮 INTERACTIVE MENU SYSTEM")
+print("=" * 50)
+
+while True:
+    print("\n📋 MENU:")
+    print("1. Say Hello")
+    print("2. Calculate Sum")
+    print("3. Count to 10")
+    print("4. Check Prime")
+    print("5. Quit")
+    print("-" * 30)
+    
+    choice = input("Choose (1-5): ").strip()
+    
+    # Skip if empty input
+    if not choice:
+        print("⚠️ Please enter a choice!")
+        continue
+    
+    # Exit condition
+    if choice == "5":
+        print("\n👋 Goodbye!")
+        break    # Exit the while True loop
+    
+    # Handle each option
+    if choice == "1":
+        name = input("What's your name? ")
+        print(f"👋 Hello, {name}!")
+    
+    elif choice == "2":
+        try:
+            nums = input("Enter numbers (space-separated): ")
+            total = sum(int(n) for n in nums.split())
+            print(f"📊 Sum: {total}")
+        except ValueError:
+            print("❌ Invalid numbers!")
+            continue
+    
+    elif choice == "3":
+        print("🔢 Counting: ", end="")
+        for i in range(1, 11):
+            print(i, end=" ")
+        print()
+    
+    elif choice == "4":
+        try:
+            num = int(input("Enter a number: "))
+            if num < 2:
+                print(f"❌ {num} is not prime")
+            else:
+                is_prime = True
+                for i in range(2, int(num ** 0.5) + 1):
+                    if num % i == 0:
+                        is_prime = False
+                        break
+                if is_prime:
+                    print(f"✓ {num} is prime!")
+                else:
+                    print(f"❌ {num} is not prime")
+        except ValueError:
+            print("❌ Please enter a valid number!")
+            continue
+    
+    else:
+        print("❌ Invalid choice! Please enter 1-5.")
+        continue
+    
+    input("\nPress Enter to continue...")</div>
+
+            <div class="info-box">
+                <h4>💡 Loop Control Best Practices</h4>
+                <ul style="margin-top: 0.5rem;">
+                    <li><strong>Use break sparingly:</strong> Too many breaks make flow hard to follow</li>
+                    <li><strong>Use continue for filtering:</strong> It's cleaner than nested ifs</li>
+                    <li><strong>Document why:</strong> Add a comment explaining why you're breaking/continuing</li>
+                    <li><strong>Consider functions:</strong> return can replace break in many cases</li>
+                    <li><strong>Use for-else:</strong> The else clause with loops is powerful for search patterns</li>
+                </ul>
+            </div>
+
+            <h3>Chapter Project: Tic-Tac-Toe Game</h3>
+            <div class="code"># ==================== TIC-TAC-TOE ====================
+# Uses everything from Chapter 1 and 2!
+
+def print_board(board):
+    print()
+    for i in range(3):
+        for j in range(3):
+            print(f" {board[i][j]} ", end="")
+            if j < 2:
+                print("|", end="")
+        print()
+        if i < 2:
+            print("-----------")
+    print()
+
+def check_winner(board, player):
+    # Check rows
+    for row in board:
+        if all(cell == player for cell in row):
+            return True
+    
+    # Check columns
+    for col in range(3):
+        if all(board[row][col] == player for row in range(3)):
+            return True
+    
+    # Check diagonals
+    if all(board[i][i] == player for i in range(3)):
+        return True
+    if all(board[i][2-i] == player for i in range(3)):
+        return True
+    
+    return False
+
+def is_full(board):
+    return all(cell != " " for row in board for cell in row)
+
+# Main game
+print("🎮 TIC-TAC-TOE")
+print("Positions are 1-9:")
+print(" 1 | 2 | 3 ")
+print("-----------")
+print(" 4 | 5 | 6 ")
+print("-----------")
+print(" 7 | 8 | 9 ")
+
+board = [[" " for _ in range(3)] for _ in range(3)]
+current_player = "X"
+
+while True:
+    print_board(board)
+    
+    # Get move
+    while True:
+        try:
+            move = int(input(f"Player {current_player}, enter position (1-9): "))
+            if 1 <= move <= 9:
+                row = (move - 1) // 3
+                col = (move - 1) % 3
+                if board[row][col] == " ":
+                    break
+                print("That spot is taken!")
+            else:
+                print("Enter 1-9!")
+        except ValueError:
+            print("Enter a number!")
+            continue
+    
+    # Make move
+    board[row][col] = current_player
+    
+    # Check win
+    if check_winner(board, current_player):
+        print_board(board)
+        print(f"🎉 Player {current_player} wins!")
+        break
+    
+    # Check draw
+    if is_full(board):
+        print_board(board)
+        print("🤝 It's a draw!")
+        break
+    
+    # Switch player
+    current_player = "O" if current_player == "X" else "X"</div>
+        </section>
+
+        <div style="margin-top: 6rem; padding-top: 3rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between;">
+            <a href="programming-ch01.html" style="color: var(--text2); text-decoration: none;">← Chapter 01: Python From Zero</a>
+            <a href="programming-ch03.html" style="color: var(--text); text-decoration: none; font-weight: 600;">Next: Chapter 03 - Functions →</a>
+        </div>
+    </main>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progress').style.width = scrolled + '%';
+        });
+
+        const sections = document.querySelectorAll('.section');
+        const sidebarLinks = document.querySelectorAll('.sidebar-link');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (scrollY >= (sectionTop - 150)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            sidebarLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
 </html>
-
-

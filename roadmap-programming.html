@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="NullSector Programming Roadmap — 10 comprehensive chapters, each 500,000+ words. The most detailed software development learning path ever created.">
+    <meta name="description" content="NullSector Programming Roadmap - 10 comprehensive chapters. The most detailed software development learning path ever created.">
     <title>Programming Roadmap - NullSector</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="favicon.ico">
@@ -11,195 +11,149 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <style>
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-15px); } }
-        .fade-in-up { animation: fadeInUp 0.6s ease-out forwards; opacity: 0; }
-        .delay-1 { animation-delay: 0.1s; }
-        .delay-2 { animation-delay: 0.2s; }
-        .roadmap-section { opacity: 0; animation: fadeInUp 0.5s ease-out forwards; }
-        .roadmap-section:nth-child(1) { animation-delay: 0.1s; }
-        .roadmap-section:nth-child(2) { animation-delay: 0.2s; }
-        .roadmap-section:nth-child(3) { animation-delay: 0.3s; }
-        .roadmap-section:nth-child(4) { animation-delay: 0.4s; }
-        .roadmap-section:nth-child(5) { animation-delay: 0.5s; }
-    </style>
 </head>
 <body>
-    <div class="stars"></div>
-    <div class="twinkling"></div>
-    
-    <div style="position: fixed; top: -10%; left: -5%; width: 40%; height: 40%; background: radial-gradient(circle, rgba(0,204,255,0.15) 0%, transparent 70%); border-radius: 50%; filter: blur(80px); animation: float 15s ease-in-out infinite; z-index: 0;"></div>
-    <div style="position: fixed; bottom: -10%; right: -5%; width: 50%; height: 50%; background: radial-gradient(circle, rgba(156,39,176,0.12) 0%, transparent 70%); border-radius: 50%; filter: blur(100px); animation: float 20s ease-in-out infinite reverse; z-index: 0;"></div>
-    
     <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-brand">
-                <a href="index.html"><img src="logo.svg" class="logo"><span class="brand-text">NullSector</span></a>
-            </div>
+        <div class="nav-content">
+            <a href="index.html" class="nav-logo">
+                <img src="logo.svg" alt="Logo">
+                <span class="logo-text">NullSector</span>
+            </a>
             <div class="nav-links">
-                <a href="choose-path.html" class="nav-link">Choose Path</a>
-                <a href="roadmap-programming.html" class="nav-link active">Programming</a>
-                <a href="roadmap-hacking.html" class="nav-link">Hacking</a>
-                <a href="resources.html" class="nav-link">Resources</a>
-                <a href="null-terminal.html" class="nav-link">Null Terminal</a>
-                <a href="faq.html" class="nav-link">FAQ</a>
-                <a href="https://discord.gg/Tz9Y3wea32" target="_blank" class="nav-link">Discord</a>
-            
-                                
-                <div id="userProfile" style="display: none; align-items: center; gap: 0.75rem;">
-                    <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <img id="userAvatar" style="width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--primary-color); cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="" />
-                        <span id="userName" style="color: var(--text-primary); font-weight: 500; font-size: 0.95rem; cursor: default;"></span>
-                    </div>
-                    <button id="logoutButton" class="nav-link" style="background: rgba(255, 95, 87, 0.1); border: 1px solid #ff5f57; padding: 0.4rem 1rem; border-radius: 6px; font-weight: 500; cursor: pointer; color: #ff5f57; transition: all 0.2s;" onmouseover="this.style.background='rgba(255, 95, 87, 0.2)'" onmouseout="this.style.background='rgba(255, 95, 87, 0.1)'">Logout</button>
-                </div>
+                <a href="roadmap-hacking.html">Hacking</a>
+                <a href="roadmap-programming.html" class="active">Programming</a>
+                <a href="null-terminal.html">Null Terminal</a>
+                <a href="faq.html">FAQs</a>
+                <a href="https://discord.gg/cMvWkxFbbX" target="_blank" class="discord-link">Discord</a>
             </div>
         </div>
     </nav>
 
-    <section class="content-page" style="position: relative; z-index: 1;">
+    <main class="content-wrapper">
         <div class="content-container">
-            <div class="breadcrumb fade-in-up" style="background: rgba(0,204,255,0.1); border: 1px solid rgba(0,204,255,0.3); padding: 1rem 1.5rem; border-radius: 12px; display: inline-flex; gap: 0.5rem; backdrop-filter: blur(10px);">
-                <a href="index.html" style="color: #00ccff; font-weight: 600; text-decoration: none; transition: all 0.2s;" onmouseover="this.style.color='#0099cc'" onmouseout="this.style.color='#00ccff'">Home</a>
-                <span style="color: rgba(255,255,255,0.5);">/</span>
-                <a href="choose-path.html" style="color: #00ccff; font-weight: 600; text-decoration: none; transition: all 0.2s;" onmouseover="this.style.color='#0099cc'" onmouseout="this.style.color='#00ccff'">Choose Path</a>
-                <span style="color: rgba(255,255,255,0.5);">/</span>
-                <span style="color: rgba(255,255,255,0.9); font-weight: 600;">Programming</span>
+            <div class="breadcrumb">
+                <a href="index.html">Home</a> / <span>Programming</span>
             </div>
             
-            <h1 class="page-title fade-in-up delay-1" style="font-size: clamp(3rem, 7vw, 5rem); font-weight: 900; margin: 3rem 0 1.5rem;"><span style="background: linear-gradient(135deg, #00ccff 0%, #0099cc 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-shadow: 0 0 60px rgba(0,204,255,0.3);">💻 Programming & Development Roadmap</span></h1>
-            <p class="page-subtitle fade-in-up delay-2" style="font-size: 1.4rem; color: rgba(255,255,255,0.85); max-width: 700px; line-height: 1.6; margin-bottom: 3rem;">From Zero to Professional Developer — Complete Learning Path</p>
+            <h1 class="page-title">Programming & Development Roadmap</h1>
+            <p class="page-subtitle" style="font-size: 1.4rem; color: rgba(255,255,255,0.85); max-width: 700px; line-height: 1.6; margin-bottom: 3rem;">From Zero to Professional Developer - Complete Learning Path</p>
 
-            <div class="key-takeaways" style="margin-bottom:3rem;">
-                <h3>🎯 What Makes This Roadmap Unique:</h3>
-                <ul>
-                    <li><strong>Extremely comprehensive</strong> — In-depth coverage of every topic</li>
-                    <li><strong>Complete beginner friendly</strong> — No prior knowledge assumed</li>
-                    <li><strong>Metaphors & analogies</strong> — Complex concepts explained simply</li>
-                    <li><strong>Real code examples</strong> — Hundreds of working examples per chapter</li>
-                    <li><strong>Practice projects</strong> — Build real applications as you learn</li>
-                    <li><strong>Career-focused</strong> — Skills that get you hired</li>
+            <div class="key-takeaways" style="margin-bottom:3rem; background: rgba(17,17,17,0.8); padding: 2rem; border-radius: 12px; border: 1px solid #222;">
+                <h3 style="margin-bottom: 1rem;">What Makes This Roadmap Unique:</h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin-bottom: 0.8rem;"><strong>Extremely comprehensive</strong> - In-depth coverage of every topic</li>
+                    <li style="margin-bottom: 0.8rem;"><strong>Complete beginner friendly</strong> - No prior knowledge assumed</li>
+                    <li style="margin-bottom: 0.8rem;"><strong>Metaphors & analogies</strong> - Complex concepts explained simply</li>
+                    <li style="margin-bottom: 0.8rem;"><strong>Real code examples</strong> - Hundreds of working examples per chapter</li>
+                    <li style="margin-bottom: 0.8rem;"><strong>Practice projects</strong> - Build real applications as you learn</li>
+                    <li style="margin-bottom: 0.8rem;"><strong>Career-focused</strong> - Skills that get you hired</li>
                 </ul>
-                <p><strong>Learning Approach:</strong> Take your time, practice regularly, and build projects. A complete programming education.</p>
+                <p style="margin-top: 1.5rem; color: #888;"><strong>Learning Approach:</strong> Take your time, practice regularly, and build projects. A complete programming education.</p>
+                
+                <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #333;">
+                    <h4 style="margin-bottom: 1rem; color: #fff;">📚 Beyond Python - Multi-Language Mastery</h4>
+                    <p style="color: #aaa; line-height: 1.8;">We won't stop at just Python! You'll learn <strong>every major programming language required</strong> for professional development - JavaScript, TypeScript, C, Go, Rust, and more. Each language will be taught from the ground up with the same comprehensive approach.</p>
+                    <p style="color: #aaa; line-height: 1.8; margin-top: 1rem;"><strong>This roadmap is just a conservative estimation</strong> of what you'll learn. We won't stop without teaching you <strong>everything from the ground up</strong> - from basic syntax to advanced patterns, from theory to real-world applications.</p>
+                    <p style="color: #888; margin-top: 1rem; font-size: 0.95rem;">💬 <strong>Have questions or doubts?</strong> Join our <a href="https://discord.gg/cMvWkxFbbX" style="color: #5865F2; text-decoration: none; font-weight: 600;">Discord community</a> - we're here to help you succeed!</p>
+                </div>
             </div>
 
             <div class="roadmap-content">
                 
-                <!-- Chapter 01 -->
-                <a href="programming-ch01.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit;">
+                <a href="programming-ch01.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit; background: rgba(17,17,17,0.5); padding: 2rem; border-radius: 12px; border: 1px solid #222; margin-bottom: 1.5rem; transition: all 0.3s;">
                     <div class="roadmap-number">01</div>
-                    <h2>Programming Fundamentals I</h2>
-                    <p>Complete introduction to programming — what is programming, variables, data types, operators, control flow, if/else statements, loops (for/while), functions, parameters, input/output, debugging, and first projects.</p>
-                    <p><strong>Topics:</strong> Variables, Data Types, Control Flow, Loops, Functions, I/O, Debugging, Practice Projects</p>
-                    <p style="color: var(--primary-color); margin-top: 1rem;">📖 500,000+ words • ⏱️ Recommended Learning Time: 30 mins - 1 hr</p>
+                    <h2 style="margin-top: 1rem;">Python From Absolute Zero</h2>
+                    <p>Complete introduction to programming with Python - what is programming, variables, data types, operators, strings, numbers, type conversion, input/output, comments, debugging, and first projects. Everything explained from scratch.</p>
+                    <p><strong>Topics:</strong> Variables, Data Types, Operators, Strings, Numbers, Type Conversion, I/O, Comments, Debugging</p>
+                    <p style="color: #888; margin-top: 1rem;">Recommended Learning Time: 30 mins - 1 hr</p>
                 </a>
 
-                <!-- Chapter 02 -->
-                <a href="programming-ch02.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit;">
+                <a href="programming-ch02.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit; background: rgba(17,17,17,0.5); padding: 2rem; border-radius: 12px; border: 1px solid #222; margin-bottom: 1.5rem; transition: all 0.3s;">
                     <div class="roadmap-number">02</div>
-                    <h2>Programming Fundamentals II</h2>
-                    <p>Advanced programming concepts — data structures (lists, dictionaries, sets, tuples), object-oriented programming (classes, inheritance, polymorphism), error handling, file I/O, JSON/CSV, modules, virtual environments, testing.</p>
-                    <p><strong>Topics:</strong> Data Structures, OOP, Inheritance, Error Handling, File I/O, Modules, Testing, pytest</p>
-                    <p style="color: var(--primary-color); margin-top: 1rem;">📖 Depends all on your interest • ⏱️ Take your time & Research...</p>
+                    <h2 style="margin-top: 1rem;">Control Flow</h2>
+                    <p>Mastering program flow and decision making - if/else statements, elif chains, boolean logic, comparison operators, logical operators (and/or/not), nested conditions, while loops, for loops, break/continue, loop patterns, and practical examples.</p>
+                    <p><strong>Topics:</strong> If/Else, Boolean Logic, Operators, Nested Conditions, While Loops, For Loops, Break/Continue</p>
+                    <p style="color: #888; margin-top: 1rem;">Take your time & Research...</p>
                 </a>
 
-                <!-- Chapter 03 -->
-                <a href="programming-ch03.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit;">
+                <a href="programming-ch03.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit; background: rgba(17,17,17,0.5); padding: 2rem; border-radius: 12px; border: 1px solid #222; margin-bottom: 1.5rem; transition: all 0.3s;">
                     <div class="roadmap-number">03</div>
-                    <h2>Algorithms & Problem Solving</h2>
-                    <p>Algorithmic thinking mastery — problem decomposition, time/space complexity, Big O notation, searching algorithms, sorting algorithms, recursion, data structures deep dive, trees, graphs, dynamic programming, practice problems.</p>
-                    <p><strong>Topics:</strong> Big O, Searching, Sorting, Recursion, Linked Lists, Trees, Graphs, Dynamic Programming</p>
-                    <p style="color: var(--primary-color); margin-top: 1rem;">📖 6 Major Topics • ⏱️ 60-75 min read</p>
+                    <h2 style="margin-top: 1rem;">Functions</h2>
+                    <p>Master the building blocks of reusable code - defining functions, parameters, return values, scope (local/global), default parameters, lambda functions, built-in functions, and function design patterns. Learn to write clean, modular code.</p>
+                    <p><strong>Topics:</strong> Function Definition, Parameters, Return Values, Scope, Default Parameters, Lambda, Built-ins</p>
+                    <p style="color: #888; margin-top: 1rem;">8 Major Topics - 60-75 min read</p>
                 </a>
 
-                <!-- Chapter 04 -->
-                <a href="programming-ch04.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit;">
+                <a href="programming-ch04.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit; background: rgba(17,17,17,0.5); padding: 2rem; border-radius: 12px; border: 1px solid #222; margin-bottom: 1.5rem; transition: all 0.3s;">
                     <div class="roadmap-number">04</div>
-                    <h2>How to Read Code</h2>
-                    <p>The most important skill they don't teach — understanding existing codebases, code comprehension strategies, reading documentation (READMEs, API docs, comments), debugging techniques (print debugging, debuggers, stack traces), IDE navigation (go-to-definition, find-references), and recognizing code smells.</p>
-                    <p><strong>Topics:</strong> Code Comprehension, Documentation Reading, Debugging, IDE Features, Code Smells, Refactoring</p>
-                    <p style="color: var(--primary-color); margin-top: 1rem;">📖 6 Major Topics • ⏱️ 45-60 min read</p>
+                    <h2 style="margin-top: 1rem;">Data Structures</h2>
+                    <p>Master Python's core data structures - lists (indexing, slicing, methods), tuples (immutability, unpacking), dictionaries (key-value pairs, methods), sets (unique items, operations), comprehensions, and choosing the right structure for your needs.</p>
+                    <p><strong>Topics:</strong> Lists, Tuples, Dictionaries, Sets, Comprehensions, Data Structure Selection</p>
+                    <p style="color: #888; margin-top: 1rem;">8 Major Topics - 60-75 min read</p>
                 </a>
 
-                <!-- Chapter 05 -->
-                <a href="programming-ch05.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit;">
+                <a href="programming-ch05.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit; background: rgba(17,17,17,0.5); padding: 2rem; border-radius: 12px; border: 1px solid #222; margin-bottom: 1.5rem; transition: all 0.3s;">
                     <div class="roadmap-number">05</div>
-                    <h2>Web Development Fundamentals</h2>
-                    <p>Frontend development essentials — HTML fundamentals, semantic markup, CSS (selectors, box model, flexbox, grid), JavaScript basics, DOM manipulation, HTTP/APIs, REST, browser DevTools, Git/GitHub, responsive design.</p>
+                    <h2 style="margin-top: 1rem;">Web Development Fundamentals</h2>
+                    <p>Frontend development essentials - HTML fundamentals, semantic markup, CSS (selectors, box model, flexbox, grid), JavaScript basics, DOM manipulation, HTTP/APIs, REST, browser DevTools, Git/GitHub, responsive design.</p>
                     <p><strong>Topics:</strong> HTML, CSS, JavaScript, DOM, HTTP, APIs, Git, Responsive Design, DevTools</p>
-                    <p style="color: var(--primary-color); margin-top: 1rem;">📖 Coming soon • ⏱️ Coming soon</p>
+                    <p style="color: #888; margin-top: 1rem;">Coming soon</p>
                 </a>
 
-                <!-- Chapter 05 -->
-                <a href="programming-ch05.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit;">
-                    <div class="roadmap-number">05</div>
-                    <h2>Backend Development</h2>
-                    <p>Server-side programming — Flask/Django frameworks, routing, views, templates, databases (SQL, ORMs, models), user authentication (sessions, cookies, JWT), REST API development, middleware, testing, deployment basics.</p>
-                    <p><strong>Topics:</strong> Flask, Django, Databases, SQL, ORMs, Authentication, REST APIs, Deployment</p>
-                    <p style="color: var(--primary-color); margin-top: 1rem;">📖 Coming soon • ⏱️ Coming soon</p>
-                </a>
-
-                <!-- Chapter 06 -->
-                <a href="programming-ch06.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit;">
+                <a href="programming-ch06.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit; background: rgba(17,17,17,0.5); padding: 2rem; border-radius: 12px; border: 1px solid #222; margin-bottom: 1.5rem; transition: all 0.3s;">
                     <div class="roadmap-number">06</div>
-                    <h2>Databases & Data Management</h2>
-                    <p>Database mastery — SQL deep dive (SELECT, JOINs, aggregations), database design, normalization, relationships, indexes, transactions, ACID properties, NoSQL (MongoDB, Redis), ORMs, migrations, performance tuning, security.</p>
-                    <p><strong>Topics:</strong> SQL Mastery, Database Design, NoSQL, ORMs, Migrations, Performance, Security</p>
-                    <p style="color: var(--primary-color); margin-top: 1rem;">📖 Coming soon • ⏱️ Coming soon</p>
+                    <h2 style="margin-top: 1rem;">Backend Development</h2>
+                    <p>Server-side programming - Flask/Django frameworks, routing, views, templates, databases (SQL, ORMs, models), user authentication (sessions, cookies, JWT), REST API development, middleware, testing, deployment basics.</p>
+                    <p><strong>Topics:</strong> Flask, Django, Databases, SQL, ORMs, Authentication, REST APIs, Deployment</p>
+                    <p style="color: #888; margin-top: 1rem;">Coming soon</p>
                 </a>
 
-                <!-- Chapter 07 -->
-                <a href="programming-ch07.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit;">
+                <a href="programming-ch07.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit; background: rgba(17,17,17,0.5); padding: 2rem; border-radius: 12px; border: 1px solid #222; margin-bottom: 1.5rem; transition: all 0.3s;">
                     <div class="roadmap-number">07</div>
-                    <h2>Full-Stack Integration</h2>
-                    <p>Complete full-stack development — React/Vue.js, component architecture, state management (Redux, Vuex), API integration (fetch, axios), WebSockets, real-time features, file uploads, Progressive Web Apps, full-stack projects, deployment.</p>
-                    <p><strong>Topics:</strong> React, Vue, State Management, API Integration, WebSockets, PWAs, Full-Stack Projects</p>
-                    <p style="color: var(--primary-color); margin-top: 1rem;">📖 Coming soon • ⏱️ Coming soon</p>
+                    <h2 style="margin-top: 1rem;">Databases & Data Management</h2>
+                    <p>Database mastery - SQL deep dive (SELECT, JOINs, aggregations), database design, normalization, relationships, indexes, transactions, ACID properties, NoSQL (MongoDB, Redis), ORMs, migrations, performance tuning, security.</p>
+                    <p><strong>Topics:</strong> SQL Mastery, Database Design, NoSQL, ORMs, Migrations, Performance, Security</p>
+                    <p style="color: #888; margin-top: 1rem;">Coming soon</p>
                 </a>
 
-                <!-- Chapter 08 -->
-                <a href="programming-ch08.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit;">
+                <a href="programming-ch08.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit; background: rgba(17,17,17,0.5); padding: 2rem; border-radius: 12px; border: 1px solid #222; margin-bottom: 1.5rem; transition: all 0.3s;">
                     <div class="roadmap-number">08</div>
-                    <h2>Professional Practices</h2>
-                    <p>Industry-standard workflows — code quality (clean code, refactoring), code reviews, testing strategies (unit, integration, E2E), CI/CD pipelines (GitHub Actions, Jenkins), monitoring, logging, documentation, Agile methodologies, team collaboration, security best practices.</p>
-                    <p><strong>Topics:</strong> Code Quality, Testing, CI/CD, Monitoring, Documentation, Agile, Team Collaboration</p>
-                    <p style="color: var(--primary-color); margin-top: 1rem;">📖 Coming soon • ⏱️ Coming soon</p>
+                    <h2 style="margin-top: 1rem;">Full-Stack Integration</h2>
+                    <p>Complete full-stack development - React/Vue.js, component architecture, state management (Redux, Vuex), API integration (fetch, axios), WebSockets, real-time features, file uploads, Progressive Web Apps, full-stack projects, deployment.</p>
+                    <p><strong>Topics:</strong> React, Vue, State Management, API Integration, WebSockets, PWAs, Full-Stack Projects</p>
+                    <p style="color: #888; margin-top: 1rem;">Coming soon</p>
                 </a>
 
-                <!-- Chapter 09 -->
-                <a href="programming-ch09.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit;">
+                <a href="programming-ch09.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit; background: rgba(17,17,17,0.5); padding: 2rem; border-radius: 12px; border: 1px solid #222; margin-bottom: 1.5rem; transition: all 0.3s;">
                     <div class="roadmap-number">09</div>
-                    <h2>Advanced Topics</h2>
-                    <p>Cutting-edge development — performance optimization, profiling, caching, security deep dive (OWASP), cloud development (AWS Lambda, serverless), microservices architecture, machine learning basics, mobile development (React Native), GraphQL, emerging technologies.</p>
-                    <p><strong>Topics:</strong> Performance, Security, Cloud, Microservices, ML Basics, Mobile Dev, GraphQL</p>
-                    <p style="color: var(--primary-color); margin-top: 1rem;">📖 Coming soon • ⏱️ Coming soon</p>
+                    <h2 style="margin-top: 1rem;">Professional Practices</h2>
+                    <p>Industry-standard workflows - code quality (clean code, refactoring), code reviews, testing strategies (unit, integration, E2E), CI/CD pipelines (GitHub Actions, Jenkins), monitoring, logging, documentation, Agile methodologies, team collaboration, security best practices.</p>
+                    <p><strong>Topics:</strong> Code Quality, Testing, CI/CD, Monitoring, Documentation, Agile, Team Collaboration</p>
+                    <p style="color: #888; margin-top: 1rem;">Coming soon</p>
                 </a>
 
-                <!-- Chapter 10 -->
-                <a href="programming-ch10.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit;">
+                <a href="programming-ch10.html" class="roadmap-section" style="display: block; text-decoration: none; color: inherit; background: rgba(17,17,17,0.5); padding: 2rem; border-radius: 12px; border: 1px solid #222; margin-bottom: 1.5rem; transition: all 0.3s;">
                     <div class="roadmap-number">10</div>
-                    <h2>Career Preparation</h2>
-                    <p>Professional career development — portfolio building, GitHub profile optimization, resume writing, technical interview preparation, coding challenges (Leetcode), system design interviews, behavioral interviews, networking strategies, job search tactics, continuous learning.</p>
+                    <h2 style="margin-top: 1rem;">Career Preparation</h2>
+                    <p>Professional career development - portfolio building, GitHub profile optimization, resume writing, technical interview preparation, coding challenges (Leetcode), system design interviews, behavioral interviews, networking strategies, job search tactics, continuous learning.</p>
                     <p><strong>Topics:</strong> Portfolio, Resume, Interviews, Leetcode, System Design, Networking, Job Search</p>
-                    <p style="color: var(--primary-color); margin-top: 1rem;">📖 Coming soon • ⏱️ Coming soon</p>
+                    <p style="color: #888; margin-top: 1rem;">Coming soon</p>
                 </a>
 
-                <div class="roadmap-cta" style="margin-top:3rem;">
-                    <h2>🚀 Ready to Start Your Programming Journey?</h2>
-                    <p>Join thousands of aspiring developers in our Discord community!</p>
-                    <a href="https://discord.gg/Tz9Y3wea32" target="_blank" class="cta-button">Join Discord →</a>
-                    <a href="choose-path.html" class="cta-button" style="margin-left:1rem;">← Back to Path Selection</a>
+                <div style="margin-top: 3rem; text-align: center; padding: 2rem; background: rgba(17,17,17,0.8); border-radius: 12px; border: 1px solid #222;">
+                    <h2 style="margin-bottom: 1rem;">Ready to Start Your Programming Journey?</h2>
+                    <p style="color: #888; margin-bottom: 2rem;">Join thousands of aspiring developers in our Discord community!</p>
+                    <a href="https://discord.gg/cMvWkxFbbX" target="_blank" style="display: inline-block; padding: 1rem 2rem; background: #fff; color: #000; text-decoration: none; border-radius: 8px; font-weight: 600; margin-right: 1rem;">Join Discord</a>
+                    <a href="choose-path.html" style="display: inline-block; padding: 1rem 2rem; background: transparent; color: #fff; text-decoration: none; border-radius: 8px; font-weight: 600; border: 1px solid #444;">Back to Path Selection</a>
                 </div>
 
             </div>
         </div>
-    </section>
+    </main>
 
     <script src="script.js"></script>
-    
-    <!-- Supabase Client & Auth -->
-    </body>
+</body>
 </html>
+
 
 

