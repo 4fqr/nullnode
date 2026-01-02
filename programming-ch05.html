@@ -3,72 +3,232 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ch5: Coming Soon - NullSector</title>
+    <title>Chapter 05: Web Development Fundamentals - NullSector</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root { --bg: #000; --text: #fff; --text2: #888; --border: #222; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
-        header { position: fixed; top: 0; left: 0; right: 0; background: var(--bg); border-bottom: 1px solid var(--border); z-index: 1000; }
-        .header-content { max-width: 1400px; margin: 0 auto; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        :root {
+            --bg: #000; --bg2: #0a0a0a; --bg3: #111;
+            --text: #fff; --text2: #888; --text3: #555;
+            --border: rgba(255,255,255,0.1);
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; overflow-x: hidden; }
+        .header { position: fixed; top: 0; left: 0; right: 0; height: 70px; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); z-index: 1000; display: flex; align-items: center; padding: 0 2rem; }
+        .header-content { width: 100%; max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
         .brand { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--text); font-weight: 700; font-size: 1.25rem; }
-        .brand-logo { width: 36px; height: 36px; }
-        .header-links { display: flex; gap: 2rem; }
-        .header-links a { color: var(--text2); text-decoration: none; font-weight: 500; transition: color 0.2s; }
-        .header-links a:hover { color: var(--text); }
-        main { margin-top: 70px; padding: 4rem 2rem; max-width: 900px; margin-left: auto; margin-right: auto; min-height: calc(100vh - 70px); display: flex; flex-direction: column; justify-content: center; }
-        h1 { font-size: 3rem; font-weight: 800; margin-bottom: 1rem; }
-        .subtitle { font-size: 1.3rem; color: var(--text2); margin-bottom: 3rem; }
-        .coming-soon-box { background: linear-gradient(135deg, #111 0%, #1a1a1a 100%); border: 1px solid var(--border); padding: 3rem; border-radius: 12px; }
-        .coming-soon-box h2 { font-size: 1.8rem; margin-bottom: 1.5rem; }
-        .coming-soon-box p { color: var(--text2); margin-bottom: 1rem; font-size: 1.05rem; }
-        .coming-soon-box ul { margin: 1.5rem 0; padding-left: 2rem; color: var(--text2); }
-        .coming-soon-box li { margin-bottom: 0.75rem; }
-        .nav-buttons { display: flex; gap: 1rem; margin-top: 3rem; }
-        .nav-buttons a { flex: 1; padding: 1rem 1.5rem; background: var(--bg); border: 1px solid var(--border); color: var(--text); text-decoration: none; border-radius: 8px; font-weight: 600; text-align: center; transition: all 0.2s; }
-        .nav-buttons a:hover { border-color: var(--text); }
+        .nav { display: flex; gap: 2rem; align-items: center; }
+        .nav a { color: var(--text2); text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: color 0.3s; }
+        .nav a:hover { color: var(--text); }
+        .dropdown { position: relative; display: inline-block; }
+        .dropdown-toggle { cursor: pointer; display: flex; align-items: center; gap: 0.5rem; color: var(--text2); font-size: 0.95rem; font-weight: 500; transition: color 0.3s; }
+        .dropdown-toggle:hover { color: var(--text); }
+        .dropdown-menu { position: absolute; top: 100%; left: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: 8px; margin-top: 0.5rem; min-width: 200px; opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.3s cubic-bezier(0.16,1,0.3,1); z-index: 1001; }
+        .dropdown:hover .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+        .dropdown-menu a { display: block; padding: 1rem 1.5rem; color: var(--text2); text-decoration: none; transition: all 0.2s; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .dropdown-menu a:last-child { border-bottom: none; }
+        .dropdown-menu a:hover { background: rgba(255,255,255,0.05); color: var(--text); padding-left: 2rem; }
+        .dropdown-arrow { font-size: 0.7rem; transition: transform 0.3s; }
+        .dropdown:hover .dropdown-arrow { transform: rotate(180deg); }
+        .sidebar { position: fixed; left: 0; top: 70px; width: 280px; height: calc(100vh - 70px); background: var(--bg2); border-right: 1px solid var(--border); overflow-y: auto; padding: 2rem 0; z-index: 100; }
+        .sidebar::-webkit-scrollbar { width: 6px; }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+        .sidebar-section { padding: 0 1.5rem; margin-bottom: 2rem; }
+        .sidebar-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); margin-bottom: 1rem; }
+        .sidebar-link { display: block; color: var(--text2); text-decoration: none; padding: 0.6rem 1rem; margin: 0.25rem 0; border-radius: 6px; font-size: 0.9rem; transition: all 0.3s; }
+        .sidebar-link:hover { background: rgba(255,255,255,0.05); color: var(--text); transform: translateX(4px); }
+        .sidebar-link.active { background: rgba(255,255,255,0.1); color: var(--text); font-weight: 600; }
+        .main { margin-left: 280px; margin-top: 70px; padding: 4rem 3rem; max-width: 1100px; }
+        .page-header { margin-bottom: 4rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+        .chapter-label { font-size: 0.875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--text3); margin-bottom: 1rem; }
+        .page-title { font-size: 3.5rem; font-weight: 800; line-height: 1.2; margin-bottom: 1rem; letter-spacing: -1px; }
+        .page-subtitle { font-size: 1.25rem; color: var(--text2); font-weight: 400; line-height: 1.6; }
+        .section { margin-bottom: 6rem; scroll-margin-top: 100px; }
+        .section-title { font-size: 2.25rem; font-weight: 700; margin-bottom: 1.5rem; }
+        .section-intro { font-size: 1.125rem; color: var(--text2); margin-bottom: 2rem; line-height: 1.8; }
+        h3 { font-size: 1.75rem; font-weight: 600; margin: 3rem 0 1.5rem; }
+        p { font-size: 1.0625rem; line-height: 1.8; margin-bottom: 1.5rem; }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+        .card { background: var(--bg3); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; transition: all 0.3s; }
+        .card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.2); }
+        .card h4 { font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; }
+        .card p { color: var(--text2); font-size: 0.9375rem; }
+        .info-box { background: var(--bg3); border-left: 3px solid var(--text); padding: 1.5rem; margin: 2rem 0; border-radius: 0 8px 8px 0; }
+        .info-box h4 { font-weight: 600; margin-bottom: 0.75rem; }
+        .info-box p { color: var(--text2); }
+        .code { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.875rem; line-height: 1.7; white-space: pre; }
+        .inline-code { background: rgba(255,255,255,0.1); padding: 0.2rem 0.5rem; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.875em; }
+        .metaphor-box { background: rgba(255,255,255,0.03); border-left: 4px solid var(--text); padding: 1.5rem; margin: 2rem 0; border-radius: 0 8px 8px 0; position: relative; }
+        .metaphor-box::before { content: "💡"; position: absolute; top: 1rem; right: 1rem; font-size: 1.5rem; }
+        ul, ol { margin: 1.5rem 0; padding-left: 2rem; }
+        li { margin: 0.75rem 0; color: var(--text2); }
+        .progress { position: fixed; top: 70px; left: 0; height: 3px; background: linear-gradient(90deg, var(--text) 0%, var(--text2) 100%); transition: width 0.1s; z-index: 1001; }
+        @media (max-width: 1024px) { .sidebar { transform: translateX(-100%); } .main { margin-left: 0; padding: 3rem 2rem; } .page-title { font-size: 2.5rem; } }
     </style>
 </head>
 <body>
-    <header>
+    <div class="progress" id="progress"></div>
+    <header class="header">
         <div class="header-content">
             <a href="index.html" class="brand">
-                <img src="logo.svg" alt="NullSector" class="brand-logo">
+                <img src="logo.svg" alt="NullSector" width="36" height="36">
                 <span>NullSector</span>
             </a>
-            <div class="header-links">
-                <a href="roadmap-programming.html">Programming Roadmap</a>
+            <nav class="nav">
+                <a href="roadmap-hacking.html">Hacking</a>
+                <a href="roadmap-programming.html">Programming</a>
+                <a href="resources.html">Resources</a>
+                <div class="dropdown">
+                    <span class="dropdown-toggle">
+                        Null Tools
+                        <span class="dropdown-arrow">▼</span>
+                    </span>
+                    <div class="dropdown-menu">
+                        <a href="https://github.com/4fqr/null-cli" target="_blank">Null CLI</a>
+                        <a href="https://nullheadline.vercel.app/" target="_blank">Null Hacker's Headlines</a>
+                        <a href="https://github.com/4fqr/nullmysteryorg" target="_blank">Null: Mystery Organisation</a>
+                        <a href="https://github.com/4fqr/null-ide/" target="_blank">Null IDE</a>
+                    </div>
+                </div>
                 <a href="index.html">Home</a>
-            </div>
+            </nav>
         </div>
     </header>
 
-    <main>
-        <h1>Chapter 5: Coming Soon</h1>
-        <p class="subtitle">Content in development</p>
+    <aside class="sidebar">
+        <div class="sidebar-section">
+            <div class="sidebar-title">On This Page</div>
+            <a href="#intro" class="sidebar-link">Web Development Intro</a>
+            <a href="#html" class="sidebar-link">HTML Basics</a>
+            <a href="#css" class="sidebar-link">CSS Styling</a>
+            <a href="#javascript" class="sidebar-link">JavaScript</a>
+            <a href="#dom" class="sidebar-link">DOM Manipulation</a>
+            <a href="#project" class="sidebar-link">Build a Website</a>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-title">Navigation</div>
+            <a href="programming-ch06.html" class="sidebar-link">Next: Chapter 06 →</a>
+            <a href="programming-ch04.html" class="sidebar-link">← Previous: Chapter 04</a>
+            <a href="roadmap-programming.html" class="sidebar-link">Back to Roadmap</a>
+        </div>
+    </aside>
 
-        <div class="coming-soon-box">
-            <h2>📚 Chapter Content Coming Soon</h2>
-            <p>This chapter will contain <strong>comprehensive coverage</strong> of programming fundamentals with extreme detail for absolute beginners.</p>
-            <p><strong>What to expect:</strong></p>
-            <ul>
-                <li>Complete beginner-friendly explanations with metaphors</li>
-                <li>Colorful code examples with syntax highlighting</li>
-                <li>Real working demonstrations and hands-on exercises</li>
-                <li>Step-by-step walkthroughs</li>
-                <li>Security implications and hacker perspectives</li>
-                <li>Practice challenges and quick checks</li>
-            </ul>
-            <p style="margin-top: 1.5rem;"><strong>Expected content:</strong> Massive scrollable chapter with extensive examples and teaching material.</p>
+    <main class="main">
+        <div class="page-header">
+            <div class="chapter-label">Chapter 05</div>
+            <h1 class="page-title">Web Development Fundamentals</h1>
+            <p class="page-subtitle">Build websites from scratch using HTML, CSS, and JavaScript - the three languages that power the entire internet.</p>
         </div>
 
-        <div class="nav-buttons">
-            <a href="programming-ch04.html">← Previous Chapter</a>
-            <a href="programming-ch06.html">Next Chapter →</a>
-        </div>
+        <section id="intro" class="section">
+            <p>Every website you visit - Google, Facebook, YouTube, this very page - is built with three core technologies: <strong>HTML</strong> for structure, <strong>CSS</strong> for style, and <strong>JavaScript</strong> for behavior. Master these three, and you can build anything on the web.</p>
+            
+            <div class="metaphor-box">
+                <h4>🏗️ Think of a Website Like a House</h4>
+                <p><strong>HTML</strong> is the foundation and walls - the structure.</p>
+                <p style="margin-top: 0.5rem;"><strong>CSS</strong> is the paint, furniture, decorations - the design.</p>
+                <p style="margin-top: 0.5rem;"><strong>JavaScript</strong> is the electricity, plumbing, appliances - what makes it functional.</p>
+            </div>
+            
+            <div class="info-box">
+                <h4>💰 Career Potential</h4>
+                <p>Web developers earn $75k-$150k+ annually. Frontend, backend, and full-stack developers are consistently among the most in-demand tech roles. Every company needs a web presence.</p>
+            </div>
+        </section>
+
+        <section id="html" class="section">
+            <h2 class="section-title">HTML: The Structure</h2>
+            <p class="section-intro">HTML (HyperText Markup Language) defines the content and structure of web pages using tags.</p>
+            
+            <h3>Basic HTML Document</h3>
+            <div class="code">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;My First Website&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Hello, World!&lt;/h1&gt;
+    &lt;p&gt;This is my first webpage.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</div>
+
+            <h3>Common HTML Tags</h3>
+            <div class="card-grid">
+                <div class="card">
+                    <h4>Headings & Text</h4>
+                    <div class="code" style="font-size: 0.8rem;">&lt;h1&gt;Heading 1&lt;/h1&gt;
+&lt;p&gt;Paragraph&lt;/p&gt;
+&lt;strong&gt;Bold&lt;/strong&gt;
+&lt;em&gt;Italic&lt;/em&gt;</div>
+                </div>
+                <div class="card">
+                    <h4>Links & Images</h4>
+                    <div class="code" style="font-size: 0.8rem;">&lt;a href="url"&gt;Link&lt;/a&gt;
+&lt;img src="pic.jpg"&gt;</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="css" class="section">
+            <h2 class="section-title">CSS: The Style</h2>
+            <p class="section-intro">CSS (Cascading Style Sheets) makes your HTML look beautiful.</p>
+            
+            <div class="code">/* Select and style paragraphs */
+p {
+    color: white;
+    font-size: 16px;
+}
+
+/* Style buttons */
+.button {
+    background: #007bff;
+    padding: 10px 20px;
+    border-radius: 5px;
+}</div>
+        </section>
+
+        <section id="javascript" class="section">
+            <h2 class="section-title">JavaScript: The Behavior</h2>
+            <p class="section-intro">JavaScript makes your pages interactive and dynamic.</p>
+            
+            <div class="code">// Change content when button is clicked
+document.getElementById('myButton').addEventListener('click', () => {
+    alert('Button clicked!');
+});</div>
+        </section>
+
+        <section id="dom" class="section">
+            <h2 class="section-title">DOM Manipulation</h2>
+            <p>The DOM (Document Object Model) lets JavaScript interact with HTML elements.</p>
+            
+            <div class="code">// Select and modify elements
+const element = document.querySelector('#myDiv');
+element.textContent = 'New content!';
+element.style.color = 'red';</div>
+        </section>
+
+        <section id="project" class="section">
+            <h2 class="section-title">Project: Build Your First Website</h2>
+            <p>Create a simple interactive webpage using HTML, CSS, and JavaScript.</p>
+            
+            <div class="info-box">
+                <h4>🎉 Next Steps</h4>
+                <p>Practice building more complex pages, learn responsive design, and explore modern frameworks like React or Vue.js.</p>
+            </div>
+        </section>
     </main>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progress').style.width = scrolled + '%';
+        });
+    </script>
 </body>
 </html>
 

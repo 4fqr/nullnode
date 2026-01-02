@@ -3,72 +3,530 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ch05: Coming Soon - NullSector</title>
+    <title>Chapter 05: Networking Deep Dive - NullSector</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root { --bg: #000; --text: #fff; --text2: #888; --border: #222; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
-        header { position: fixed; top: 0; left: 0; right: 0; background: var(--bg); border-bottom: 1px solid var(--border); z-index: 1000; }
-        .header-content { max-width: 1400px; margin: 0 auto; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        :root {
+            --bg: #000; --bg2: #0a0a0a; --bg3: #111;
+            --text: #fff; --text2: #888; --text3: #555;
+            --border: rgba(255,255,255,0.1);
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; overflow-x: hidden; }
+        .header { position: fixed; top: 0; left: 0; right: 0; height: 70px; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); z-index: 1000; display: flex; align-items: center; padding: 0 2rem; }
+        .header-content { width: 100%; max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
         .brand { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--text); font-weight: 700; font-size: 1.25rem; }
-        .brand-logo { width: 36px; height: 36px; }
-        .header-links { display: flex; gap: 2rem; }
-        .header-links a { color: var(--text2); text-decoration: none; font-weight: 500; transition: color 0.2s; }
-        .header-links a:hover { color: var(--text); }
-        main { margin-top: 70px; padding: 4rem 2rem; max-width: 900px; margin-left: auto; margin-right: auto; min-height: calc(100vh - 70px); display: flex; flex-direction: column; justify-content: center; }
-        h1 { font-size: 3rem; font-weight: 800; margin-bottom: 1rem; }
-        .subtitle { font-size: 1.3rem; color: var(--text2); margin-bottom: 3rem; }
-        .coming-soon-box { background: linear-gradient(135deg, #111 0%, #1a1a1a 100%); border: 1px solid var(--border); padding: 3rem; border-radius: 12px; }
-        .coming-soon-box h2 { font-size: 1.8rem; margin-bottom: 1.5rem; }
-        .coming-soon-box p { color: var(--text2); margin-bottom: 1rem; font-size: 1.05rem; }
-        .coming-soon-box ul { margin: 1.5rem 0; padding-left: 2rem; color: var(--text2); }
-        .coming-soon-box li { margin-bottom: 0.75rem; }
-        .nav-buttons { display: flex; gap: 1rem; margin-top: 3rem; }
-        .nav-buttons a { flex: 1; padding: 1rem 1.5rem; background: var(--bg); border: 1px solid var(--border); color: var(--text); text-decoration: none; border-radius: 8px; font-weight: 600; text-align: center; transition: all 0.2s; }
-        .nav-buttons a:hover { border-color: var(--text); }
+        .nav { display: flex; gap: 2rem; align-items: center; }
+        .nav a { color: var(--text2); text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: color 0.3s; }
+        .nav a:hover { color: var(--text); }
+        .dropdown { position: relative; display: inline-block; }
+        .dropdown-toggle { cursor: pointer; display: flex; align-items: center; gap: 0.5rem; color: var(--text2); font-size: 0.95rem; font-weight: 500; transition: color 0.3s; }
+        .dropdown-toggle:hover { color: var(--text); }
+        .dropdown-menu { position: absolute; top: 100%; left: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: 8px; margin-top: 0.5rem; min-width: 200px; opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.3s cubic-bezier(0.16,1,0.3,1); z-index: 1001; }
+        .dropdown:hover .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+        .dropdown-menu a { display: block; padding: 1rem 1.5rem; color: var(--text2); text-decoration: none; transition: all 0.2s; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .dropdown-menu a:last-child { border-bottom: none; }
+        .dropdown-menu a:hover { background: rgba(255,255,255,0.05); color: var(--text); padding-left: 2rem; }
+        .dropdown-arrow { font-size: 0.7rem; transition: transform 0.3s; }
+        .dropdown:hover .dropdown-arrow { transform: rotate(180deg); }
+        .sidebar { position: fixed; left: 0; top: 70px; width: 280px; height: calc(100vh - 70px); background: var(--bg2); border-right: 1px solid var(--border); overflow-y: auto; padding: 2rem 0; z-index: 100; }
+        .sidebar::-webkit-scrollbar { width: 6px; }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+        .sidebar-section { padding: 0 1.5rem; margin-bottom: 2rem; }
+        .sidebar-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); margin-bottom: 1rem; }
+        .sidebar-link { display: block; color: var(--text2); text-decoration: none; padding: 0.6rem 1rem; margin: 0.25rem 0; border-radius: 6px; font-size: 0.9rem; transition: all 0.3s; }
+        .sidebar-link:hover { background: rgba(255,255,255,0.05); color: var(--text); transform: translateX(4px); }
+        .sidebar-link.active { background: rgba(255,255,255,0.1); color: var(--text); font-weight: 600; }
+        .main { margin-left: 280px; margin-top: 70px; padding: 4rem 3rem; max-width: 1100px; }
+        .page-header { margin-bottom: 4rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+        .chapter-label { font-size: 0.875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--text3); margin-bottom: 1rem; }
+        .page-title { font-size: 3.5rem; font-weight: 800; line-height: 1.2; margin-bottom: 1rem; letter-spacing: -1px; }
+        .page-subtitle { font-size: 1.25rem; color: var(--text2); font-weight: 400; line-height: 1.6; }
+        .section { margin-bottom: 6rem; scroll-margin-top: 100px; }
+        .section-title { font-size: 2.25rem; font-weight: 700; margin-bottom: 1.5rem; }
+        .section-intro { font-size: 1.125rem; color: var(--text2); margin-bottom: 2rem; line-height: 1.8; }
+        h3 { font-size: 1.75rem; font-weight: 600; margin: 3rem 0 1.5rem; }
+        p { font-size: 1.0625rem; line-height: 1.8; margin-bottom: 1.5rem; }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+        .card { background: var(--bg3); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; transition: all 0.3s; }
+        .card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.2); }
+        .card h4 { font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; }
+        .card p { color: var(--text2); font-size: 0.9375rem; }
+        .info-box { background: var(--bg3); border-left: 3px solid var(--text); padding: 1.5rem; margin: 2rem 0; border-radius: 0 8px 8px 0; }
+        .info-box h4 { font-weight: 600; margin-bottom: 0.75rem; }
+        .info-box p { color: var(--text2); }
+        .warning-box { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-left: 3px solid #ff6b6b; padding: 1.5rem; margin: 2rem 0; border-radius: 0 8px 8px 0; }
+        .code { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.875rem; line-height: 1.7; white-space: pre; }
+        .inline-code { background: rgba(255,255,255,0.1); padding: 0.2rem 0.5rem; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.875em; }
+        .metaphor-box { background: rgba(255,255,255,0.03); border-left: 4px solid var(--text); padding: 1.5rem; margin: 2rem 0; border-radius: 0 8px 8px 0; position: relative; }
+        .metaphor-box::before { content: "💡"; position: absolute; top: 1rem; right: 1rem; font-size: 1.5rem; }
+        ul, ol { margin: 1.5rem 0; padding-left: 2rem; }
+        li { margin: 0.75rem 0; color: var(--text2); }
+        table { width: 100%; border-collapse: collapse; margin: 2rem 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+        th, td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border); }
+        th { background: var(--bg2); font-weight: 600; font-size: 0.875rem; text-transform: uppercase; }
+        td { color: var(--text2); font-size: 0.9375rem; }
+        .progress { position: fixed; top: 70px; left: 0; height: 3px; background: linear-gradient(90deg, var(--text) 0%, var(--text2) 100%); transition: width 0.1s; z-index: 1001; }
+        @media (max-width: 1024px) { .sidebar { transform: translateX(-100%); } .main { margin-left: 0; padding: 3rem 2rem; } .page-title { font-size: 2.5rem; } }
     </style>
 </head>
 <body>
-    <header>
+    <div class="progress" id="progress"></div>
+    <header class="header">
         <div class="header-content">
             <a href="index.html" class="brand">
-                <img src="logo.svg" alt="NullSector" class="brand-logo">
+                <img src="logo.svg" alt="NullSector" width="36" height="36">
                 <span>NullSector</span>
             </a>
-            <div class="header-links">
-                <a href="roadmap-hacking.html">Hacking Roadmap</a>
+            <nav class="nav">
+                <a href="roadmap-hacking.html">Hacking</a>
+                <a href="roadmap-programming.html">Programming</a>
+                <a href="resources.html">Resources</a>
+                <div class="dropdown">
+                    <span class="dropdown-toggle">
+                        Null Tools
+                        <span class="dropdown-arrow">▼</span>
+                    </span>
+                    <div class="dropdown-menu">
+                        <a href="https://github.com/4fqr/null-cli" target="_blank">Null CLI</a>
+                        <a href="https://nullheadline.vercel.app/" target="_blank">Null Hacker's Headlines</a>
+                        <a href="https://github.com/4fqr/nullmysteryorg" target="_blank">Null: Mystery Organisation</a>
+                        <a href="https://github.com/4fqr/null-ide/" target="_blank">Null IDE</a>
+                    </div>
+                </div>
                 <a href="index.html">Home</a>
-            </div>
+            </nav>
         </div>
     </header>
 
-    <main>
-        <h1>Chapter 05: Coming Soon</h1>
-        <p class="subtitle">Content in development</p>
+    <aside class="sidebar">
+        <div class="sidebar-section">
+            <div class="sidebar-title">On This Page</div>
+            <a href="#intro" class="sidebar-link">Networking Fundamentals</a>
+            <a href="#osi" class="sidebar-link">OSI Model</a>
+            <a href="#tcpip" class="sidebar-link">TCP/IP Stack</a>
+            <a href="#protocols" class="sidebar-link">Network Protocols</a>
+            <a href="#scanning" class="sidebar-link">Network Scanning</a>
+            <a href="#attacks" class="sidebar-link">Network Attacks</a>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-title">Navigation</div>
+            <a href="hacking-ch06.html" class="sidebar-link">Next: Chapter 06 →</a>
+            <a href="hacking-ch04.html" class="sidebar-link">← Previous: Chapter 04</a>
+            <a href="roadmap-hacking.html" class="sidebar-link">Back to Roadmap</a>
+        </div>
+    </aside>
 
-        <div class="coming-soon-box">
-            <h2>📚 Chapter Content Coming Soon</h2>
-            <p>This chapter will contain <strong>comprehensive coverage</strong> of advanced topics with extreme detail for absolute beginners.</p>
-            <p><strong>What to expect:</strong></p>
-            <ul>
-                <li>Complete beginner-friendly explanations with metaphors</li>
-                <li>Colorful code examples with syntax highlighting</li>
-                <li>Real working demonstrations and hands-on exercises</li>
-                <li>Step-by-step walkthroughs</li>
-                <li>Security implications and hacker perspectives</li>
-                <li>Practice challenges and quick checks</li>
-            </ul>
-            <p style="margin-top: 1.5rem;"><strong>Expected content:</strong> Massive scrollable chapter with extensive examples and teaching material.</p>
+    <main class="main">
+        <div class="page-header">
+            <div class="chapter-label">Chapter 05</div>
+            <h1 class="page-title">Networking Deep Dive</h1>
+            <p class="page-subtitle">Master the protocols, packets, and infrastructure that power the internet - and learn how hackers exploit every layer.</p>
         </div>
 
-        <div class="nav-buttons">
-            <a href="hacking-ch04.html">← Previous Chapter</a>
-            <a href="hacking-ch06.html">Next Chapter →</a>
-        </div>
+        <section id="intro" class="section">
+            <p>Networking is the foundation of hacking. Every attack travels over a network. Every vulnerability exists because data moves between systems. You can't hack what you don't understand, and you can't understand hacking without understanding networks.</p>
+            
+            <div class="metaphor-box">
+                <h4>📬 Networks Are Like Postal Systems</h4>
+                <p><strong>IP addresses</strong> are like street addresses - they identify destinations.</p>
+                <p style="margin-top: 0.5rem;"><strong>Ports</strong> are like apartment numbers - they identify specific services.</p>
+                <p style="margin-top: 0.5rem;"><strong>Packets</strong> are like letters - they carry data from source to destination.</p>
+                <p style="margin-top: 0.5rem;"><strong>Protocols</strong> are like postal service rules - they define how communication works.</p>
+            </div>
+            
+            <div class="info-box">
+                <h4>🎯 Why Networking Matters for Hackers</h4>
+                <p>Network knowledge separates script kiddies from real hackers. Understanding TCP/IP, subnetting, routing, and protocols lets you: find hidden systems, bypass firewalls, intercept traffic, perform man-in-the-middle attacks, and exploit protocol weaknesses.</p>
+            </div>
+        </section>
+
+        <section id="osi" class="section">
+            <h2 class="section-title">The OSI Model</h2>
+            <p class="section-intro">The OSI (Open Systems Interconnection) model divides networking into 7 layers. Each layer has specific responsibilities and attack vectors.</p>
+            
+            <div class="card-grid">
+                <div class="card">
+                    <h4>7. Application Layer</h4>
+                    <p>HTTP, FTP, DNS, SMTP - User-facing protocols</p>
+                    <p style="margin-top: 1rem; color: #ff6b6b;"><strong>Attacks:</strong> SQL injection, XSS, command injection, API abuse</p>
+                </div>
+                <div class="card">
+                    <h4>6. Presentation Layer</h4>
+                    <p>Data formatting, encryption, compression</p>
+                    <p style="margin-top: 1rem; color: #ff6b6b;"><strong>Attacks:</strong> SSL/TLS attacks, encoding exploits</p>
+                </div>
+                <div class="card">
+                    <h4>5. Session Layer</h4>
+                    <p>Session management between applications</p>
+                    <p style="margin-top: 1rem; color: #ff6b6b;"><strong>Attacks:</strong> Session hijacking, session fixation</p>
+                </div>
+                <div class="card">
+                    <h4>4. Transport Layer</h4>
+                    <p>TCP, UDP - Reliable data transfer</p>
+                    <p style="margin-top: 1rem; color: #ff6b6b;"><strong>Attacks:</strong> SYN flood, port scanning, TCP hijacking</p>
+                </div>
+                <div class="card">
+                    <h4>3. Network Layer</h4>
+                    <p>IP, ICMP, routing between networks</p>
+                    <p style="margin-top: 1rem; color: #ff6b6b;"><strong>Attacks:</strong> IP spoofing, routing attacks, ICMP flood</p>
+                </div>
+                <div class="card">
+                    <h4>2. Data Link Layer</h4>
+                    <p>MAC addressing, switching, frames</p>
+                    <p style="margin-top: 1rem; color: #ff6b6b;"><strong>Attacks:</strong> ARP spoofing, MAC flooding, VLAN hopping</p>
+                </div>
+                <div class="card">
+                    <h4>1. Physical Layer</h4>
+                    <p>Cables, signals, bits on the wire</p>
+                    <p style="margin-top: 1rem; color: #ff6b6b;"><strong>Attacks:</strong> Wire tapping, jamming, physical access</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="tcpip" class="section">
+            <h2 class="section-title">TCP/IP Protocol Stack</h2>
+            <p class="section-intro">The TCP/IP model is what the internet actually uses - a simpler 4-layer model.</p>
+            
+            <h3>IP Addresses</h3>
+            <p>Every device on a network needs an IP address. Think of it as a phone number for computers.</p>
+            
+            <div class="code">IPv4: 192.168.1.100    (32-bit, 4 billion addresses)
+IPv6: 2001:0db8::1    (128-bit, basically infinite)
+
+Private IP ranges (not routable on internet):
+10.0.0.0 - 10.255.255.255
+172.16.0.0 - 172.31.255.255
+192.168.0.0 - 192.168.255.255</div>
+
+            <h3>Ports & Services</h3>
+            <p>Ports identify specific services running on a device. 65,536 possible ports.</p>
+            
+            <table>
+                <tr><th>Port</th><th>Service</th><th>Used For</th></tr>
+                <tr><td>21</td><td>FTP</td><td>File transfer</td></tr>
+                <tr><td>22</td><td>SSH</td><td>Secure remote access</td></tr>
+                <tr><td>80</td><td>HTTP</td><td>Web traffic</td></tr>
+                <tr><td>443</td><td>HTTPS</td><td>Encrypted web</td></tr>
+                <tr><td>3306</td><td>MySQL</td><td>Database</td></tr>
+                <tr><td>3389</td><td>RDP</td><td>Windows remote desktop</td></tr>
+            </table>
+
+            <h3>TCP vs UDP</h3>
+            <div class="card-grid">
+                <div class="card">
+                    <h4>TCP (Transmission Control Protocol)</h4>
+                    <p><strong>Reliable:</strong> Guarantees delivery, orders packets, checks errors</p>
+                    <p style="margin-top: 1rem;"><strong>Use cases:</strong> Web browsing, file transfer, email</p>
+                    <p style="margin-top: 1rem;"><strong>Slower</strong> but accurate</p>
+                </div>
+                <div class="card">
+                    <h4>UDP (User Datagram Protocol)</h4>
+                    <p><strong>Unreliable:</strong> No delivery guarantee, no ordering, no error checking</p>
+                    <p style="margin-top: 1rem;"><strong>Use cases:</strong> Streaming, gaming, DNS, VoIP</p>
+                    <p style="margin-top: 1rem;"><strong>Faster</strong> but may lose data</p>
+                </div>
+            </div>
+
+            <h3>Three-Way Handshake (TCP Connection)</h3>
+            <div class="code">Client → Server: SYN (Synchronize)
+    "Hey, I want to connect. My sequence number is 1000."
+
+Server → Client: SYN-ACK (Synchronize-Acknowledge)
+    "OK! My sequence number is 2000. I got your 1000."
+
+Client → Server: ACK (Acknowledge)
+    "Great! I got your 2000. We're connected!"
+
+Now data can flow both ways.</div>
+
+            <div class="warning-box">
+                <h4>⚠️ Hacker Perspective: SYN Flood Attack</h4>
+                <p>Send thousands of SYN packets but never send the final ACK. The server keeps half-open connections in memory, waiting for ACKs that never come. Eventually the server runs out of resources and crashes - denial of service attack.</p>
+            </div>
+        </section>
+
+        <section id="protocols" class="section">
+            <h2 class="section-title">Essential Network Protocols</h2>
+            
+            <h3>DNS (Domain Name System)</h3>
+            <p>Translates domain names to IP addresses. Like a phone book for the internet.</p>
+            
+            <div class="code">You type: google.com
+DNS resolves: 172.217.14.206
+Your browser connects to that IP</div>
+
+            <div class="warning-box">
+                <h4>DNS Attacks</h4>
+                <p><strong>DNS Spoofing:</strong> Fake DNS responses redirect users to malicious sites</p>
+                <p style="margin-top: 0.5rem;"><strong>DNS Tunneling:</strong> Hide data inside DNS queries to bypass firewalls</p>
+                <p style="margin-top: 0.5rem;"><strong>DNS Amplification:</strong> DDoS attack using open DNS resolvers</p>
+            </div>
+
+            <h3>ARP (Address Resolution Protocol)</h3>
+            <p>Maps IP addresses to MAC addresses on local networks.</p>
+            
+            <div class="code">Device: "Who has IP 192.168.1.1?"
+Router: "I do! My MAC is AA:BB:CC:DD:EE:FF"</div>
+
+            <div class="warning-box">
+                <h4>ARP Spoofing (Man-in-the-Middle)</h4>
+                <p>Send fake ARP responses claiming you're the router. All traffic flows through you before reaching the real router. You can see and modify everything - passwords, sessions, messages.</p>
+            </div>
+
+            <h3>ICMP (Internet Control Message Protocol)</h3>
+            <p>Used for network diagnostics and error messages. Powers <span class="inline-code">ping</span> command.</p>
+            
+            <div class="code"># Ping checks if a host is alive
+ping 192.168.1.1
+
+# Traceroute shows the path packets take
+traceroute google.com</div>
+
+            <div class="info-box">
+                <h4>ICMP in Hacking</h4>
+                <p>ICMP can reveal network topology, detect firewalls, discover live hosts, and even be used for data exfiltration (ICMP tunneling).</p>
+            </div>
+        </section>
+
+        <section id="scanning" class="section">
+            <h2 class="section-title">Network Scanning & Reconnaissance</h2>
+            <p class="section-intro">Before you attack, you need to know what's there. Scanning discovers hosts, open ports, services, and vulnerabilities.</p>
+            
+            <h3>Host Discovery</h3>
+            <div class="code"># Ping sweep - find live hosts
+nmap -sn 192.168.1.0/24
+
+# ARP scan (local network only)
+arp-scan --localnet
+
+# Detect all devices on network
+netdiscover -r 192.168.1.0/24</div>
+
+            <h3>Port Scanning with Nmap</h3>
+            <p>Nmap is the industry standard for network scanning.</p>
+            
+            <div class="code"># Scan common ports
+nmap 192.168.1.100
+
+# Scan ALL ports (1-65535)
+nmap -p- 192.168.1.100
+
+# Service version detection
+nmap -sV 192.168.1.100
+
+# Operating system detection
+nmap -O 192.168.1.100
+
+# Aggressive scan (OS, version, scripts, traceroute)
+nmap -A 192.168.1.100
+
+# Stealth SYN scan (doesn't complete handshake)
+nmap -sS 192.168.1.100
+
+# UDP scan
+nmap -sU 192.168.1.100</div>
+
+            <h3>Scan Types Explained</h3>
+            <div class="card-grid">
+                <div class="card">
+                    <h4>TCP Connect Scan</h4>
+                    <p>Completes full TCP handshake. <strong>Loud and obvious</strong> but works through any firewall.</p>
+                    <div class="code" style="font-size: 0.8rem;">nmap -sT target</div>
+                </div>
+                <div class="card">
+                    <h4>SYN Scan (Stealth)</h4>
+                    <p>Sends SYN, waits for SYN-ACK, then sends RST instead of ACK. <strong>Stealthier</strong> - doesn't log on many systems.</p>
+                    <div class="code" style="font-size: 0.8rem;">nmap -sS target</div>
+                </div>
+                <div class="card">
+                    <h4>NULL/FIN/XMAS Scans</h4>
+                    <p>Send malformed packets. Open ports ignore them, closed ports send RST. <strong>Bypasses some firewalls.</strong></p>
+                    <div class="code" style="font-size: 0.8rem;">nmap -sN target</div>
+                </div>
+                <div class="card">
+                    <h4>Idle Scan</h4>
+                    <p>Uses a zombie host to scan target. <strong>Ultimate stealth</strong> - target logs show zombie's IP, not yours.</p>
+                    <div class="code" style="font-size: 0.8rem;">nmap -sI zombie target</div>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <h4>⚠️ Legal Warning</h4>
+                <p><strong>Only scan networks you own or have explicit written permission to test.</strong> Unauthorized network scanning is illegal in most countries and can result in criminal charges. Companies actively monitor for scans and will prosecute.</p>
+            </div>
+        </section>
+
+        <section id="attacks" class="section">
+            <h2 class="section-title">Common Network Attacks</h2>
+            
+            <h3>Man-in-the-Middle (MITM)</h3>
+            <p>Attacker positions themselves between two communicating parties, intercepting and potentially modifying all traffic.</p>
+            
+            <div class="code"># ARP spoofing with arpspoof (educational purposes only)
+# Tell victim you're the router
+arpspoof -i eth0 -t 192.168.1.50 192.168.1.1
+
+# Tell router you're the victim
+arpspoof -i eth0 -t 192.168.1.1 192.168.1.50
+
+# Enable packet forwarding so traffic still works
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+# Now all traffic flows through you!</div>
+
+            <h3>Denial of Service (DoS)</h3>
+            <p>Overwhelm a target system with traffic until it can't respond to legitimate requests.</p>
+            
+            <div class="card-grid">
+                <div class="card">
+                    <h4>SYN Flood</h4>
+                    <p>Send massive amounts of SYN packets, never complete handshake. Target's connection table fills up.</p>
+                </div>
+                <div class="card">
+                    <h4>UDP Flood</h4>
+                    <p>Spam UDP packets to random ports. Target wastes resources checking each one.</p>
+                </div>
+                <div class="card">
+                    <h4>ICMP Flood</h4>
+                    <p>Send massive ping requests. Old but sometimes effective.</p>
+                </div>
+                <div class="card">
+                    <h4>DDoS (Distributed)</h4>
+                    <p>Same attacks but from thousands of infected computers (botnet). Nearly impossible to stop.</p>
+                </div>
+            </div>
+
+            <h3>Packet Sniffing</h3>
+            <p>Capture and analyze network traffic to extract sensitive information.</p>
+            
+            <div class="code"># Wireshark - GUI packet analyzer (best for learning)
+wireshark
+
+# tcpdump - command-line packet capture
+tcpdump -i eth0 -n
+
+# Capture HTTP traffic
+tcpdump -i eth0 'tcp port 80'
+
+# Capture and save to file
+tcpdump -i eth0 -w capture.pcap
+
+# Read captured file
+tcpdump -r capture.pcap</div>
+
+            <div class="info-box">
+                <h4>What Can You See in Packet Captures?</h4>
+                <ul style="margin-top: 1rem;">
+                    <li>Unencrypted passwords (HTTP, FTP, Telnet)</li>
+                    <li>Email content and attachments</li>
+                    <li>Session cookies</li>
+                    <li>Visited websites</li>
+                    <li>File transfers</li>
+                    <li>DNS queries (what sites users visit)</li>
+                </ul>
+                <p style="margin-top: 1rem;"><strong>This is why HTTPS is critical.</strong> Encrypted traffic shows that communication happened, but not what was said.</p>
+            </div>
+
+            <h3>Session Hijacking</h3>
+            <p>Steal an active session by capturing session tokens/cookies.</p>
+            
+            <div class="code"># Capture traffic to find session cookies
+tcpdump -i eth0 -A | grep "Cookie:"
+
+# Use stolen cookie to impersonate user
+# Copy cookie value into your browser
+# You're now logged in as the victim</div>
+
+            <h3>DNS Hijacking</h3>
+            <p>Redirect DNS queries to malicious servers.</p>
+            
+            <div class="code"># Router-level: Change router's DNS settings to malicious DNS server
+# All devices on network now use attacker's DNS
+# Attacker can redirect any domain to any IP
+
+# Local-level: Modify /etc/hosts or C:\Windows\System32\drivers\etc\hosts
+192.168.1.100 bank.com
+# Victim types bank.com, goes to attacker's fake site</div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Defense & Detection</h2>
+            
+            <div class="card-grid">
+                <div class="card">
+                    <h4>🛡️ Prevent MITM</h4>
+                    <ul style="margin-top: 1rem; font-size: 0.9rem;">
+                        <li>Use HTTPS everywhere</li>
+                        <li>Static ARP entries</li>
+                        <li>Network segmentation</li>
+                        <li>Encrypted VPN tunnels</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>🔍 Detect Attacks</h4>
+                    <ul style="margin-top: 1rem; font-size: 0.9rem;">
+                        <li>IDS/IPS systems (Snort, Suricata)</li>
+                        <li>Monitor ARP tables for changes</li>
+                        <li>Watch for port scans</li>
+                        <li>Log all network activity</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>🔒 Secure Services</h4>
+                    <ul style="margin-top: 1rem; font-size: 0.9rem;">
+                        <li>Close unused ports</li>
+                        <li>Strong firewall rules</li>
+                        <li>Disable unnecessary services</li>
+                        <li>Keep software updated</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>📊 Monitor Everything</h4>
+                    <ul style="margin-top: 1rem; font-size: 0.9rem;">
+                        <li>Baseline normal traffic</li>
+                        <li>Alert on anomalies</li>
+                        <li>Regular network audits</li>
+                        <li>Honeypots to detect attackers</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Chapter Summary</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h4>✅ What You Learned</h4>
+                    <ul style="margin-top: 1rem; font-size: 0.9rem;">
+                        <li>OSI and TCP/IP models</li>
+                        <li>IP addressing, ports, and protocols</li>
+                        <li>TCP vs UDP fundamentals</li>
+                        <li>DNS, ARP, and ICMP protocols</li>
+                        <li>Network scanning with Nmap</li>
+                        <li>MITM, DoS, and packet sniffing attacks</li>
+                        <li>Defense and detection strategies</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>🎯 Next Chapter Preview</h4>
+                    <p>In Chapter 06, we'll dive into System Exploitation - finding and exploiting vulnerabilities in operating systems, privilege escalation, and maintaining persistent access.</p>
+                </div>
+            </div>
+        </section>
     </main>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progress').style.width = scrolled + '%';
+        });
+    </script>
 </body>
 </html>
 
