@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chapter 04: Data Structures - NullSector</title>
+    <title>Chapter 06: Frontend & Backend - NullSector</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -104,137 +104,3175 @@
     <aside class="sidebar">
         <div class="sidebar-section">
             <div class="sidebar-title">On This Page</div>
-            <a href="#lists" class="sidebar-link">Lists</a>
-            <a href="#list-methods" class="sidebar-link">List Methods</a>
-            <a href="#tuples" class="sidebar-link">Tuples</a>
-            <a href="#dictionaries" class="sidebar-link">Dictionaries</a>
-            <a href="#dict-methods" class="sidebar-link">Dictionary Methods</a>
-            <a href="#sets" class="sidebar-link">Sets</a>
-            <a href="#comprehensions" class="sidebar-link">Comprehensions</a>
-            <a href="#choosing" class="sidebar-link">Choosing Data Structures</a>
+            <a href="#philosophy" class="sidebar-link">Full-Stack Philosophy</a>
+            <a href="#react" class="sidebar-link">React Deep Dive</a>
+            <a href="#vue" class="sidebar-link">Vue.js Essentials</a>
+            <a href="#components" class="sidebar-link">Component Architecture</a>
+            <a href="#backend-flask" class="sidebar-link">Flask Backend</a>
+            <a href="#backend-django" class="sidebar-link">Django Framework</a>
+            <a href="#databases" class="sidebar-link">Databases & SQL</a>
+            <a href="#apis" class="sidebar-link">REST APIs</a>
+            <a href="#auth" class="sidebar-link">Authentication</a>
+            <a href="#deployment" class="sidebar-link">Deployment</a>
+            <a href="#integration" class="sidebar-link">Full-Stack Integration</a>
+            <a href="#projects" class="sidebar-link">Real-World Projects</a>
         </div>
         <div class="sidebar-section">
             <div class="sidebar-title">Navigation</div>
-            <a href="programming-ch05.html" class="sidebar-link">Next: Chapter 05 →</a>
-            <a href="programming-ch03.html" class="sidebar-link">← Previous: Chapter 03</a>
+            <a href="programming-ch07.html" class="sidebar-link">Next: Chapter 07 →</a>
+            <a href="programming-ch05.html" class="sidebar-link">← Previous: Chapter 05</a>
             <a href="roadmap-programming.html" class="sidebar-link">Back to Roadmap</a>
         </div>
     </aside>
 
     <main class="main">
         <div class="page-header">
-            <div class="chapter-label">Chapter 04</div>
-            <h1 class="page-title">Data Structures</h1>
-            <p class="page-subtitle">Store and organize data efficiently. Lists, dictionaries, tuples, and sets - these are the containers that hold your data and make it useful.</p>
+            <div class="chapter-label">Chapter 06</div>
+            <h1 class="page-title">Frontend & Backend</h1>
+            <p class="page-subtitle">Full-stack mastery - from React components to Django APIs, databases to deployment. Build complete web applications that users love and backends that scale.</p>
         </div>
 
-        <section class="section">
-            <p>So far we've worked with single values - one number, one string, one boolean. But real programs work with collections of data: lists of users, inventories of items, records of transactions, configurations, and much more.</p>
+        <section class="section" id="philosophy">
+            <h2 class="section-title">Full-Stack Philosophy</h2>
+            <p class="section-intro">You've learned to program. Now learn to architect. Full-stack development isn't just knowing two technologies—it's understanding how systems work together, how data flows, how users interact with interfaces, and how servers process their requests. This is where you become an engineer.</p>
             
-            <p>Data structures are ways to organize multiple pieces of data. Think of them as different types of containers. Just as you wouldn't store soup in a paper bag or carry marbles in a colander, choosing the right data structure makes your code faster, cleaner, and easier to understand.</p>
-            
+        <section class="section" id="philosophy">
+            <h2 class="section-title">Full-Stack Philosophy</h2>
+            <p class="section-intro">You've learned to program. Now learn to architect. Full-stack development isn't just knowing two technologies—it's understanding how systems work together, how data flows, how users interact with interfaces, and how servers process their requests. This is where you become an engineer.</p>
+
+            <h3>The Complete Web Application</h3>
+            <p>When a user types a URL and hits Enter, an intricate dance begins:</p>
+
+            <ol>
+                <li><strong>Frontend Renders:</strong> HTML/CSS/JavaScript creates the visual interface users see and interact with</li>
+                <li><strong>User Interacts:</strong> Click button, submit form, scroll page - JavaScript responds in real-time</li>
+                <li><strong>API Request:</strong> Frontend sends HTTP request to backend server (POST, GET, PUT, DELETE)</li>
+                <li><strong>Backend Processes:</strong> Server validates input, queries database, runs business logic</li>
+                <li><strong>Database Query:</strong> SQL executes, data retrieved/modified, transactions managed</li>
+                <li><strong>Response Sent:</strong> Backend formats data (usually JSON) and sends back to frontend</li>
+                <li><strong>Frontend Updates:</strong> JavaScript receives data, updates DOM, user sees result</li>
+            </ol>
+
+            <p>Full-stack developers understand <strong>every step</strong> of this process. When something breaks, they can debug it. When performance lags, they know where to optimize. When requirements change, they architect solutions that span the entire stack.</p>
+
             <div class="metaphor-box">
-                <h4>🏠 The Storage Room Metaphor</h4>
-                <p><strong>Lists</strong> are like numbered shelves - items in order, you can add/remove/reorganize.</p>
-                <p style="margin-top: 0.5rem;"><strong>Tuples</strong> are like sealed boxes - once packed, contents can't change.</p>
-                <p style="margin-top: 0.5rem;"><strong>Dictionaries</strong> are like labeled drawers - find things by name, not position.</p>
-                <p style="margin-top: 0.5rem;"><strong>Sets</strong> are like unique item collections - no duplicates allowed.</p>
+                <h4>The Restaurant Metaphor</h4>
+                <p><strong>Frontend</strong> is the dining room - beautiful design, friendly interface, where customers interact with your business. A waiter (JavaScript) takes orders and delivers food.</p>
+                <p><strong>Backend</strong> is the kitchen - where real work happens. Chefs (business logic) prepare dishes, ingredients come from storage (database), quality control ensures everything is safe.</p>
+                <p><strong>API</strong> is the window between kitchen and dining room - structured communication protocol where orders go in, food comes out.</p>
+                <p>A full-stack developer is the restaurant owner who understands both front-of-house and back-of-house. They know why customers complain AND how to fix kitchen inefficiencies.</p>
             </div>
-            
+
+            <h3>Why Frontend and Backend Are Different Worlds</h3>
+            <p>These aren't just two sides of the same coin—they're fundamentally different programming paradigms:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Aspect</th>
+                        <th>Frontend</th>
+                        <th>Backend</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Environment</strong></td>
+                        <td>Runs in browser (user's machine)</td>
+                        <td>Runs on server (your infrastructure)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Language</strong></td>
+                        <td>JavaScript (no choice)</td>
+                        <td>Python, Ruby, Go, Java, etc.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Primary Concern</strong></td>
+                        <td>User experience, responsiveness, design</td>
+                        <td>Data integrity, security, scalability</td>
+                    </tr>
+                    <tr>
+                        <td><strong>State Management</strong></td>
+                        <td>Complex (user interactions, async updates)</td>
+                        <td>Simpler (request-response cycle)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Performance Focus</strong></td>
+                        <td>Minimize bundle size, optimize rendering</td>
+                        <td>Database queries, concurrent requests</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Security Model</strong></td>
+                        <td>Assume everything is visible and manipulable</td>
+                        <td>Trust nothing from client, validate everything</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Testing</strong></td>
+                        <td>Browser compatibility, visual regression</td>
+                        <td>Unit tests, integration tests, load tests</td>
+                    </tr>
+                </tbody>
+            </table>
+
             <div class="info-box">
-                <h4>💡 The Four Core Structures</h4>
-                <div class="card-grid" style="margin-top: 1rem;">
-                    <div class="card">
-                        <h4>📋 Lists</h4>
-                        <p>Ordered, changeable collections. Use for sequences of similar items. Most common structure.</p>
-                        <div class="code" style="margin: 0.5rem 0;">["apple", "banana", "cherry"]</div>
-                    </div>
-                    <div class="card">
-                        <h4>🔒 Tuples</h4>
-                        <p>Ordered, unchangeable collections. Use for fixed data like coordinates or RGB colors.</p>
-                        <div class="code" style="margin: 0.5rem 0;">(255, 128, 0)</div>
-                    </div>
-                    <div class="card">
-                        <h4>📖 Dictionaries</h4>
-                        <p>Key-value pairs. Use for labeled data like user profiles or configurations.</p>
-                        <div class="code" style="margin: 0.5rem 0;">{"name": "Alice", "age": 25}</div>
-                    </div>
-                    <div class="card">
-                        <h4>🎯 Sets</h4>
-                        <p>Unordered, unique items. Use for membership testing and removing duplicates.</p>
-                        <div class="code" style="margin: 0.5rem 0;">{1, 2, 3, 4, 5}</div>
-                    </div>
+                <h4>The 70/30 Reality</h4>
+                <p><strong>Most full-stack developers lean one direction.</strong> Some are frontend developers who can write backend code. Others are backend developers who can style a button.</p>
+                <p>You'll likely be 70/30 in one direction based on what you enjoy:</p>
+                <ul>
+                    <li><strong>Frontend-leaning:</strong> Love design, animations, user experience, immediate visual feedback</li>
+                    <li><strong>Backend-leaning:</strong> Love data structures, algorithms, architecture, optimization problems</li>
+                </ul>
+                <p>Both are valuable. The key is being competent enough in both to ship complete features independently.</p>
+            </div>
+
+            <h3>The Modern Full-Stack Stack</h3>
+            <p>In 2026, the dominant architecture patterns are:</p>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h4>⚛️ MERN Stack</h4>
+                    <p><strong>MongoDB + Express + React + Node.js</strong></p>
+                    <p>JavaScript everywhere. One language for frontend and backend. Fast development, huge ecosystem, massive community.</p>
+                    <p><strong>Use when:</strong> Building SPAs, real-time apps, startups moving fast</p>
+                </div>
+                <div class="card">
+                    <h4>🐍 Python Stack</h4>
+                    <p><strong>React + Django/Flask + PostgreSQL</strong></p>
+                    <p>Best language for backend (Python), best library for frontend (React). Mature ecosystems, excellent for data-heavy apps.</p>
+                    <p><strong>Use when:</strong> ML integration, data processing, scientific computing</p>
+                </div>
+                <div class="card">
+                    <h4>⚡ Next.js Stack</h4>
+                    <p><strong>Next.js + API Routes + Vercel</strong></p>
+                    <p>Server-side rendering, static generation, API routes in one framework. Deploy in seconds. SEO-friendly out of the box.</p>
+                    <p><strong>Use when:</strong> Content sites, e-commerce, anything needing great SEO</p>
+                </div>
+                <div class="card">
+                    <h4>🔷 .NET Stack</h4>
+                    <p><strong>React + ASP.NET Core + SQL Server</strong></p>
+                    <p>Enterprise-grade, type-safe, excellent tooling. Common in corporate environments and financial services.</p>
+                    <p><strong>Use when:</strong> Enterprise apps, existing .NET shops, high-security needs</p>
                 </div>
             </div>
-            
-            <h3>When to Use Each Structure</h3>
-            <div class="code"># ==================== DECISION GUIDE ====================
 
-# LIST - When you need:
-# ✓ Ordered collection that can change
-# ✓ Duplicates are allowed
-# ✓ Access by index position
-# ✓ Process items in sequence
-shopping_cart = ["milk", "eggs", "bread", "eggs"]  # Order matters, duplicates OK
+            <p>This chapter focuses on the <strong>Python Stack</strong> (React + Django/Flask + PostgreSQL) because Python is the best learning language and React is the industry standard frontend library. Master these, and you can pick up any other stack in weeks.</p>
 
-# TUPLE - When you need:
-# ✓ Fixed data that shouldn't change
-# ✓ Return multiple values from function
-# ✓ Dictionary keys (lists can't be keys!)
-# ✓ Slightly better performance than lists
-coordinates = (40.7128, -74.0060)  # NYC location - shouldn't change
+            <div class="info-box">
+                <h4>Frontend Frameworks: The Big Three</h4>
+                <div class="card-grid" style="margin-top: 1rem;">
+                    <div class="card">
+                        <h4>⚛️ React</h4>
+                        <p><strong>Market Share:</strong> ~40% of jobs</p>
+                        <p><strong>Philosophy:</strong> "Just JavaScript" - minimal abstraction, maximum flexibility</p>
+                        <p><strong>Best for:</strong> Complex UIs, large teams, component libraries</p>
+                    </div>
+                    <div class="card">
+                        <h4>💚 Vue.js</h4>
+                        <p><strong>Market Share:</strong> ~20% of jobs</p>
+                        <p><strong>Philosophy:</strong> "Progressive framework" - easy to learn, scales up</p>
+                        <p><strong>Best for:</strong> Solo developers, smaller projects, gentle learning curve</p>
+                    </div>
+                    <div class="card">
+                        <h4>🅰️ Angular</h4>
+                        <p><strong>Market Share:</strong> ~15% of jobs</p>
+                        <p><strong>Philosophy:</strong> "Complete framework" - everything included, opinionated</p>
+                        <p><strong>Best for:</strong> Large enterprise apps, TypeScript lovers, full structure</p>
+                    </div>
+                </div>
+                <p style="margin-top: 1rem;"><strong>Our focus:</strong> React (industry standard) and Vue (best alternative). Learn one deeply, understand the other conceptually.</p>
+            </div>
 
-# DICTIONARY - When you need:
-# ✓ Key-value associations
-# ✓ Fast lookup by name/key
-# ✓ Labeled, structured data
-user_profile = {"username": "alice99", "level": 42, "premium": True}
+            <h3>The Full-Stack Mindset</h3>
+            <p>Great full-stack developers think differently than specialists. They ask different questions:</p>
 
-# SET - When you need:
-# ✓ Unique items only (no duplicates)
-# ✓ Very fast membership testing
-# ✓ Set operations (union, intersection)
-unique_visitors = {"user1", "user2", "user3"}</div>
-        </section>
-
-        <section id="lists" class="section">
-            <h2 class="section-title">Lists: Ordered Collections</h2>
-            <p class="section-intro">Lists are the most commonly used data structure in Python. They hold ordered sequences of items that you can change, add to, or remove from. If you're not sure which structure to use, a list is usually a good starting point.</p>
+            <ul>
+                <li><strong>Should this run on client or server?</strong> (Performance vs security tradeoff)</li>
+                <li><strong>How will this data structure translate across the stack?</strong> (JSON, SQL, JavaScript objects)</li>
+                <li><strong>Where should validation happen?</strong> (Client for UX, server for security, both for defense in depth)</li>
+                <li><strong>How will this scale?</strong> (Database indexes, caching strategies, CDN distribution)</li>
+                <li><strong>What's the user experience end-to-end?</strong> (Loading states, error handling, success feedback)</li>
+            </ul>
 
             <div class="metaphor-box">
-                <h4>📝 The Shopping List Metaphor</h4>
-                <p>A list is like a shopping list:</p>
-                <ul style="margin-top: 1rem;">
-                    <li>Items are in a specific order (first to last)</li>
-                    <li>You can add new items anywhere</li>
-                    <li>You can remove items or cross them out</li>
-                    <li>You can change items (swap "milk" for "almond milk")</li>
-                    <li>You can have duplicate items ("eggs" twice is fine)</li>
-                    <li>The list grows or shrinks as needed</li>
+                <h4>The Bridge Builder Mindset</h4>
+                <p>Specialists are like experts in steel or concrete—they know their material deeply. Full-stack developers are like bridge builders—they know enough about both to create something that connects two shores.</p>
+                <p>You don't need to be the world's best frontend developer AND the world's best backend developer. You need to be good enough at both to build complete, functioning systems that solve real problems.</p>
+                <p>Master the connections between layers. Understand the tradeoffs. Ship complete features. That's full-stack mastery.</p>
+            </div>
+
+            <h3>What You'll Learn in This Chapter</h3>
+            <p>By the end of this chapter, you'll be able to:</p>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h4>⚛️ Build React UIs</h4>
+                    <ul>
+                        <li>Components, props, state</li>
+                        <li>Hooks (useState, useEffect, custom)</li>
+                        <li>Routing and navigation</li>
+                        <li>API integration</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>🐍 Create Flask/Django Backends</h4>
+                    <ul>
+                        <li>RESTful API design</li>
+                        <li>Database models and queries</li>
+                        <li>Authentication and authorization</li>
+                        <li>Input validation and security</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>🗄️ Master Databases</h4>
+                    <ul>
+                        <li>SQL queries and joins</li>
+                        <li>Database design and normalization</li>
+                        <li>Indexes and optimization</li>
+                        <li>Transactions and data integrity</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>🚀 Deploy Full-Stack Apps</h4>
+                    <ul>
+                        <li>Frontend hosting (Vercel, Netlify)</li>
+                        <li>Backend deployment (Heroku, Railway)</li>
+                        <li>Database hosting (PostgreSQL)</li>
+                        <li>Environment management</li>
+                    </ul>
+                </div>
+            </div>
+
+            <p>This is a massive chapter. Take your time. Build the examples. Break things. Fix them. The only way to become a full-stack developer is to build full-stack applications.</p>
+        </section>
+
+        <section class="section" id="react">
+            <h2 class="section-title">React Deep Dive</h2>
+            <p class="section-intro">React isn't just a library—it's a new way of thinking about user interfaces. Forget jQuery and DOM manipulation. React is declarative: you describe what the UI should look like, and React figures out how to make it happen. This is the paradigm shift that changed frontend development forever.</p>
+
+            <h3>Why React Won</h3>
+            <p>In 2013, React introduced ideas that seemed crazy: JSX (HTML in JavaScript?!), virtual DOM (rebuild the entire UI on every change?!), and components everywhere. Today, these ideas are industry standard. Here's why:</p>
+
+            <ul>
+                <li><strong>Declarative:</strong> Describe UI as a function of state, not a series of mutations</li>
+                <li><strong>Component-Based:</strong> Build once, reuse everywhere. Encapsulate logic and styling.</li>
+                <li><strong>Learn Once, Write Anywhere:</strong> React Native for mobile, React for web, same concepts</li>
+                <li><strong>Massive Ecosystem:</strong> Every problem solved, every library integrated, every question answered</li>
+                <li><strong>Industry Adoption:</strong> Facebook, Netflix, Airbnb, Instagram - React runs the internet</li>
+            </ul>
+
+            <div class="metaphor-box">
+                <h4>The Blueprint Metaphor</h4>
+                <p><strong>Imperative (jQuery era):</strong> "Go to the second floor, third room on the left, paint the wall blue, then move the chair to the corner."</p>
+                <p><strong>Declarative (React era):</strong> "Here's a blueprint of how the room should look." React figures out what needs to change to match the blueprint.</p>
+                <p>You describe the destination, not the journey. React handles the journey optimally.</p>
+            </div>
+
+            <h3>React Fundamentals: Components</h3>
+            <p>Everything in React is a component. A button is a component. A form is a component. An entire page is a component. Components compose—big components contain small components.</p>
+
+            <h4>Function Components (Modern React)</h4>
+            <p>The simplest component is a JavaScript function that returns JSX:</p>
+
+            <div class="code">// Simple component
+function Welcome() {
+    return &lt;h1&gt;Hello, World!&lt;/h1&gt;;
+}
+
+// Component with props (data passed from parent)
+function Greeting({ name, age }) {
+    return (
+        &lt;div&gt;
+            &lt;h1&gt;Hello, {name}!&lt;/h1&gt;
+            &lt;p&gt;You are {age} years old.&lt;/p&gt;
+        &lt;/div&gt;
+    );
+}
+
+// Using components
+function App() {
+    return (
+        &lt;div&gt;
+            &lt;Welcome /&gt;
+            &lt;Greeting name="Alice" age={25} /&gt;
+            &lt;Greeting name="Bob" age={30} /&gt;
+        &lt;/div&gt;
+    );
+}</div>
+
+            <p><strong>What's happening:</strong></p>
+            <ul>
+                <li><strong>JSX:</strong> Looks like HTML, but it's JavaScript. Compiles to <span class="inline-code">React.createElement()</span> calls</li>
+                <li><strong>Props:</strong> Data passed down from parent components (read-only, immutable)</li>
+                <li><strong>Composition:</strong> <span class="inline-code">App</span> component contains <span class="inline-code">Welcome</span> and <span class="inline-code">Greeting</span> components</li>
+                <li><strong>Curly Braces:</strong> <span class="inline-code">{name}</span> means "evaluate this JavaScript expression"</li>
+            </ul>
+
+            <div class="info-box">
+                <h4>JSX Rules You Must Know</h4>
+                <ul>
+                    <li><strong>Return single element:</strong> Wrap multiple elements in <span class="inline-code">&lt;div&gt;</span> or <span class="inline-code">&lt;&gt;...&lt;/&gt;</span> fragment</li>
+                    <li><strong>Close all tags:</strong> <span class="inline-code">&lt;img /&gt;</span> not <span class="inline-code">&lt;img&gt;</span>, <span class="inline-code">&lt;br /&gt;</span> not <span class="inline-code">&lt;br&gt;</span></li>
+                    <li><strong>className not class:</strong> <span class="inline-code">&lt;div className="card"&gt;</span> (class is JavaScript keyword)</li>
+                    <li><strong>camelCase attributes:</strong> <span class="inline-code">onClick</span> not <span class="inline-code">onclick</span>, <span class="inline-code">backgroundColor</span> not <span class="inline-code">background-color</span></li>
+                    <li><strong>JavaScript in curly braces:</strong> <span class="inline-code">{2 + 2}</span>, <span class="inline-code">{user.name}</span>, <span class="inline-code">{isLoggedIn ? "Logout" : "Login"}</span></li>
                 </ul>
             </div>
 
-            <h3>Creating Lists</h3>
-            <div class="code"># ==================== EMPTY LISTS ====================
+            <h3>State: Making Components Interactive</h3>
+            <p>Props are data from parent. <strong>State is data that changes over time.</strong> When state changes, React re-renders the component. This is the magic of React.</p>
 
-# Two ways to create empty list
-shopping = []
-also_empty = list()
+            <h4>The useState Hook</h4>
+            <p>Hooks are functions that let you "hook into" React features. <span class="inline-code">useState</span> is the most important:</p>
 
-# ==================== LISTS WITH INITIAL ITEMS ====================
+            <div class="code">import { useState } from 'react';
 
-# List of strings
-fruits = ["apple", "banana", "cherry"]
+function Counter() {
+    // Declare state variable
+    const [count, setCount] = useState(0);
+    
+    return (
+        &lt;div&gt;
+            &lt;p&gt;Count: {count}&lt;/p&gt;
+            &lt;button onClick={() =&gt; setCount(count + 1)}&gt;
+                Increment
+            &lt;/button&gt;
+            &lt;button onClick={() =&gt; setCount(count - 1)}&gt;
+                Decrement
+            &lt;/button&gt;
+            &lt;button onClick={() =&gt; setCount(0)}&gt;
+                Reset
+            &lt;/button&gt;
+        &lt;/div&gt;
+    );
+}</div>
 
-# List of numbers
-numbers = [1, 2, 3, 4, 5]
-prices = [19.99, 24.50, 9.99, 4.99]
+            <p><strong>Breakdown:</strong></p>
+            <ul>
+                <li><span class="inline-code">useState(0)</span> - Initialize state to 0</li>
+                <li><span class="inline-code">count</span> - Current value of state</li>
+                <li><span class="inline-code">setCount</span> - Function to update state (triggers re-render)</li>
+                <li><span class="inline-code">onClick</span> - Event handler (React wraps DOM events)</li>
+                <li>Every <span class="inline-code">setCount</span> call causes component to re-render with new value</li>
+            </ul>
 
-# List of booleans
-flags = [True, False, True, True]
+            <h4>More Complex State: Objects and Arrays</h4>
+            <p>State can hold any JavaScript value—objects, arrays, nested structures:</p>
 
-# Mixed types (allowed, but usually avoid)
-mixed = [1, "hello", 3.14, True, None]
+            <div class="code">function TodoList() {
+    const [todos, setTodos] = useState([]);
+    const [inputValue, setInputValue] = useState('');
+    
+    const addTodo = () =&gt; {
+        if (inputValue.trim()) {
+            setTodos([...todos, { 
+                id: Date.now(), 
+                text: inputValue, 
+                completed: false 
+            }]);
+            setInputValue('');
+        }
+    };
+    
+    const toggleTodo = (id) =&gt; {
+        setTodos(todos.map(todo =&gt; 
+            todo.id === id 
+                ? { ...todo, completed: !todo.completed }
+                : todo
+        ));
+    };
+    
+    const deleteTodo = (id) =&gt; {
+        setTodos(todos.filter(todo =&gt; todo.id !== id));
+    };
+    
+    return (
+        &lt;div&gt;
+            &lt;h2&gt;Todo List&lt;/h2&gt;
+            &lt;input 
+                value={inputValue}
+                onChange={(e) =&gt; setInputValue(e.target.value)}
+                onKeyPress={(e) =&gt; e.key === 'Enter' && addTodo()}
+                placeholder="Add a todo..."
+            /&gt;
+            &lt;button onClick={addTodo}&gt;Add&lt;/button&gt;
+            
+            &lt;ul&gt;
+                {todos.map(todo =&gt; (
+                    &lt;li key={todo.id}&gt;
+                        &lt;input 
+                            type="checkbox"
+                            checked={todo.completed}
+                            onChange={() =&gt; toggleTodo(todo.id)}
+                        /&gt;
+                        &lt;span style={{ 
+                            textDecoration: todo.completed ? 'line-through' : 'none' 
+                        }}&gt;
+                            {todo.text}
+                        &lt;/span&gt;
+                        &lt;button onClick={() =&gt; deleteTodo(todo.id)}&gt;
+                            Delete
+                        &lt;/button&gt;
+                    &lt;/li&gt;
+                ))}
+            &lt;/ul&gt;
+        &lt;/div&gt;
+    );
+}</div>
+
+            <p><strong>Critical concepts here:</strong></p>
+            <ul>
+                <li><strong>Immutability:</strong> Never mutate state directly (<span class="inline-code">todos.push()</span> ❌). Always create new arrays/objects (<span class="inline-code">[...todos, newTodo]</span> ✅)</li>
+                <li><strong>Array methods:</strong> <span class="inline-code">map</span>, <span class="inline-code">filter</span>, <span class="inline-code">find</span> return new arrays (good for React)</li>
+                <li><strong>Keys:</strong> <span class="inline-code">key={todo.id}</span> helps React identify which items changed (performance + correctness)</li>
+                <li><strong>Controlled inputs:</strong> <span class="inline-code">value</span> and <span class="inline-code">onChange</span> make React control the input (single source of truth)</li>
+            </ul>
+
+            <div class="info-box">
+                <h4>Why Immutability Matters</h4>
+                <p>React compares old state to new state to decide if re-render is needed. If you mutate the array, the reference is the same, so React thinks nothing changed:</p>
+                <div class="code" style="margin-top: 0.5rem;">// ❌ BAD - mutates existing array
+todos.push(newTodo);
+setTodos(todos);  // React doesn't detect change!
+
+// ✅ GOOD - creates new array
+setTodos([...todos, newTodo]);  // React sees new reference, re-renders</div>
+                <p style="margin-top: 0.5rem;"><strong>Rule:</strong> Treat state as immutable. Create new objects/arrays instead of modifying existing ones.</p>
+            </div>
+
+            <h3>Side Effects: The useEffect Hook</h3>
+            <p>Components often need to interact with the outside world: fetch data from APIs, update document title, set up subscriptions, manage timers. These are <strong>side effects</strong>.</p>
+
+            <h4>useEffect Basics</h4>
+            <p>The second most important hook:</p>
+
+            <div class="code">import { useState, useEffect } from 'react';
+
+function UserProfile({ userId }) {
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    
+    useEffect(() =&gt; {
+        // This code runs after component renders
+        setLoading(true);
+        
+        fetch(`https://api.example.com/users/${userId}`)
+            .then(response =&gt; response.json())
+            .then(data =&gt; {
+                setUser(data);
+                setLoading(false);
+            })
+            .catch(err =&gt; {
+                setError(err.message);
+                setLoading(false);
+            });
+    }, [userId]);  // Re-run effect when userId changes
+    
+    if (loading) return &lt;p&gt;Loading...&lt;/p&gt;;
+    if (error) return &lt;p&gt;Error: {error}&lt;/p&gt;;
+    if (!user) return &lt;p&gt;No user found&lt;/p&gt;;
+    
+    return (
+        &lt;div&gt;
+            &lt;h2&gt;{user.name}&lt;/h2&gt;
+            &lt;p&gt;Email: {user.email}&lt;/p&gt;
+            &lt;p&gt;Bio: {user.bio}&lt;/p&gt;
+        &lt;/div&gt;
+    );
+}</div>
+
+            <p><strong>useEffect anatomy:</strong></p>
+            <ul>
+                <li><strong>First argument:</strong> Function containing side effect code (runs after render)</li>
+                <li><strong>Second argument:</strong> Dependency array—effect re-runs when these values change</li>
+                <li><strong>Empty array <span class="inline-code">[]</span>:</strong> Effect runs once on mount (like componentDidMount)</li>
+                <li><strong>No array:</strong> Effect runs after every render (usually wrong!)</li>
+            </ul>
+
+            <h4>Cleanup Functions</h4>
+            <p>Some effects need cleanup (remove event listeners, cancel subscriptions, clear timers):</p>
+
+            <div class="code">function Timer() {
+    const [seconds, setSeconds] = useState(0);
+    
+    useEffect(() =&gt; {
+        // Set up interval
+        const interval = setInterval(() =&gt; {
+            setSeconds(s =&gt; s + 1);
+        }, 1000);
+        
+        // Cleanup function (runs when component unmounts or before re-running effect)
+        return () =&gt; {
+            clearInterval(interval);
+        };
+    }, []);  // Empty array = run once on mount
+    
+    return &lt;p&gt;Seconds elapsed: {seconds}&lt;/p&gt;;
+}</div>
+
+            <p><strong>Why cleanup matters:</strong> Without clearing the interval, it keeps running even after component is removed from the page. Memory leak! Cleanup prevents this.</p>
+
+            <div class="info-box">
+                <h4>Common useEffect Patterns</h4>
+                <div class="code">// 1. Fetch data on mount
+useEffect(() =&gt; {
+    fetch('/api/data').then(/* ... */);
+}, []);
+
+// 2. Sync with external system
+useEffect(() =&gt; {
+    document.title = `Count: ${count}`;
+}, [count]);
+
+// 3. Subscribe to events
+useEffect(() =&gt; {
+    const handleResize = () =&gt; setWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () =&gt; window.removeEventListener('resize', handleResize);
+}, []);
+
+// 4. Debounce input
+useEffect(() =&gt; {
+    const timer = setTimeout(() =&gt; {
+        // API call with searchTerm
+    }, 500);
+    return () =&gt; clearTimeout(timer);
+}, [searchTerm]);</div>
+            </div>
+
+            <h3>Custom Hooks: Reusable Logic</h3>
+            <p>Hooks are just functions. You can create your own to extract and reuse stateful logic:</p>
+
+            <h4>useFetch - Reusable Data Fetching</h4>
+            <div class="code">function useFetch(url) {
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    
+    useEffect(() =&gt; {
+        setLoading(true);
+        setError(null);
+        
+        fetch(url)
+            .then(res =&gt; res.json())
+            .then(data =&gt; {
+                setData(data);
+                setLoading(false);
+            })
+            .catch(err =&gt; {
+                setError(err.message);
+                setLoading(false);
+            });
+    }, [url]);
+    
+    return { data, loading, error };
+}
+
+// Usage in components
+function UserList() {
+    const { data: users, loading, error } = useFetch('/api/users');
+    
+    if (loading) return &lt;p&gt;Loading...&lt;/p&gt;;
+    if (error) return &lt;p&gt;Error: {error}&lt;/p&gt;;
+    
+    return (
+        &lt;ul&gt;
+            {users.map(user =&gt; (
+                &lt;li key={user.id}&gt;{user.name}&lt;/li&gt;
+            ))}
+        &lt;/ul&gt;
+    );
+}</div>
+
+            <p><strong>Custom hook benefits:</strong></p>
+            <ul>
+                <li>Extract complex logic into reusable functions</li>
+                <li>Share stateful logic between components (without render props or HOCs)</li>
+                <li>Make components cleaner and easier to test</li>
+                <li>Build your own React utilities library</li>
+            </ul>
+
+            <h4>More Useful Custom Hooks</h4>
+            <div class="code">// useLocalStorage - Persist state in browser
+function useLocalStorage(key, initialValue) {
+    const [value, setValue] = useState(() =&gt; {
+        const stored = localStorage.getItem(key);
+        return stored ? JSON.parse(stored) : initialValue;
+    });
+    
+    useEffect(() =&gt; {
+        localStorage.setItem(key, JSON.stringify(value));
+    }, [key, value]);
+    
+    return [value, setValue];
+}
+
+// useDebounce - Delay updates until user stops typing
+function useDebounce(value, delay) {
+    const [debouncedValue, setDebouncedValue] = useState(value);
+    
+    useEffect(() =&gt; {
+        const timer = setTimeout(() =&gt; setDebouncedValue(value), delay);
+        return () =&gt; clearTimeout(timer);
+    }, [value, delay]);
+    
+    return debouncedValue;
+}
+
+// useWindowSize - Track window dimensions
+function useWindowSize() {
+    const [size, setSize] = useState({
+        width: window.innerWidth,
+        height: window.innerHeight
+    });
+    
+    useEffect(() =&gt; {
+        const handleResize = () =&gt; {
+            setSize({
+                width: window.innerWidth,
+                height: window.innerHeight
+            });
+        };
+        
+        window.addEventListener('resize', handleResize);
+        return () =&gt; window.removeEventListener('resize', handleResize);
+    }, []);
+    
+    return size;
+}</div>
+
+            <div class="metaphor-box">
+                <h4>Hooks as Lego Blocks</h4>
+                <p>Built-in hooks (useState, useEffect) are basic Lego blocks. Custom hooks are specialized pieces you build by combining basic blocks.</p>
+                <p>Just as you can build complex Lego structures by connecting simple blocks, you can build complex React applications by combining simple hooks into more powerful custom hooks.</p>
+                <p>The best React developers have a library of custom hooks they reuse across projects—authentication, forms, data fetching, animations, local storage, and more.</p>
+            </div>
+
+            <h3>React Ecosystem Essentials</h3>
+            <p>React is a library, not a framework. You need additional tools for routing, styling, state management, etc.:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Need</th>
+                        <th>Tool</th>
+                        <th>Why It's Standard</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Routing</strong></td>
+                        <td>React Router</td>
+                        <td>Multi-page navigation, URL parameters, nested routes</td>
+                    </tr>
+                    <tr>
+                        <td><strong>State Management</strong></td>
+                        <td>Context API / Redux / Zustand</td>
+                        <td>Share state between distant components (avoid prop drilling)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Styling</strong></td>
+                        <td>Tailwind CSS / CSS Modules / Styled Components</td>
+                        <td>Scoped styles, utility classes, component-based styling</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Forms</strong></td>
+                        <td>React Hook Form / Formik</td>
+                        <td>Validation, error handling, complex form state</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Data Fetching</strong></td>
+                        <td>React Query / SWR</td>
+                        <td>Caching, background updates, optimistic UI</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Build Tool</strong></td>
+                        <td>Vite / Create React App</td>
+                        <td>Fast dev server, hot reload, production builds</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4>Quick Example: React Router</h4>
+            <div class="code">import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+
+function App() {
+    return (
+        &lt;BrowserRouter&gt;
+            &lt;nav&gt;
+                &lt;Link to="/"&gt;Home&lt;/Link&gt;
+                &lt;Link to="/about"&gt;About&lt;/Link&gt;
+                &lt;Link to="/users"&gt;Users&lt;/Link&gt;
+            &lt;/nav&gt;
+            
+            &lt;Routes&gt;
+                &lt;Route path="/" element={&lt;Home /&gt;} /&gt;
+                &lt;Route path="/about" element={&lt;About /&gt;} /&gt;
+                &lt;Route path="/users" element={&lt;UserList /&gt;} /&gt;
+                &lt;Route path="/users/:id" element={&lt;UserProfile /&gt;} /&gt;
+                &lt;Route path="*" element={&lt;NotFound /&gt;} /&gt;
+            &lt;/Routes&gt;
+        &lt;/BrowserRouter&gt;
+    );
+}</div>
+
+            <p>React Router makes your single-page app feel like a multi-page website—different URLs, browser back/forward buttons work, bookmarkable pages.</p>
+
+            <div class="info-box">
+                <h4>React Best Practices (2026)</h4>
+                <ul>
+                    <li><strong>Keep components small:</strong> One responsibility per component (50-100 lines max)</li>
+                    <li><strong>Lift state up:</strong> State should live in the lowest common ancestor of components that need it</li>
+                    <li><strong>Use TypeScript:</strong> Catch bugs at compile time, better autocomplete, safer refactoring</li>
+                    <li><strong>Avoid premature optimization:</strong> React is fast. Profile before optimizing (React DevTools Profiler)</li>
+                    <li><strong>Compose, don't couple:</strong> Small, reusable components > large, complex ones</li>
+                    <li><strong>Test user behavior:</strong> Use React Testing Library (test what users see, not implementation)</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="section" id="vue">
+            <h2 class="section-title">Vue.js Essentials</h2>
+            <p class="section-intro">Vue is React's friendlier cousin—easier to learn, more intuitive, with better documentation. While React says "here's JavaScript, figure it out," Vue says "here's a structure, follow it." Both approaches have merit. Let's learn Vue to understand the alternative paradigm.</p>
+
+            <h3>Vue vs React: Philosophy</h3>
+            <p>The fundamental difference isn't technical—it's philosophical:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Aspect</th>
+                        <th>React</th>
+                        <th>Vue</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Philosophy</strong></td>
+                        <td>"Just JavaScript" - minimal abstraction</td>
+                        <td>"Progressive framework" - gentle learning curve</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Templates</strong></td>
+                        <td>JSX (JavaScript + HTML)</td>
+                        <td>HTML templates with directives</td>
+                    </tr>
+                    <tr>
+                        <td><strong>State</strong></td>
+                        <td>useState hook, explicit</td>
+                        <td>ref/reactive, automatic tracking</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Styling</strong></td>
+                        <td>CSS-in-JS, CSS Modules, anything</td>
+                        <td>Scoped styles built-in</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Learning Curve</strong></td>
+                        <td>Steeper (JavaScript first)</td>
+                        <td>Gentler (HTML first)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Job Market</strong></td>
+                        <td>More jobs available</td>
+                        <td>Less competition, still plenty of jobs</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="metaphor-box">
+                <h4>The Restaurant Comparison</h4>
+                <p><strong>React</strong> is like a professional chef's kitchen—powerful tools everywhere, but you need to know what you're doing. Total freedom to create any dish, but also easy to make a mess.</p>
+                <p><strong>Vue</strong> is like a well-organized home kitchen—everything has its place, clear labels, beginner-friendly, but you can still cook gourmet meals once you know where everything is.</p>
+                <p>React rewards JavaScript mastery. Vue rewards pattern following. Both produce excellent results.</p>
+            </div>
+
+            <h3>Vue Basics: Single File Components</h3>
+            <p>Vue's signature feature is the Single File Component—template, script, and styles in one file:</p>
+
+            <div class="code">&lt;template&gt;
+  &lt;div class="counter"&gt;
+    &lt;h2&gt;Count: {{ count }}&lt;/h2&gt;
+    &lt;button @click="increment"&gt;+1&lt;/button&gt;
+    &lt;button @click="decrement"&gt;-1&lt;/button&gt;
+    &lt;button @click="reset"&gt;Reset&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+import { ref } from 'vue';
+
+// Reactive state
+const count = ref(0);
+
+// Methods
+function increment() {
+  count.value++;
+}
+
+function decrement() {
+  count.value--;
+}
+
+function reset() {
+  count.value = 0;
+}
+&lt;/script&gt;
+
+&lt;style scoped&gt;
+.counter {
+  padding: 2rem;
+  text-align: center;
+}
+
+button {
+  margin: 0 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+}
+&lt;/style&gt;</div>
+
+            <p><strong>What's happening:</strong></p>
+            <ul>
+                <li><strong>&lt;template&gt;:</strong> HTML-like syntax, double curly braces for data binding</li>
+                <li><strong>&lt;script setup&gt;:</strong> Composition API (modern Vue), cleaner than Options API</li>
+                <li><strong>ref():</strong> Makes value reactive (Vue tracks changes automatically)</li>
+                <li><strong>@click:</strong> Shorthand for v-on:click (event handling)</li>
+                <li><strong>&lt;style scoped&gt;:</strong> CSS only applies to this component (no global pollution!)</li>
+            </ul>
+
+            <h3>Vue Reactivity: The Magic Behind the Scenes</h3>
+            <p>Vue's reactivity system is its superpower. When you change data, UI updates automatically—no manual re-rendering needed.</p>
+
+            <h4>ref vs reactive</h4>
+            <p>Two ways to create reactive state:</p>
+
+            <div class="code">&lt;script setup&gt;
+import { ref, reactive } from 'vue';
+
+// ==================== ref() - Single values ====================
+// Use .value to access/modify
+const count = ref(0);
+const name = ref('Alice');
+const isActive = ref(true);
+
+count.value++;           // Modify
+console.log(count.value); // Access
+
+// ==================== reactive() - Objects ====================
+// No .value needed, but only works with objects
+const user = reactive({
+  name: 'Alice',
+  age: 25,
+  email: 'alice@example.com'
+});
+
+user.age++;              // Modify directly
+console.log(user.name);  // Access directly
+
+// ==================== When to use which? ====================
+
+// ref() - Primitive values (numbers, strings, booleans)
+const score = ref(0);
+const message = ref('Hello');
+
+// reactive() - Complex objects with multiple properties
+const form = reactive({
+  username: '',
+  password: '',
+  rememberMe: false
+});
+
+// ref() can also hold objects, but you need .value
+const userRef = ref({ name: 'Bob', age: 30 });
+userRef.value.age++;  // Need .value to access object
+&lt;/script&gt;</div>
+
+            <div class="info-box">
+                <h4>Pro Tip: ref() for Everything</h4>
+                <p>Many Vue developers use <span class="inline-code">ref()</span> for everything (even objects) because it's consistent. Yes, you need <span class="inline-code">.value</span>, but you always know when you're dealing with reactive data.</p>
+                <p><span class="inline-code">reactive()</span> is great for objects, but has limitations: can't be reassigned, loses reactivity when destructured, doesn't work with primitives.</p>
+                <p><strong>Modern best practice:</strong> Use <span class="inline-code">ref()</span> everywhere unless you have a specific reason to use <span class="inline-code">reactive()</span>.</p>
+            </div>
+
+            <h3>Vue Directives: Template Superpowers</h3>
+            <p>Directives are special HTML attributes that give your templates dynamic behavior:</p>
+
+            <div class="code">&lt;template&gt;
+  &lt;div&gt;
+    &lt;!-- v-if - Conditional rendering (removes from DOM) --&gt;
+    &lt;p v-if="score &gt;= 90"&gt;Excellent!&lt;/p&gt;
+    &lt;p v-else-if="score &gt;= 70"&gt;Good job!&lt;/p&gt;
+    &lt;p v-else&gt;Keep practicing!&lt;/p&gt;
+    
+    &lt;!-- v-show - Toggle visibility (display: none) --&gt;
+    &lt;div v-show="isVisible"&gt;I can be toggled!&lt;/div&gt;
+    
+    &lt;!-- v-for - Loop over arrays --&gt;
+    &lt;ul&gt;
+      &lt;li v-for="(item, index) in items" :key="item.id"&gt;
+        {{ index }}: {{ item.name }}
+      &lt;/li&gt;
+    &lt;/ul&gt;
+    
+    &lt;!-- v-bind (shorthand :) - Bind attributes --&gt;
+    &lt;img :src="imageUrl" :alt="imageAlt" /&gt;
+    &lt;a :href="linkUrl"&gt;{{ linkText }}&lt;/a&gt;
+    &lt;div :class="{ active: isActive, disabled: !isEnabled }"&gt;&lt;/div&gt;
+    
+    &lt;!-- v-on (shorthand @) - Event handlers --&gt;
+    &lt;button @click="handleClick"&gt;Click Me&lt;/button&gt;
+    &lt;input @keyup.enter="submitForm" /&gt;
+    &lt;form @submit.prevent="onSubmit"&gt;...&lt;/form&gt;
+    
+    &lt;!-- v-model - Two-way binding --&gt;
+    &lt;input v-model="username" placeholder="Enter username" /&gt;
+    &lt;textarea v-model="bio"&gt;&lt;/textarea&gt;
+    &lt;input type="checkbox" v-model="agreeToTerms" /&gt;
+    &lt;select v-model="selectedCountry"&gt;
+      &lt;option value="us"&gt;United States&lt;/option&gt;
+      &lt;option value="uk"&gt;United Kingdom&lt;/option&gt;
+    &lt;/select&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+import { ref } from 'vue';
+
+const score = ref(85);
+const isVisible = ref(true);
+const items = ref([
+  { id: 1, name: 'Apple' },
+  { id: 2, name: 'Banana' },
+  { id: 3, name: 'Cherry' }
+]);
+const imageUrl = ref('/logo.png');
+const imageAlt = ref('Company Logo');
+const linkUrl = ref('https://example.com');
+const linkText = ref('Visit Example');
+const isActive = ref(true);
+const isEnabled = ref(false);
+const username = ref('');
+const bio = ref('');
+const agreeToTerms = ref(false);
+const selectedCountry = ref('us');
+
+function handleClick() {
+  console.log('Button clicked!');
+}
+
+function submitForm() {
+  console.log('Form submitted!');
+}
+
+function onSubmit() {
+  console.log('Submit prevented, custom logic runs');
+}
+&lt;/script&gt;</div>
+
+            <h4>Directive Cheat Sheet</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Directive</th>
+                        <th>Purpose</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>v-if / v-else</strong></td>
+                        <td>Conditional rendering</td>
+                        <td><span class="inline-code">&lt;p v-if="show"&gt;Hello&lt;/p&gt;</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>v-show</strong></td>
+                        <td>Toggle visibility (CSS)</td>
+                        <td><span class="inline-code">&lt;div v-show="visible"&gt;</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>v-for</strong></td>
+                        <td>Loop over arrays/objects</td>
+                        <td><span class="inline-code">&lt;li v-for="item in items" :key="item.id"&gt;</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>v-bind (:)</strong></td>
+                        <td>Bind attributes dynamically</td>
+                        <td><span class="inline-code">&lt;img :src="url" /&gt;</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>v-on (@)</strong></td>
+                        <td>Event handlers</td>
+                        <td><span class="inline-code">&lt;button @click="fn"&gt;</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>v-model</strong></td>
+                        <td>Two-way data binding</td>
+                        <td><span class="inline-code">&lt;input v-model="name" /&gt;</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Computed Properties and Watchers</h3>
+            <p>Sometimes you need derived state—values calculated from other state:</p>
+
+            <div class="code">&lt;template&gt;
+  &lt;div&gt;
+    &lt;input v-model="firstName" placeholder="First name" /&gt;
+    &lt;input v-model="lastName" placeholder="Last name" /&gt;
+    &lt;p&gt;Full name: {{ fullName }}&lt;/p&gt;
+    &lt;p&gt;Initials: {{ initials }}&lt;/p&gt;
+    
+    &lt;hr&gt;
+    
+    &lt;input v-model.number="price" type="number" /&gt;
+    &lt;input v-model.number="quantity" type="number" /&gt;
+    &lt;p&gt;Subtotal: ${{ subtotal }}&lt;/p&gt;
+    &lt;p&gt;Tax (10%): ${{ tax }}&lt;/p&gt;
+    &lt;p&gt;Total: ${{ total }}&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+import { ref, computed, watch } from 'vue';
+
+const firstName = ref('');
+const lastName = ref('');
+const price = ref(0);
+const quantity = ref(1);
+
+// Computed properties - cached, only recalculate when dependencies change
+const fullName = computed(() =&gt; {
+  return `${firstName.value} ${lastName.value}`.trim();
+});
+
+const initials = computed(() =&gt; {
+  const first = firstName.value[0] || '';
+  const last = lastName.value[0] || '';
+  return `${first}${last}`.toUpperCase();
+});
+
+const subtotal = computed(() =&gt; price.value * quantity.value);
+const tax = computed(() =&gt; subtotal.value * 0.1);
+const total = computed(() =&gt; subtotal.value + tax.value);
+
+// Watchers - run side effects when values change
+watch(fullName, (newName, oldName) =&gt; {
+  console.log(`Name changed from "${oldName}" to "${newName}"`);
+});
+
+watch(total, (newTotal) =&gt; {
+  if (newTotal &gt; 100) {
+    console.log('High value order! Consider offering free shipping.');
+  }
+});
+&lt;/script&gt;</div>
+
+            <p><strong>computed vs methods:</strong></p>
+            <ul>
+                <li><strong>Computed:</strong> Cached based on dependencies. Only recalculates when dependencies change. Use for expensive calculations.</li>
+                <li><strong>Methods:</strong> Always execute when called. Use for actions/events that should run every time.</li>
+            </ul>
+
+            <div class="info-box">
+                <h4>Vue's Killer Features</h4>
+                <ul>
+                    <li><strong>Scoped styles:</strong> CSS only affects current component (no naming conflicts!)</li>
+                    <li><strong>v-model:</strong> Two-way binding is dead simple (React requires onChange + value)</li>
+                    <li><strong>Transitions:</strong> Built-in &lt;Transition&gt; component for animations</li>
+                    <li><strong>Better TypeScript:</strong> Vue 3 written in TypeScript, excellent type inference</li>
+                    <li><strong>Documentation:</strong> Objectively the best docs in frontend (React's are... improving)</li>
+                    <li><strong>Learning curve:</strong> HTML/CSS developers can be productive in days, not weeks</li>
+                </ul>
+            </div>
+
+            <h3>When to Choose Vue Over React</h3>
+            <div class="card-grid">
+                <div class="card">
+                    <h4>✅ Choose Vue When:</h4>
+                    <ul>
+                        <li>You're new to frontend frameworks</li>
+                        <li>You prefer HTML templates over JSX</li>
+                        <li>You want official state management (Vuex/Pinia)</li>
+                        <li>You're a solo developer or small team</li>
+                        <li>You want excellent documentation</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>✅ Choose React When:</h4>
+                    <ul>
+                        <li>You're comfortable with JavaScript</li>
+                        <li>You need the largest ecosystem</li>
+                        <li>You want maximum flexibility</li>
+                        <li>You're joining a large team/company</li>
+                        <li>You want React Native for mobile</li>
+                    </ul>
+                </div>
+            </div>
+
+            <p><strong>The truth:</strong> Both are excellent. Learn React first (more jobs), then pick up Vue in a weekend (concepts transfer instantly). Knowing both makes you more employable and helps you choose the right tool for each project.</p>
+        </section>
+
+        <section class="section" id="components">
+            <h2 class="section-title">Component Architecture</h2>
+            <p class="section-intro">Components are the building blocks of modern web apps. But there's an art to designing them—too big and they're unmaintainable, too small and you drown in abstractions. Let's learn to architect component hierarchies like professionals.</p>
+
+            <h3>The Component Mindset</h3>
+            <p>Look at any website. Now mentally break it down:</p>
+
+            <ul>
+                <li><strong>Page</strong> - The top-level component</li>
+                <li><strong>Layout</strong> - Header, sidebar, main content, footer</li>
+                <li><strong>Sections</strong> - Hero, features, pricing, testimonials</li>
+                <li><strong>Cards</strong> - Individual feature cards, user profiles</li>
+                <li><strong>Elements</strong> - Buttons, inputs, icons, labels</li>
+            </ul>
+
+            <p>Everything is a component. The question is: <strong>where do you draw the boundaries?</strong></p>
+
+            <div class="metaphor-box">
+                <h4>The Lego Analogy (Again)</h4>
+                <p>Good components are like Lego blocks:</p>
+                <ul style="margin-top: 0.5rem;">
+                    <li><strong>Single purpose:</strong> A wheel is a wheel, not a wheel-plus-engine</li>
+                    <li><strong>Reusable:</strong> Same wheel fits many vehicles</li>
+                    <li><strong>Composable:</strong> Blocks connect to form larger structures</li>
+                    <li><strong>Self-contained:</strong> Block works independently, doesn't require specific neighbors</li>
+                </ul>
+            </div>
+
+            <h3>Component Design Principles</h3>
+
+            <h4>1. Single Responsibility Principle</h4>
+            <p>Each component should do ONE thing well:</p>
+
+            <div class="code">// ❌ BAD - Too many responsibilities
+function UserDashboard() {
+    const [user, setUser] = useState(null);
+    const [posts, setPosts] = useState([]);
+    const [comments, setComments] = useState([]);
+    const [followers, setFollowers] = useState([]);
+    const [notifications, setNotifications] = useState([]);
+    
+    // 200 lines of mixed logic...
+    
+    return (
+        &lt;div&gt;
+            {/* Complex UI mixing user profile, posts, comments, etc. */}
+        &lt;/div&gt;
+    );
+}
+
+// ✅ GOOD - Split into focused components
+function UserDashboard() {
+    return (
+        &lt;div&gt;
+            &lt;UserProfile /&gt;
+            &lt;PostList /&gt;
+            &lt;CommentSection /&gt;
+            &lt;FollowersList /&gt;
+            &lt;NotificationBell /&gt;
+        &lt;/div&gt;
+    );
+}
+
+function UserProfile() {
+    const [user, setUser] = useState(null);
+    // Logic only for user profile
+}
+
+function PostList() {
+    const [posts, setPosts] = useState([]);
+    // Logic only for posts
+}</div>
+
+            <h4>2. Props Down, Events Up</h4>
+            <p>Data flows down through props. Events bubble up through callbacks:</p>
+
+            <div class="code">// Parent component
+function TodoApp() {
+    const [todos, setTodos] = useState([]);
+    
+    const addTodo = (text) =&gt; {
+        setTodos([...todos, { id: Date.now(), text, done: false }]);
+    };
+    
+    const toggleTodo = (id) =&gt; {
+        setTodos(todos.map(t =&gt; 
+            t.id === id ? { ...t, done: !t.done } : t
+        ));
+    };
+    
+    return (
+        &lt;div&gt;
+            &lt;TodoInput onAdd={addTodo} /&gt;  {/* Event up */}
+            &lt;TodoList 
+                todos={todos}              {/* Data down */}
+                onToggle={toggleTodo}      {/* Event up */}
+            /&gt;
+        &lt;/div&gt;
+    );
+}
+
+// Child components
+function TodoInput({ onAdd }) {
+    const [text, setText] = useState('');
+    
+    const handleSubmit = () =&gt; {
+        if (text.trim()) {
+            onAdd(text);  // Event up to parent
+            setText('');
+        }
+    };
+    
+    return (
+        &lt;input 
+            value={text}
+            onChange={(e) =&gt; setText(e.target.value)}
+            onKeyPress={(e) =&gt; e.key === 'Enter' && handleSubmit()}
+        /&gt;
+    );
+}
+
+function TodoList({ todos, onToggle }) {
+    return (
+        &lt;ul&gt;
+            {todos.map(todo =&gt; (
+                &lt;TodoItem 
+                    key={todo.id}
+                    todo={todo}              {/* Data down */}
+                    onToggle={onToggle}      {/* Event up */}
+                /&gt;
+            ))}
+        &lt;/ul&gt;
+    );
+}
+
+function TodoItem({ todo, onToggle }) {
+    return (
+        &lt;li onClick={() =&gt; onToggle(todo.id)}&gt;  {/* Event up */}
+            {todo.done ? '✓' : '○'} {todo.text}
+        &lt;/li&gt;
+    );
+}</div>
+
+            <p><strong>Why this pattern?</strong> State lives in one place (parent), components are pure functions of props, data flow is predictable.</p>
+
+            <h4>3. Composition Over Configuration</h4>
+            <p>Instead of complex props, compose components:</p>
+
+            <div class="code">// ❌ BAD - Props explosion
+function Card({ 
+    title, 
+    subtitle, 
+    body, 
+    footer, 
+    hasImage, 
+    imageUrl, 
+    imageAlt,
+    onClick,
+    className,
+    // ...20 more props
+}) {
+    // Complex conditional logic based on props
+}
+
+// ✅ GOOD - Composition
+function Card({ children, onClick, className }) {
+    return (
+        &lt;div className={`card ${className}`} onClick={onClick}&gt;
+            {children}
+        &lt;/div&gt;
+    );
+}
+
+// Usage - total flexibility!
+&lt;Card&gt;
+    &lt;CardImage src="/photo.jpg" alt="Photo" /&gt;
+    &lt;CardHeader&gt;
+        &lt;h2&gt;Title&lt;/h2&gt;
+        &lt;p&gt;Subtitle&lt;/p&gt;
+    &lt;/CardHeader&gt;
+    &lt;CardBody&gt;
+        &lt;p&gt;Any content here!&lt;/p&gt;
+    &lt;/CardBody&gt;
+    &lt;CardFooter&gt;
+        &lt;Button&gt;Action&lt;/Button&gt;
+    &lt;/CardFooter&gt;
+&lt;/Card&gt;</div>
+
+            <h4>4. Presentational vs Container Components</h4>
+            <p>Separate how things look from how things work:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Presentational (Dumb)</th>
+                        <th>Container (Smart)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Focus on UI/appearance</td>
+                        <td>Focus on logic/behavior</td>
+                    </tr>
+                    <tr>
+                        <td>Receive data via props</td>
+                        <td>Manage state, fetch data</td>
+                    </tr>
+                    <tr>
+                        <td>No side effects</td>
+                        <td>Side effects (API calls, etc.)</td>
+                    </tr>
+                    <tr>
+                        <td>Highly reusable</td>
+                        <td>Specific to use case</td>
+                    </tr>
+                    <tr>
+                        <td>Example: Button, Card, Input</td>
+                        <td>Example: UserProfile, PostList</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="code">// Presentational - pure UI
+function Button({ children, variant, onClick, disabled }) {
+    const className = `btn btn-${variant}`;
+    return (
+        &lt;button 
+            className={className}
+            onClick={onClick}
+            disabled={disabled}
+        &gt;
+            {children}
+        &lt;/button&gt;
+    );
+}
+
+// Container - logic and data
+function LoginForm() {
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    
+    const handleSubmit = async () =&gt; {
+        setLoading(true);
+        setError(null);
+        try {
+            await api.login(username, password);
+            // Success - redirect
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+    
+    return (
+        &lt;form onSubmit={(e) =&gt; { e.preventDefault(); handleSubmit(); }}&gt;
+            &lt;Input 
+                label="Username"
+                value={username}
+                onChange={setUsername}
+            /&gt;
+            &lt;Input 
+                label="Password"
+                type="password"
+                value={password}
+                onChange={setPassword}
+            /&gt;
+            {error && &lt;ErrorMessage&gt;{error}&lt;/ErrorMessage&gt;}
+            &lt;Button 
+                variant="primary"
+                disabled={loading || !username || !password}
+            &gt;
+                {loading ? 'Logging in...' : 'Login'}
+            &lt;/Button&gt;
+        &lt;/form&gt;
+    );
+}</div>
+
+            <h3>Component Patterns</h3>
+
+            <h4>Pattern 1: Compound Components</h4>
+            <p>Components that work together, sharing implicit state:</p>
+
+            <div class="code">// Design goal: intuitive API
+&lt;Tabs defaultTab="profile"&gt;
+    &lt;TabList&gt;
+        &lt;Tab id="profile"&gt;Profile&lt;/Tab&gt;
+        &lt;Tab id="settings"&gt;Settings&lt;/Tab&gt;
+        &lt;Tab id="notifications"&gt;Notifications&lt;/Tab&gt;
+    &lt;/TabList&gt;
+    &lt;TabPanels&gt;
+        &lt;TabPanel id="profile"&gt;Profile content...&lt;/TabPanel&gt;
+        &lt;TabPanel id="settings"&gt;Settings content...&lt;/TabPanel&gt;
+        &lt;TabPanel id="notifications"&gt;Notifications content...&lt;/TabPanel&gt;
+    &lt;/TabPanels&gt;
+&lt;/Tabs&gt;
+
+// Implementation using Context
+const TabsContext = React.createContext();
+
+function Tabs({ defaultTab, children }) {
+    const [activeTab, setActiveTab] = useState(defaultTab);
+    return (
+        &lt;TabsContext.Provider value={{ activeTab, setActiveTab }}&gt;
+            &lt;div className="tabs"&gt;{children}&lt;/div&gt;
+        &lt;/TabsContext.Provider&gt;
+    );
+}
+
+function Tab({ id, children }) {
+    const { activeTab, setActiveTab } = useContext(TabsContext);
+    return (
+        &lt;button 
+            className={activeTab === id ? 'active' : ''}
+            onClick={() =&gt; setActiveTab(id)}
+        &gt;
+            {children}
+        &lt;/button&gt;
+    );
+}
+
+function TabPanel({ id, children }) {
+    const { activeTab } = useContext(TabsContext);
+    return activeTab === id ? &lt;div&gt;{children}&lt;/div&gt; : null;
+}</div>
+
+            <h4>Pattern 2: Render Props</h4>
+            <p>Pass rendering logic as a prop:</p>
+
+            <div class="code">// Reusable data fetching component
+function DataFetcher({ url, render }) {
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    
+    useEffect(() =&gt; {
+        fetch(url)
+            .then(res =&gt; res.json())
+            .then(data =&gt; {
+                setData(data);
+                setLoading(false);
+            })
+            .catch(err =&gt; {
+                setError(err.message);
+                setLoading(false);
+            });
+    }, [url]);
+    
+    return render({ data, loading, error });
+}
+
+// Usage
+&lt;DataFetcher 
+    url="/api/users"
+    render={({ data, loading, error }) =&gt; {
+        if (loading) return &lt;Spinner /&gt;;
+        if (error) return &lt;Error message={error} /&gt;;
+        return (
+            &lt;ul&gt;
+                {data.map(user =&gt; &lt;li key={user.id}&gt;{user.name}&lt;/li&gt;)}
+            &lt;/ul&gt;
+        );
+    }}
+/&gt;</div>
+
+            <h4>Pattern 3: Higher-Order Components (HOCs)</h4>
+            <p>Functions that take a component and return an enhanced component:</p>
+
+            <div class="code">// HOC that adds authentication check
+function withAuth(Component) {
+    return function AuthenticatedComponent(props) {
+        const { user, loading } = useAuth();
+        
+        if (loading) return &lt;Spinner /&gt;;
+        if (!user) return &lt;Redirect to="/login" /&gt;;
+        
+        return &lt;Component {...props} user={user} /&gt;;
+    };
+}
+
+// Usage
+const Dashboard = ({ user }) =&gt; {
+    return &lt;div&gt;Welcome, {user.name}!&lt;/div&gt;;
+};
+
+export default withAuth(Dashboard);  // Enhanced with auth logic</div>
+
+            <div class="info-box">
+                <h4>Modern Pattern Preference</h4>
+                <p>With hooks, many patterns are less necessary:</p>
+                <ul>
+                    <li><strong>Custom hooks &gt; HOCs:</strong> Hooks are simpler, more flexible, easier to understand</li>
+                    <li><strong>Custom hooks &gt; Render props:</strong> Cleaner component code, better TypeScript support</li>
+                    <li><strong>Compound components:</strong> Still great for complex UI components (Tabs, Accordions, Modals)</li>
+                </ul>
+                <p>But know all patterns—you'll see them in existing codebases!</p>
+            </div>
+
+            <h3>Component Organization</h3>
+            <p>How to structure component files in a project:</p>
+
+            <div class="code">src/
+├── components/
+│   ├── common/           # Reusable UI components
+│   │   ├── Button.jsx
+│   │   ├── Input.jsx
+│   │   ├── Modal.jsx
+│   │   └── Card.jsx
+│   ├── layout/           # Layout components
+│   │   ├── Header.jsx
+│   │   ├── Sidebar.jsx
+│   │   └── Footer.jsx
+│   └── features/         # Feature-specific components
+│       ├── auth/
+│       │   ├── LoginForm.jsx
+│       │   └── SignupForm.jsx
+│       ├── posts/
+│       │   ├── PostList.jsx
+│       │   ├── PostCard.jsx
+│       │   └── PostEditor.jsx
+│       └── users/
+│           ├── UserProfile.jsx
+│           └── UserSettings.jsx
+├── pages/                # Page-level components (routes)
+│   ├── HomePage.jsx
+│   ├── DashboardPage.jsx
+│   └── ProfilePage.jsx
+├── hooks/                # Custom hooks
+│   ├── useAuth.js
+│   ├── useFetch.js
+│   └── useLocalStorage.js
+└── utils/                # Utility functions
+    ├── api.js
+    └── helpers.js</div>
+
+            <p><strong>Key principles:</strong></p>
+            <ul>
+                <li><strong>Colocate:</strong> Keep related files together (component + styles + tests in same folder)</li>
+                <li><strong>Feature-first:</strong> Group by feature, not by type (not "all components in one folder")</li>
+                <li><strong>Shallow hierarchy:</strong> Avoid deep nesting (max 3-4 levels)</li>
+                <li><strong>Clear naming:</strong> Component names should describe what they are/do</li>
+            </ul>
+        </section>
+
+        <section class="section" id="backend-flask">
+            <h2 class="section-title">Flask Backend</h2>
+            <p class="section-intro">Flask is Python's micro-framework—minimalist, flexible, perfect for learning. It gives you the essentials (routing, request handling, templates) and gets out of your way. If React is "just JavaScript," Flask is "just Python." Let's build APIs.</p>
+
+            <h3>Why Flask for Backend Development</h3>
+            <p>Django is the full-featured framework. Flask is the lightweight one. Here's why Flask is excellent for learning:</p>
+
+            <ul>
+                <li><strong>Minimal boilerplate:</strong> 5 lines for "Hello World" server</li>
+                <li><strong>Explicit:</strong> You see exactly what's happening (no magic)</li>
+                <li><strong>Flexible:</strong> Pick your database, templating, auth system</li>
+                <li><strong>Perfect for APIs:</strong> RESTful API in minutes</li>
+                <li><strong>Great documentation:</strong> Clear, concise, well-written</li>
+            </ul>
+
+            <div class="metaphor-box">
+                <h4>The Toolkit Metaphor</h4>
+                <p><strong>Flask</strong> is like a basic toolkit—hammer, screwdriver, wrench. You choose what to build and how. Flexible, but you make all decisions.</p>
+                <p><strong>Django</strong> is like a pre-assembled workstation—everything included, organized, optimized. Fast to use if you work their way, constraining if you don't.</p>
+                <p>Learn Flask first to understand how frameworks work. Graduate to Django when you need batteries included.</p>
+            </div>
+
+            <h3>Flask Basics: Your First Server</h3>
+            <div class="code"># app.py
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return 'Hello, World!'
+
+@app.route('/about')
+def about():
+    return 'About page'
+
+if __name__ == '__main__':
+    app.run(debug=True)</div>
+
+            <p><strong>Run it:</strong> <span class="inline-code">python app.py</span></p>
+            <p><strong>Visit:</strong> <span class="inline-code">http://localhost:5000/</span></p>
+
+            <p>That's it. You have a web server. Let's break it down:</p>
+            <ul>
+                <li><span class="inline-code">Flask(__name__)</span> - Create Flask application</li>
+                <li><span class="inline-code">@app.route('/')</span> - Decorator that maps URL to function</li>
+                <li><span class="inline-code">def home()</span> - View function that handles the request</li>
+                <li><span class="inline-code">return</span> - Response sent back to client</li>
+                <li><span class="inline-code">app.run(debug=True)</span> - Start development server with auto-reload</li>
+            </ul>
+
+            <h3>Routing: URL Patterns</h3>
+            <p>Routes map URLs to functions. Flask supports dynamic routes, HTTP methods, and more:</p>
+
+            <div class="code">from flask import Flask, request
+
+app = Flask(__name__)
+
+# ==================== STATIC ROUTES ====================
+
+@app.route('/')
+def index():
+    return 'Home page'
+
+@app.route('/about')
+def about():
+    return 'About us'
+
+@app.route('/contact')
+def contact():
+    return 'Contact page'
+
+# ==================== DYNAMIC ROUTES ====================
+
+@app.route('/user/&lt;username&gt;')
+def show_user(username):
+    return f'User: {username}'
+
+@app.route('/post/&lt;int:post_id&gt;')
+def show_post(post_id):
+    return f'Post ID: {post_id}'
+
+@app.route('/path/&lt;path:subpath&gt;')
+def show_path(subpath):
+    return f'Path: {subpath}'
+
+# ==================== HTTP METHODS ====================
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        # Process login
+        return f'Logging in {username}'
+    else:
+        return 'Login form (GET)'
+
+@app.route('/api/users', methods=['GET'])
+def get_users():
+    # Return list of users
+    return {'users': []}
+
+@app.route('/api/users', methods=['POST'])
+def create_user():
+    # Create new user
+    data = request.json
+    return {'message': 'User created', 'user': data}, 201
+
+# ==================== ROUTE CONVERTERS ====================
+
+# string (default) - any text without slash
+# int - integer
+# float - float
+# path - like string but includes slashes
+# uuid - UUID strings
+
+@app.route('/download/&lt;path:filename&gt;')
+def download(filename):
+    return f'Downloading {filename}'
+
+@app.route('/product/&lt;int:product_id&gt;')
+def product(product_id):
+    return f'Product #{product_id}'</div>
+
+            <h3>Request and Response</h3>
+            <p>Flask provides <span class="inline-code">request</span> object (data from client) and multiple ways to send responses:</p>
+
+            <div class="code">from flask import Flask, request, jsonify, make_response
+
+app = Flask(__name__)
+
+# ==================== ACCESSING REQUEST DATA ====================
+
+@app.route('/info')
+def request_info():
+    # Query parameters (/info?name=Alice&age=25)
+    name = request.args.get('name', 'Guest')
+    age = request.args.get('age', type=int, default=0)
+    
+    # Form data (POST)
+    if request.method == 'POST':
+        username = request.form['username']
+    
+    # JSON data
+    if request.is_json:
+        data = request.json
+        email = data.get('email')
+    
+    # Headers
+    user_agent = request.headers.get('User-Agent')
+    auth_token = request.headers.get('Authorization')
+    
+    # Cookies
+    session_id = request.cookies.get('session_id')
+    
+    # Files
+    if 'file' in request.files:
+        file = request.files['file']
+        filename = file.filename
+    
+    return 'Request info accessed'
+
+# ==================== RETURNING RESPONSES ====================
+
+# String response (HTML)
+@app.route('/html')
+def html_response():
+    return '&lt;h1&gt;Hello&lt;/h1&gt;&lt;p&gt;HTML response&lt;/p&gt;'
+
+# JSON response (API)
+@app.route('/api/data')
+def json_response():
+    data = {
+        'name': 'Alice',
+        'age': 25,
+        'active': True
+    }
+    return jsonify(data)  # Sets Content-Type: application/json
+
+# Custom status code
+@app.route('/api/create', methods=['POST'])
+def create():
+    # Process creation...
+    return jsonify({'message': 'Created'}), 201  # 201 Created
+
+# Custom response with headers
+@app.route('/custom')
+def custom_response():
+    response = make_response('Custom response')
+    response.headers['X-Custom-Header'] = 'Value'
+    response.set_cookie('session_id', 'abc123')
+    return response
+
+# Redirects
+from flask import redirect, url_for
+
+@app.route('/old-page')
+def old_page():
+    return redirect(url_for('new_page'))
+
+@app.route('/new-page')
+def new_page():
+    return 'New page location'
+
+# Error responses
+@app.route('/api/user/&lt;int:user_id&gt;')
+def get_user(user_id):
+    user = find_user(user_id)
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+    return jsonify(user)</div>
+
+            <h3>Building a REST API</h3>
+            <p>Let's build a complete CRUD API for managing tasks:</p>
+
+            <div class="code">from flask import Flask, request, jsonify
+from datetime import datetime
+
+app = Flask(__name__)
+
+# In-memory storage (in real app, use database)
+tasks = []
+next_id = 1
+
+# ==================== CREATE ====================
+
+@app.route('/api/tasks', methods=['POST'])
+def create_task():
+    global next_id
+    data = request.json
+    
+    # Validation
+    if not data or 'title' not in data:
+        return jsonify({'error': 'Title is required'}), 400
+    
+    task = {
+        'id': next_id,
+        'title': data['title'],
+        'description': data.get('description', ''),
+        'completed': False,
+        'created_at': datetime.now().isoformat()
+    }
+    
+    tasks.append(task)
+    next_id += 1
+    
+    return jsonify(task), 201
+
+# ==================== READ (LIST) ====================
+
+@app.route('/api/tasks', methods=['GET'])
+def get_tasks():
+    # Optional filtering
+    completed = request.args.get('completed', type=bool)
+    
+    if completed is not None:
+        filtered = [t for t in tasks if t['completed'] == completed]
+        return jsonify(filtered)
+    
+    return jsonify(tasks)
+
+# ==================== READ (SINGLE) ====================
+
+@app.route('/api/tasks/&lt;int:task_id&gt;', methods=['GET'])
+def get_task(task_id):
+    task = next((t for t in tasks if t['id'] == task_id), None)
+    
+    if not task:
+        return jsonify({'error': 'Task not found'}), 404
+    
+    return jsonify(task)
+
+# ==================== UPDATE ====================
+
+@app.route('/api/tasks/&lt;int:task_id&gt;', methods=['PUT'])
+def update_task(task_id):
+    task = next((t for t in tasks if t['id'] == task_id), None)
+    
+    if not task:
+        return jsonify({'error': 'Task not found'}), 404
+    
+    data = request.json
+    
+    # Update fields
+    if 'title' in data:
+        task['title'] = data['title']
+    if 'description' in data:
+        task['description'] = data['description']
+    if 'completed' in data:
+        task['completed'] = data['completed']
+    
+    task['updated_at'] = datetime.now().isoformat()
+    
+    return jsonify(task)
+
+# ==================== DELETE ====================
+
+@app.route('/api/tasks/&lt;int:task_id&gt;', methods=['DELETE'])
+def delete_task(task_id):
+    global tasks
+    
+    task = next((t for t in tasks if t['id'] == task_id), None)
+    
+    if not task:
+        return jsonify({'error': 'Task not found'}), 404
+    
+    tasks = [t for t in tasks if t['id'] != task_id]
+    
+    return jsonify({'message': 'Task deleted'}), 200
+
+# ==================== ERROR HANDLERS ====================
+
+@app.errorhandler(404)
+def not_found(error):
+    return jsonify({'error': 'Not found'}), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    return jsonify({'error': 'Internal server error'}), 500
+
+if __name__ == '__main__':
+    app.run(debug=True)</div>
+
+            <p><strong>Test it with curl:</strong></p>
+            <div class="code"># Create task
+curl -X POST http://localhost:5000/api/tasks \
+  -H "Content-Type: application/json" \
+  -d '{"title": "Learn Flask", "description": "Build REST API"}'
+
+# Get all tasks
+curl http://localhost:5000/api/tasks
+
+# Get single task
+curl http://localhost:5000/api/tasks/1
+
+# Update task
+curl -X PUT http://localhost:5000/api/tasks/1 \
+  -H "Content-Type: application/json" \
+  -d '{"completed": true}'
+
+# Delete task
+curl -X DELETE http://localhost:5000/api/tasks/1</div>
+
+            <h3>Flask Extensions</h3>
+            <p>Flask is minimal by design. Extensions add functionality:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Extension</th>
+                        <th>Purpose</th>
+                        <th>Use Case</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Flask-SQLAlchemy</strong></td>
+                        <td>Database ORM</td>
+                        <td>Define models, query database easily</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Flask-Migrate</strong></td>
+                        <td>Database migrations</td>
+                        <td>Change database schema over time</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Flask-Login</strong></td>
+                        <td>User session management</td>
+                        <td>Handle login/logout, protect routes</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Flask-JWT-Extended</strong></td>
+                        <td>JWT authentication</td>
+                        <td>Token-based auth for APIs</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Flask-CORS</strong></td>
+                        <td>Cross-Origin Resource Sharing</td>
+                        <td>Allow frontend on different domain</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Flask-Mail</strong></td>
+                        <td>Send emails</td>
+                        <td>Verification emails, notifications</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4>Quick Example: Flask-CORS</h4>
+            <div class="code"># Install: pip install flask-cors
+
+from flask import Flask
+from flask_cors import CORS
+
+app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
+
+# Now your React frontend can call this API
+@app.route('/api/data')
+def get_data():
+    return {'message': 'CORS enabled!'}</div>
+
+            <div class="info-box">
+                <h4>Flask Best Practices</h4>
+                <ul>
+                    <li><strong>Use Blueprints:</strong> Organize routes into modules (auth routes, api routes, etc.)</li>
+                    <li><strong>Environment variables:</strong> Config settings (database URLs, secret keys) in .env files</li>
+                    <li><strong>Application factory:</strong> Create app in function (better for testing, multiple configs)</li>
+                    <li><strong>Error handling:</strong> Use @app.errorhandler for consistent error responses</li>
+                    <li><strong>Input validation:</strong> Validate ALL user input (never trust client)</li>
+                    <li><strong>Use extensions:</strong> Don't reinvent wheels (auth, database, migrations)</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="section" id="backend-django">
+            <h2 class="section-title">Django Framework - The Batteries-Included Backend</h2>
+            <p class="section-intro">Django is Python's most comprehensive web framework. Where Flask gives you flexibility, Django gives you everything out of the box - ORM, admin panel, authentication, forms, security. It's opinionated, structured, and production-ready from day one.</p>
+
+            <p>Django follows the "batteries included" philosophy. Need user authentication? Built-in. Need an admin interface? Auto-generated. Need database migrations? Handled. Django makes decisions for you so you can focus on building features, not infrastructure.</p>
+
+            <div class="metaphor-box">
+                <h4>Flask vs Django: The Toolkit Metaphor</h4>
+                <p><strong>Flask</strong> is like buying individual tools - hammer, screwdriver, saw. You choose exactly what you need, but you need to know what you're doing.</p>
+                <p><strong>Django</strong> is like buying a complete workshop with power tools, workbench, and instruction manuals. Everything you need is there, pre-configured, ready to use.</p>
+                <p>Flask: Maximum flexibility, steeper learning curve. Django: Faster to production, more conventions to learn.</p>
+            </div>
+
+            <h3>The MVT Pattern</h3>
+            <p>Django uses MVT (Model-View-Template), not MVC:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Purpose</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Model</strong></td>
+                        <td>Database structure and business logic</td>
+                        <td>User model, Post model, Comment model</td>
+                    </tr>
+                    <tr>
+                        <td><strong>View</strong></td>
+                        <td>Request handling and response logic</td>
+                        <td>List posts, create user, login handler</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Template</strong></td>
+                        <td>HTML presentation layer</td>
+                        <td>post_list.html, user_profile.html</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4>Django Project Structure</h4>
+            <div class="code"># Create Django project
+django-admin startproject myproject
+cd myproject
+
+# Project structure:
+myproject/
+    manage.py              # Command-line utility
+    myproject/             # Python package
+        __init__.py
+        settings.py        # Configuration
+        urls.py           # URL routing
+        wsgi.py           # Server interface
+        asgi.py           # Async support
+
+# Create an app (reusable component)
+python manage.py startapp blog
+
+blog/
+    migrations/           # Database changes
+    __init__.py
+    admin.py             # Admin config
+    apps.py              # App config
+    models.py            # Database models
+    tests.py             # Tests
+    views.py             # Request handlers</div>
+
+            <h3>Models - The Database Layer</h3>
+            <p>Django's ORM lets you define database tables as Python classes:</p>
+
+            <div class="code"># blog/models.py
+from django.db import models
+from django.contrib.auth.models import User
+
+class Post(models.Model):
+    title = models.CharField(max_length=200)
+    slug = models.SlugField(unique=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    body = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    published = models.BooleanField(default=False)
+    views = models.IntegerField(default=0)
+    
+    class Meta:
+        ordering = ['-created']
+        indexes = [
+            models.Index(fields=['-created']),
+        ]
+    
+    def __str__(self):
+        return self.title
+
+class Comment(models.Model):
+    post = models.ForeignKey(Post, related_name='comments',
+                            on_delete=models.CASCADE)
+    author = models.CharField(max_length=80)
+    body = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+    active = models.BooleanField(default=True)
+    
+    class Meta:
+        ordering = ['created']
+    
+    def __str__(self):
+        return f'Comment by {self.author} on {self.post}'</div>
+
+            <p><strong>Field types:</strong></p>
+            <ul>
+                <li><span class="inline-code">CharField</span> - Short text (requires max_length)</li>
+                <li><span class="inline-code">TextField</span> - Long text</li>
+                <li><span class="inline-code">IntegerField</span>, <span class="inline-code">DecimalField</span> - Numbers</li>
+                <li><span class="inline-code">DateTimeField</span>, <span class="inline-code">DateField</span> - Timestamps</li>
+                <li><span class="inline-code">BooleanField</span> - True/False</li>
+                <li><span class="inline-code">ForeignKey</span> - Relationship to another model</li>
+                <li><span class="inline-code">ManyToManyField</span> - Many-to-many relationship</li>
+            </ul>
+
+            <h4>Database Migrations</h4>
+            <div class="code"># Create migration files from model changes
+python manage.py makemigrations
+
+# Apply migrations to database
+python manage.py migrate
+
+# Check migration status
+python manage.py showmigrations
+
+# Roll back migration
+python manage.py migrate blog 0003_previous_migration</div>
+
+            <h3>Views - Request Handlers</h3>
+            <p>Django views take requests and return responses:</p>
+
+            <div class="code"># blog/views.py
+from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse
+from .models import Post, Comment
+
+# Function-based view
+def post_list(request):
+    posts = Post.objects.filter(published=True)
+    return render(request, 'blog/post_list.html', 
+                 {'posts': posts})
+
+def post_detail(request, slug):
+    post = get_object_or_404(Post, slug=slug, published=True)
+    post.views += 1
+    post.save()
+    
+    comments = post.comments.filter(active=True)
+    
+    return render(request, 'blog/post_detail.html', {
+        'post': post,
+        'comments': comments
+    })
+
+# Class-based view
+from django.views.generic import ListView, DetailView
+
+class PostListView(ListView):
+    model = Post
+    template_name = 'blog/post_list.html'
+    context_object_name = 'posts'
+    paginate_by = 10
+    
+    def get_queryset(self):
+        return Post.objects.filter(published=True)
+
+class PostDetailView(DetailView):
+    model = Post
+    template_name = 'blog/post_detail.html'
+    context_object_name = 'post'</div>
+
+            <h3>Django ORM - Querying the Database</h3>
+            <div class="code"># Get all posts
+posts = Post.objects.all()
+
+# Filter posts
+published = Post.objects.filter(published=True)
+recent = Post.objects.filter(created__gte='2024-01-01')
+author_posts = Post.objects.filter(author__username='alice')
+
+# Get single object
+post = Post.objects.get(id=1)
+post = Post.objects.get(slug='my-post')
+
+# Exclude
+unpublished = Post.objects.exclude(published=True)
+
+# Ordering
+newest = Post.objects.order_by('-created')
+oldest = Post.objects.order_by('created')
+by_title = Post.objects.order_by('title')
+
+# Chaining queries
+posts = Post.objects.filter(
+    published=True
+).exclude(
+    views=0
+).order_by('-created')[:10]
+
+# Complex queries with Q objects
+from django.db.models import Q
+
+posts = Post.objects.filter(
+    Q(title__icontains='django') | Q(body__icontains='django')
+)
+
+# Aggregation
+from django.db.models import Count, Avg, Max
+
+post_count = Post.objects.count()
+avg_views = Post.objects.aggregate(Avg('views'))
+most_viewed = Post.objects.aggregate(Max('views'))
+
+# Related objects
+post = Post.objects.get(id=1)
+comments = post.comments.all()  # Related comments
+author = post.author  # Related user
+
+# Reverse relationship
+user = User.objects.get(username='alice')
+user_posts = user.post_set.all()</div>
+
+            <div class="info-box">
+                <h4>Django ORM vs Raw SQL</h4>
+                <p><strong>ORM Benefits:</strong></p>
+                <ul>
+                    <li>Database-agnostic (switch from SQLite to PostgreSQL easily)</li>
+                    <li>Protection against SQL injection</li>
+                    <li>Python syntax instead of SQL strings</li>
+                    <li>Automatic query optimization</li>
+                </ul>
+                <p><strong>When to use raw SQL:</strong> Complex queries, performance-critical operations, database-specific features.</p>
+            </div>
+
+            <h3>Django Admin - Auto-Generated Interface</h3>
+            <p>Django's killer feature - a full admin interface with zero code:</p>
+
+            <div class="code"># blog/admin.py
+from django.contrib import admin
+from .models import Post, Comment
+
+# Simple registration
+admin.site.register(Post)
+
+# Customized admin
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ['author', 'post', 'created', 'active']
+    list_filter = ['active', 'created']
+    search_fields = ['author', 'body']
+    actions = ['approve_comments']
+    
+    def approve_comments(self, request, queryset):
+        queryset.update(active=True)
+
+@admin.register(Post)
+class PostAdmin(admin.ModelAdmin):
+    list_display = ['title', 'author', 'published', 'created']
+    list_filter = ['published', 'created', 'author']
+    search_fields = ['title', 'body']
+    prepopulated_fields = {'slug': ('title',)}
+    date_hierarchy = 'created'
+    ordering = ['-created']</div>
+
+            <p>Navigate to <span class="inline-code">/admin/</span> and you have a full CMS to manage content!</p>
+
+            <h3>Django REST Framework - Building APIs</h3>
+            <div class="code"># Install: pip install djangorestframework
+
+# settings.py
+INSTALLED_APPS = [
+    ...
+    'rest_framework',
+]
+
+# blog/serializers.py
+from rest_framework import serializers
+from .models import Post
+
+class PostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ['id', 'title', 'slug', 'body', 'created']
+
+# blog/views.py
+from rest_framework import viewsets
+from .serializers import PostSerializer
+
+class PostViewSet(viewsets.ModelViewSet):
+    queryset = Post.objects.filter(published=True)
+    serializer_class = PostSerializer
+
+# blog/urls.py
+from rest_framework.routers import DefaultRouter
+from .views import PostViewSet
+
+router = DefaultRouter()
+router.register('posts', PostViewSet)
+
+urlpatterns = router.urls</div>
+
+            <p>This creates a full REST API with GET, POST, PUT, DELETE endpoints automatically!</p>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h4>✨ Django Strengths</h4>
+                    <ul style="margin-top: 1rem; font-size: 0.9rem;">
+                        <li>Rapid development</li>
+                        <li>Built-in admin interface</li>
+                        <li>Excellent ORM</li>
+                        <li>Strong security defaults</li>
+                        <li>Great documentation</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>⚠️ Django Considerations</h4>
+                    <ul style="margin-top: 1rem; font-size: 0.9rem;">
+                        <li>Steeper learning curve</li>
+                        <li>More opinionated</li>
+                        <li>Heavier than Flask</li>
+                        <li>Must follow conventions</li>
+                        <li>Overkill for simple APIs</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="databases">
+            <h2 class="section-title">Databases & SQL - Where Data Lives</h2>
+            <p class="section-intro">Your application is only as good as its data layer. Databases store everything - users, posts, transactions, settings. Understanding how to design, query, and optimize databases is fundamental to building scalable applications.</p>
+
+            <h3>Relational Databases 101</h3>
+            <p>Relational databases organize data into tables with rows and columns:</p>
+
+            <div class="code">Users Table:
+┌────┬──────────┬──────────────────────┬──────────┐
+│ id │ username │ email                │ created  │
+├────┼──────────┼──────────────────────┼──────────┤
+│ 1  │ alice    │ alice@example.com    │ 2024-01-15│
+│ 2  │ bob      │ bob@example.com      │ 2024-01-20│
+│ 3  │ charlie  │ charlie@example.com  │ 2024-02-01│
+└────┴──────────┴──────────────────────┴──────────┘
+
+Posts Table:
+┌────┬───────────────┬──────────┬───────┬────────────┐
+│ id │ title         │ author_id│ views │ created    │
+├────┼───────────────┼──────────┼───────┼────────────┤
+│ 1  │ First Post    │ 1        │ 150   │ 2024-01-16│
+│ 2  │ Second Post   │ 1        │ 75    │ 2024-01-18│
+│ 3  │ Bob's Post    │ 2        │ 200   │ 2024-01-22│
+└────┴───────────────┴──────────┴───────┴────────────┘</div>
+
+            <p><strong>Key concepts:</strong></p>
+            <ul>
+                <li><strong>Primary Key:</strong> Unique identifier for each row (usually <span class="inline-code">id</span>)</li>
+                <li><strong>Foreign Key:</strong> Reference to another table (<span class="inline-code">author_id</span> points to <span class="inline-code">Users.id</span>)</li>
+                <li><strong>Relationships:</strong> One-to-Many (user has many posts), Many-to-Many (posts have many tags)</li>
+            </ul>
+
+            <h3>SQL Basics - Talking to Databases</h3>
+            <h4>SELECT - Reading Data</h4>
+            <div class="code">-- Get all users
+SELECT * FROM users;
+
+-- Get specific columns
+SELECT username, email FROM users;
+
+-- Filter with WHERE
+SELECT * FROM users WHERE id = 1;
+SELECT * FROM posts WHERE views > 100;
+
+-- Multiple conditions
+SELECT * FROM posts 
+WHERE published = true AND views > 50;
+
+-- Pattern matching
+SELECT * FROM users WHERE email LIKE '%@gmail.com';
+
+-- Sorting
+SELECT * FROM posts ORDER BY created DESC;
+SELECT * FROM users ORDER BY username ASC;
+
+-- Limit results
+SELECT * FROM posts ORDER BY views DESC LIMIT 10;</div>
+
+            <h4>INSERT - Creating Data</h4>
+            <div class="code">-- Insert single row
+INSERT INTO users (username, email, created)
+VALUES ('alice', 'alice@example.com', '2024-01-15');
+
+-- Insert multiple rows
+INSERT INTO posts (title, author_id, views, created) VALUES
+('First Post', 1, 0, '2024-01-16'),
+('Second Post', 1, 0, '2024-01-18'),
+('Third Post', 2, 0, '2024-01-20');</div>
+
+            <h4>UPDATE - Modifying Data</h4>
+            <div class="code">-- Update single field
+UPDATE posts SET views = views + 1 WHERE id = 1;
+
+-- Update multiple fields
+UPDATE users 
+SET email = 'newemail@example.com', updated = NOW()
+WHERE id = 1;
+
+-- Update based on condition
+UPDATE posts 
+SET published = true 
+WHERE created < '2024-02-01';</div>
+
+            <h4>DELETE - Removing Data</h4>
+            <div class="code">-- Delete specific row
+DELETE FROM posts WHERE id = 1;
+
+-- Delete based on condition
+DELETE FROM comments WHERE created < '2023-01-01';
+
+-- Delete all rows (dangerous!)
+DELETE FROM temp_data;</div>
+
+            <h3>JOINs - Combining Tables</h3>
+            <p>The power of relational databases - connecting related data:</p>
+
+            <div class="code">-- INNER JOIN - Get posts with author info
+SELECT posts.title, users.username, posts.views
+FROM posts
+INNER JOIN users ON posts.author_id = users.id;
+
+-- LEFT JOIN - Get all posts, even without author
+SELECT posts.title, users.username
+FROM posts
+LEFT JOIN users ON posts.author_id = users.id;
+
+-- Multiple JOINs
+SELECT 
+    posts.title,
+    users.username AS author,
+    COUNT(comments.id) AS comment_count
+FROM posts
+INNER JOIN users ON posts.author_id = users.id
+LEFT JOIN comments ON comments.post_id = posts.id
+GROUP BY posts.id, users.username;</div>
+
+            <h3>Database Design Principles</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Principle</th>
+                        <th>Description</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Normalization</strong></td>
+                        <td>Eliminate data duplication</td>
+                        <td>Store author once in users table, reference by ID</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Atomic Values</strong></td>
+                        <td>Each cell should contain one value</td>
+                        <td>Don't store "tag1,tag2,tag3" - use separate tags table</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Indexing</strong></td>
+                        <td>Speed up queries on frequently searched columns</td>
+                        <td>Index email for login queries, created for sorting</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Constraints</strong></td>
+                        <td>Enforce data integrity</td>
+                        <td>UNIQUE on email, NOT NULL on username</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="info-box">
+                <h4>Popular Database Choices</h4>
+                <p><strong>SQLite:</strong> File-based, perfect for development and small apps. Comes with Python.</p>
+                <p><strong>PostgreSQL:</strong> Most powerful open-source DB. Advanced features, excellent performance. Industry standard.</p>
+                <p><strong>MySQL/MariaDB:</strong> Very popular, fast for reads. Used by WordPress, Facebook.</p>
+                <p><strong>MongoDB:</strong> NoSQL document database. Good for flexible schemas, but loses relational power.</p>
+                <p>For learning: Start with SQLite. For production: PostgreSQL is the safe choice.</p>
+            </div>
+        </section>
+
+        <section class="section" id="apis">
+            <h2 class="section-title">REST APIs - The Language of the Web</h2>
+            <p class="section-intro">APIs are how applications talk to each other. Your React frontend talks to your Django backend through an API. Third-party services integrate with your app through APIs. Understanding REST principles makes you a complete full-stack developer.</p>
+
+            <h3>What is REST?</h3>
+            <p>REST (Representational State Transfer) is an architectural style for designing networked applications. Key principles:</p>
+
+            <ul>
+                <li><strong>Stateless:</strong> Each request contains all information needed - no session state on server</li>
+                <li><strong>Client-Server:</strong> Frontend and backend are separate, can evolve independently</li>
+                <li><strong>Resource-Based:</strong> Everything is a resource (users, posts, comments) with unique URLs</li>
+                <li><strong>HTTP Methods:</strong> Standard methods for CRUD operations</li>
+            </ul>
+
+            <h3>HTTP Methods and Their Meaning</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Purpose</th>
+                        <th>Example</th>
+                        <th>Idempotent?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>GET</strong></td>
+                        <td>Retrieve resource</td>
+                        <td>GET /api/posts/1</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td><strong>POST</strong></td>
+                        <td>Create new resource</td>
+                        <td>POST /api/posts</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td><strong>PUT</strong></td>
+                        <td>Update/replace resource</td>
+                        <td>PUT /api/posts/1</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td><strong>PATCH</strong></td>
+                        <td>Partial update</td>
+                        <td>PATCH /api/posts/1</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td><strong>DELETE</strong></td>
+                        <td>Remove resource</td>
+                        <td>DELETE /api/posts/1</td>
+                        <td>Yes</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p><strong>Idempotent</strong> means making the same request multiple times has the same effect as making it once. GET always returns same data. DELETE deletes once, subsequent calls do nothing. POST creates new resource each time (not idempotent).</p>
+
+            <h3>API Design Best Practices</h3>
+            <div class="code"># Good RESTful API design:
+
+# Resource collections (plural nouns)
+GET    /api/posts          # List all posts
+POST   /api/posts          # Create new post
+
+# Specific resources (with ID)
+GET    /api/posts/123      # Get post 123
+PUT    /api/posts/123      # Update post 123
+DELETE /api/posts/123      # Delete post 123
+
+# Nested resources
+GET    /api/posts/123/comments      # Comments for post 123
+POST   /api/posts/123/comments      # Add comment to post 123
+
+# Filtering and pagination
+GET /api/posts?published=true&limit=10&offset=20
+GET /api/posts?author=alice&sort=-created
+
+# Search
+GET /api/posts/search?q=django
+
+# Versioning
+GET /api/v1/posts
+GET /api/v2/posts</div>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h4>✅ Good API Design</h4>
+                    <ul style="margin-top: 1rem; font-size: 0.9rem;">
+                        <li>Consistent naming (plural nouns)</li>
+                        <li>Proper HTTP status codes</li>
+                        <li>Comprehensive documentation</li>
+                        <li>Versioning for breaking changes</li>
+                        <li>Rate limiting to prevent abuse</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>❌ Bad API Design</h4>
+                    <ul style="margin-top: 1rem; font-size: 0.9rem;">
+                        <li>Verbs in URLs (/getPost, /createUser)</li>
+                        <li>Always returning 200 OK</li>
+                        <li>No documentation</li>
+                        <li>Breaking changes without versioning</li>
+                        <li>Inconsistent response formats</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>HTTP Status Codes</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Meaning</th>
+                        <th>When to Use</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>200 OK</strong></td>
+                        <td>Success</td>
+                        <td>GET, PUT, PATCH succeeded</td>
+                    </tr>
+                    <tr>
+                        <td><strong>201 Created</strong></td>
+                        <td>Resource created</td>
+                        <td>POST succeeded</td>
+                    </tr>
+                    <tr>
+                        <td><strong>204 No Content</strong></td>
+                        <td>Success, no response body</td>
+                        <td>DELETE succeeded</td>
+                    </tr>
+                    <tr>
+                        <td><strong>400 Bad Request</strong></td>
+                        <td>Invalid input</td>
+                        <td>Validation failed, malformed JSON</td>
+                    </tr>
+                    <tr>
+                        <td><strong>401 Unauthorized</strong></td>
+                        <td>Not authenticated</td>
+                        <td>Missing or invalid token</td>
+                    </tr>
+                    <tr>
+                        <td><strong>403 Forbidden</strong></td>
+                        <td>Not authorized</td>
+                        <td>Authenticated but no permission</td>
+                    </tr>
+                    <tr>
+                        <td><strong>404 Not Found</strong></td>
+                        <td>Resource doesn't exist</td>
+                        <td>Invalid ID or URL</td>
+                    </tr>
+                    <tr>
+                        <td><strong>500 Server Error</strong></td>
+                        <td>Server crashed</td>
+                        <td>Unhandled exception</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Building an API with Flask</h3>
+            <div class="code"># Simple REST API
+from flask import Flask, jsonify, request
+
+app = Flask(__name__)
+
+posts = [
+    {"id": 1, "title": "First Post", "views": 100},
+    {"id": 2, "title": "Second Post", "views": 50}
+]
+
+# List posts
+@app.route('/api/posts', methods=['GET'])
+def get_posts():
+    return jsonify(posts), 200
+
+# Get single post
+@app.route('/api/posts/<int:post_id>', methods=['GET'])
+def get_post(post_id):
+    post = next((p for p in posts if p['id'] == post_id), None)
+    if post:
+        return jsonify(post), 200
+    return jsonify({"error": "Post not found"}), 404
+
+# Create post
+@app.route('/api/posts', methods=['POST'])
+def create_post():
+    data = request.get_json()
+    
+    if not data or 'title' not in data:
+        return jsonify({"error": "Title required"}), 400
+    
+    new_post = {
+        "id": len(posts) + 1,
+        "title": data['title'],
+        "views": 0
+    }
+    posts.append(new_post)
+    return jsonify(new_post), 201
+
+# Update post
+@app.route('/api/posts/<int:post_id>', methods=['PUT'])
+def update_post(post_id):
+    post = next((p for p in posts if p['id'] == post_id), None)
+    if not post:
+        return jsonify({"error": "Post not found"}), 404
+    
+    data = request.get_json()
+    post.update(data)
+    return jsonify(post), 200
+
+# Delete post
+@app.route('/api/posts/<int:post_id>', methods=['DELETE'])
+def delete_post(post_id):
+    global posts
+    posts = [p for p in posts if p['id'] != post_id]
+    return '', 204</div>
+
+            <div class="info-box">
+                <h4>API Documentation</h4>
+                <p>Always document your APIs! Popular tools:</p>
+                <ul>
+                    <li><strong>Swagger/OpenAPI:</strong> Industry standard, interactive docs</li>
+                    <li><strong>Postman:</strong> Test APIs and generate documentation</li>
+                    <li><strong>API Blueprint:</strong> Markdown-based documentation</li>
+                </ul>
+                <p>Good docs include: endpoint URLs, HTTP methods, request/response examples, error codes, authentication requirements.</p>
+            </div>
+        </section>
+
+        <section class="section" id="auth">
+            <h2 class="section-title">Authentication & Security - Protecting Your App</h2>
+            <p class="section-intro">Security isn't optional. Every web application needs to authenticate users, protect passwords, and prevent attacks. This section covers the essentials of web security from a full-stack perspective.</p>
+
+            <h3>Authentication Strategies</h3>
+            <div class="card-grid">
+                <div class="card">
+                    <h4>🍪 Session-Based Auth</h4>
+                    <p><strong>How it works:</strong> Server stores session data, sends cookie to client</p>
+                    <p><strong>Pros:</strong> Simple, server controls sessions, easy to revoke</p>
+                    <p><strong>Cons:</strong> Not scalable, doesn't work for mobile apps</p>
+                    <p><strong>Best for:</strong> Traditional web apps with server-side rendering</p>
+                </div>
+                <div class="card">
+                    <h4>🎫 Token-Based (JWT)</h4>
+                    <p><strong>How it works:</strong> Server signs a token, client stores it, includes in requests</p>
+                    <p><strong>Pros:</strong> Stateless, scalable, works with mobile/SPA</p>
+                    <p><strong>Cons:</strong> Can't revoke without extra infrastructure</p>
+                    <p><strong>Best for:</strong> APIs, SPAs, mobile apps</p>
+                </div>
+                <div class="card">
+                    <h4>🔑 OAuth 2.0</h4>
+                    <p><strong>How it works:</strong> Third-party handles authentication (Google, GitHub)</p>
+                    <p><strong>Pros:</strong> No password storage, user convenience, established trust</p>
+                    <p><strong>Cons:</strong> Complex flow, dependency on third party</p>
+                    <p><strong>Best for:</strong> Consumer apps, social features</p>
+                </div>
+            </div>
+
+            <h3>Password Security</h3>
+            <p><strong>Never store passwords in plain text!</strong> Always hash them:</p>
+
+            <div class="code"># BAD - Never do this!
+user = {"username": "alice", "password": "secret123"}
+
+# GOOD - Use bcrypt
+from flask_bcrypt import Bcrypt
+bcrypt = Bcrypt(app)
+
+# Hash password on registration
+hashed = bcrypt.generate_password_hash("secret123").decode('utf-8')
+user = {"username": "alice", "password_hash": hashed}
+
+# Verify password on login
+if bcrypt.check_password_hash(user['password_hash'], "secret123"):
+    print("Login successful!")</div>
+
+            <p><strong>Why bcrypt?</strong></p>
+            <ul>
+                <li>Automatically salts passwords (prevents rainbow table attacks)</li>
+                <li>Slow by design (makes brute force impractical)</li>
+                <li>Configurable work factor (increase difficulty over time)</li>
+            </ul>
+
+            <h3>JWT (JSON Web Tokens)</h3>
+            <div class="code"># Install: pip install pyjwt
+
+import jwt
+import datetime
+
+SECRET_KEY = 'your-secret-key-here'
+
+# Create token on login
+def create_token(user_id):
+    payload = {
+        'user_id': user_id,
+        'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24),
+        'iat': datetime.datetime.utcnow()
+    }
+    token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
+    return token
+
+# Verify token on protected routes
+def verify_token(token):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+        return payload['user_id']
+    except jwt.ExpiredSignatureError:
+        return None  # Token expired
+    except jwt.InvalidTokenError:
+        return None  # Invalid token
+
+# Usage in Flask
+@app.route('/api/protected')
+def protected():
+    token = request.headers.get('Authorization')
+    if not token:
+        return jsonify({"error": "No token"}), 401
+    
+    user_id = verify_token(token)
+    if not user_id:
+        return jsonify({"error": "Invalid token"}), 401
+    
+    return jsonify({"message": "Access granted", "user": user_id})</div>
+
+            <h3>Common Security Vulnerabilities</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Attack</th>
+                        <th>Description</th>
+                        <th>Prevention</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>SQL Injection</strong></td>
+                        <td>Malicious SQL in user input</td>
+                        <td>Use parameterized queries or ORM</td>
+                    </tr>
+                    <tr>
+                        <td><strong>XSS</strong></td>
+                        <td>Inject JavaScript in pages</td>
+                        <td>Escape user input, use CSP headers</td>
+                    </tr>
+                    <tr>
+                        <td><strong>CSRF</strong></td>
+                        <td>Forged requests from other sites</td>
+                        <td>CSRF tokens, SameSite cookies</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Brute Force</strong></td>
+                        <td>Guess passwords repeatedly</td>
+                        <td>Rate limiting, account lockout, 2FA</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="info-box">
+                <h4>Security Best Practices</h4>
+                <ul>
+                    <li><strong>HTTPS everywhere:</strong> Never send credentials over HTTP</li>
+                    <li><strong>Validate input:</strong> Never trust user data</li>
+                    <li><strong>Least privilege:</strong> Users only get permissions they need</li>
+                    <li><strong>Regular updates:</strong> Keep dependencies patched</li>
+                    <li><strong>Security headers:</strong> X-Frame-Options, X-XSS-Protection, CSP</li>
+                    <li><strong>Logging:</strong> Track failed logins, suspicious activity</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="section" id="deployment">
+            <h2 class="section-title">Deployment - From Localhost to Production</h2>
+            <p class="section-intro">Your app works on your machine. Now make it work for the world. Deployment is where you learn about servers, DNS, environment variables, SSL certificates, and all the unglamorous parts of web development that separate hobbyists from professionals.</p>
+
+            <h3>Hosting Options</h3>
+            <div class="card-grid">
+                <div class="card">
+                    <h4>☁️ Heroku</h4>
+                    <p><strong>Best for:</strong> Beginners, quick deployments, prototypes</p>
+                    <p><strong>Pros:</strong> Dead simple, git push to deploy, free tier</p>
+                    <p><strong>Cons:</strong> Expensive at scale, less control</p>
+                </div>
+                <div class="card">
+                    <h4>🚀 Vercel/Netlify</h4>
+                    <p><strong>Best for:</strong> Frontend/static sites, serverless functions</p>
+                    <p><strong>Pros:</strong> Fast CDN, automatic HTTPS, great DX</p>
+                    <p><strong>Cons:</strong> Limited backend capabilities</p>
+                </div>
+                <div class="card">
+                    <h4>🐳 DigitalOcean/AWS</h4>
+                    <p><strong>Best for:</strong> Full control, production apps, scalability</p>
+                    <p><strong>Pros:</strong> Complete flexibility, affordable, learn real devops</p>
+                    <p><strong>Cons:</strong> More complex, manage your own servers</p>
+                </div>
+            </div>
+
+            <h3>Environment Variables</h3>
+            <p>Never hardcode secrets! Use environment variables:</p>
+
+            <div class="code"># .env file (NEVER commit this!)
+DATABASE_URL=postgresql://user:password@localhost/mydb
+SECRET_KEY=super-secret-key-12345
+API_KEY=your-api-key-here
+
+# Load in Python
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+DATABASE_URL = os.getenv('DATABASE_URL')
+SECRET_KEY = os.getenv('SECRET_KEY')</div>
+
+            <h3>Docker - Consistent Environments</h3>
+            <p>Docker ensures your app runs the same everywhere:</p>
+
+            <div class="code"># Dockerfile
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 5000
+
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]</div>
+
+            <div class="code"># docker-compose.yml
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_URL=postgresql://db/myapp
+    depends_on:
+      - db
+  
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_PASSWORD=secret
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:</div>
+
+            <h3>Production Checklist</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Why It Matters</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>DEBUG = False</strong></td>
+                        <td>Debug mode leaks sensitive info</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Strong SECRET_KEY</strong></td>
+                        <td>Protects sessions and tokens</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Database backups</strong></td>
+                        <td>Prevent data loss</td>
+                    </tr>
+                    <tr>
+                        <td><strong>HTTPS/SSL</strong></td>
+                        <td>Encrypt traffic, required for auth</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Monitoring/Logging</strong></td>
+                        <td>Know when things break</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Rate limiting</strong></td>
+                        <td>Prevent abuse and DoS</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="section" id="integration">
+            <h2 class="section-title">Full-Stack Integration - Connecting Frontend to Backend</h2>
+            <p class="section-intro">You've built a React frontend. You've built a Flask backend. Now connect them. This is where architecture decisions matter, where CORS headaches happen, where state management gets complex. This is full-stack engineering.</p>
+
+            <h3>Frontend Makes API Calls</h3>
+            <div class="code">// React component calling Flask API
+import { useState, useEffect } from 'react';
+
+function PostList() {
+    const [posts, setPosts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    
+    useEffect(() => {
+        fetch('http://localhost:5000/api/posts')
+            .then(res => {
+                if (!res.ok) throw new Error('Failed to fetch');
+                return res.json();
+            })
+            .then(data => {
+                setPosts(data);
+                setLoading(false);
+            })
+            .catch(err => {
+                setError(err.message);
+                setLoading(false);
+            });
+    }, []);
+    
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
+    
+    return (
+        <div>
+            {posts.map(post => (
+                <div key={post.id}>
+                    <h2>{post.title}</h2>
+                    <p>{post.body}</p>
+                </div>
+            ))}
+        </div>
+    );
+}</div>
+
+            <h3>CORS - The Dreaded Cross-Origin Error</h3>
+            <p>Frontend at <span class="inline-code">localhost:3000</span>, backend at <span class="inline-code">localhost:5000</span> → CORS error!</p>
+
+            <div class="code"># Flask CORS setup
+from flask_cors import CORS
+
+app = Flask(__name__)
+
+# Allow all origins (development only!)
+CORS(app)
+
+# Production - be specific!
+CORS(app, resources={
+    r"/api/*": {
+        "origins": ["https://yourdomain.com"],
+        "methods": ["GET", "POST", "PUT", "DELETE"],
+        "allow_headers": ["Content-Type", "Authorization"]
+    }
+})</div>
+
+            <h3>Authentication Flow</h3>
+            <div class="code">// Login and store token
+async function login(username, password) {
+    const response = await fetch('http://localhost:5000/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+    });
+    
+    const data = await response.json();
+    localStorage.setItem('token', data.token);
+    return data;
+}
+
+// Make authenticated requests
+async function fetchProtectedData() {
+    const token = localStorage.getItem('token');
+    
+    const response = await fetch('http://localhost:5000/api/protected', {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+    
+    return response.json();
+}</div>
+
+            <div class="info-box">
+                <h4>State Management in Full-Stack Apps</h4>
+                <p>For complex apps, consider:</p>
+                <ul>
+                    <li><strong>Context API:</strong> Built into React, good for simple state</li>
+                    <li><strong>Redux:</strong> Centralized store, time-travel debugging, lots of boilerplate</li>
+                    <li><strong>Zustand:</strong> Simpler than Redux, less boilerplate</li>
+                    <li><strong>TanStack Query:</strong> Specialized for server state (API data)</li>
+                </ul>
+                <p>Don't over-engineer. Start with useState/useEffect, add complexity only when needed.</p>
+            </div>
+        </section>
+
+        <section class="section" id="projects">
+            <h2 class="section-title">Real-World Projects - Build Your Portfolio</h2>
+            <p class="section-intro">Theory is learned in chapters. Skill is built in projects. Here are complete application architectures you can build to solidify everything you've learned and create impressive portfolio pieces.</p>
+
+            <h3>Project 1: Blog Platform</h3>
+            <p><strong>Features:</strong> User authentication, create/edit posts, comments, search, tags</p>
+            <p><strong>Frontend:</strong> React with routing, markdown editor, responsive design</p>
+            <p><strong>Backend:</strong> Django with DRF, PostgreSQL, JWT auth</p>
+            <p><strong>Key Learning:</strong> CRUD operations, relationships, authentication flow</p>
+
+            <div class="code"># Backend models
+class Post(models.Model):
+    title = models.CharField(max_length=200)
+    slug = models.SlugField(unique=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    body = models.TextField()
+    tags = models.ManyToManyField('Tag')
+    created = models.DateTimeField(auto_now_add=True)
+
+class Comment(models.Model):
+    post = models.ForeignKey(Post, related_name='comments')
+    author = models.ForeignKey(User)
+    body = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)</div>
+
+            <h3>Project 2: Task Manager with Real-Time Updates</h3>
+            <p><strong>Features:</strong> Create tasks, assign to users, real-time notifications, drag-and-drop</p>
+            <p><strong>Frontend:</strong> React with WebSockets, drag-and-drop library</p>
+            <p><strong>Backend:</strong> Flask with Flask-SocketIO, Redis for pub/sub</p>
+            <p><strong>Key Learning:</strong> Real-time communication, state synchronization</p>
+
+            <h3>Project 3: E-Commerce MVP</h3>
+            <p><strong>Features:</strong> Product catalog, cart, checkout, order history</p>
+            <p><strong>Frontend:</strong> React with context for cart state, Stripe integration</p>
+            <p><strong>Backend:</strong> Django with payment processing, inventory management</p>
+            <p><strong>Key Learning:</strong> Payment APIs, complex state, security considerations</p>
+
+            <h3>Project 4: Social Media Feed</h3>
+            <p><strong>Features:</strong> Post updates, follow users, like/comment, infinite scroll</p>
+            <p><strong>Frontend:</strong> React with TanStack Query, image uploads</p>
+            <p><strong>Backend:</strong> Flask with S3 for media, complex queries</p>
+            <p><strong>Key Learning:</strong> File uploads, pagination, feed algorithms</p>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h4>🎯 Portfolio Tips</h4>
+                    <ul style="margin-top: 1rem; font-size: 0.9rem;">
+                        <li>Deploy it live (Heroku, Vercel)</li>
+                        <li>Write good README with screenshots</li>
+                        <li>Clean, commented code</li>
+                        <li>Mobile responsive design</li>
+                        <li>Include tests</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>🚀 Next Level</h4>
+                    <ul style="margin-top: 1rem; font-size: 0.9rem;">
+                        <li>Add TypeScript</li>
+                        <li>Implement CI/CD</li>
+                        <li>Add comprehensive tests</li>
+                        <li>Performance optimization</li>
+                        <li>Accessibility (a11y)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="metaphor-box">
+                <h4>The 100 Hours Rule</h4>
+                <p>Reading this chapter took 2 hours. Building a real project takes 100+ hours. That's where real learning happens - debugging CORS errors at 2am, optimizing slow queries, refactoring messy code.</p>
+                <p>Don't just read. Build. Break things. Fix them. That's how you become a full-stack developer.</p>
+            </div>
+        </section>
+
+        <div style="margin-top: 6rem; padding-top: 3rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between;">
+            <a href="programming-ch05.html" style="color: var(--text2); text-decoration: none;">← Chapter 05: Web Development</a>
+            <a href="programming-ch07.html" style="color: var(--text); text-decoration: none; font-weight: 600;">Next: Chapter 07 →</a>
+        </div>
+    </main>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progress').style.width = scrolled + '%';
+        });
+
+        const sections = document.querySelectorAll('.section');
+        const sidebarLinks = document.querySelectorAll('.sidebar-link');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (scrollY >= (sectionTop - 150)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            sidebarLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
 
 # ==================== CREATING FROM OTHER DATA ====================
 
