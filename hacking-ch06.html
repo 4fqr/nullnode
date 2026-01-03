@@ -4929,7 +4929,7 @@ curl -H "Content-Type: application/json" \
      -d '{"user":"admin"}' URL              # JSON POST
 curl -b cookies.txt -c cookies.txt URL      # Handle cookies
 curl -x http://127.0.0.1:8080 URL           # Through Burp proxy
-curl --data-urlencode "param=<script>" URL  # URL encode data
+curl --data-urlencode "param=&lt;script&gt;" URL  # URL encode data
 
 # ==================== FFUF - FAST WEB FUZZER ====================
 
