@@ -700,7 +700,7 @@ class ExploitBase:
     
     def test_xss(self, param):
         """Test XSS on parameter"""
-        payload = "<script>alert(1)</script>"
+        payload = "&lt;script&gt;alert(1)&lt;/script&gt;"
         response = self.session.get(f"{self.target}?{param}={payload}")
         if payload in response.text:
             return True
@@ -3134,7 +3134,7 @@ class WebScanner:
     
     def test_xss(self, url):
         """Test for XSS"""
-        payload = '<script>alert(1)</script>'
+        payload = '&lt;script&gt;alert(1)&lt;/script&gt;'
         test_url = url + '?q=' + payload
         
         try:
