@@ -3,72 +3,1812 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ch8: Coming Soon - NullSector</title>
+    <title>Chapter 08: Full-Stack Integration - Part I - NullSector</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root { --bg: #000; --text: #fff; --text2: #888; --border: #222; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
-        header { position: fixed; top: 0; left: 0; right: 0; background: var(--bg); border-bottom: 1px solid var(--border); z-index: 1000; }
-        .header-content { max-width: 1400px; margin: 0 auto; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        :root {
+            --bg: #000; --bg2: #0a0a0a; --bg3: #111;
+            --text: #fff; --text2: #888; --text3: #555;
+            --border: rgba(255,255,255,0.1);
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; overflow-x: hidden; }
+        .header { position: fixed; top: 0; left: 0; right: 0; height: 70px; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); z-index: 1000; display: flex; align-items: center; padding: 0 2rem; }
+        .header-content { width: 100%; max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
         .brand { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--text); font-weight: 700; font-size: 1.25rem; }
-        .brand-logo { width: 36px; height: 36px; }
-        .header-links { display: flex; gap: 2rem; }
-        .header-links a { color: var(--text2); text-decoration: none; font-weight: 500; transition: color 0.2s; }
-        .header-links a:hover { color: var(--text); }
-        main { margin-top: 70px; padding: 4rem 2rem; max-width: 900px; margin-left: auto; margin-right: auto; min-height: calc(100vh - 70px); display: flex; flex-direction: column; justify-content: center; }
-        h1 { font-size: 3rem; font-weight: 800; margin-bottom: 1rem; }
-        .subtitle { font-size: 1.3rem; color: var(--text2); margin-bottom: 3rem; }
-        .coming-soon-box { background: linear-gradient(135deg, #111 0%, #1a1a1a 100%); border: 1px solid var(--border); padding: 3rem; border-radius: 12px; }
-        .coming-soon-box h2 { font-size: 1.8rem; margin-bottom: 1.5rem; }
-        .coming-soon-box p { color: var(--text2); margin-bottom: 1rem; font-size: 1.05rem; }
-        .coming-soon-box ul { margin: 1.5rem 0; padding-left: 2rem; color: var(--text2); }
-        .coming-soon-box li { margin-bottom: 0.75rem; }
-        .nav-buttons { display: flex; gap: 1rem; margin-top: 3rem; }
-        .nav-buttons a { flex: 1; padding: 1rem 1.5rem; background: var(--bg); border: 1px solid var(--border); color: var(--text); text-decoration: none; border-radius: 8px; font-weight: 600; text-align: center; transition: all 0.2s; }
-        .nav-buttons a:hover { border-color: var(--text); }
+        .nav { display: flex; gap: 2rem; align-items: center; }
+        .nav a { color: var(--text2); text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: color 0.3s; }
+        .nav a:hover { color: var(--text); }
+        .dropdown { position: relative; display: inline-block; }
+        .dropdown-toggle { cursor: pointer; display: flex; align-items: center; gap: 0.5rem; color: var(--text2); font-size: 0.95rem; font-weight: 500; transition: color 0.3s; }
+        .dropdown-toggle:hover { color: var(--text); }
+        .dropdown-menu { position: absolute; top: 100%; left: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: 8px; margin-top: 0.5rem; min-width: 200px; opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.3s cubic-bezier(0.16,1,0.3,1); z-index: 1001; }
+        .dropdown:hover .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+        .dropdown-menu a { display: block; padding: 1rem 1.5rem; color: var(--text2); text-decoration: none; transition: all 0.2s; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .dropdown-menu a:last-child { border-bottom: none; }
+        .dropdown-menu a:hover { background: rgba(255,255,255,0.05); color: var(--text); padding-left: 2rem; }
+        .dropdown-arrow { font-size: 0.7rem; transition: transform 0.3s; }
+        .dropdown:hover .dropdown-arrow { transform: rotate(180deg); }
+        .sidebar { position: fixed; left: 0; top: 70px; width: 280px; height: calc(100vh - 70px); background: var(--bg2); border-right: 1px solid var(--border); overflow-y: auto; padding: 2rem 0; z-index: 100; }
+        .sidebar::-webkit-scrollbar { width: 6px; }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+        .sidebar-section { padding: 0 1.5rem; margin-bottom: 2rem; }
+        .sidebar-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); margin-bottom: 1rem; }
+        .sidebar-link { display: block; color: var(--text2); text-decoration: none; padding: 0.6rem 1rem; margin: 0.25rem 0; border-radius: 6px; font-size: 0.9rem; transition: all 0.3s; }
+        .sidebar-link:hover { background: rgba(255,255,255,0.05); color: var(--text); transform: translateX(4px); }
+        .sidebar-link.active { background: rgba(255,255,255,0.1); color: var(--text); font-weight: 600; }
+        .main { margin-left: 280px; margin-top: 70px; padding: 4rem 3rem; max-width: 1100px; }
+        .page-header { margin-bottom: 4rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+        .chapter-label { font-size: 0.875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--text3); margin-bottom: 1rem; }
+        .page-title { font-size: 3.5rem; font-weight: 800; line-height: 1.2; margin-bottom: 1rem; letter-spacing: -1px; }
+        .page-subtitle { font-size: 1.25rem; color: var(--text2); font-weight: 400; line-height: 1.6; }
+        .section { margin-bottom: 6rem; scroll-margin-top: 100px; }
+        .section-title { font-size: 2.25rem; font-weight: 700; margin-bottom: 1.5rem; }
+        .section-intro { font-size: 1.125rem; color: var(--text2); margin-bottom: 2rem; line-height: 1.8; }
+        h3 { font-size: 1.75rem; font-weight: 600; margin: 3rem 0 1.5rem; }
+        h4 { font-size: 1.375rem; font-weight: 600; margin: 2.5rem 0 1.25rem; }
+        p { font-size: 1.0625rem; line-height: 1.8; margin-bottom: 1.5rem; }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+        .card { background: var(--bg3); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; transition: all 0.3s; }
+        .card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.2); }
+        .card h4 { font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; margin-top: 0; }
+        .card p { color: var(--text2); font-size: 0.9375rem; margin-bottom: 0; }
+        .info-box { background: var(--bg3); border-left: 3px solid var(--text); padding: 1.5rem; margin: 2rem 0; border-radius: 0 8px 8px 0; word-wrap: break-word; overflow-wrap: break-word; }
+        .info-box h4 { font-weight: 600; margin-bottom: 0.75rem; margin-top: 0; }
+        .info-box p { color: var(--text2); margin-bottom: 0; }
+        .warning-box { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-left: 3px solid #ff6b6b; padding: 1.5rem; margin: 2rem 0; border-radius: 0 8px 8px 0; word-wrap: break-word; overflow-wrap: break-word; }
+        .warning-box h4 { font-weight: 600; margin-bottom: 0.75rem; color: #ff6b6b; margin-top: 0; }
+        .code { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.875rem; line-height: 1.7; white-space: pre-wrap; word-wrap: break-word; max-width: 100%; }
+        .inline-code { background: rgba(255,255,255,0.1); padding: 0.2rem 0.5rem; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.875em; white-space: nowrap; }
+        .metaphor-box { background: rgba(255,255,255,0.03); border-left: 4px solid var(--text); padding: 1.5rem 2.5rem 1.5rem 1.5rem; margin: 2rem 0; border-radius: 0 8px 8px 0; position: relative; word-wrap: break-word; overflow-wrap: break-word; }
+        .metaphor-box::before { content: "💡"; position: absolute; top: 1rem; right: 1rem; font-size: 1.5rem; }
+        .metaphor-box h4 { margin-bottom: 0.75rem; font-weight: 600; margin-top: 0; }
+        ul, ol { margin: 1.5rem 0; padding-left: 2rem; }
+        li { margin: 0.75rem 0; color: var(--text2); }
+        table { width: 100%; border-collapse: collapse; margin: 2rem 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+        th, td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border); }
+        th { background: var(--bg2); font-weight: 600; font-size: 0.875rem; text-transform: uppercase; }
+        td { color: var(--text2); font-size: 0.9375rem; }
+        .progress { position: fixed; top: 70px; left: 0; height: 3px; background: linear-gradient(90deg, var(--text) 0%, var(--text2) 100%); transition: width 0.1s; z-index: 1001; }
+        @media (max-width: 1024px) { .sidebar { transform: translateX(-100%); } .main { margin-left: 0; padding: 3rem 2rem; } .page-title { font-size: 2.5rem; } }
     </style>
 </head>
 <body>
-    <header>
+    <div class="progress" id="progress"></div>
+    <header class="header">
         <div class="header-content">
             <a href="index.html" class="brand">
-                <img src="logo.svg" alt="NullSector" class="brand-logo">
+                <img src="logo.svg" alt="NullSector" width="36" height="36">
                 <span>NullSector</span>
             </a>
-            <div class="header-links">
-                <a href="roadmap-programming.html">Programming Roadmap</a>
-                <a href="index.html">Home</a>
-            </div>
+            <nav class="nav">
+                <a href="roadmap-hacking.html">Hacking</a>
+                <a href="roadmap-programming.html">Programming</a>
+                <a href="resources.html">Resources</a>
+                <div class="dropdown">
+                    <span class="dropdown-toggle">
+                        Null Tools
+                        <span class="dropdown-arrow">▼</span>
+                    </span>
+                    <div class="dropdown-menu">
+                        <a href="https://github.com/4fqr/null-cli" target="_blank">Null CLI</a>
+                        <a href="https://nullheadline.vercel.app/" target="_blank">Null Hacker's Headlines</a>
+                        <a href="https://github.com/4fqr/nullmysteryorg" target="_blank">Null: Mystery Organisation</a>
+                        <a href="https://github.com/4fqr/null-ide/" target="_blank">Null IDE</a>
+                    </div>
+                </div>
+                <a href="null-terminal.html">Null Terminal</a>
+                <a href="faq.html">FAQs</a>
+                <a href="https://discord.gg/cMvWkxFbbX" target="_blank">Discord</a>
+            </nav>
         </div>
     </header>
 
-    <main>
-        <h1>Chapter 8: Coming Soon</h1>
-        <p class="subtitle">Content in development</p>
+    <aside class="sidebar">
+        <div class="sidebar-section">
+            <div class="sidebar-title">On This Page</div>
+            <a href="#react-deep-dive" class="sidebar-link">React Deep Dive</a>
+            <a href="#vue-mastery" class="sidebar-link">Vue Mastery</a>
+            <a href="#state-management" class="sidebar-link">State Management</a>
+            <a href="#api-integration" class="sidebar-link">API Integration</a>
+            <a href="#realtime-features" class="sidebar-link">Real-Time Features</a>
+            <a href="#authentication" class="sidebar-link">Authentication & Authorization</a>
+            <a href="#file-uploads" class="sidebar-link">File Uploads & Media</a>
+            <a href="#pwa-features" class="sidebar-link">Progressive Web Apps</a>
+            <a href="#testing-integration" class="sidebar-link">Testing Full-Stack Apps</a>
+            <a href="#deployment-scaling" class="sidebar-link">Deployment & Scaling</a>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-title">Navigation</div>
+            <a href="programming-bonus-reading-code.html" class="sidebar-link">← Previous: Reading Code</a>
+            <a href="programming-ch07.html" class="sidebar-link">Chapter 07: Databases</a>
+            <a href="programming-bonus-how-to-code.html" class="sidebar-link">Bonus B1: How To Code</a>
+            <a href="programming-ch09.html" class="sidebar-link">Next: Professional Practices →</a>
+        </div>
+    </aside>
 
-        <div class="coming-soon-box">
-            <h2>📚 Chapter Content Coming Soon</h2>
-            <p>This chapter will contain <strong>comprehensive coverage</strong> of programming fundamentals with extreme detail for absolute beginners.</p>
-            <p><strong>What to expect:</strong></p>
+    <main class="main">
+        <div class="page-header">
+            <div class="chapter-label">Chapter 08</div>
+            <h1 class="page-title">Full-Stack Integration - Part I</h1>
+            <p class="page-subtitle">Master modern frontend frameworks, state management, real-time features, authentication, and seamless backend integration. Build production-ready full-stack applications from scratch.</p>
+        </div>
+
+        <!-- SECTION 1: React Deep Dive -->
+        <section id="react-deep-dive" class="section">
+            <h2 class="section-title">React Deep Dive</h2>
+            <p class="section-intro">Master React from fundamentals to advanced patterns. This comprehensive guide covers everything from basic concepts to production-ready patterns, performance optimization, and architectural decisions that will make you a confident React developer.</p>
+
+            <h3>Introduction to React</h3>
+            <p>React is a JavaScript library for building user interfaces, developed and maintained by Facebook (Meta). It has revolutionized how we think about building web applications by introducing a component-based architecture and a declarative programming paradigm.</p>
+
+            <div class="metaphor-box">
+                <h4>The React Philosophy</h4>
+                <p>Think of React like building with LEGO blocks. Instead of painting a mural (traditional DOM manipulation), you're assembling pre-made blocks (components) that you can reuse, rearrange, and combine in different ways. Each block is self-contained, but they work together to create something amazing.</p>
+            </div>
+
+            <h4>Why React?</h4>
+            <p>React solved several fundamental problems that plagued web development:</p>
             <ul>
-                <li>Complete beginner-friendly explanations with metaphors</li>
-                <li>Colorful code examples with syntax highlighting</li>
-                <li>Real working demonstrations and hands-on exercises</li>
-                <li>Step-by-step walkthroughs</li>
-                <li>Security implications and hacker perspectives</li>
-                <li>Practice challenges and quick checks</li>
+                <li><strong>DOM Manipulation Complexity:</strong> Traditional jQuery-style DOM manipulation becomes unmanageable as applications grow. React abstracts this complexity.</li>
+                <li><strong>State Synchronization:</strong> Keeping the UI in sync with data is error-prone. React's declarative approach makes this natural and predictable.</li>
+                <li><strong>Component Reusability:</strong> React encourages creating reusable components, reducing code duplication and bugs.</li>
+                <li><strong>Developer Experience:</strong> With tools like React DevTools, hot reloading, and a massive ecosystem, React offers an exceptional development experience.</li>
+                <li><strong>Performance:</strong> The Virtual DOM enables React to make intelligent decisions about when and how to update the actual DOM.</li>
             </ul>
-            <p style="margin-top: 1.5rem;"><strong>Expected content:</strong> Massive scrollable chapter with extensive examples and teaching material.</p>
-        </div>
 
-        <div class="nav-buttons">
-            <a href="programming-ch07.html">← Previous Chapter</a>
-            <a href="programming-ch09.html">Next Chapter →</a>
+            <h4>The Virtual DOM</h4>
+            <p>The Virtual DOM is React's secret weapon for performance. Here's how it works:</p>
+
+            <div class="metaphor-box">
+                <h4>Virtual DOM Explained</h4>
+                <p>Imagine you're writing a book and need to make edits. Instead of erasing and rewriting directly on the final published copy (expensive and slow), you make changes on a draft copy, compare it with the published version, and only update the specific pages that changed. That's exactly what the Virtual DOM does!</p>
+            </div>
+
+            <div class="code">// How Virtual DOM works behind the scenes
+
+// 1. You update state
+setState({ count: count + 1 });
+
+// 2. React creates a NEW virtual DOM tree
+const newVirtualDOM = render();
+
+// 3. React compares (diffs) new vs old virtual DOM
+const differences = diff(oldVirtualDOM, newVirtualDOM);
+
+// 4. React updates ONLY the changed parts in real DOM
+patch(realDOM, differences);
+
+// This is MUCH faster than re-rendering everything!</div>
+
+            <div class="info-box">
+                <h4>Virtual DOM Benefits</h4>
+                <p><strong>Batching:</strong> React batches multiple state updates together, performing a single DOM update instead of many.<br><br>
+                <strong>Minimal Updates:</strong> Only changed elements are updated in the real DOM.<br><br>
+                <strong>Cross-Platform:</strong> The same virtual DOM concept enables React Native for mobile development.</p>
+            </div>
+
+            <h4>Component-Based Architecture</h4>
+            <p>React applications are built using components - self-contained, reusable pieces of UI. This architecture provides:</p>
+
+            <div class="code">// Component hierarchy example
+
+App
+├── Header
+│   ├── Logo
+│   ├── Navigation
+│   │   ├── NavLink
+│   │   ├── NavLink
+│   │   └── NavLink
+│   └── UserMenu
+├── Main
+│   ├── Sidebar
+│   │   └── FilterPanel
+│   └── Content
+│       ├── ProductList
+│       │   ├── ProductCard
+│       │   ├── ProductCard
+│       │   └── ProductCard
+│       └── Pagination
+└── Footer
+
+// Each component is independent, testable, and reusable</div>
+
+            <h3>React Fundamentals Refresher</h3>
+
+            <h4>JSX - JavaScript XML</h4>
+            <p>JSX is a syntax extension that allows you to write HTML-like code in JavaScript. It's not required but makes React code more readable and expressive.</p>
+
+            <div class="code">// JSX makes React intuitive
+const element = <h1>Hello, World!</h1>;
+
+// Behind the scenes, JSX compiles to:
+const element = React.createElement('h1', null, 'Hello, World!');
+
+// JSX can embed expressions
+const name = 'Alice';
+const greeting = <h1>Hello, {name}!</h1>;
+
+// JSX can use JavaScript expressions
+const result = (
+  <div>
+    <h2>2 + 2 = {2 + 2}</h2>
+    <p>Random: {Math.random()}</p>
+    <button onClick={() => console.log('Clicked!')}>
+      Click Me
+    </button>
+  </div>
+);
+
+// JSX attributes use camelCase
+const input = (
+  <input
+    type="text"
+    className="form-control"  // not 'class'
+    onChange={handleChange}   // not 'onchange'
+    autoFocus                 // boolean attribute
+  />
+);</div>
+
+            <div class="warning-box">
+                <h4>Common JSX Pitfalls</h4>
+                <p><strong>className not class:</strong> Use <span class="inline-code">className</span> instead of <span class="inline-code">class</span> for CSS classes.<br><br>
+                <strong>htmlFor not for:</strong> Use <span class="inline-code">htmlFor</span> in label elements.<br><br>
+                <strong>Self-closing tags:</strong> All tags must be closed: <span class="inline-code">&lt;img /&gt;</span> not <span class="inline-code">&lt;img&gt;</span>.<br><br>
+                <strong>Return single element:</strong> JSX must return a single root element (or use Fragments).</p>
+            </div>
+
+            <h4>Components - Functional vs Class</h4>
+            <p>Modern React uses functional components with hooks, but understanding class components is still valuable for legacy codebases.</p>
+
+            <div class="code">// FUNCTIONAL COMPONENT (Modern approach)
+function Welcome({ name, greeting = 'Hello' }) {
+  return (
+    <div className="welcome">
+      <h1>{greeting}, {name}!</h1>
+      <p>Welcome to React</p>
+    </div>
+  );
+}
+
+// Arrow function syntax
+const Welcome = ({ name, greeting = 'Hello' }) => (
+  <div className="welcome">
+    <h1>{greeting}, {name}!</h1>
+  </div>
+);
+
+// CLASS COMPONENT (Legacy, but still used)
+class Welcome extends React.Component {
+  render() {
+    const { name, greeting = 'Hello' } = this.props;
+    return (
+      <div className="welcome">
+        <h1>{greeting}, {name}!</h1>
+        <p>Welcome to React</p>
+      </div>
+    );
+  }
+}</div>
+
+            <h4>Props - Passing Data Down</h4>
+            <p>Props (properties) are how components communicate. They flow down from parent to child components.</p>
+
+            <div class="code">// Passing props
+function App() {
+  const user = {
+    name: 'Alice',
+    age: 28,
+    email: 'alice@example.com'
+  };
+
+  return (
+    <div>
+      <UserProfile 
+        user={user}
+        isActive={true}
+        onUpdate={(data) => console.log('Updated:', data)}
+      />
+    </div>
+  );
+}
+
+// Receiving props - destructuring is cleaner
+function UserProfile({ user, isActive, onUpdate }) {
+  return (
+    <div className={`profile ${isActive ? 'active' : ''}`}>
+      <h2>{user.name}</h2>
+      <p>Age: {user.age}</p>
+      <p>Email: {user.email}</p>
+      <button onClick={() => onUpdate(user)}>
+        Update Profile
+      </button>
+    </div>
+  );
+}
+
+// Props with children
+function Card({ title, children }) {
+  return (
+    <div className="card">
+      <h3>{title}</h3>
+      <div className="card-body">
+        {children}
+      </div>
+    </div>
+  );
+}
+
+// Usage
+<Card title="My Card">
+  <p>This is the card content</p>
+  <button>Action</button>
+</Card></div>
+
+            <div class="info-box">
+                <h4>Props Best Practices</h4>
+                <p><strong>Props are immutable:</strong> Never modify props inside a component. They're read-only.<br><br>
+                <strong>Destructure early:</strong> Destructure props in the function signature for cleaner code.<br><br>
+                <strong>Default values:</strong> Use default parameters for optional props.<br><br>
+                <strong>PropTypes:</strong> Consider using PropTypes or TypeScript for type checking.</p>
+            </div>
+
+            <h4>State - Managing Component Data</h4>
+            <p>State is data that changes over time. When state changes, React re-renders the component.</p>
+
+            <div class="code">import { useState } from 'react';
+
+function Counter() {
+  // useState returns [currentValue, setterFunction]
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <h2>Count: {count}</h2>
+      <button onClick={() => setCount(count + 1)}>
+        Increment
+      </button>
+      <button onClick={() => setCount(count - 1)}>
+        Decrement
+      </button>
+      <button onClick={() => setCount(0)}>
+        Reset
+      </button>
+    </div>
+  );
+}
+
+// Complex state with objects
+function UserForm() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    age: 0
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  return (
+    <form>
+      <input
+        name="name"
+        value={formData.name}
+        onChange={handleChange}
+        placeholder="Name"
+      />
+      <input
+        name="email"
+        value={formData.email}
+        onChange={handleChange}
+        placeholder="Email"
+      />
+      <input
+        name="age"
+        type="number"
+        value={formData.age}
+        onChange={handleChange}
+        placeholder="Age"
+      />
+    </form>
+  );
+}</div>
+
+            <h3>Hooks Mastery</h3>
+            <p>Hooks are functions that let you "hook into" React features from functional components. They revolutionized React development by making functional components as powerful as class components.</p>
+
+            <h4>useState - State Management</h4>
+            <p>The most commonly used hook for managing component state.</p>
+
+            <div class="code">import { useState } from 'react';
+
+// Basic usage
+function Example() {
+  const [count, setCount] = useState(0);
+  
+  return <button onClick={() => setCount(count + 1)}>
+    Clicked {count} times
+  </button>;
+}
+
+// Functional updates (when new state depends on old state)
+function Counter() {
+  const [count, setCount] = useState(0);
+  
+  const increment = () => {
+    // BAD - can cause bugs with multiple updates
+    setCount(count + 1);
+    
+    // GOOD - uses previous state
+    setCount(prev => prev + 1);
+  };
+  
+  const incrementMultiple = () => {
+    // This works correctly because of functional updates
+    setCount(prev => prev + 1);
+    setCount(prev => prev + 1);
+    setCount(prev => prev + 1);
+  };
+  
+  return <button onClick={incrementMultiple}>+3</button>;
+}
+
+// Lazy initialization (expensive computation)
+function ExpensiveComponent() {
+  // BAD - runs every render
+  const [state, setState] = useState(expensiveFunction());
+  
+  // GOOD - runs only on initial render
+  const [state, setState] = useState(() => expensiveFunction());
+  
+  return <div>{state}</div>;
+}
+
+// Multiple state variables
+function Form() {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [age, setAge] = useState(0);
+  const [errors, setErrors] = useState({});
+  
+  // OR use a single state object
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    age: 0
+  });
+  
+  return null;
+}</div>
+
+            <h4>useEffect - Side Effects</h4>
+            <p>useEffect handles side effects like data fetching, subscriptions, and manual DOM manipulation.</p>
+
+            <div class="code">import { useState, useEffect } from 'react';
+
+// Basic usage - runs after every render
+function Example() {
+  const [count, setCount] = useState(0);
+  
+  useEffect(() => {
+    document.title = `Count: ${count}`;
+  });
+  
+  return <button onClick={() => setCount(count + 1)}>
+    Increment
+  </button>;
+}
+
+// With dependency array - runs only when dependencies change
+function User({ userId }) {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    setLoading(true);
+    
+    fetch(`/api/users/${userId}`)
+      .then(res => res.json())
+      .then(data => {
+        setUser(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, [userId]); // Re-run when userId changes
+  
+  if (loading) return <div>Loading...</div>;
+  return <div>{user?.name}</div>;
+}
+
+// Cleanup function - prevents memory leaks
+function Timer() {
+  const [seconds, setSeconds] = useState(0);
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSeconds(prev => prev + 1);
+    }, 1000);
+    
+    // Cleanup function runs before component unmounts
+    // and before the effect runs again
+    return () => {
+      clearInterval(interval);
+      console.log('Timer cleaned up');
+    };
+  }, []); // Empty array = run once on mount
+  
+  return <div>Seconds: {seconds}</div>;
+}
+
+// Real-world example - WebSocket connection
+function ChatRoom({ roomId }) {
+  const [messages, setMessages] = useState([]);
+  
+  useEffect(() => {
+    const ws = new WebSocket(`ws://api.com/rooms/${roomId}`);
+    
+    ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      setMessages(prev => [...prev, message]);
+    };
+    
+    ws.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+    
+    // Cleanup: close connection when component unmounts
+    // or when roomId changes
+    return () => {
+      ws.close();
+    };
+  }, [roomId]);
+  
+  return (
+    <div>
+      {messages.map(msg => (
+        <div key={msg.id}>{msg.text}</div>
+      ))}
+    </div>
+  );
+}</div>
+
+            <div class="warning-box">
+                <h4>useEffect Pitfalls</h4>
+                <p><strong>Missing dependencies:</strong> Always include all values from component scope that are used in effect.<br><br>
+                <strong>Infinite loops:</strong> Be careful with dependency arrays - updating state that's in dependencies causes loops.<br><br>
+                <strong>Async functions:</strong> Can't make useEffect callback async directly. Create async function inside instead.<br><br>
+                <strong>Cleanup is crucial:</strong> Always cleanup subscriptions, timers, and listeners to prevent memory leaks.</p>
+            </div>
+
+            <h4>useContext - Global State</h4>
+            <p>useContext provides a way to pass data through the component tree without passing props down manually at every level.</p>
+
+            <div class="code">import { createContext, useContext, useState } from 'react';
+
+// 1. Create a context
+const ThemeContext = createContext();
+
+// 2. Create a provider component
+function ThemeProvider({ children }) {
+  const [theme, setTheme] = useState('light');
+  
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  };
+  
+  const value = {
+    theme,
+    toggleTheme
+  };
+  
+  return (
+    <ThemeContext.Provider value={value}>
+      {children}
+    </ThemeContext.Provider>
+  );
+}
+
+// 3. Create a custom hook for easy access
+function useTheme() {
+  const context = useContext(ThemeContext);
+  if (!context) {
+    throw new Error('useTheme must be used within ThemeProvider');
+  }
+  return context;
+}
+
+// 4. Use in components
+function App() {
+  return (
+    <ThemeProvider>
+      <Header />
+      <Main />
+      <Footer />
+    </ThemeProvider>
+  );
+}
+
+function Header() {
+  const { theme, toggleTheme } = useTheme();
+  
+  return (
+    <header className={`header-${theme}`}>
+      <h1>My App</h1>
+      <button onClick={toggleTheme}>
+        Switch to {theme === 'light' ? 'dark' : 'light'} mode
+      </button>
+    </header>
+  );
+}
+
+// Real-world example - Auth context
+const AuthContext = createContext();
+
+function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    // Check if user is logged in
+    const token = localStorage.getItem('token');
+    if (token) {
+      fetch('/api/auth/me', {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+        .then(res => res.json())
+        .then(data => {
+          setUser(data);
+          setLoading(false);
+        })
+        .catch(() => {
+          localStorage.removeItem('token');
+          setLoading(false);
+        });
+    } else {
+      setLoading(false);
+    }
+  }, []);
+  
+  const login = async (email, password) => {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    localStorage.setItem('token', data.token);
+    setUser(data.user);
+  };
+  
+  const logout = () => {
+    localStorage.removeItem('token');
+    setUser(null);
+  };
+  
+  const value = {
+    user,
+    loading,
+    login,
+    logout,
+    isAuthenticated: !!user
+  };
+  
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+function useAuth() {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within AuthProvider');
+  }
+  return context;
+}</div>
+
+            <h4>useRef - Persistent Values & DOM Access</h4>
+            <p>useRef creates a mutable reference that persists across renders without causing re-renders when changed.</p>
+
+            <div class="code">import { useRef, useEffect } from 'react';
+
+// Accessing DOM elements
+function TextInput() {
+  const inputRef = useRef(null);
+  
+  const focusInput = () => {
+    inputRef.current.focus();
+  };
+  
+  useEffect(() => {
+    // Auto-focus on mount
+    inputRef.current.focus();
+  }, []);
+  
+  return (
+    <div>
+      <input ref={inputRef} type="text" />
+      <button onClick={focusInput}>Focus Input</button>
+    </div>
+  );
+}
+
+// Storing previous values
+function Counter() {
+  const [count, setCount] = useState(0);
+  const prevCountRef = useRef();
+  
+  useEffect(() => {
+    prevCountRef.current = count;
+  }, [count]);
+  
+  const prevCount = prevCountRef.current;
+  
+  return (
+    <div>
+      <h2>Current: {count}</h2>
+      <h3>Previous: {prevCount}</h3>
+      <button onClick={() => setCount(count + 1)}>
+        Increment
+      </button>
+    </div>
+  );
+}
+
+// Storing interval/timeout IDs
+function StopWatch() {
+  const [time, setTime] = useState(0);
+  const [isRunning, setIsRunning] = useState(false);
+  const intervalRef = useRef(null);
+  
+  const start = () => {
+    setIsRunning(true);
+    intervalRef.current = setInterval(() => {
+      setTime(t => t + 1);
+    }, 1000);
+  };
+  
+  const stop = () => {
+    setIsRunning(false);
+    clearInterval(intervalRef.current);
+  };
+  
+  const reset = () => {
+    stop();
+    setTime(0);
+  };
+  
+  useEffect(() => {
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, []);
+  
+  return (
+    <div>
+      <h2>Time: {time}s</h2>
+      {!isRunning ? (
+        <button onClick={start}>Start</button>
+      ) : (
+        <button onClick={stop}>Stop</button>
+      )}
+      <button onClick={reset}>Reset</button>
+    </div>
+  );
+}
+
+// Preventing unnecessary API calls
+function SearchBox() {
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState([]);
+  const abortControllerRef = useRef(null);
+  
+  useEffect(() => {
+    if (!query) {
+      setResults([]);
+      return;
+    }
+    
+    // Cancel previous request
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    
+    // Create new abort controller
+    abortControllerRef.current = new AbortController();
+    
+    fetch(`/api/search?q=${query}`, {
+      signal: abortControllerRef.current.signal
+    })
+      .then(res => res.json())
+      .then(data => setResults(data))
+      .catch(err => {
+        if (err.name !== 'AbortError') {
+          console.error(err);
+        }
+      });
+  }, [query]);
+  
+  return (
+    <div>
+      <input
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Search..."
+      />
+      <ul>
+        {results.map(item => (
+          <li key={item.id}>{item.name}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}</div>
+
+            <h4>useMemo - Expensive Computations</h4>
+            <p>useMemo memoizes computed values, recalculating only when dependencies change.</p>
+
+            <div class="code">import { useMemo, useState } from 'react';
+
+function ProductList({ products, searchTerm, sortBy }) {
+  // Expensive filtering and sorting
+  const processedProducts = useMemo(() => {
+    console.log('Processing products...');
+    
+    let result = products.filter(product =>
+      product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    
+    result.sort((a, b) => {
+      if (sortBy === 'price') {
+        return a.price - b.price;
+      }
+      if (sortBy === 'name') {
+        return a.name.localeCompare(b.name);
+      }
+      return 0;
+    });
+    
+    return result;
+  }, [products, searchTerm, sortBy]);
+  // Only recalculate when these change
+  
+  return (
+    <div>
+      {processedProducts.map(product => (
+        <ProductCard key={product.id} product={product} />
+      ))}
+    </div>
+  );
+}
+
+// When NOT to use useMemo
+function SimpleComponent({ a, b }) {
+  // BAD - premature optimization
+  const sum = useMemo(() => a + b, [a, b]);
+  
+  // GOOD - simple calculation, no memoization needed
+  const sum = a + b;
+  
+  return <div>Sum: {sum}</div>;
+}
+
+// Memoizing object creation for dependencies
+function UserProfile({ userId }) {
+  const [user, setUser] = useState(null);
+  
+  // WITHOUT useMemo - creates new object every render
+  // causes useEffect to run every time
+  const requestOptions = {
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    }
+  };
+  
+  // WITH useMemo - stable reference
+  const requestOptions = useMemo(() => ({
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    }
+  }), [token]);
+  
+  useEffect(() => {
+    fetch(`/api/users/${userId}`, requestOptions)
+      .then(res => res.json())
+      .then(setUser);
+  }, [userId, requestOptions]); // Now only runs when actually needed
+  
+  return <div>{user?.name}</div>;
+}</div>
+
+            <h4>useCallback - Memoized Functions</h4>
+            <p>useCallback memoizes function definitions, preventing unnecessary re-creations.</p>
+
+            <div class="code">import { useCallback, useState, memo } from 'react';
+
+// Child component - expensive to render
+const ExpensiveChild = memo(({ onClick, data }) => {
+  console.log('ExpensiveChild rendered');
+  return (
+    <button onClick={onClick}>
+      Click me - {data}
+    </button>
+  );
+});
+
+function Parent() {
+  const [count, setCount] = useState(0);
+  const [other, setOther] = useState(0);
+  
+  // WITHOUT useCallback - new function every render
+  // ExpensiveChild re-renders unnecessarily
+  const handleClick = () => {
+    setCount(c => c + 1);
+  };
+  
+  // WITH useCallback - stable function reference
+  const handleClick = useCallback(() => {
+    setCount(c => c + 1);
+  }, []); // No dependencies - function never changes
+  
+  return (
+    <div>
+      <h2>Count: {count}</h2>
+      <button onClick={() => setOther(other + 1)}>
+        Other: {other}
+      </button>
+      <ExpensiveChild onClick={handleClick} data={count} />
+    </div>
+  );
+}
+
+// Real-world example - event handlers with parameters
+function TodoList() {
+  const [todos, setTodos] = useState([]);
+  
+  // Memoize the remove function
+  const removeTodo = useCallback((id) => {
+    setTodos(prev => prev.filter(todo => todo.id !== id));
+  }, []); // No dependencies because we use functional update
+  
+  const toggleTodo = useCallback((id) => {
+    setTodos(prev => prev.map(todo =>
+      todo.id === id
+        ? { ...todo, completed: !todo.completed }
+        : todo
+    ));
+  }, []);
+  
+  return (
+    <div>
+      {todos.map(todo => (
+        <TodoItem
+          key={todo.id}
+          todo={todo}
+          onRemove={removeTodo}
+          onToggle={toggleTodo}
+        />
+      ))}
+    </div>
+  );
+}
+
+// useCallback with dependencies
+function SearchBox({ onSearch, filters }) {
+  const [query, setQuery] = useState('');
+  
+  const handleSearch = useCallback(() => {
+    // Function recreated when filters change
+    onSearch(query, filters);
+  }, [query, filters, onSearch]);
+  
+  return (
+    <div>
+      <input
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+      />
+      <button onClick={handleSearch}>Search</button>
+    </div>
+  );
+}</div>
+
+            <div class="warning-box">
+                <h4>useMemo vs useCallback</h4>
+                <p><strong>useMemo:</strong> Memoizes the RESULT of a function - <span class="inline-code">useMemo(() => value, deps)</span><br><br>
+                <strong>useCallback:</strong> Memoizes the FUNCTION itself - <span class="inline-code">useCallback(fn, deps)</span><br><br>
+                <strong>Remember:</strong> <span class="inline-code">useCallback(fn, deps)</span> is equivalent to <span class="inline-code">useMemo(() => fn, deps)</span><br><br>
+                <strong>Don't overuse:</strong> These optimizations have a cost. Only use when profiling shows a performance issue.</p>
+            </div>
+
+            <h4>Custom Hooks - Reusable Logic</h4>
+            <p>Custom hooks let you extract component logic into reusable functions. They're just JavaScript functions that use React hooks.</p>
+
+            <div class="code">import { useState, useEffect } from 'react';
+
+// Custom hook for fetching data
+function useFetch(url, options = {}) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
+  useEffect(() => {
+    let cancelled = false;
+    
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(url, options);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const json = await response.json();
+        
+        if (!cancelled) {
+          setData(json);
+          setError(null);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setError(err.message);
+          setData(null);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    };
+    
+    fetchData();
+    
+    return () => {
+      cancelled = true;
+    };
+  }, [url, JSON.stringify(options)]);
+  
+  return { data, loading, error };
+}
+
+// Usage
+function UserProfile({ userId }) {
+  const { data: user, loading, error } = useFetch(
+    `/api/users/${userId}`
+  );
+  
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+  
+  return <div>{user.name}</div>;
+}
+
+// Custom hook for local storage
+function useLocalStorage(key, initialValue) {
+  const [storedValue, setStoredValue] = useState(() => {
+    try {
+      const item = window.localStorage.getItem(key);
+      return item ? JSON.parse(item) : initialValue;
+    } catch (error) {
+      console.error(error);
+      return initialValue;
+    }
+  });
+  
+  const setValue = (value) => {
+    try {
+      const valueToStore = value instanceof Function
+        ? value(storedValue)
+        : value;
+      
+      setStoredValue(valueToStore);
+      window.localStorage.setItem(key, JSON.stringify(valueToStore));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
+  return [storedValue, setValue];
+}
+
+// Usage
+function Settings() {
+  const [theme, setTheme] = useLocalStorage('theme', 'light');
+  
+  return (
+    <button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
+      Current theme: {theme}
+    </button>
+  );
+}
+
+// Custom hook for window dimensions
+function useWindowSize() {
+  const [size, setSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight
+  });
+  
+  useEffect(() => {
+    const handleResize = () => {
+      setSize({
+        width: window.innerWidth,
+        height: window.innerHeight
+      });
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  
+  return size;
+}
+
+// Custom hook for debounced value
+function useDebounce(value, delay) {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+  
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+    
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+  
+  return debouncedValue;
+}
+
+// Usage - search with debounce
+function SearchComponent() {
+  const [searchTerm, setSearchTerm] = useState('');
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  
+  const { data: results } = useFetch(
+    `/api/search?q=${debouncedSearchTerm}`
+  );
+  
+  return (
+    <div>
+      <input
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        placeholder="Search..."
+      />
+      {results && results.map(item => (
+        <div key={item.id}>{item.name}</div>
+      ))}
+    </div>
+  );
+}</div>
+
+            <h3>Advanced Component Patterns</h3>
+
+            <h4>Higher-Order Components (HOCs)</h4>
+            <p>A higher-order component is a function that takes a component and returns a new component with additional props or behavior.</p>
+
+            <div class="code">// Basic HOC pattern
+function withLoading(Component) {
+  return function WithLoadingComponent({ isLoading, ...props }) {
+    if (isLoading) {
+      return <div>Loading...</div>;
+    }
+    return <Component {...props} />;
+  };
+}
+
+// Usage
+const UserListWithLoading = withLoading(UserList);
+
+// With authentication
+function withAuth(Component) {
+  return function WithAuthComponent(props) {
+    const { user, loading } = useAuth();
+    
+    if (loading) {
+      return <div>Checking authentication...</div>;
+    }
+    
+    if (!user) {
+      return <Navigate to="/login" />;
+    }
+    
+    return <Component {...props} user={user} />;
+  };
+}
+
+// Usage
+const ProtectedDashboard = withAuth(Dashboard);
+
+// With data fetching
+function withData(url) {
+  return function (Component) {
+    return function WithDataComponent(props) {
+      const { data, loading, error } = useFetch(url);
+      
+      if (loading) return <div>Loading...</div>;
+      if (error) return <div>Error: {error}</div>;
+      
+      return <Component {...props} data={data} />;
+    };
+  };
+}
+
+// Usage
+const UserListWithData = withData('/api/users')(UserList);
+
+// Composing multiple HOCs
+const EnhancedComponent = withAuth(
+  withLoading(
+    withData('/api/users')(UserList)
+  )
+);</div>
+
+            <div class="info-box">
+                <h4>HOC Best Practices</h4>
+                <p><strong>Don't mutate:</strong> Create new components, don't modify the original.<br><br>
+                <strong>Pass through props:</strong> Forward all props that aren't consumed by the HOC.<br><br>
+                <strong>Display name:</strong> Set displayName for better debugging.<br><br>
+                <strong>Static methods:</strong> Copy static methods from wrapped component.<br><br>
+                <strong>Refs:</strong> Use React.forwardRef to forward refs through HOCs.</p>
+            </div>
+
+            <h4>Render Props Pattern</h4>
+            <p>A component with a render prop takes a function that returns a React element and calls it instead of implementing its own render logic.</p>
+
+            <div class="code">// Mouse tracker with render props
+function MouseTracker({ render }) {
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      setPosition({ x: e.clientX, y: e.clientY });
+    };
+    
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+  
+  return render(position);
+}
+
+// Usage
+function App() {
+  return (
+    <MouseTracker
+      render={({ x, y }) => (
+        <div>
+          Mouse position: {x}, {y}
         </div>
+      )}
+    />
+  );
+}
+
+// Using children as a function (common pattern)
+function DataProvider({ url, children }) {
+  const { data, loading, error } = useFetch(url);
+  
+  return children({ data, loading, error });
+}
+
+// Usage
+function App() {
+  return (
+    <DataProvider url="/api/users">
+      {({ data, loading, error }) => {
+        if (loading) return <div>Loading...</div>;
+        if (error) return <div>Error: {error}</div>;
+        return (
+          <ul>
+            {data.map(user => (
+              <li key={user.id}>{user.name}</li>
+            ))}
+          </ul>
+        );
+      }}
+    </DataProvider>
+  );
+}
+
+// Toggle component with render props
+function Toggle({ initial = false, children }) {
+  const [on, setOn] = useState(initial);
+  
+  const toggle = () => setOn(prev => !prev);
+  const setOff = () => setOn(false);
+  const setOn = () => setOn(true);
+  
+  return children({
+    on,
+    toggle,
+    setOff,
+    setOn
+  });
+}
+
+// Usage
+<Toggle initial={false}>
+  {({ on, toggle }) => (
+    <div>
+      <button onClick={toggle}>
+        {on ? 'ON' : 'OFF'}
+      </button>
+      {on && <div>Content visible!</div>}
+    </div>
+  )}
+</Toggle></div>
+
+            <h4>Compound Components Pattern</h4>
+            <p>Compound components work together to form a complete UI. They share implicit state without prop drilling.</p>
+
+            <div class="code">// Tabs compound component
+const TabsContext = createContext();
+
+function Tabs({ children, defaultValue }) {
+  const [activeTab, setActiveTab] = useState(defaultValue);
+  
+  return (
+    <TabsContext.Provider value={{ activeTab, setActiveTab }}>
+      <div className="tabs">{children}</div>
+    </TabsContext.Provider>
+  );
+}
+
+function TabList({ children }) {
+  return <div className="tab-list">{children}</div>;
+}
+
+function Tab({ value, children }) {
+  const { activeTab, setActiveTab } = useContext(TabsContext);
+  const isActive = activeTab === value;
+  
+  return (
+    <button
+      className={`tab ${isActive ? 'active' : ''}`}
+      onClick={() => setActiveTab(value)}
+    >
+      {children}
+    </button>
+  );
+}
+
+function TabPanel({ value, children }) {
+  const { activeTab } = useContext(TabsContext);
+  
+  if (activeTab !== value) return null;
+  
+  return <div className="tab-panel">{children}</div>;
+}
+
+// Attach sub-components
+Tabs.List = TabList;
+Tabs.Tab = Tab;
+Tabs.Panel = TabPanel;
+
+// Usage - beautiful API!
+function App() {
+  return (
+    <Tabs defaultValue="profile">
+      <Tabs.List>
+        <Tabs.Tab value="profile">Profile</Tabs.Tab>
+        <Tabs.Tab value="settings">Settings</Tabs.Tab>
+        <Tabs.Tab value="notifications">Notifications</Tabs.Tab>
+      </Tabs.List>
+      
+      <Tabs.Panel value="profile">
+        <h2>Profile Content</h2>
+      </Tabs.Panel>
+      
+      <Tabs.Panel value="settings">
+        <h2>Settings Content</h2>
+      </Tabs.Panel>
+      
+      <Tabs.Panel value="notifications">
+        <h2>Notifications Content</h2>
+      </Tabs.Panel>
+    </Tabs>
+  );
+}</div>
+
+            <h3>Performance Optimization</h3>
+
+            <h4>React.memo - Component Memoization</h4>
+            <p>React.memo prevents unnecessary re-renders by memoizing component output.</p>
+
+            <div class="code">import { memo } from 'react';
+
+// Without memo - re-renders every time parent renders
+function ExpensiveComponent({ data }) {
+  console.log('ExpensiveComponent rendered');
+  // Expensive computation
+  return <div>{data}</div>;
+}
+
+// With memo - only re-renders when props change
+const ExpensiveComponent = memo(function ExpensiveComponent({ data }) {
+  console.log('ExpensiveComponent rendered');
+  return <div>{data}</div>;
+});
+
+// Custom comparison function
+const ExpensiveComponent = memo(
+  function ExpensiveComponent({ user, settings }) {
+    return (
+      <div>
+        <h2>{user.name}</h2>
+        <p>{settings.theme}</p>
+      </div>
+    );
+  },
+  (prevProps, nextProps) => {
+    // Return true if props are equal (skip re-render)
+    // Return false if props changed (re-render)
+    return (
+      prevProps.user.id === nextProps.user.id &&
+      prevProps.settings.theme === nextProps.settings.theme
+    );
+  }
+);
+
+// Real-world example
+const ProductCard = memo(function ProductCard({ product, onAddToCart }) {
+  console.log(`Rendering product: ${product.name}`);
+  
+  return (
+    <div className="product-card">
+      <img src={product.image} alt={product.name} />
+      <h3>{product.name}</h3>
+      <p>${product.price}</p>
+      <button onClick={() => onAddToCart(product.id)}>
+        Add to Cart
+      </button>
+    </div>
+  );
+});
+
+function ProductList({ products }) {
+  const [cart, setCart] = useState([]);
+  
+  // Memoize callback to prevent ProductCard re-renders
+  const handleAddToCart = useCallback((productId) => {
+    setCart(prev => [...prev, productId]);
+  }, []);
+  
+  return (
+    <div className="product-list">
+      {products.map(product => (
+        <ProductCard
+          key={product.id}
+          product={product}
+          onAddToCart={handleAddToCart}
+        />
+      ))}
+    </div>
+  );
+}</div>
+
+            <h4>Code Splitting & Lazy Loading</h4>
+            <p>Split your code into smaller chunks that load on demand, reducing initial bundle size.</p>
+
+            <div class="code">import { lazy, Suspense } from 'react';
+
+// Lazy load components
+const Dashboard = lazy(() => import('./Dashboard'));
+const Settings = lazy(() => import('./Settings'));
+const Profile = lazy(() => import('./Profile'));
+
+function App() {
+  return (
+    <div>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Dashboard />
+      </Suspense>
+    </div>
+  );
+}
+
+// With React Router
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Suspense fallback={<LoadingSpinner />}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/profile" element={<Profile />} />
+        </Routes>
+      </Suspense>
+    </BrowserRouter>
+  );
+}
+
+// Custom loading component
+function LoadingSpinner() {
+  return (
+    <div className="loading-container">
+      <div className="spinner"></div>
+      <p>Loading...</p>
+    </div>
+  );
+}
+
+// Error boundary for lazy loading
+class LazyLoadErrorBoundary extends React.Component {
+  state = { hasError: false };
+  
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+  
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div>
+          <h2>Failed to load component</h2>
+          <button onClick={() => window.location.reload()}>
+            Reload Page
+          </button>
+        </div>
+      );
+    }
+    
+    return this.props.children;
+  }
+}
+
+// Usage with error boundary
+<LazyLoadErrorBoundary>
+  <Suspense fallback={<LoadingSpinner />}>
+    <Dashboard />
+  </Suspense>
+</LazyLoadErrorBoundary></div>
+
+            <div class="info-box">
+                <h4>Performance Tips</h4>
+                <p><strong>List virtualization:</strong> Use libraries like react-window for long lists.<br><br>
+                <strong>Debounce expensive operations:</strong> Delay API calls and computations.<br><br>
+                <strong>Avoid inline functions:</strong> Extract to useCallback when passing to memoized components.<br><br>
+                <strong>Profile before optimizing:</strong> Use React DevTools Profiler to find real bottlenecks.<br><br>
+                <strong>Bundle analysis:</strong> Use webpack-bundle-analyzer to find large dependencies.</p>
+            </div>
+
+            <h3>Error Boundaries</h3>
+            <p>Error boundaries catch JavaScript errors anywhere in the component tree and display a fallback UI.</p>
+
+            <div class="code">import { Component } from 'react';
+
+class ErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null, errorInfo: null };
+  }
+  
+  static getDerivedStateFromError(error) {
+    // Update state so next render shows fallback UI
+    return { hasError: true };
+  }
+  
+  componentDidCatch(error, errorInfo) {
+    // Log error to error reporting service
+    console.error('Error caught by boundary:', error, errorInfo);
+    
+    // You can also log to external services
+    // logErrorToService(error, errorInfo);
+    
+    this.setState({
+      error,
+      errorInfo
+    });
+  }
+  
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="error-boundary">
+          <h2>Something went wrong</h2>
+          <details style={{ whiteSpace: 'pre-wrap' }}>
+            {this.state.error && this.state.error.toString()}
+            <br />
+            {this.state.errorInfo.componentStack}
+          </details>
+          <button onClick={() => this.setState({ hasError: false })}>
+            Try again
+          </button>
+        </div>
+      );
+    }
+    
+    return this.props.children;
+  }
+}
+
+// Usage
+function App() {
+  return (
+    <ErrorBoundary>
+      <Header />
+      <ErrorBoundary>
+        <Sidebar />
+      </ErrorBoundary>
+      <ErrorBoundary>
+        <MainContent />
+      </ErrorBoundary>
+      <Footer />
+    </ErrorBoundary>
+  );
+}
+
+// Component that might error
+function BuggyComponent() {
+  const [count, setCount] = useState(0);
+  
+  if (count === 5) {
+    // Simulate an error
+    throw new Error('Crashed at count 5!');
+  }
+  
+  return (
+    <button onClick={() => setCount(count + 1)}>
+      Count: {count}
+    </button>
+  );
+}</div>
+
+            <div class="warning-box">
+                <h4>Error Boundary Limitations</h4>
+                <p>Error boundaries do NOT catch errors in:<br><br>
+                • Event handlers (use try-catch instead)<br>
+                • Asynchronous code (setTimeout, fetch)<br>
+                • Server-side rendering<br>
+                • Errors thrown in the error boundary itself<br><br>
+                For event handlers, wrap in try-catch and update state to show error UI.</p>
+            </div>
+
+            <div class="metaphor-box">
+                <h4>You've Mastered React!</h4>
+                <p>Congratulations! You now understand React from the ground up - from the Virtual DOM to advanced patterns, performance optimization, and error handling. You're equipped to build production-ready React applications with confidence. Remember: the best way to solidify this knowledge is to build real projects. Start small, iterate, and gradually tackle more complex challenges.</p>
+            </div>
+        </section>
+
+        <!-- SECTION 2: Vue Mastery -->
+        <section id="vue-mastery" class="section">
+            <h2 class="section-title">Vue Mastery</h2>
+            <p class="section-intro">Vue.js is the approachable, versatile, and performant framework that makes building web interfaces a joy. In this comprehensive section, we'll explore Vue from the ground up - from understanding its reactive philosophy to mastering advanced patterns with Composition API, Pinia state management, and sophisticated routing. Whether you're coming from React or starting fresh, you'll discover why Vue has become one of the most loved frameworks in the JavaScript ecosystem.</p>
+
+            <h3>1. Introduction to Vue: The Progressive Framework</h3>
+            
+            <p>Vue (pronounced "view") is often described as the "progressive framework" - but what does that actually mean? Unlike all-or-nothing frameworks, Vue is designed to be incrementally adoptable. You can use as little or as much Vue as you need, from enhancing a single section of an existing page to building full-scale single-page applications.</p>
+
+            <div class="metaphor-box">
+                <h4>The Swiss Army Knife of Frameworks</h4>
+                <p>Think of Vue like a Swiss Army knife. React is like a specialized chef's knife - exceptional at one thing but requires additional tools for a complete toolkit. Angular is like a professional kitchen - everything included but overwhelming if you just want to make a sandwich. Vue gives you the essential tools in one elegant package, and you can add more specialized tools as needed.</p>
+            </div>
+
+            <h4>Why Vue? The Philosophy</h4>
+            
+            <p>Vue was created by Evan You after working with Angular at Google. He wanted to extract the parts he really liked about Angular and build something lighter and more flexible. The result is a framework that prioritizes:</p>
+
+            <ul>
+                <li><strong>Approachability:</strong> Gentle learning curve, especially if you know HTML, CSS, and basic JavaScript</li>
+                <li><strong>Versatility:</strong> Works for projects of any size, from progressive enhancement to full SPAs</li>
+                <li><strong>Performance:</strong> Fast virtual DOM implementation with automatic optimization</li>
+                <li><strong>Developer Experience:</strong> Excellent tooling, clear error messages, and comprehensive documentation</li>
+            </ul>
+
+            <h4>Vue vs React: Key Differences</h4>
+
+            <p>If you're familiar with React, here are the main philosophical differences:</p>
+
+            <div class="code">// REACT: JavaScript-centric, JSX everywhere
+function Counter() {
+  const [count, setCount] = useState(0);
+  return (
+    &lt;div&gt;
+      &lt;p&gt;Count: {count}&lt;/p&gt;
+      &lt;button onClick={() =&gt; setCount(count + 1)}&gt;Increment&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+// VUE: Template-based, HTML-centric approach
+&lt;template&gt;
+  &lt;div&gt;
+    &lt;p&gt;Count: {{ count }}&lt;/p&gt;
+    &lt;button @click="count++"&gt;Increment&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+import { ref } from 'vue';
+const count = ref(0);
+&lt;/script&gt;
+
+        <!-- SECTION 5: Real-Time Features -->
+        <section id="realtime-features" class="section">
+            <h2 class="section-title">Real-Time Features</h2>
+            <p class="section-intro"><!-- EXPAND THIS SECTION --></p>
+        </section>
+
+        <!-- SECTION 6: Authentication -->
+        <section id="authentication" class="section">
+            <h2 class="section-title">Authentication & Authorization</h2>
+            <p class="section-intro"><!-- EXPAND THIS SECTION --></p>
+        </section>
+
+        <!-- SECTION 7: File Uploads -->
+        <section id="file-uploads" class="section">
+            <h2 class="section-title">File Uploads & Media</h2>
+            <p class="section-intro"><!-- EXPAND THIS SECTION --></p>
+        </section>
+
+        <!-- SECTION 8: PWA Features -->
+        <section id="pwa-features" class="section">
+            <h2 class="section-title">Progressive Web Apps</h2>
+            <p class="section-intro"><!-- EXPAND THIS SECTION --></p>
+        </section>
+
+        <!-- SECTION 9: Testing Integration -->
+        <section id="testing-integration" class="section">
+            <h2 class="section-title">Testing Full-Stack Apps</h2>
+            <p class="section-intro"><!-- EXPAND THIS SECTION --></p>
+        </section>
+
+        <!-- SECTION 10: Deployment & Scaling -->
+        <section id="deployment-scaling" class="section">
+            <h2 class="section-title">Deployment & Scaling</h2>
+            <p class="section-intro"><!-- EXPAND THIS SECTION --></p>
+        </section>
+
     </main>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progress').style.width = scrolled + '%';
+        });
+
+        const sections = document.querySelectorAll('.section');
+        const sidebarLinks = document.querySelectorAll('.sidebar-link');
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= (sectionTop - 150)) {
+                    current = section.getAttribute('id');
+                }
+            });
+            sidebarLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
 
