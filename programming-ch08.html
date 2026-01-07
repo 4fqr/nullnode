@@ -1742,7 +1742,1162 @@ function Counter() {
 &lt;script setup&gt;
 import { ref } from 'vue';
 const count = ref(0);
+&lt;/script&gt;</div>
+
+            <div class="info-box">
+                <h4>Template vs JSX</h4>
+                <p><strong>Vue templates</strong> are easier to read and write for most developers, especially those with HTML/CSS backgrounds. <strong>React JSX</strong> offers more JavaScript flexibility but has a steeper learning curve. Vue supports both approaches - you can use templates OR JSX render functions.</p>
+            </div>
+
+            <h3>2. Vue Fundamentals: Template Syntax & Directives</h3>
+
+            <p>Vue's template syntax extends HTML with powerful directives that make building dynamic interfaces intuitive. Let's master each directive with practical examples.</p>
+
+            <h4>Text Interpolation & Expressions</h4>
+
+            <div class="code">&lt;template&gt;
+  &lt;!-- Basic interpolation --&gt;
+  &lt;p&gt;{{ message }}&lt;/p&gt;
+  
+  &lt;!-- JavaScript expressions work! --&gt;
+  &lt;p&gt;{{ message.toUpperCase() }}&lt;/p&gt;
+  &lt;p&gt;{{ number + 1 }}&lt;/p&gt;
+  &lt;p&gt;{{ isActive ? 'Yes' : 'No' }}&lt;/p&gt;
+  
+  &lt;!-- Ternary operators, method calls --&gt;
+  &lt;p&gt;{{ reversedMessage() }}&lt;/p&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+import { ref, computed } from 'vue';
+
+const message = ref('Hello Vue!');
+const number = ref(41);
+const isActive = ref(true);
+
+function reversedMessage() {
+  return message.value.split('').reverse().join('');
+}
+&lt;/script&gt;</div>
+
+            <h4>v-bind: Dynamic Attributes</h4>
+
+            <p>The <span class="inline-code">v-bind</span> directive dynamically binds attributes to expressions. The shorthand <span class="inline-code">:</span> is commonly used.</p>
+
+            <div class="code">&lt;template&gt;
+  &lt;!-- Full syntax --&gt;
+  &lt;img v-bind:src="imageSrc" v-bind:alt="imageAlt"&gt;
+  
+  &lt;!-- Shorthand (preferred) --&gt;
+  &lt;img :src="imageSrc" :alt="imageAlt"&gt;
+  
+  &lt;!-- Binding classes --&gt;
+  &lt;div :class="{ active: isActive, 'text-danger': hasError }"&gt;&lt;/div&gt;
+  &lt;div :class="[activeClass, errorClass]"&gt;&lt;/div&gt;
+  
+  &lt;!-- Binding styles --&gt;
+  &lt;div :style="{ color: activeColor, fontSize: fontSize + 'px' }"&gt;&lt;/div&gt;
+  
+  &lt;!-- Binding multiple attributes --&gt;
+  &lt;div v-bind="objectOfAttrs"&gt;&lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+const imageSrc = ref('https://vuejs.org/logo.svg');
+const imageAlt = ref('Vue Logo');
+const isActive = ref(true);
+const hasError = ref(false);
+const activeColor = ref('#42b883');
+const fontSize = ref(16);
+const objectOfAttrs = ref({
+  id: 'container',
+  class: 'wrapper'
+});
+&lt;/script&gt;</div>
+
+            <h4>v-on: Event Handling</h4>
+
+            <div class="code">&lt;template&gt;
+  &lt;!-- Full syntax --&gt;
+  &lt;button v-on:click="count++"&gt;{{ count }}&lt;/button&gt;
+  
+  &lt;!-- Shorthand (preferred) --&gt;
+  &lt;button @click="count++"&gt;{{ count }}&lt;/button&gt;
+  
+  &lt;!-- Method handler --&gt;
+  &lt;button @click="handleClick"&gt;Click Me&lt;/button&gt;
+  
+  &lt;!-- Inline handler with parameters --&gt;
+  &lt;button @click="say('hello')"&gt;Say Hello&lt;/button&gt;
+  
+  &lt;!-- Event modifiers --&gt;
+  &lt;form @submit.prevent="onSubmit"&gt;&lt;/form&gt;
+  &lt;button @click.stop="doThis"&gt;&lt;/button&gt;
+  &lt;button @click.once="doThisOnce"&gt;&lt;/button&gt;
+  
+  &lt;!-- Key modifiers --&gt;
+  &lt;input @keyup.enter="submit"&gt;
+  &lt;input @keyup.esc="clearInput"&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+const count = ref(0);
+
+function handleClick(event) {
+  console.log('Button clicked!', event);
+}
+
+function say(message) {
+  alert(message);
+}
+&lt;/script&gt;</div>
+
+            <h4>v-model: Two-Way Binding</h4>
+
+            <p>The <span class="inline-code">v-model</span> directive creates two-way data binding on form inputs, perfect for handling user input.</p>
+
+            <div class="code">&lt;template&gt;
+  &lt;!-- Text input --&gt;
+  &lt;input v-model="text" placeholder="Type something"&gt;
+  &lt;p&gt;You typed: {{ text }}&lt;/p&gt;
+  
+  &lt;!-- Textarea --&gt;
+  &lt;textarea v-model="message"&gt;&lt;/textarea&gt;
+  
+  &lt;!-- Checkbox --&gt;
+  &lt;input type="checkbox" v-model="checked" id="checkbox"&gt;
+  &lt;label for="checkbox"&gt;{{ checked }}&lt;/label&gt;
+  
+  &lt;!-- Multiple checkboxes --&gt;
+  &lt;input type="checkbox" v-model="checkedNames" value="Alice"&gt;
+  &lt;input type="checkbox" v-model="checkedNames" value="Bob"&gt;
+  &lt;p&gt;Checked: {{ checkedNames }}&lt;/p&gt;
+  
+  &lt;!-- Radio buttons --&gt;
+  &lt;input type="radio" v-model="picked" value="One"&gt;
+  &lt;input type="radio" v-model="picked" value="Two"&gt;
+  
+  &lt;!-- Select --&gt;
+  &lt;select v-model="selected"&gt;
+    &lt;option disabled value=""&gt;Choose one&lt;/option&gt;
+    &lt;option&gt;A&lt;/option&gt;
+    &lt;option&gt;B&lt;/option&gt;
+    &lt;option&gt;C&lt;/option&gt;
+  &lt;/select&gt;
+  
+  &lt;!-- v-model modifiers --&gt;
+  &lt;input v-model.lazy="msg"&gt;        &lt;!-- Update on change, not input --&gt;
+  &lt;input v-model.number="age"&gt;      &lt;!-- Auto-typecast to number --&gt;
+  &lt;input v-model.trim="username"&gt;   &lt;!-- Auto-trim whitespace --&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+const text = ref('');
+const message = ref('');
+const checked = ref(false);
+const checkedNames = ref([]);
+const picked = ref('');
+const selected = ref('');
+const msg = ref('');
+const age = ref(0);
+const username = ref('');
+&lt;/script&gt;</div>
+
+            <h4>v-if, v-else-if, v-else: Conditional Rendering</h4>
+
+            <div class="code">&lt;template&gt;
+  &lt;div v-if="type === 'A'"&gt;
+    Type A content
+  &lt;/div&gt;
+  &lt;div v-else-if="type === 'B'"&gt;
+    Type B content
+  &lt;/div&gt;
+  &lt;div v-else&gt;
+    Not A or B
+  &lt;/div&gt;
+  
+  &lt;!-- Using template for grouping --&gt;
+  &lt;template v-if="loginStatus === 'loggedIn'"&gt;
+    &lt;h1&gt;Welcome back!&lt;/h1&gt;
+    &lt;p&gt;Your dashboard&lt;/p&gt;
+  &lt;/template&gt;
+&lt;/template&gt;</div>
+
+            <div class="warning-box">
+                <h4>v-if vs v-show</h4>
+                <p><strong>v-if:</strong> Conditionally renders the element (truly removes/adds to DOM). Higher toggle cost, lazy rendering.<br><br>
+                <strong>v-show:</strong> Always renders but toggles CSS display. Lower toggle cost, immediate rendering.<br><br>
+                <strong>Use v-if</strong> when the condition rarely changes. <strong>Use v-show</strong> for frequent toggling.</p>
+            </div>
+
+            <h4>v-for: List Rendering</h4>
+
+            <div class="code">&lt;template&gt;
+  &lt;!-- Array iteration --&gt;
+  &lt;ul&gt;
+    &lt;li v-for="(item, index) in items" :key="item.id"&gt;
+      {{ index }}: {{ item.text }}
+    &lt;/li&gt;
+  &lt;/ul&gt;
+  
+  &lt;!-- Object iteration --&gt;
+  &lt;div v-for="(value, key, index) in userObject" :key="key"&gt;
+    {{ index }}. {{ key }}: {{ value }}
+  &lt;/div&gt;
+  
+  &lt;!-- Range --&gt;
+  &lt;span v-for="n in 10" :key="n"&gt;{{ n }}&lt;/span&gt;
+  
+  &lt;!-- v-for with v-if (not recommended on same element) --&gt;
+  &lt;template v-for="item in items" :key="item.id"&gt;
+    &lt;li v-if="!item.hidden"&gt;{{ item.text }}&lt;/li&gt;
+  &lt;/template&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+const items = ref([
+  { id: 1, text: 'Learn Vue', hidden: false },
+  { id: 2, text: 'Build App', hidden: false },
+  { id: 3, text: 'Deploy', hidden: true }
+]);
+
+const userObject = ref({
+  name: 'Alice',
+  age: 28,
+  email: 'alice@example.com'
+});
+&lt;/script&gt;</div>
+
+            <div class="warning-box">
+                <h4>Always Use :key with v-for</h4>
+                <p>Vue needs keys to track each node's identity for efficient DOM updates. Without keys, Vue uses an "in-place patch" strategy that can cause issues with stateful components or animations. Always provide unique, stable keys!</p>
+            </div>
+
+            <h3>3. Composition API Deep Dive</h3>
+
+            <p>The Composition API is Vue 3's revolutionary approach to organizing component logic. It provides better code reusability, type inference, and logical organization compared to the Options API.</p>
+
+            <h4>Why Composition API?</h4>
+
+            <div class="metaphor-box">
+                <h4>Organization by Concern</h4>
+                <p>The Options API organizes code by option type (data, methods, computed, etc.) - like organizing books by size. The Composition API organizes by logical concern - like organizing books by topic. When you need to understand the "user authentication" feature, all related code is together rather than scattered across multiple options.</p>
+            </div>
+
+            <h4>setup() and &lt;script setup&gt;</h4>
+
+            <div class="code">&lt;!-- Traditional setup() function --&gt;
+&lt;script&gt;
+import { ref, computed } from 'vue';
+
+export default {
+  setup() {
+    const count = ref(0);
+    const double = computed(() =&gt; count.value * 2);
+    
+    function increment() {
+      count.value++;
+    }
+    
+    // Must return everything you want to expose to template
+    return {
+      count,
+      double,
+      increment
+    };
+  }
+};
 &lt;/script&gt;
+
+&lt;!-- Modern &lt;script setup&gt; (preferred!) --&gt;
+&lt;script setup&gt;
+import { ref, computed } from 'vue';
+
+// Everything defined here is automatically exposed to template
+const count = ref(0);
+const double = computed(() =&gt; count.value * 2);
+
+function increment() {
+  count.value++;
+}
+// No need to return anything!
+&lt;/script&gt;</div>
+
+            <h4>ref() vs reactive()</h4>
+
+            <p>Understanding the difference between <span class="inline-code">ref</span> and <span class="inline-code">reactive</span> is crucial for mastering Vue's reactivity system.</p>
+
+            <div class="code">&lt;script setup&gt;
+import { ref, reactive } from 'vue';
+
+// ref: For primitives and single values
+const count = ref(0);
+const message = ref('Hello');
+const user = ref({ name: 'Alice' });
+
+// Access via .value in script, automatic unwrap in template
+count.value++;                    // In script: need .value
+console.log(user.value.name);     // In script: need .value
+
+// reactive: For objects only
+const state = reactive({
+  count: 0,
+  message: 'Hello',
+  nested: {
+    value: 42
+  }
+});
+
+// Direct access, no .value needed
+state.count++;
+state.nested.value = 100;
+
+// GOTCHA: Destructuring loses reactivity with reactive()
+const { count, message } = state;  // ❌ NOT reactive anymore!
+
+// Use toRefs() to maintain reactivity
+import { toRefs } from 'vue';
+const { count, message } = toRefs(state);  // ✅ Still reactive!
+&lt;/script&gt;</div>
+
+            <div class="info-box">
+                <h4>When to Use ref vs reactive</h4>
+                <p><strong>Use ref():</strong> For primitive values, single objects, or when you need to replace the entire object reference.<br><br>
+                <strong>Use reactive():</strong> For complex objects with many properties that you'll mutate in place.<br><br>
+                <strong>Common pattern:</strong> Many developers use <span class="inline-code">ref()</span> for everything for consistency, even for objects.</p>
+            </div>
+
+            <h4>computed(): Derived State</h4>
+
+            <div class="code">&lt;script setup&gt;
+import { ref, computed } from 'vue';
+
+const firstName = ref('John');
+const lastName = ref('Doe');
+
+// Read-only computed
+const fullName = computed(() =&gt; {
+  return `${firstName.value} ${lastName.value}`;
+});
+
+// Writable computed (getter + setter)
+const fullNameWritable = computed({
+  get() {
+    return `${firstName.value} ${lastName.value}`;
+  },
+  set(newValue) {
+    [firstName.value, lastName.value] = newValue.split(' ');
+  }
+});
+
+// Computed with complex logic
+const items = ref([
+  { id: 1, name: 'Apple', price: 1.5, quantity: 3 },
+  { id: 2, name: 'Banana', price: 0.8, quantity: 5 }
+]);
+
+const totalPrice = computed(() =&gt; {
+  return items.value.reduce((total, item) =&gt; {
+    return total + (item.price * item.quantity);
+  }, 0).toFixed(2);
+});
+
+const expensiveItems = computed(() =&gt; {
+  return items.value.filter(item =&gt; item.price &gt; 1);
+});
+&lt;/script&gt;</div>
+
+            <h4>watch() and watchEffect()</h4>
+
+            <p>Vue provides two ways to react to reactive state changes: <span class="inline-code">watch()</span> and <span class="inline-code">watchEffect()</span>.</p>
+
+            <div class="code">&lt;script setup&gt;
+import { ref, watch, watchEffect } from 'vue';
+
+const count = ref(0);
+const user = ref({ name: 'Alice', age: 25 });
+
+// watch: Explicit source, access old and new values
+watch(count, (newValue, oldValue) =&gt; {
+  console.log(`Count changed from ${oldValue} to ${newValue}`);
+});
+
+// watch multiple sources
+watch([count, user], ([newCount, newUser], [oldCount, oldUser]) =&gt; {
+  console.log('Count or user changed');
+});
+
+// watch with options
+watch(user, (newUser) =&gt; {
+  console.log('User changed:', newUser);
+}, {
+  deep: true,       // Watch nested properties
+  immediate: true   // Run immediately on mount
+});
+
+// watchEffect: Automatic dependency tracking
+watchEffect(() =&gt; {
+  // Automatically tracks count and user.name as dependencies
+  console.log(`${user.value.name} has count: ${count.value}`);
+});
+
+// watchEffect with cleanup
+watchEffect((onCleanup) =&gt; {
+  const timer = setTimeout(() =&gt; {
+    console.log('Delayed log:', count.value);
+  }, 1000);
+  
+  // Cleanup function runs before next execution and on unmount
+  onCleanup(() =&gt; {
+    clearTimeout(timer);
+  });
+});
+&lt;/script&gt;</div>
+
+            <div class="info-box">
+                <h4>watch vs watchEffect</h4>
+                <p><strong>Use watch()</strong> when you need to access previous values, watch specific sources, or perform side effects only when certain dependencies change.<br><br>
+                <strong>Use watchEffect()</strong> for simpler cases where you want automatic dependency tracking and don't need old values.</p>
+            </div>
+
+            <h3>4. Component Communication</h3>
+
+            <h4>Props: Parent to Child</h4>
+
+            <div class="code">&lt;!-- Child Component: UserCard.vue --&gt;
+&lt;template&gt;
+  &lt;div class="user-card"&gt;
+    &lt;h3&gt;{{ user.name }}&lt;/h3&gt;
+    &lt;p&gt;Age: {{ user.age }}&lt;/p&gt;
+    &lt;p&gt;Role: {{ role }}&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+// Define props with TypeScript-style type annotation
+const props = defineProps({
+  user: {
+    type: Object,
+    required: true
+  },
+  role: {
+    type: String,
+    default: 'Guest'
+  },
+  age: {
+    type: Number,
+    validator: (value) =&gt; value &gt;= 0
+  }
+});
+
+// Access props
+console.log(props.user.name);
+&lt;/script&gt;
+
+&lt;!-- Parent Component --&gt;
+&lt;template&gt;
+  &lt;UserCard :user="currentUser" role="Admin" /&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+import UserCard from './UserCard.vue';
+const currentUser = ref({ name: 'Alice', age: 28 });
+&lt;/script&gt;</div>
+
+            <h4>Emits: Child to Parent</h4>
+
+            <div class="code">&lt;!-- Child Component: CustomButton.vue --&gt;
+&lt;template&gt;
+  &lt;button @click="handleClick"&gt;
+    &lt;slot&gt;&lt;/slot&gt;
+  &lt;/button&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+// Define emits
+const emit = defineEmits(['click', 'custom-event']);
+
+function handleClick(event) {
+  // Emit with data
+  emit('click', { timestamp: Date.now(), event });
+  emit('custom-event', 'some data');
+}
+&lt;/script&gt;
+
+&lt;!-- Parent Component --&gt;
+&lt;template&gt;
+  &lt;CustomButton @click="onButtonClick" @custom-event="onCustom"&gt;
+    Click Me
+  &lt;/CustomButton&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+function onButtonClick(data) {
+  console.log('Button clicked at:', data.timestamp);
+}
+
+function onCustom(data) {
+  console.log('Custom event:', data);
+}
+&lt;/script&gt;</div>
+
+            <h4>provide/inject: Deep Component Communication</h4>
+
+            <div class="code">&lt;!-- Grandparent Component --&gt;
+&lt;script setup&gt;
+import { provide, ref } from 'vue';
+
+const theme = ref('dark');
+const user = ref({ name: 'Alice', role: 'admin' });
+
+// Provide to all descendants
+provide('theme', theme);
+provide('user', user);
+
+// Provide with read-only access
+import { readonly } from 'vue';
+provide('config', readonly({
+  apiUrl: 'https://api.example.com'
+}));
+&lt;/script&gt;
+
+&lt;!-- Deep Child Component (any level deep) --&gt;
+&lt;script setup&gt;
+import { inject } from 'vue';
+
+// Inject provided values
+const theme = inject('theme');
+const user = inject('user');
+
+// Inject with default value
+const config = inject('config', { apiUrl: 'fallback' });
+
+// Now you can use theme, user, config
+console.log(theme.value);  // 'dark'
+&lt;/script&gt;</div>
+
+            <h4>Slots: Content Distribution</h4>
+
+            <div class="code">&lt;!-- Card Component with Slots --&gt;
+&lt;template&gt;
+  &lt;div class="card"&gt;
+    &lt;div class="card-header"&gt;
+      &lt;slot name="header"&gt;Default Header&lt;/slot&gt;
+    &lt;/div&gt;
+    &lt;div class="card-body"&gt;
+      &lt;slot&gt;Default Content&lt;/slot&gt;
+    &lt;/div&gt;
+    &lt;div class="card-footer"&gt;
+      &lt;slot name="footer" :data="footerData"&gt;
+        Default Footer
+      &lt;/slot&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+const footerData = ref({ timestamp: new Date() });
+&lt;/script&gt;
+
+&lt;!-- Using the Card --&gt;
+&lt;template&gt;
+  &lt;Card&gt;
+    &lt;template #header&gt;
+      &lt;h2&gt;My Custom Header&lt;/h2&gt;
+    &lt;/template&gt;
+    
+    &lt;!-- Default slot --&gt;
+    &lt;p&gt;This is the main content&lt;/p&gt;
+    
+    &lt;!-- Scoped slot receiving data --&gt;
+    &lt;template #footer="{ data }"&gt;
+      &lt;small&gt;Last updated: {{ data.timestamp }}&lt;/small&gt;
+    &lt;/template&gt;
+  &lt;/Card&gt;
+&lt;/template&gt;</div>
+
+            <h3>5. Pinia State Management</h3>
+
+            <p>Pinia is the official state management solution for Vue 3, replacing Vuex. It offers a simpler API, better TypeScript support, and modular design.</p>
+
+            <h4>Creating a Store</h4>
+
+            <div class="code">// stores/counter.js
+import { defineStore } from 'pinia';
+import { ref, computed } from 'vue';
+
+// Composition API style (recommended)
+export const useCounterStore = defineStore('counter', () =&gt; {
+  // State
+  const count = ref(0);
+  const name = ref('Counter Store');
+  
+  // Getters (computed)
+  const doubleCount = computed(() =&gt; count.value * 2);
+  const isEven = computed(() =&gt; count.value % 2 === 0);
+  
+  // Actions (functions)
+  function increment() {
+    count.value++;
+  }
+  
+  function incrementBy(amount) {
+    count.value += amount;
+  }
+  
+  async function fetchCount() {
+    const response = await fetch('/api/count');
+    const data = await response.json();
+    count.value = data.count;
+  }
+  
+  return {
+    count,
+    name,
+    doubleCount,
+    isEven,
+    increment,
+    incrementBy,
+    fetchCount
+  };
+});
+
+// Options API style (alternative)
+export const useCounterStore = defineStore('counter', {
+  state: () =&gt; ({
+    count: 0,
+    name: 'Counter Store'
+  }),
+  getters: {
+    doubleCount: (state) =&gt; state.count * 2,
+    isEven: (state) =&gt; state.count % 2 === 0
+  },
+  actions: {
+    increment() {
+      this.count++;
+    },
+    incrementBy(amount) {
+      this.count += amount;
+    }
+  }
+});</div>
+
+            <h4>Using Stores in Components</h4>
+
+            <div class="code">&lt;template&gt;
+  &lt;div&gt;
+    &lt;p&gt;Count: {{ counter.count }}&lt;/p&gt;
+    &lt;p&gt;Double: {{ counter.doubleCount }}&lt;/p&gt;
+    &lt;p&gt;Is Even: {{ counter.isEven }}&lt;/p&gt;
+    &lt;button @click="counter.increment"&gt;Increment&lt;/button&gt;
+    &lt;button @click="counter.incrementBy(5)"&gt;Add 5&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+import { useCounterStore } from '@/stores/counter';
+
+// Get store instance
+const counter = useCounterStore();
+
+// Destructure with reactivity (use storeToRefs!)
+import { storeToRefs } from 'pinia';
+const { count, doubleCount, isEven } = storeToRefs(counter);
+const { increment, incrementBy } = counter;  // Actions don't need storeToRefs
+
+// Watch store state
+watch(() =&gt; counter.count, (newCount) =&gt; {
+  console.log('Count changed:', newCount);
+});
+&lt;/script&gt;</div>
+
+            <h4>Complex Store Example: User Authentication</h4>
+
+            <div class="code">// stores/auth.js
+import { defineStore } from 'pinia';
+import { ref, computed } from 'vue';
+
+export const useAuthStore = defineStore('auth', () =&gt; {
+  // State
+  const user = ref(null);
+  const token = ref(localStorage.getItem('token') || null);
+  const loading = ref(false);
+  const error = ref(null);
+  
+  // Getters
+  const isAuthenticated = computed(() =&gt; !!token.value);
+  const userRole = computed(() =&gt; user.value?.role || 'guest');
+  const isAdmin = computed(() =&gt; userRole.value === 'admin');
+  
+  // Actions
+  async function login(email, password) {
+    loading.value = true;
+    error.value = null;
+    
+    try {
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      
+      if (!response.ok) {
+        throw new Error('Login failed');
+      }
+      
+      const data = await response.json();
+      token.value = data.token;
+      user.value = data.user;
+      
+      localStorage.setItem('token', data.token);
+      
+      return true;
+    } catch (err) {
+      error.value = err.message;
+      return false;
+    } finally {
+      loading.value = false;
+    }
+  }
+  
+  function logout() {
+    user.value = null;
+    token.value = null;
+    localStorage.removeItem('token');
+  }
+  
+  async function fetchUser() {
+    if (!token.value) return;
+    
+    try {
+      const response = await fetch('/api/user', {
+        headers: { Authorization: `Bearer ${token.value}` }
+      });
+      
+      const data = await response.json();
+      user.value = data;
+    } catch (err) {
+      // Token invalid, logout
+      logout();
+    }
+  }
+  
+  return {
+    user,
+    token,
+    loading,
+    error,
+    isAuthenticated,
+    userRole,
+    isAdmin,
+    login,
+    logout,
+    fetchUser
+  };
+});</div>
+
+            <h3>6. Vue Router Deep Dive</h3>
+
+            <h4>Router Setup</h4>
+
+            <div class="code">// router/index.js
+import { createRouter, createWebHistory } from 'vue-router';
+import Home from '@/views/Home.vue';
+import About from '@/views/About.vue';
+
+const routes = [
+  {
+    path: '/',
+    name: 'home',
+    component: Home
+  },
+  {
+    path: '/about',
+    name: 'about',
+    component: About
+  },
+  {
+    path: '/user/:id',
+    name: 'user',
+    component: () =&gt; import('@/views/User.vue'),  // Lazy loading
+    props: true  // Pass route params as props
+  },
+  {
+    path: '/dashboard',
+    component: () =&gt; import('@/views/Dashboard.vue'),
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: '',
+        name: 'dashboard-home',
+        component: () =&gt; import('@/views/DashboardHome.vue')
+      },
+      {
+        path: 'profile',
+        name: 'profile',
+        component: () =&gt; import('@/views/Profile.vue')
+      }
+    ]
+  },
+  {
+    // Catch all 404
+    path: '/:pathMatch(.*)*',
+    name: 'not-found',
+    component: () =&gt; import('@/views/NotFound.vue')
+  }
+];
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes
+});
+
+export default router;</div>
+
+            <h4>Navigation Guards</h4>
+
+            <div class="code">// Global navigation guard
+router.beforeEach(async (to, from) =&gt; {
+  const authStore = useAuthStore();
+  
+  // Check authentication
+  if (to.meta.requiresAuth &amp;&amp; !authStore.isAuthenticated) {
+    return { name: 'login' };
+  }
+  
+  // Check admin access
+  if (to.meta.requiresAdmin &amp;&amp; !authStore.isAdmin) {
+    return { name: 'forbidden' };
+  }
+  
+  // Allow navigation
+  return true;
+});
+
+// Per-route guard
+const routes = [
+  {
+    path: '/admin',
+    component: Admin,
+    beforeEnter: (to, from) =&gt; {
+      if (!isAdmin()) {
+        return { name: 'home' };
+      }
+    }
+  }
+];</div>
+
+            <h4>Using Router in Components</h4>
+
+            <div class="code">&lt;template&gt;
+  &lt;div&gt;
+    &lt;!-- Declarative navigation --&gt;
+    &lt;router-link to="/"&gt;Home&lt;/router-link&gt;
+    &lt;router-link :to="{ name: 'user', params: { id: 123 } }"&gt;
+      User 123
+    &lt;/router-link&gt;
+    
+    &lt;!-- Router view --&gt;
+    &lt;router-view /&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+import { useRouter, useRoute } from 'vue-router';
+
+const router = useRouter();
+const route = useRoute();
+
+// Programmatic navigation
+function goToUser(id) {
+  router.push({ name: 'user', params: { id } });
+}
+
+function goBack() {
+  router.go(-1);
+}
+
+// Access route params/query
+const userId = computed(() =&gt; route.params.id);
+const searchQuery = computed(() =&gt; route.query.search);
+
+// Watch route changes
+watch(() =&gt; route.params.id, (newId) =&gt; {
+  console.log('User ID changed:', newId);
+});
+&lt;/script&gt;</div>
+
+            <h3>7. Composables: Reusable Logic</h3>
+
+            <p>Composables are the Vue equivalent of React hooks - reusable functions that encapsulate stateful logic.</p>
+
+            <div class="code">// composables/useFetch.js
+import { ref } from 'vue';
+
+export function useFetch(url) {
+  const data = ref(null);
+  const error = ref(null);
+  const loading = ref(false);
+  
+  async function fetchData() {
+    loading.value = true;
+    error.value = null;
+    
+    try {
+      const response = await fetch(url);
+      data.value = await response.json();
+    } catch (err) {
+      error.value = err;
+    } finally {
+      loading.value = false;
+    }
+  }
+  
+  fetchData();
+  
+  return { data, error, loading, refetch: fetchData };
+}
+
+// Usage in component
+&lt;script setup&gt;
+import { useFetch } from '@/composables/useFetch';
+
+const { data: users, loading, error } = useFetch('/api/users');
+&lt;/script&gt;
+
+// composables/useLocalStorage.js
+import { ref, watch } from 'vue';
+
+export function useLocalStorage(key, defaultValue) {
+  const storedValue = localStorage.getItem(key);
+  const data = ref(storedValue ? JSON.parse(storedValue) : defaultValue);
+  
+  watch(data, (newValue) =&gt; {
+    localStorage.setItem(key, JSON.stringify(newValue));
+  }, { deep: true });
+  
+  return data;
+}
+
+// Usage
+const user = useLocalStorage('user', { name: 'Guest' });
+
+// composables/useMousePosition.js
+export function useMousePosition() {
+  const x = ref(0);
+  const y = ref(0);
+  
+  function update(event) {
+    x.value = event.pageX;
+    y.value = event.pageY;
+  }
+  
+  onMounted(() =&gt; {
+    window.addEventListener('mousemove', update);
+  });
+  
+  onUnmounted(() =&gt; {
+    window.removeEventListener('mousemove', update);
+  });
+  
+  return { x, y };
+}</div>
+
+            <h3>8. Lifecycle Hooks</h3>
+
+            <div class="code">&lt;script setup&gt;
+import {
+  onBeforeMount,
+  onMounted,
+  onBeforeUpdate,
+  onUpdated,
+  onBeforeUnmount,
+  onUnmounted
+} from 'vue';
+
+// Before component is mounted to DOM
+onBeforeMount(() =&gt; {
+  console.log('Before mount');
+});
+
+// After component is mounted (DOM available)
+onMounted(() =&gt; {
+  console.log('Mounted - DOM ready');
+  // Perfect for:
+  // - API calls
+  // - DOM manipulation
+  // - Setting up listeners
+});
+
+// Before reactive data changes trigger re-render
+onBeforeUpdate(() =&gt; {
+  console.log('Before update');
+});
+
+// After reactive data changes and DOM updates
+onUpdated(() =&gt; {
+  console.log('Updated - DOM has changed');
+});
+
+// Before component is unmounted
+onBeforeUnmount(() =&gt; {
+  console.log('Before unmount');
+  // Cleanup here
+});
+
+// After component is unmounted
+onUnmounted(() =&gt; {
+  console.log('Unmounted');
+  // Final cleanup
+});
+&lt;/script&gt;</div>
+
+            <h3>9. Form Handling & Validation</h3>
+
+            <h4>Advanced v-model</h4>
+
+            <div class="code">&lt;!-- Custom component with v-model --&gt;
+&lt;!-- CustomInput.vue --&gt;
+&lt;template&gt;
+  &lt;input
+    :value="modelValue"
+    @input="$emit('update:modelValue', $event.target.value)"
+  &gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+defineProps(['modelValue']);
+defineEmits(['update:modelValue']);
+&lt;/script&gt;
+
+&lt;!-- Usage --&gt;
+&lt;CustomInput v-model="text" /&gt;
+
+&lt;!-- Multiple v-models --&gt;
+&lt;UserForm
+  v-model:firstName="firstName"
+  v-model:lastName="lastName"
+/&gt;</div>
+
+            <h4>Form Validation with Vuelidate</h4>
+
+            <div class="code">&lt;script setup&gt;
+import { useVuelidate } from '@vuelidate/core';
+import { required, email, minLength } from '@vuelidate/validators';
+
+const formData = reactive({
+  email: '',
+  password: '',
+  confirmPassword: ''
+});
+
+const rules = {
+  email: { required, email },
+  password: { required, minLength: minLength(8) },
+  confirmPassword: {
+    required,
+    sameAs: (value) =&gt; value === formData.password
+  }
+};
+
+const v$ = useVuelidate(rules, formData);
+
+async function submitForm() {
+  const isValid = await v$.value.$validate();
+  
+  if (!isValid) {
+    console.log('Validation errors:', v$.value.$errors);
+    return;
+  }
+  
+  // Submit form
+  console.log('Form valid, submitting...');
+}
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;form @submit.prevent="submitForm"&gt;
+    &lt;div&gt;
+      &lt;input v-model="formData.email" placeholder="Email"&gt;
+      &lt;span v-if="v$.email.$error"&gt;
+        {{ v$.email.$errors[0].$message }}
+      &lt;/span&gt;
+    &lt;/div&gt;
+    
+    &lt;div&gt;
+      &lt;input v-model="formData.password" type="password"&gt;
+      &lt;span v-if="v$.password.$error"&gt;
+        {{ v$.password.$errors[0].$message }}
+      &lt;/span&gt;
+    &lt;/div&gt;
+    
+    &lt;button type="submit"&gt;Submit&lt;/button&gt;
+  &lt;/form&gt;
+&lt;/template&gt;</div>
+
+            <h3>10. Performance Optimization</h3>
+
+            <div class="code">&lt;template&gt;
+  &lt;!-- v-once: Render once, never update --&gt;
+  &lt;p v-once&gt;{{ staticContent }}&lt;/p&gt;
+  
+  &lt;!-- v-memo: Skip re-render if dependencies unchanged --&gt;
+  &lt;div v-memo="[user.id, user.name]"&gt;
+    &lt;UserCard :user="user" /&gt;
+  &lt;/div&gt;
+  
+  &lt;!-- Lazy load components --&gt;
+  &lt;component :is="AsyncComponent" /&gt;
+&lt;/template&gt;
+
+&lt;script setup&gt;
+import { defineAsyncComponent } from 'vue';
+
+// Lazy load heavy component
+const AsyncComponent = defineAsyncComponent(() =&gt;
+  import('./HeavyComponent.vue')
+);
+
+// Computed caching (automatically memoized)
+const expensiveComputation = computed(() =&gt; {
+  return items.value.reduce((sum, item) =&gt; sum + item.price, 0);
+});
+
+// Use shallowRef for large objects you rarely mutate
+import { shallowRef } from 'vue';
+const bigDataset = shallowRef({ /* thousands of items */ });
+&lt;/script&gt;</div>
+
+            <div class="info-box">
+                <h4>Vue Performance Tips</h4>
+                <p>
+                • Use <span class="inline-code">v-show</span> for frequently toggled elements<br>
+                • Use <span class="inline-code">v-if</span> for rarely changed conditions<br>
+                • Always provide keys for v-for<br>
+                • Lazy load route components<br>
+                • Use computed for expensive calculations<br>
+                • Use shallowRef/shallowReactive for large data structures<br>
+                • Implement virtual scrolling for large lists (vue-virtual-scroller)<br>
+                • Debounce expensive operations (user input, API calls)
+                </p>
+            </div>
+
+            <div class="metaphor-box">
+                <h4>Vue's Philosophy: Progressive Simplicity</h4>
+                <p>Vue is designed to be incrementally adoptable - you start simple and add complexity only when needed. It's like learning to drive: you start with the basics (turning, braking), then gradually add advanced skills (parallel parking, highway merging). You don't need to know everything to be productive, but the advanced features are there when you're ready.</p>
+            </div>
+
+        <!-- SECTION 3: State Management (Redux, Zustand, Recoil, Context) -->
+        <section id="state-management" class="section">
+            <h2 class="section-title">State Management</h2>
+            <p class="section-intro"><!-- EXPAND THIS SECTION --></p>
+        </section>
+
+        <!-- SECTION 4: API Integration -->
+        <section id="api-integration" class="section">
+            <h2 class="section-title">API Integration</h2>
+            <p class="section-intro"><!-- EXPAND THIS SECTION --></p>
+        </section>
 
         <!-- SECTION 5: Real-Time Features -->
         <section id="realtime-features" class="section">
