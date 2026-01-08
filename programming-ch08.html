@@ -5898,6 +5898,507 @@ createApp({
 &lt;/body&gt;
 &lt;/html&gt;</div>
 
+            <h3>Deep Dive: Vue Direct ives</h3>
+            
+            <p>Vue has special HTML attributes called "directives" that give your templates superpowers. Let's explore the most important ones:</p>
+
+            <h4>v-if, v-else-if, v-else - Conditional Rendering</h4>
+
+            <div class="code">&lt;div id="app"&gt;
+  &lt;p v-if="score >= 90"&gt;Grade: A - Excellent!&lt;/p&gt;
+  &lt;p v-else-if="score >= 80"&gt;Grade: B - Great job!&lt;/p&gt;
+  &lt;p v-else-if="score >= 70"&gt;Grade: C - Good&lt;/p&gt;
+  &lt;p v-else&gt;Grade: F - Need to study more&lt;/p&gt;
+  
+  &lt;button @click="score += 10"&gt;Increase Score&lt;/button&gt;
+  &lt;p&gt;Current Score: {{ score }}&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+createApp({
+  data() {
+    return {
+      score: 75
+    }
+  }
+}).mount('#app');
+&lt;/script&gt;</div>
+
+            <h4>v-show - Toggle Visibility</h4>
+
+            <div class="code">&lt;div id="app"&gt;
+  &lt;button @click="isVisible = !isVisible"&gt;Toggle&lt;/button&gt;
+  &lt;p v-show="isVisible"&gt;Now you see me!&lt;/p&gt;
+&lt;/div&gt;</div>
+
+            <div class="warning-box">
+                <h4>v-if vs v-show</h4>
+                <p><strong>v-if:</strong> Completely removes/adds element from DOM<br>
+                <strong>v-show:</strong> Just toggles CSS display property<br><br>
+                Use v-if when toggling is rare. Use v-show when toggling frequently (better performance).</p>
+            </div>
+
+            <h4>v-for - Rendering Lists</h4>
+
+            <div class="code">&lt;div id="app"&gt;
+  &lt;h3&gt;My Shopping List&lt;/h3&gt;
+  &lt;ul&gt;
+    &lt;li v-for="(item, index) in items" :key="item.id"&gt;
+      {{ index + 1 }}. {{ item.name }} - ${{ item.price }}
+      &lt;button @click="removeItem(item.id)"&gt;Remove&lt;/button&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+  
+  &lt;p&gt;Total Items: {{ items.length }}&lt;/p&gt;
+  &lt;p&gt;Total Cost: ${{ totalCost }}&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+createApp({
+  data() {
+    return {
+      items: [
+        { id: 1, name: 'Laptop', price: 999 },
+        { id: 2, name: 'Mouse', price: 29 },
+        { id: 3, name: 'Keyboard', price: 79 }
+      ]
+    }
+  },
+  computed: {
+    totalCost() {
+      return this.items.reduce((sum, item) => sum + item.price, 0);
+    }
+  },
+  methods: {
+    removeItem(id) {
+      this.items = this.items.filter(item => item.id !== id);
+    }
+  }
+}).mount('#app');
+&lt;/script&gt;</div>
+
+            <div class="info-box">
+                <h4>Always Use :key with v-for!</h4>
+                <p>The <span class="inline-code">:key</span> attribute helps Vue track which items changed. Always use a unique ID, never use the index as key if your list can be reordered or items can be removed.</p>
+            </div>
+
+            <h4>v-model - Two-Way Data Binding</h4>
+
+            <div class="code">&lt;div id="app"&gt;
+  &lt;!-- Text input --&gt;
+  &lt;input v-model="name" placeholder="Enter your name"&gt;
+  &lt;p&gt;Hello, {{ name }}!&lt;/p&gt;
+  
+  &lt;!-- Textarea --&gt;
+  &lt;textarea v-model="message" placeholder="Type a message"&gt;&lt;/textarea&gt;
+  &lt;p&gt;Message length: {{ message.length }}&lt;/p&gt;
+  
+  &lt;!-- Checkbox --&gt;
+  &lt;input type="checkbox" v-model="agreed"&gt;
+  &lt;label&gt;I agree to terms&lt;/label&gt;
+  &lt;p v-if="agreed"&gt;Thanks for agreeing!&lt;/p&gt;
+  
+  &lt;!-- Radio buttons --&gt;
+  &lt;input type="radio" v-model="plan" value="free"&gt; Free
+  &lt;input type="radio" v-model="plan" value="pro"&gt; Pro
+  &lt;p&gt;Selected plan: {{ plan }}&lt;/p&gt;
+  
+  &lt;!-- Select dropdown --&gt;
+  &lt;select v-model="country"&gt;
+    &lt;option value="us"&gt;United States&lt;/option&gt;
+    &lt;option value="uk"&gt;United Kingdom&lt;/option&gt;
+    &lt;option value="ca"&gt;Canada&lt;/option&gt;
+  &lt;/select&gt;
+  &lt;p&gt;Country: {{ country }}&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+createApp({
+  data() {
+    return {
+      name: '',
+      message: '',
+      agreed: false,
+      plan: 'free',
+      country: 'us'
+    }
+  }
+}).mount('#app');
+&lt;/script&gt;</div>
+
+            <h3>Computed Properties - Smart Data</h3>
+
+            <p>Computed properties are like formulas in Excel—they automatically recalculate when their dependencies change.</p>
+
+            <div class="code">&lt;div id="app"&gt;
+  &lt;h3&gt;Shopping Cart&lt;/h3&gt;
+  
+  &lt;div v-for="item in cart" :key="item.id"&gt;
+    {{ item.name }} - ${{ item.price }} x 
+    &lt;input v-model.number="item.quantity" type="number" min="1" style="width: 50px"&gt;
+    = ${{ item.price * item.quantity }}
+  &lt;/div&gt;
+  
+  &lt;hr&gt;
+  &lt;p&gt;&lt;strong&gt;Subtotal: ${{ subtotal }}&lt;/strong&gt;&lt;/p&gt;
+  &lt;p&gt;Tax (10%): ${{ tax }}&lt;/p&gt;
+  &lt;p&gt;Shipping: ${{ shipping }}&lt;/p&gt;
+  &lt;h3&gt;Total: ${{ total }}&lt;/h3&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+createApp({
+  data() {
+    return {
+      cart: [
+        { id: 1, name: 'Laptop', price: 999, quantity: 1 },
+        { id: 2, name: 'Mouse', price: 29, quantity: 2 }
+      ]
+    }
+  },
+  computed: {
+    subtotal() {
+      return this.cart.reduce((sum, item) => {
+        return sum + (item.price * item.quantity);
+      }, 0);
+    },
+    tax() {
+      return this.subtotal * 0.1;
+    },
+    shipping() {
+      return this.subtotal > 100 ? 0 : 10;
+    },
+    total() {
+      return this.subtotal + this.tax + this.shipping;
+    }
+  }
+}).mount('#app');
+&lt;/script&gt;</div>
+
+            <div class="metaphor-box">
+                <h4>Why Computed Over Methods?</h4>
+                <p>You COULD calculate these in methods, but computed properties are <strong>cached</strong>. They only recalculate when dependencies change. If you call a method 10 times, it runs 10 times. A computed property? Calculated once, cached, reused. Much more efficient!</p>
+            </div>
+
+            <h3>Watchers - React to Changes</h3>
+
+            <p>Watchers let you perform actions when data changes. Great for async operations or complex logic.</p>
+
+            <div class="code">&lt;div id="app"&gt;
+  &lt;input v-model="searchQuery" placeholder="Search products..."&gt;
+  &lt;p v-if="loading"&gt;Searching...&lt;/p&gt;
+  &lt;ul v-else&gt;
+    &lt;li v-for="result in searchResults" :key="result"&gt;{{ result }}&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+createApp({
+  data() {
+    return {
+      searchQuery: '',
+      searchResults: [],
+      loading: false
+    }
+  },
+  watch: {
+    searchQuery(newQuery) {
+      if (newQuery.length < 3) {
+        this.searchResults = [];
+        return;
+      }
+      
+      this.loading = true;
+      
+      // Simulate API call
+      setTimeout(() => {
+        this.searchResults = [
+          `Result for "${newQuery}" #1`,
+          `Result for "${newQuery}" #2`,
+          `Result for "${newQuery}" #3`
+        ];
+        this.loading = false;
+      }, 500);
+    }
+  }
+}).mount('#app');
+&lt;/script&gt;</div>
+
+            <h3>Lifecycle Hooks - Component Life Stages</h3>
+
+            <p>Components have a lifecycle—they're born (mounted), live (updated), and die (unmounted). Lifecycle hooks let you run code at each stage.</p>
+
+            <div class="code">&lt;div id="app"&gt;
+  &lt;p&gt;{{ message }}&lt;/p&gt;
+  &lt;p&gt;Count: {{ count }}&lt;/p&gt;
+  &lt;button @click="count++"&gt;Increment&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+createApp({
+  data() {
+    return {
+      message: 'Hello',
+      count: 0
+    }
+  },
+  
+  beforeCreate() {
+    console.log('beforeCreate: Component is about to be created');
+  },
+  
+  created() {
+    console.log('created: Component created, data is ready');
+    // Good for: Initial API calls
+    this.message = 'Component created!';
+  },
+  
+  beforeMount() {
+    console.log('beforeMount: About to add to DOM');
+  },
+  
+  mounted() {
+    console.log('mounted: Component is in the DOM!');
+    // Good for: DOM manipulation, third-party library setup
+    document.title = 'Vue App Loaded';
+  },
+  
+  beforeUpdate() {
+    console.log('beforeUpdate: Data changed, about to update DOM');
+  },
+  
+  updated() {
+    console.log('updated: DOM has been updated');
+  },
+  
+  beforeUnmount() {
+    console.log('beforeUnmount: Component about to be removed');
+  },
+  
+  unmounted() {
+    console.log('unmounted: Component removed from DOM');
+    // Good for: Cleanup (remove event listeners, clear timers)
+  }
+}).mount('#app');
+&lt;/script&gt;</div>
+
+            <div class="info-box">
+                <h4>Most Commonly Used Hooks</h4>
+                <p><strong>created:</strong> Fetch initial data<br>
+                <strong>mounted:</strong> Access DOM, set up libraries<br>
+                <strong>beforeUnmount:</strong> Cleanup (timers, listeners)<br><br>
+                The others are less commonly needed but good to know!</p>
+            </div>
+
+            <h3>Complete Vue Todo App with All Features</h3>
+
+            <p>Let's combine everything we've learned into one complete, feature-rich todo app:</p>
+
+            <div class="code">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;title&gt;Complete Vue Todo App&lt;/title&gt;
+  &lt;style&gt;
+    body { font-family: Arial, sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; }
+    .todo-item { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #eee; }
+    .todo-item.completed { text-decoration: line-through; opacity: 0.6; }
+    .todo-text { flex: 1; margin: 0 10px; }
+    button { padding: 5px 10px; margin: 0 5px; cursor: pointer; }
+    input[type="text"] { padding: 10px; width: 70%; font-size: 16px; }
+    .stats { margin-top: 20px; padding: 15px; background: #f5f5f5; border-radius: 5px; }
+    .filter-buttons { margin: 15px 0; }
+    .filter-buttons button { margin: 0 5px; }
+    .filter-buttons button.active { background: #007bff; color: white; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div id="app"&gt;
+    &lt;h1&gt;📝 Vue Todo App&lt;/h1&gt;
+    
+    &lt;!-- Add todo form --&gt;
+    &lt;form @submit.prevent="addTodo"&gt;
+      &lt;input 
+        v-model.trim="newTodoText"
+        type="text" 
+        placeholder="What needs to be done?"
+        required
+      &gt;
+      &lt;button type="submit"&gt;Add&lt;/button&gt;
+    &lt;/form&gt;
+    
+    &lt;!-- Filter buttons --&gt;
+    &lt;div class="filter-buttons"&gt;
+      &lt;button 
+        v-for="f in filters" 
+        :key="f"
+        @click="currentFilter = f"
+        :class="{ active: currentFilter === f }"
+      &gt;
+        {{ f }}
+      &lt;/button&gt;
+    &lt;/div&gt;
+    
+    &lt;!-- Todo list --&gt;
+    &lt;div v-if="filteredTodos.length"&gt;
+      &lt;div 
+        v-for="todo in filteredTodos" 
+        :key="todo.id"
+        class="todo-item"
+        :class="{ completed: todo.completed }"
+      &gt;
+        &lt;input 
+          type="checkbox" 
+          v-model="todo.completed"
+        &gt;
+        &lt;div class="todo-text"&gt;{{ todo.text }}&lt;/div&gt;
+        &lt;button @click="editTodo(todo)"&gt;Edit&lt;/button&gt;
+        &lt;button @click="deleteTodo(todo.id)"&gt;Delete&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    
+    &lt;p v-else style="text-align: center; color: #999; margin-top: 30px;"&gt;
+      No todos to show!
+    &lt;/p&gt;
+    
+    &lt;!-- Statistics --&gt;
+    &lt;div class="stats" v-if="todos.length"&gt;
+      &lt;strong&gt;Statistics:&lt;/strong&gt;&lt;br&gt;
+      Total: {{ stats.total }} | 
+      Active: {{ stats.active }} | 
+      Completed: {{ stats.completed }} | 
+      Progress: {{ stats.progress }}%
+      
+      &lt;br&gt;&lt;br&gt;
+      &lt;button @click="clearCompleted" v-if="stats.completed"&gt;
+        Clear Completed
+      &lt;/button&gt;
+      &lt;button @click="toggleAll"&gt;
+        {{ allCompleted ? 'Unmark All' : 'Complete All' }}
+      &lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;script src="https://unpkg.com/vue@3/dist/vue.global.js"&gt;&lt;/script&gt;
+  &lt;script&gt;
+    const { createApp } = Vue;
+    
+    createApp({
+      data() {
+        return {
+          todos: [],
+          newTodoText: '',
+          currentFilter: 'All',
+          filters: ['All', 'Active', 'Completed'],
+          nextId: 1
+        }
+      },
+      
+      computed: {
+        filteredTodos() {
+          if (this.currentFilter === 'Active') {
+            return this.todos.filter(t => !t.completed);
+          }
+          if (this.currentFilter === 'Completed') {
+            return this.todos.filter(t => t.completed);
+          }
+          return this.todos;
+        },
+        
+        stats() {
+          const total = this.todos.length;
+          const completed = this.todos.filter(t => t.completed).length;
+          const active = total - completed;
+          const progress = total > 0 ? Math.round((completed / total) * 100) : 0;
+          
+          return { total, completed, active, progress };
+        },
+        
+        allCompleted() {
+          return this.todos.length > 0 && this.todos.every(t => t.completed);
+        }
+      },
+      
+      methods: {
+        addTodo() {
+          if (this.newTodoText) {
+            this.todos.push({
+              id: this.nextId++,
+              text: this.newTodoText,
+              completed: false,
+              createdAt: new Date()
+            });
+            this.newTodoText = '';
+            this.saveTodos();
+          }
+        },
+        
+        deleteTodo(id) {
+          this.todos = this.todos.filter(t => t.id !== id);
+          this.saveTodos();
+        },
+        
+        editTodo(todo) {
+          const newText = prompt('Edit todo:', todo.text);
+          if (newText !== null && newText.trim()) {
+            todo.text = newText.trim();
+            this.saveTodos();
+          }
+        },
+        
+        clearCompleted() {
+          this.todos = this.todos.filter(t => !t.completed);
+          this.saveTodos();
+        },
+        
+        toggleAll() {
+          const newState = !this.allCompleted;
+          this.todos.forEach(t => t.completed = newState);
+          this.saveTodos();
+        },
+        
+        saveTodos() {
+          localStorage.setItem('vue-todos', JSON.stringify(this.todos));
+        },
+        
+        loadTodos() {
+          const saved = localStorage.getItem('vue-todos');
+          if (saved) {
+            this.todos = JSON.parse(saved);
+            this.nextId = Math.max(...this.todos.map(t => t.id), 0) + 1;
+          }
+        }
+      },
+      
+      watch: {
+        todos: {
+          handler() {
+            // Auto-save whenever todos change
+            this.saveTodos();
+          },
+          deep: true  // Watch nested properties
+        }
+      },
+      
+      mounted() {
+        this.loadTodos();
+        console.log('Vue Todo App loaded!');
+      }
+    }).mount('#app');
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</div>
+
+            <div class="info-box">
+                <h4>Advanced Features in This App</h4>
+                <p>✅ <strong>Computed properties:</strong> filteredTodos, stats, allCompleted<br>
+                ✅ <strong>Methods:</strong> All CRUD operations<br>
+                ✅ <strong>Watchers:</strong> Deep watch on todos for auto-save<br>
+                ✅ <strong>Lifecycle hooks:</strong> mounted to load from localStorage<br>
+                ✅ <strong>Directives:</strong> v-if, v-for, v-model, @click, :class<br>
+                ✅ <strong>LocalStorage:</strong> Data persists across refreshes<br>
+                ✅ <strong>Dynamic classes:</strong> Visual feedback for completed todos</p>
+            </div>
+
             <h3>Vue vs React: Which Should You Choose?</h3>
 
             <div class="card-grid">
