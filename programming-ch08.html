@@ -5081,6 +5081,397 @@ root.render(
 &lt;/body&gt;
 &lt;/html&gt;</div>
 
+            <h3>Deep Dive: useState Hook</h3>
+            
+            <p>We've used <span class="inline-code">useState</span> in our apps, but let's really understand it. What IS a hook? Why does React need them?</p>
+
+            <div class="metaphor-box">
+                <h4>Hooks as Power Outlets</h4>
+                <p>Imagine React features (state, effects, context) as electricity flowing through your app. <strong>Hooks are like power outlets</strong>—they let you "plug in" and access that electricity from your components.<br><br>
+                Before hooks (old React), only class components could access state. Hooks let ANY component access React features!</p>
+            </div>
+
+            <h4>useState Patterns</h4>
+            
+            <p>Let's explore different ways to use useState with complete examples:</p>
+
+            <div class="code">// Pattern 1: Simple boolean toggle
+function ToggleExample() {
+  const [isOn, setIsOn] = useState(false);
+  
+  return (
+    &lt;div&gt;
+      &lt;p&gt;The light is {isOn ? 'ON' : 'OFF'}&lt;/p&gt;
+      &lt;button onClick={() =&gt; setIsOn(!isOn)}&gt;
+        Toggle
+      &lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+// Pattern 2: Number increment/decrement
+function CounterExample() {
+  const [count, setCount] = useState(0);
+  
+  return (
+    &lt;div&gt;
+      &lt;p&gt;Count: {count}&lt;/p&gt;
+      &lt;button onClick={() =&gt; setCount(count - 1)}&gt;-&lt;/button&gt;
+      &lt;button onClick={() =&gt; setCount(count + 1)}&gt;+&lt;/button&gt;
+      &lt;button onClick={() =&gt; setCount(0)}&gt;Reset&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+// Pattern 3: Text input
+function InputExample() {
+  const [text, setText] = useState('');
+  
+  return (
+    &lt;div&gt;
+      &lt;input 
+        value={text}
+        onChange={(e) =&gt; setText(e.target.value)}
+        placeholder="Type something..."
+      /&gt;
+      &lt;p&gt;You typed: {text}&lt;/p&gt;
+      &lt;p&gt;Length: {text.length} characters&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+
+// Pattern 4: Object state
+function UserExample() {
+  const [user, setUser] = useState({
+    name: '',
+    email: '',
+    age: ''
+  });
+  
+  const updateField = (field, value) =&gt; {
+    setUser({
+      ...user,  // Copy existing fields
+      [field]: value  // Update specific field
+    });
+  };
+  
+  return (
+    &lt;div&gt;
+      &lt;input 
+        value={user.name}
+        onChange={(e) =&gt; updateField('name', e.target.value)}
+        placeholder="Name"
+      /&gt;
+      &lt;input 
+        value={user.email}
+        onChange={(e) =&gt; updateField('email', e.target.value)}
+        placeholder="Email"
+      /&gt;
+      &lt;input 
+        value={user.age}
+        onChange={(e) =&gt; updateField('age', e.target.value)}
+        placeholder="Age"
+      /&gt;
+      &lt;p&gt;Name: {user.name}&lt;/p&gt;
+      &lt;p&gt;Email: {user.email}&lt;/p&gt;
+      &lt;p&gt;Age: {user.age}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+
+// Pattern 5: Array state
+function ListExample() {
+  const [items, setItems] = useState(['Apple', 'Banana']);
+  const [newItem, setNewItem] = useState('');
+  
+  const addItem = () =&gt; {
+    if (newItem.trim()) {
+      setItems([...items, newItem]);
+      setNewItem('');
+    }
+  };
+  
+  const removeItem = (index) =&gt; {
+    setItems(items.filter((_, i) =&gt; i !== index));
+  };
+  
+  return (
+    &lt;div&gt;
+      &lt;input 
+        value={newItem}
+        onChange={(e) =&gt; setNewItem(e.target.value)}
+        placeholder="Add item"
+      /&gt;
+      &lt;button onClick={addItem}&gt;Add&lt;/button&gt;
+      &lt;ul&gt;
+        {items.map((item, index) =&gt; (
+          &lt;li key={index}&gt;
+            {item}
+            &lt;button onClick={() =&gt; removeItem(index)}&gt;Remove&lt;/button&gt;
+          &lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  );
+}</div>
+
+            <div class="warning-box">
+                <h4>Common useState Mistakes</h4>
+                <p><strong>Mistake 1: Mutating state directly</strong><br>
+                <span class="inline-code">❌ user.name = 'Alice'; // WRONG - React won't detect this change</span><br>
+                <span class="inline-code">✅ setUser({...user, name: 'Alice'}); // RIGHT - create new object</span><br><br>
+                
+                <strong>Mistake 2: Using stale state</strong><br>
+                <span class="inline-code">❌ setCount(count + 1); setCount(count + 1); // Only adds 1!</span><br>
+                <span class="inline-code">✅ setCount(prev =&gt; prev + 1); setCount(prev =&gt; prev + 1); // Adds 2!</span><br><br>
+                
+                <strong>Mistake 3: Too many state variables</strong><br>
+                Instead of 10 separate useState calls, group related data into objects.</p>
+            </div>
+
+            <h3>Deep Dive: useEffect Hook</h3>
+            
+            <p>The second most important hook! <span class="inline-code">useEffect</span> lets you perform "side effects" - things that reach outside your component like fetching data, setting up subscriptions, or manually changing the DOM.</p>
+
+            <div class="metaphor-box">
+                <h4>useEffect as a News Alert</h4>
+                <p>Imagine you want to know when something changes:<br><br>
+                <strong>Without useEffect:</strong> You have to constantly check: "Did it change? How about now? Now?"<br>
+                <strong>With useEffect:</strong> You set up an alert: "Tell me when X changes, and I'll do Y."<br><br>
+                useEffect says: "React, watch these values. When they change, run this function."</p>
+            </div>
+
+            <h4>useEffect Patterns</h4>
+
+            <div class="code">// Pattern 1: Run once on mount (like componentDidMount)
+function MountExample() {
+  const [data, setData] = useState(null);
+  
+  useEffect(() =&gt; {
+    console.log('Component mounted!');
+    // Good for: initial data fetch, setup
+    
+    fetch('https://api.example.com/data')
+      .then(res =&gt; res.json())
+      .then(data =&gt; setData(data));
+  }, []); // Empty array = run once
+  
+  return &lt;div&gt;{data ? data.message : 'Loading...'}&lt;/div&gt;;
+}
+
+// Pattern 2: Run when specific value changes
+function WatchExample() {
+  const [count, setCount] = useState(0);
+  
+  useEffect(() =&gt; {
+    document.title = `Count: ${count}`;
+    console.log('Count changed to:', count);
+  }, [count]); // Runs when count changes
+  
+  return &lt;button onClick={() =&gt; setCount(count + 1)}&gt;{count}&lt;/button&gt;;
+}
+
+// Pattern 3: Cleanup (important!)
+function TimerExample() {
+  const [seconds, setSeconds] = useState(0);
+  
+  useEffect(() =&gt; {
+    const interval = setInterval(() =&gt; {
+      setSeconds(prev =&gt; prev + 1);
+    }, 1000);
+    
+    // Cleanup function - runs when component unmounts
+    return () =&gt; {
+      console.log('Cleaning up timer');
+      clearInterval(interval);
+    };
+  }, []);
+  
+  return &lt;div&gt;Seconds: {seconds}&lt;/div&gt;;
+}
+
+// Pattern 4: Multiple useEffects (separate concerns)
+function MultiEffectExample() {
+  const [userId, setUserId] = useState(1);
+  const [theme, setTheme] = useState('light');
+  
+  // Effect 1: Fetch user data
+  useEffect(() =&gt; {
+    fetch(`https://api.example.com/users/${userId}`)
+      .then(res =&gt; res.json())
+      .then(data =&gt; console.log('User:', data));
+  }, [userId]);
+  
+  // Effect 2: Update body class
+  useEffect(() =&gt; {
+    document.body.className = theme;
+  }, [theme]);
+  
+  return &lt;div&gt;User {userId} with {theme} theme&lt;/div&gt;;
+}</div>
+
+            <div class="info-box">
+                <h4>useEffect Dependency Array Rules</h4>
+                <p><strong>Empty array []:</strong> Run once on mount<br>
+                <strong>No array:</strong> Run after EVERY render (usually too much!)<br>
+                <strong>[var1, var2]:</strong> Run when var1 OR var2 changes<br><br>
+                React will warn you if you forget to include dependencies. Listen to those warnings!</p>
+            </div>
+
+            <h3>Complete Example: Weather App with API</h3>
+            
+            <p>Let's build a real app that fetches data from an API and updates based on user input:</p>
+
+            <div class="code">function WeatherApp() {
+  const [city, setCity] = useState('London');
+  const [weather, setWeather] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [inputValue, setInputValue] = useState('');
+  
+  useEffect(() =&gt; {
+    setLoading(true);
+    setError(null);
+    
+    // Simulated API call (replace with real API)
+    fetch(`https://api.weatherapi.com/v1/current.json?key=YOUR_KEY&q=${city}`)
+      .then(response =&gt; {
+        if (!response.ok) throw new Error('City not found');
+        return response.json();
+      })
+      .then(data =&gt; {
+        setWeather({
+          temp: data.current.temp_c,
+          condition: data.current.condition.text,
+          icon: data.current.condition.icon
+        });
+        setLoading(false);
+      })
+      .catch(err =&gt; {
+        setError(err.message);
+        setLoading(false);
+      });
+  }, [city]);
+  
+  const handleSearch = (e) =&gt; {
+    e.preventDefault();
+    if (inputValue.trim()) {
+      setCity(inputValue);
+    }
+  };
+  
+  return (
+    &lt;div style={{ padding: '20px', fontFamily: 'Arial' }}&gt;
+      &lt;h1&gt;Weather App&lt;/h1&gt;
+      
+      &lt;form onSubmit={handleSearch}&gt;
+        &lt;input
+          value={inputValue}
+          onChange={(e) =&gt; setInputValue(e.target.value)}
+          placeholder="Enter city name"
+          style={{ padding: '10px', fontSize: '16px', marginRight: '10px' }}
+        /&gt;
+        &lt;button type="submit" style={{ padding: '10px 20px', fontSize: '16px' }}&gt;
+          Search
+        &lt;/button&gt;
+      &lt;/form&gt;
+      
+      {loading && &lt;p&gt;Loading weather for {city}...&lt;/p&gt;}
+      
+      {error && &lt;p style={{ color: 'red' }}&gt;Error: {error}&lt;/p&gt;}
+      
+      {weather && !loading && !error && (
+        &lt;div style={{ marginTop: '20px', padding: '20px', border: '1px solid #ddd', borderRadius: '8px' }}&gt;
+          &lt;h2&gt;{city}&lt;/h2&gt;
+          &lt;img src={weather.icon} alt={weather.condition} /&gt;
+          &lt;p style={{ fontSize: '32px', margin: '10px 0' }}&gt;{weather.temp}°C&lt;/p&gt;
+          &lt;p&gt;{weather.condition}&lt;/p&gt;
+        &lt;/div&gt;
+      )}
+    &lt;/div&gt;
+  );
+}</div>
+
+            <div class="info-box">
+                <h4>What This App Demonstrates</h4>
+                <p>✅ <strong>State management:</strong> Multiple pieces of state (city, weather, loading, error)<br>
+                ✅ <strong>Side effects:</strong> Fetching data with useEffect<br>
+                ✅ <strong>Conditional rendering:</strong> Loading states, error states, success states<br>
+                ✅ <strong>Form handling:</strong> Controlled input and submission<br>
+                ✅ <strong>Real-world pattern:</strong> This is how actual production apps handle API calls!</p>
+            </div>
+
+            <h3>React Router: Multi-Page Apps</h3>
+            
+            <p>So far, our apps have been single-page. But what if you want multiple pages like Home, About, Contact? Enter React Router!</p>
+
+            <div class="code">// First, include React Router from CDN (add to HTML head)
+// &lt;script src="https://unpkg.com/react-router-dom@6/dist/umd/react-router-dom.production.min.js"&gt;&lt;/script&gt;
+
+const { BrowserRouter, Routes, Route, Link, useParams } = window.ReactRouterDOM;
+
+function Home() {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Home Page&lt;/h1&gt;
+      &lt;p&gt;Welcome to my app!&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+
+function About() {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;About Page&lt;/h1&gt;
+      &lt;p&gt;This app was built with React!&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+
+function UserProfile() {
+  const { userId } = useParams(); // Get URL parameter
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;User Profile&lt;/h1&gt;
+      &lt;p&gt;Viewing user: {userId}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+
+function App() {
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;nav&gt;
+        &lt;Link to="/"&gt;Home&lt;/Link&gt; | 
+        &lt;Link to="/about"&gt;About&lt;/Link&gt; | 
+        &lt;Link to="/user/123"&gt;User 123&lt;/Link&gt;
+      &lt;/nav&gt;
+      
+      &lt;Routes&gt;
+        &lt;Route path="/" element={&lt;Home /&gt;} /&gt;
+        &lt;Route path="/about" element={&lt;About /&gt;} /&gt;
+        &lt;Route path="/user/:userId" element={&lt;UserProfile /&gt;} /&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  );
+}</div>
+
+            <div class="metaphor-box">
+                <h4>You're Now a Legit React Developer!</h4>
+                <p>Look at what you've mastered:<br><br>
+                ✅ Components and JSX<br>
+                ✅ Props and children<br>
+                ✅ useState for state management<br>
+                ✅ useEffect for side effects<br>
+                ✅ Event handling<br>
+                ✅ Conditional rendering<br>
+                ✅ Lists and keys<br>
+                ✅ Forms and controlled inputs<br>
+                ✅ API calls and loading states<br>
+                ✅ Routing and navigation<br><br>
+                These are the CORE skills. Everything else in React builds on this foundation. You're ready to build real applications!</p>
+            </div>
+
             <h3>Practice Exercises</h3>
 
             <div class="info-box">
