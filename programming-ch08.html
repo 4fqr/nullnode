@@ -4534,21 +4534,1012 @@ function BuggyComponent() {
             </div>
         </section>
 
-        <!-- SECTION 2: Vue Mastery -->
-        <section id="vue-mastery" class="section">
-            <h2 class="section-title">Vue Mastery</h2>
-            <p class="section-intro">Vue.js is the approachable, versatile, and performant framework that makes building web interfaces a joy. In this comprehensive section, we'll explore Vue from the ground up - from understanding its reactive philosophy to mastering advanced patterns with Composition API, Pinia state management, and sophisticated routing. Whether you're coming from React or starting fresh, you'll discover why Vue has become one of the most loved frameworks in the JavaScript ecosystem.</p>
-
-            <h3>1. Introduction to Vue: The Progressive Framework</h3>
-            
-            <p>Vue (pronounced "view") is often described as the "progressive framework" - but what does that actually mean? Unlike all-or-nothing frameworks, Vue is designed to be incrementally adoptable. You can use as little or as much Vue as you need, from enhancing a single section of an existing page to building full-scale single-page applications.</p>
+        <!-- SECTION 2: Building Your First React App -->
+        <section id="first-react-app" class="section">
+            <h2 class="section-title">Building Your First React App</h2>
+            <p class="section-intro">Now that you understand what React is, let's actually BUILD something! In this section, we'll create real, working React applications from scratch. No build tools, no complexity—just you, React, and a web browser. By the end, you'll have built a counter app and a todo list app, and you'll understand exactly how React works.</p>
 
             <div class="metaphor-box">
-                <h4>The Swiss Army Knife of Frameworks</h4>
-                <p>Think of Vue like a Swiss Army knife. React is like a specialized chef's knife - exceptional at one thing but requires additional tools for a complete toolkit. Angular is like a professional kitchen - everything included but overwhelming if you just want to make a sandwich. Vue gives you the essential tools in one elegant package, and you can add more specialized tools as needed.</p>
+                <h4>Learning by Building</h4>
+                <p>Think of this like learning to ride a bike. Reading about balance and pedaling is useful, but you only REALLY learn when you actually get on the bike and try it yourself. That's what we're doing here—we're getting on the React bike and riding!</p>
             </div>
 
-            <h4>Why Vue? The Philosophy</h4>
+            <h3>Setting Up React (The Easy Way)</h3>
+
+            <p>There are two ways to use React: the complex way (with build tools, npm, webpack, etc.) and the simple way (just including React from a CDN). We're starting with the simple way so you can focus on learning React, not fighting with configuration files.</p>
+
+            <div class="info-box">
+                <h4>What's a CDN?</h4>
+                <p><strong>CDN stands for Content Delivery Network.</strong> It's basically a way to include libraries from the internet directly in your HTML file. Think of it like checking out a book from a library instead of buying it—you get to use React without downloading or installing anything!</p>
+            </div>
+
+            <h4>Your First React HTML File</h4>
+
+            <p>Create a new file called <span class="inline-code">react-app.html</span> and add this code:</p>
+
+            <div class="code">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;My First React App&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;!-- This is where React will put our app --&gt;
+    &lt;div id="root"&gt;&lt;/div&gt;
+
+    &lt;!-- Include React from CDN --&gt;
+    &lt;script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"&gt;&lt;/script&gt;
+    &lt;script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"&gt;&lt;/script&gt;
+    
+    &lt;!-- Include Babel to transform JSX --&gt;
+    &lt;script src="https://unpkg.com/@babel/standalone/babel.min.js"&gt;&lt;/script&gt;
+
+    &lt;!-- Our React code goes here --&gt;
+    &lt;script type="text/babel"&gt;
+        // React code coming soon!
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</div>
+
+            <div class="warning-box">
+                <h4>About Those Script Tags</h4>
+                <p><strong>Three script tags, three jobs:</strong><br><br>
+                1. <span class="inline-code">react.development.js</span> - The React library itself<br>
+                2. <span class="inline-code">react-dom.development.js</span> - Connects React to the browser's DOM<br>
+                3. <span class="inline-code">babel.min.js</span> - Transforms JSX (that HTML-like syntax) into regular JavaScript<br><br>
+                The <span class="inline-code">type="text/babel"</span> tells Babel to process this script.</p>
+            </div>
+
+            <h3>Creating Your First Component</h3>
+
+            <p>Let's create the simplest possible React component—a "Hello World" message.</p>
+
+            <div class="code">&lt;script type="text/babel"&gt;
+    // This is a React component - just a function that returns JSX
+    function HelloWorld() {
+        return &lt;h1&gt;Hello, World! I'm using React!&lt;/h1&gt;;
+    }
+
+    // Get the root div
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    
+    // Render our component
+    root.render(&lt;HelloWorld /&gt;);
+&lt;/script&gt;</div>
+
+            <p>Save your file and open it in a browser. You should see "Hello, World! I'm using React!" on the screen. Congratulations—you just created your first React component!</p>
+
+            <div class="metaphor-box">
+                <h4>What Just Happened?</h4>
+                <p>Think of React components like LEGO blocks. The <span class="inline-code">HelloWorld</span> function is a block you created. The <span class="inline-code">root.render()</span> command takes your block and puts it on the page. The <span class="inline-code">&lt;HelloWorld /&gt;</span> syntax is how you "use" your block.</p>
+            </div>
+
+            <h3>Understanding JSX</h3>
+
+            <p>JSX is that HTML-looking code inside your JavaScript. It's not actually HTML—it's a special syntax that React uses to describe what the UI should look like.</p>
+
+            <div class="code">// JSX looks like HTML
+const element = &lt;h1&gt;Hello!&lt;/h1&gt;;
+
+// But it's actually JavaScript! Babel transforms it to:
+const element = React.createElement('h1', null, 'Hello!');
+
+// You can use JavaScript expressions in JSX with curly braces {}
+const name = "Alice";
+const greeting = &lt;h1&gt;Hello, {name}!&lt;/h1&gt;;
+
+// You can do math
+const math = &lt;p&gt;2 + 2 = {2 + 2}&lt;/p&gt;;
+
+// You can call functions
+function getGreeting() {
+    return "Good morning";
+}
+const message = &lt;p&gt;{getGreeting()}&lt;/p&gt;;</div>
+
+            <div class="info-box">
+                <h4>JSX Rules</h4>
+                <p>• Must have ONE parent element (wrap multiple elements in a <span class="inline-code">&lt;div&gt;</span> or <span class="inline-code">&lt;&gt;...&lt;/&gt;</span>)<br>
+                • Use <span class="inline-code">className</span> instead of <span class="inline-code">class</span> (class is a JavaScript keyword)<br>
+                • Close all tags, even self-closing ones: <span class="inline-code">&lt;img /&gt;</span>, <span class="inline-code">&lt;br /&gt;</span><br>
+                • Use camelCase for attributes: <span class="inline-code">onClick</span>, not <span class="inline-code">onclick</span></p>
+            </div>
+
+            <h3>Props: Passing Data to Components</h3>
+
+            <p>Props (short for "properties") are how you pass data from one component to another. Think of props like function arguments.</p>
+
+            <div class="code">// Component that accepts props
+function Greeting(props) {
+    return &lt;h1&gt;Hello, {props.name}!&lt;/h1&gt;;
+}
+
+// Using the component with different props
+root.render(
+    &lt;div&gt;
+        &lt;Greeting name="Alice" /&gt;
+        &lt;Greeting name="Bob" /&gt;
+        &lt;Greeting name="Charlie" /&gt;
+    &lt;/div&gt;
+);
+
+// More complex props
+function UserCard(props) {
+    return (
+        &lt;div style={{border: '1px solid black', padding: '10px', margin: '10px'}}&gt;
+            &lt;h2&gt;{props.name}&lt;/h2&gt;
+            &lt;p&gt;Age: {props.age}&lt;/p&gt;
+            &lt;p&gt;Email: {props.email}&lt;/p&gt;
+        &lt;/div&gt;
+    );
+}
+
+root.render(
+    &lt;UserCard 
+        name="Alice" 
+        age={25} 
+        email="alice@example.com" 
+    /&gt;
+);</div>
+
+            <div class="metaphor-box">
+                <h4>Props Are Like Recipe Ingredients</h4>
+                <p>Imagine a component is a recipe for making a sandwich. Props are the ingredients you pass in. The same "sandwich recipe" can make different sandwiches depending on what ingredients (props) you give it—turkey sandwich, veggie sandwich, etc.</p>
+            </div>
+
+            <h3>State: Data That Changes</h3>
+
+            <p>State is data that can change over time. When state changes, React automatically re-renders the component to show the new data. This is where React gets really powerful!</p>
+
+            <div class="code">function Counter() {
+    // useState creates a piece of state
+    // count is the current value
+    // setCount is the function to update it
+    const [count, setCount] = React.useState(0);
+
+    return (
+        &lt;div&gt;
+            &lt;h2&gt;Counter: {count}&lt;/h2&gt;
+            &lt;button onClick={() =&gt; setCount(count + 1)}&gt;
+                Click to Increment
+            &lt;/button&gt;
+        &lt;/div&gt;
+    );
+}</div>
+
+            <p>Let me break down what's happening:</p>
+
+            <ul>
+                <li><span class="inline-code">React.useState(0)</span> - Creates state with initial value of 0</li>
+                <li><span class="inline-code">count</span> - The current value (starts at 0)</li>
+                <li><span class="inline-code">setCount</span> - Function to update the count</li>
+                <li><span class="inline-code">onClick</span> - Run code when button is clicked</li>
+                <li>When <span class="inline-code">setCount</span> is called, React re-renders the component with the new count</li>
+            </ul>
+
+            <h3>Event Handling</h3>
+
+            <p>React uses camelCase event names (<span class="inline-code">onClick</span>, not <span class="inline-code">onclick</span>) and you pass functions as event handlers.</p>
+
+            <div class="code">function EventExamples() {
+    const [text, setText] = React.useState('');
+    const [clicks, setClicks] = React.useState(0);
+
+    // Handle button click
+    function handleClick() {
+        alert('Button clicked!');
+        setClicks(clicks + 1);
+    }
+
+    // Handle input change
+    function handleChange(event) {
+        setText(event.target.value);
+    }
+
+    // Handle form submit
+    function handleSubmit(event) {
+        event.preventDefault(); // Prevent page reload
+        alert(`You typed: ${text}`);
+    }
+
+    return (
+        &lt;div&gt;
+            &lt;h2&gt;Event Handling Examples&lt;/h2&gt;
+            
+            &lt;button onClick={handleClick}&gt;
+                Click me! (Clicks: {clicks})
+            &lt;/button&gt;
+
+            &lt;form onSubmit={handleSubmit}&gt;
+                &lt;input 
+                    type="text" 
+                    value={text} 
+                    onChange={handleChange}
+                    placeholder="Type something..."
+                /&gt;
+                &lt;button type="submit"&gt;Submit&lt;/button&gt;
+            &lt;/form&gt;
+
+            &lt;p&gt;You typed: {text}&lt;/p&gt;
+        &lt;/div&gt;
+    );
+}</div>
+
+            <h3>Complete Counter App</h3>
+
+            <p>Let's build a complete counter app with increment, decrement, and reset buttons:</p>
+
+            <div class="code">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;React Counter App&lt;/title&gt;
+    &lt;style&gt;
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: #f0f0f0;
+        }
+        .counter-app {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .count-display {
+            font-size: 72px;
+            font-weight: bold;
+            margin: 20px 0;
+            color: #333;
+        }
+        .buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        button:hover {
+            transform: scale(1.05);
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+        .btn-increment {
+            background: #4CAF50;
+            color: white;
+        }
+        .btn-decrement {
+            background: #f44336;
+            color: white;
+        }
+        .btn-reset {
+            background: #2196F3;
+            color: white;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div id="root"&gt;&lt;/div&gt;
+
+    &lt;script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"&gt;&lt;/script&gt;
+    &lt;script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"&gt;&lt;/script&gt;
+    &lt;script src="https://unpkg.com/@babel/standalone/babel.min.js"&gt;&lt;/script&gt;
+
+    &lt;script type="text/babel"&gt;
+        function CounterApp() {
+            const [count, setCount] = React.useState(0);
+
+            function increment() {
+                setCount(count + 1);
+            }
+
+            function decrement() {
+                setCount(count - 1);
+            }
+
+            function reset() {
+                setCount(0);
+            }
+
+            return (
+                &lt;div className="counter-app"&gt;
+                    &lt;h1&gt;React Counter&lt;/h1&gt;
+                    &lt;div className="count-display"&gt;{count}&lt;/div&gt;
+                    &lt;div className="buttons"&gt;
+                        &lt;button className="btn-decrement" onClick={decrement}&gt;
+                            - Decrement
+                        &lt;/button&gt;
+                        &lt;button className="btn-reset" onClick={reset}&gt;
+                            Reset
+                        &lt;/button&gt;
+                        &lt;button className="btn-increment" onClick={increment}&gt;
+                            + Increment
+                        &lt;/button&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(&lt;CounterApp /&gt;);
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</div>
+
+            <h3>Complete Todo List App</h3>
+
+            <p>Now let's build something more complex—a todo list where you can add, complete, and delete tasks. This is a COMPLETE, working app you can copy and use!</p>
+
+            <div class="code">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;React Todo App&lt;/title&gt;
+    &lt;style&gt;
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .todo-app {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .add-todo {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .add-todo input {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+        }
+        .add-todo button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .todo-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #f9f9f9;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .todo-item:hover {
+            background: #f0f0f0;
+        }
+        .todo-item.completed {
+            opacity: 0.6;
+        }
+        .todo-item.completed .todo-text {
+            text-decoration: line-through;
+        }
+        .todo-checkbox {
+            margin-right: 15px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        .todo-text {
+            flex: 1;
+            font-size: 16px;
+        }
+        .delete-btn {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .todo-stats {
+            margin-top: 20px;
+            text-align: center;
+            color: #666;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div id="root"&gt;&lt;/div&gt;
+
+    &lt;script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"&gt;&lt;/script&gt;
+    &lt;script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"&gt;&lt;/script&gt;
+    &lt;script src="https://unpkg.com/@babel/standalone/babel.min.js"&gt;&lt;/script&gt;
+
+    &lt;script type="text/babel"&gt;
+        function TodoApp() {
+            const [todos, setTodos] = React.useState([]);
+            const [inputText, setInputText] = React.useState('');
+
+            // Add a new todo
+            function addTodo() {
+                if (inputText.trim() === '') return; // Don't add empty todos
+
+                const newTodo = {
+                    id: Date.now(), // Simple unique ID
+                    text: inputText,
+                    completed: false
+                };
+
+                setTodos([...todos, newTodo]);
+                setInputText(''); // Clear input
+            }
+
+            // Toggle todo completion
+            function toggleTodo(id) {
+                setTodos(todos.map(todo => 
+                    todo.id === id 
+                        ? { ...todo, completed: !todo.completed }
+                        : todo
+                ));
+            }
+
+            // Delete a todo
+            function deleteTodo(id) {
+                setTodos(todos.filter(todo => todo.id !== id));
+            }
+
+            // Handle Enter key in input
+            function handleKeyPress(event) {
+                if (event.key === 'Enter') {
+                    addTodo();
+                }
+            }
+
+            // Calculate stats
+            const totalTodos = todos.length;
+            const completedTodos = todos.filter(todo => todo.completed).length;
+            const remainingTodos = totalTodos - completedTodos;
+
+            return (
+                &lt;div className="todo-app"&gt;
+                    &lt;h1&gt;📝 My Todo List&lt;/h1&gt;
+                    
+                    &lt;div className="add-todo"&gt;
+                        &lt;input
+                            type="text"
+                            value={inputText}
+                            onChange={(e) =&gt; setInputText(e.target.value)}
+                            onKeyPress={handleKeyPress}
+                            placeholder="What do you need to do?"
+                        /&gt;
+                        &lt;button onClick={addTodo}&gt;Add&lt;/button&gt;
+                    &lt;/div&gt;
+
+                    &lt;div className="todo-list"&gt;
+                        {todos.map(todo =&gt; (
+                            &lt;div 
+                                key={todo.id} 
+                                className={`todo-item ${todo.completed ? 'completed' : ''}`}
+                            &gt;
+                                &lt;input
+                                    type="checkbox"
+                                    className="todo-checkbox"
+                                    checked={todo.completed}
+                                    onChange={() =&gt; toggleTodo(todo.id)}
+                                /&gt;
+                                &lt;div className="todo-text"&gt;{todo.text}&lt;/div&gt;
+                                &lt;button 
+                                    className="delete-btn"
+                                    onClick={() =&gt; deleteTodo(todo.id)}
+                                &gt;
+                                    Delete
+                                &lt;/button&gt;
+                            &lt;/div&gt;
+                        ))}
+                    &lt;/div&gt;
+
+                    {todos.length &gt; 0 && (
+                        &lt;div className="todo-stats"&gt;
+                            {totalTodos} total • {completedTodos} completed • {remainingTodos} remaining
+                        &lt;/div&gt;
+                    )}
+
+                    {todos.length === 0 && (
+                        &lt;div className="todo-stats"&gt;
+                            No todos yet. Add one above! 👆
+                        &lt;/div&gt;
+                    )}
+                &lt;/div&gt;
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(&lt;TodoApp /&gt;);
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</div>
+
+            <h3>Practice Exercises</h3>
+
+            <div class="info-box">
+                <h4>Try These Challenges</h4>
+                <p><strong>Challenge 1: Color Picker</strong><br>
+                Create a component with three buttons (Red, Green, Blue). When clicked, change the background color of a div.<br><br>
+                
+                <strong>Challenge 2: Simple Calculator</strong><br>
+                Create a calculator with two number inputs and buttons for +, -, ×, ÷. Display the result.<br><br>
+                
+                <strong>Challenge 3: Shopping Cart</strong><br>
+                Create a simple shopping cart. Add items with names and prices. Show the total cost. Add "Remove" buttons.<br><br>
+                
+                <strong>Challenge 4: Text Character Counter</strong><br>
+                Create a textarea that shows how many characters the user has typed (like Twitter's character counter).</p>
+            </div>
+
+            <div class="metaphor-box">
+                <h4>You Just Built Real React Apps!</h4>
+                <p>Think about what you just did: You built actual, working applications without any fancy build tools or setup. You understand components, props, state, and events—the core concepts of React. Everything else in React is just building on these fundamentals. You're not a beginner anymore—you're a React developer!</p>
+            </div>
+        </section>
+
+        <!-- SECTION 3: Building Your First Vue App -->
+        <section id="first-vue-app" class="section">
+            <h2 class="section-title">Building Your First Vue App</h2>
+            <p class="section-intro">Vue is React's friendly cousin—it does similar things but with a different approach. Many beginners actually find Vue easier to learn because it uses familiar HTML templates instead of JSX. Let's build the same counter and todo apps in Vue so you can see the differences and decide which you prefer!</p>
+
+            <div class="metaphor-box">
+                <h4>React vs Vue: Two Paths, Same Destination</h4>
+                <p>Think of React and Vue like automatic vs manual transmission cars. Both get you where you need to go. React (manual) gives you more control but has a steeper learning curve. Vue (automatic) is easier to pick up and handles more stuff automatically. Neither is "better"—it depends on what you prefer!</p>
+            </div>
+
+            <h3>Setting Up Vue (CDN Method)</h3>
+
+            <p>Just like React, we can use Vue from a CDN. Vue setup is actually simpler—we only need ONE script tag!</p>
+
+            <div class="code">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;My First Vue App&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;!-- Vue app goes here --&gt;
+    &lt;div id="app"&gt;&lt;/div&gt;
+
+    &lt;!-- Include Vue from CDN --&gt;
+    &lt;script src="https://unpkg.com/vue@3/dist/vue.global.js"&gt;&lt;/script&gt;
+
+    &lt;script&gt;
+        // Vue code coming soon!
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</div>
+
+            <div class="info-box">
+                <h4>Vue vs React Setup</h4>
+                <p><strong>React needs:</strong> 3 script tags (React, ReactDOM, Babel)<br>
+                <strong>Vue needs:</strong> Just 1 script tag!<br><br>
+                Why? Vue doesn't need JSX transformation—it uses regular HTML templates that the browser already understands.</p>
+            </div>
+
+            <h3>Creating Your First Vue Component</h3>
+            
+            <p>Let's create the simplest possible Vue app—a "Hello World" message.</p>
+
+            <div class="code">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;My First Vue App&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div id="app"&gt;
+        &lt;!-- Vue template goes here --&gt;
+        &lt;h1&gt;{{ message }}&lt;/h1&gt;
+    &lt;/div&gt;
+
+    &lt;script src="https://unpkg.com/vue@3/dist/vue.global.js"&gt;&lt;/script&gt;
+    &lt;script&gt;
+        const { createApp } = Vue;
+
+        createApp({
+            data() {
+                return {
+                    message: 'Hello, World! I\'m using Vue!'
+                }
+            }
+        }).mount('#app');
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</div>
+
+            <p>Open this in a browser and you'll see "Hello, World! I'm using Vue!" That's your first Vue app!</p>
+
+            <div class="metaphor-box">
+                <h4>What's Different from React?</h4>
+                <p>Notice how the template is just regular HTML? The <span class="inline-code">{{ message }}</span> syntax is how Vue puts JavaScript data into your HTML. It's simpler than JSX—no need to learn new syntax rules, it's just HTML with little placeholders for your data!</p>
+            </div>
+
+            <h3>Understanding Vue's Template Syntax</h3>
+
+            <p>Vue uses double curly braces <span class="inline-code">{{ }}</span> to insert data into your HTML. This is called "text interpolation."</p>
+
+            <div class="code">&lt;div id="app"&gt;
+    &lt;!-- Display a variable --&gt;
+    &lt;p&gt;{{ message }}&lt;/p&gt;
+    
+    &lt;!-- Do math --&gt;
+    &lt;p&gt;2 + 2 = {{ 2 + 2 }}&lt;/p&gt;
+    
+    &lt;!-- Use ternary operator --&gt;
+    &lt;p&gt;{{ isLoggedIn ? 'Welcome!' : 'Please log in' }}&lt;/p&gt;
+    
+    &lt;!-- Call methods --&gt;
+    &lt;p&gt;{{ getMessage() }}&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+createApp({
+    data() {
+        return {
+            message: 'Hello Vue!',
+            isLoggedIn: true
+        }
+    },
+    methods: {
+        getMessage() {
+            return this.message.toUpperCase();
+        }
+    }
+}).mount('#app');
+&lt;/script&gt;</div>
+
+            <h4>Vue Directives</h4>
+
+            <p>Directives are special attributes that start with <span class="inline-code">v-</span>. They add special behavior to your HTML.</p>
+
+            <div class="code">&lt;div id="app"&gt;
+    &lt;!-- v-if: Show/hide based on condition --&gt;
+    &lt;p v-if="isVisible"&gt;You can see me!&lt;/p&gt;
+    
+    &lt;!-- v-else: Show when v-if is false --&gt;
+    &lt;p v-if="isLoggedIn"&gt;Welcome back!&lt;/p&gt;
+    &lt;p v-else&gt;Please log in&lt;/p&gt;
+    
+    &lt;!-- v-show: Toggle CSS display (element stays in DOM) --&gt;
+    &lt;p v-show="showMessage"&gt;Toggle me!&lt;/p&gt;
+    
+    &lt;!-- v-for: Loop through arrays --&gt;
+    &lt;ul&gt;
+        &lt;li v-for="item in items" :key="item"&gt;{{ item }}&lt;/li&gt;
+    &lt;/ul&gt;
+    
+    &lt;!-- v-on: Listen to events (shorthand: @) --&gt;
+    &lt;button v-on:click="handleClick"&gt;Click Me&lt;/button&gt;
+    &lt;button @click="count++"&gt;Increment: {{ count }}&lt;/button&gt;
+    
+    &lt;!-- v-bind: Bind attributes (shorthand: :) --&gt;
+    &lt;img v-bind:src="imageSrc"&gt;
+    &lt;img :src="imageSrc"&gt;
+    
+    &lt;!-- v-model: Two-way data binding --&gt;
+    &lt;input v-model="textInput"&gt;
+    &lt;p&gt;You typed: {{ textInput }}&lt;/p&gt;
+&lt;/div&gt;</div>
+
+            <div class="info-box">
+                <h4>Quick Reference: Vue Directives</h4>
+                <p><strong>v-if / v-else:</strong> Conditional rendering (removes from DOM)<br>
+                <strong>v-show:</strong> Toggle visibility (hides with CSS)<br>
+                <strong>v-for:</strong> Loop through arrays/objects<br>
+                <strong>v-on (or @):</strong> Listen to events<br>
+                <strong>v-bind (or :):</strong> Bind attributes<br>
+                <strong>v-model:</strong> Two-way data binding for forms</p>
+            </div>
+
+            <h3>Complete Vue Counter App</h3>
+
+            <p>Let's build the same counter we made in React, but with Vue:</p>
+
+            <div class="code">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;Vue Counter App&lt;/title&gt;
+    &lt;style&gt;
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: #f0f0f0;
+        }
+        .counter-app {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .count-display {
+            font-size: 72px;
+            font-weight: bold;
+            margin: 20px 0;
+            color: #333;
+        }
+        .buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        button:hover { transform: scale(1.05); }
+        button:active { transform: scale(0.95); }
+        .btn-increment { background: #42b883; color: white; }
+        .btn-decrement { background: #f44336; color: white; }
+        .btn-reset { background: #2196F3; color: white; }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div id="app"&gt;
+        &lt;div class="counter-app"&gt;
+            &lt;h1&gt;Vue Counter&lt;/h1&gt;
+            &lt;div class="count-display"&gt;{{ count }}&lt;/div&gt;
+            &lt;div class="buttons"&gt;
+                &lt;button class="btn-decrement" @click="decrement"&gt;- Decrement&lt;/button&gt;
+                &lt;button class="btn-reset" @click="reset"&gt;Reset&lt;/button&gt;
+                &lt;button class="btn-increment" @click="increment"&gt;+ Increment&lt;/button&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;script src="https://unpkg.com/vue@3/dist/vue.global.js"&gt;&lt;/script&gt;
+    &lt;script&gt;
+        const { createApp } = Vue;
+
+        createApp({
+            data() {
+                return {
+                    count: 0
+                };
+            },
+            methods: {
+                increment() {
+                    this.count++;
+                },
+                decrement() {
+                    this.count--;
+                },
+                reset() {
+                    this.count = 0;
+                }
+            }
+        }).mount('#app');
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</div>
+
+            <h3>Complete Vue Todo App</h3>
+
+            <p>Now the full todo list in Vue:</p>
+
+            <div class="code">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;Vue Todo App&lt;/title&gt;
+    &lt;style&gt;
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .todo-app {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 { text-align: center; color: #333; }
+        .add-todo { display: flex; gap: 10px; margin-bottom: 20px; }
+        .add-todo input {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+        }
+        .add-todo button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background: #42b883;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .todo-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+        .todo-item:hover { background: #f0f0f0; }
+        .todo-item.completed { opacity: 0.6; }
+        .todo-item.completed .todo-text { text-decoration: line-through; }
+        .todo-checkbox {
+            margin-right: 15px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        .todo-text { flex: 1; font-size: 16px; }
+        .delete-btn {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .todo-stats {
+            margin-top: 20px;
+            text-align: center;
+            color: #666;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div id="app"&gt;
+        &lt;div class="todo-app"&gt;
+            &lt;h1&gt;📝 My Vue Todo List&lt;/h1&gt;
+            
+            &lt;div class="add-todo"&gt;
+                &lt;input 
+                    v-model="newTodoText"
+                    @keyup.enter="addTodo"
+                    placeholder="What do you need to do?"
+                &gt;
+                &lt;button @click="addTodo"&gt;Add&lt;/button&gt;
+            &lt;/div&gt;
+
+            &lt;div class="todo-list"&gt;
+                &lt;div 
+                    v-for="todo in todos" 
+                    :key="todo.id"
+                    :class="['todo-item', { completed: todo.completed }]"
+                &gt;
+                    &lt;input
+                        type="checkbox"
+                        class="todo-checkbox"
+                        v-model="todo.completed"
+                    &gt;
+                    &lt;div class="todo-text"&gt;{{ todo.text }}&lt;/div&gt;
+                    &lt;button class="delete-btn" @click="deleteTodo(todo.id)"&gt;
+                        Delete
+                    &lt;/button&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+
+            &lt;div v-if="todos.length &gt; 0" class="todo-stats"&gt;
+                {{ todos.length }} total • {{ completedCount }} completed • {{ remainingCount }} remaining
+            &lt;/div&gt;
+
+            &lt;div v-else class="todo-stats"&gt;
+                No todos yet. Add one above! 👆
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;script src="https://unpkg.com/vue@3/dist/vue.global.js"&gt;&lt;/script&gt;
+    &lt;script&gt;
+        const { createApp } = Vue;
+
+        createApp({
+            data() {
+                return {
+                    newTodoText: '',
+                    todos: []
+                };
+            },
+            computed: {
+                completedCount() {
+                    return this.todos.filter(todo =&gt; todo.completed).length;
+                },
+                remainingCount() {
+                    return this.todos.length - this.completedCount;
+                }
+            },
+            methods: {
+                addTodo() {
+                    if (this.newTodoText.trim() === '') return;
+                    
+                    this.todos.push({
+                        id: Date.now(),
+                        text: this.newTodoText,
+                        completed: false
+                    });
+                    
+                    this.newTodoText = '';
+                },
+                deleteTodo(id) {
+                    this.todos = this.todos.filter(todo =&gt; todo.id !== id);
+                }
+            }
+        }).mount('#app');
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</div>
+
+            <h3>Vue vs React: Which Should You Choose?</h3>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h4>Choose React if...</h4>
+                    <p>• You prefer JavaScript-first approach<br>
+                    • You want maximum flexibility<br>
+                    • You like a large ecosystem<br>
+                    • You're building complex SPAs<br>
+                    • Job market demands React skills</p>
+                </div>
+                <div class="card">
+                    <h4>Choose Vue if...</h4>
+                    <p>• You prefer template-based HTML<br>
+                    • You want easier learning curve<br>
+                    • You like comprehensive official tools<br>
+                    • You want great documentation<br>
+                    • You value simplicity</p>
+                </div>
+            </div>
+
+            <div class="metaphor-box">
+                <h4>The Truth: Both Are Great!</h4>
+                <p>Honestly? Both React and Vue are excellent choices. The "best" framework is the one YOU understand and can be productive with. Many developers know both! Don't stress too much about this decision—what matters most is understanding the core concepts (components, state, props, events) which work similarly in both.</p>
+            </div>
+        </section>
+
+        <!-- SECTION 4: Understanding State Management -->
+        <section id="understanding-state" class="section">
+            <h2 class="section-title">Understanding State Management</h2>
+            <p class="section-intro">As your apps grow, managing data across multiple components becomes tricky. This is where state management comes in. Don't worry—we'll explain it with simple examples and show you when (and when NOT) to use it!</p>
+
+            <h3>What IS State?</h3>
             
             <p>Vue was created by Evan You after working with Angular at Google. He wanted to extract the parts he really liked about Angular and build something lighter and more flexible. The result is a framework that prioritizes:</p>
 
@@ -5733,49 +6724,1454 @@ const bigDataset = shallowRef({ /* thousands of items */ });
         <!-- SECTION 3: State Management (Redux, Zustand, Recoil, Context) -->
         <section id="state-management" class="section">
             <h2 class="section-title">State Management</h2>
-            <p class="section-intro"><!-- EXPAND THIS SECTION --></p>
+            <p class="section-intro">As your apps grow bigger, you'll notice something: passing data between components gets messy FAST. You end up passing props through 5 layers of components just to get data where it needs to go. That's where state management comes in. Let's understand why it exists and when you actually need it.</p>
+
+            <h3>What Even IS State Management?</h3>
+            
+            <p>Let's start with a simple question: what is "state"?</p>
+
+            <div class="metaphor-box">
+                <h4>State is Just Data That Changes</h4>
+                <p>Think of state like the current "status" of your app:<br><br>
+                • Is the user logged in? (state: <span class="inline-code">isLoggedIn = true</span>)<br>
+                • What's in the shopping cart? (state: <span class="inline-code">cartItems = [...]</span>)<br>
+                • Is the modal open? (state: <span class="inline-code">modalOpen = false</span>)<br>
+                • What page are we on? (state: <span class="inline-code">currentPage = 'home'</span>)<br><br>
+                State is literally just variables that your app cares about. When state changes, your UI updates to match.</p>
+            </div>
+
+            <h4>The Problem: Prop Drilling Hell</h4>
+            
+            <p>Imagine you have this component structure:</p>
+
+            <div class="code">App
+├── Header
+│   ├── UserMenu
+│   │   └── Avatar (needs user data!)
+│   └── Notifications
+├── Sidebar
+│   └── Profile (needs user data!)
+└── MainContent
+    └── Dashboard (needs user data!)</div>
+
+            <p>The user data lives in <span class="inline-code">App</span>, but three components deep down need it. In regular React, you'd have to do this:</p>
+
+            <div class="code">// App.jsx
+function App() {
+  const [user, setUser] = useState({name: 'Alice', email: 'alice@example.com'});
+  
+  return (
+    &lt;div&gt;
+      &lt;Header user={user} /&gt;  {/* Pass it down */}
+      &lt;Sidebar user={user} /&gt;  {/* Pass it again */}
+      &lt;MainContent user={user} /&gt;  {/* And again! */}
+    &lt;/div&gt;
+  );
+}
+
+// Header.jsx
+function Header({ user }) {
+  return (
+    &lt;header&gt;
+      &lt;UserMenu user={user} /&gt;  {/* Pass it down more! */}
+    &lt;/header&gt;
+  );
+}
+
+// UserMenu.jsx
+function UserMenu({ user }) {
+  return (
+    &lt;div&gt;
+      &lt;Avatar user={user} /&gt;  {/* FINALLY! */}
+    &lt;/div&gt;
+  );
+}
+
+// Avatar.jsx
+function Avatar({ user }) {
+  return &lt;img src={user.avatar} alt={user.name} /&gt;;
+}</div>
+
+            <div class="warning-box">
+                <h4>The Prop Drilling Problem</h4>
+                <p>This is called <strong>"prop drilling"</strong> - passing props through components that don't even use them, just to get data to deeply nested children. Problems:<br><br>
+                • Components in the middle don't need the data but must pass it<br>
+                • Adding/removing props means changing many files<br>
+                • It's annoying and error-prone<br>
+                • Your code becomes a mess of prop passing</p>
+            </div>
+
+            <h3>The Solution: Global State</h3>
+            
+            <p>What if instead of passing data through every component, you could put it in a "global store" that ANY component can access?</p>
+
+            <div class="metaphor-box">
+                <h4>The Billboard Metaphor</h4>
+                <p><strong>Prop Drilling:</strong> Like whispering a message from person to person down a line. Each person has to remember and pass it along.<br><br>
+                <strong>Global State:</strong> Like putting the message on a billboard. Everyone can just look up and see it whenever they need it. No passing required!</p>
+            </div>
+
+            <h4>React Context: Built-in Solution</h4>
+            
+            <p>React has a built-in way to share state globally: <strong>Context</strong>.</p>
+
+            <div class="code">// 1. Create a context
+import { createContext, useContext, useState } from 'react';
+
+const UserContext = createContext();
+
+// 2. Provide the data at the top level
+function App() {
+  const [user, setUser] = useState({name: 'Alice', email: 'alice@example.com'});
+  
+  return (
+    &lt;UserContext.Provider value={{ user, setUser }}&gt;
+      &lt;Header /&gt;
+      &lt;Sidebar /&gt;
+      &lt;MainContent /&gt;
+    &lt;/UserContext.Provider&gt;
+  );
+}
+
+// 3. Use the data anywhere (no prop drilling!)
+function Avatar() {
+  const { user } = useContext(UserContext);
+  
+  return &lt;img src={user.avatar} alt={user.name} /&gt;;
+}
+
+// No need to pass user through Header or UserMenu anymore!</div>
+
+            <div class="info-box">
+                <h4>How Context Works</h4>
+                <p><strong>Provider:</strong> Wraps your app and makes data available<br>
+                <strong>Consumer:</strong> Any component that needs the data can "consume" it with <span class="inline-code">useContext</span><br><br>
+                Think of Provider as the billboard owner, and consumers as people reading the billboard.</p>
+            </div>
+
+            <h4>When Do You Actually Need State Management?</h4>
+            
+            <p>Not every app needs global state! Here's when you DO and DON'T need it:</p>
+
+            <div class="code">// DON'T need global state - simple component state is fine
+function Counter() {
+  const [count, setCount] = useState(0);
+  return &lt;button onClick={() => setCount(count + 1)}&gt;{count}&lt;/button&gt;
+}
+
+// DON'T need global state - just passing one level down
+function ParentComponent() {
+  const [data, setData] = useState('hello');
+  return &lt;ChildComponent data={data} /&gt;
+}
+
+// DO need global state - many components need this data
+function App() {
+  // User info, theme, shopping cart, auth status
+  // Used by Header, Sidebar, Footer, Dashboard, Profile...
+  // DON'T want to prop drill through everything!
+}</div>
+
+            <div class="info-box">
+                <h4>Simple Rule</h4>
+                <p><strong>Use local state (useState)</strong> when:<br>
+                • Only one component needs the data<br>
+                • Data doesn't need to be shared<br><br>
+                <strong>Use global state (Context/Redux)</strong> when:<br>
+                • Multiple unrelated components need the same data<br>
+                • You're passing props through 3+ levels<br>
+                • Data needs to persist across page navigation</p>
+            </div>
+
+            <h3>Introduction to Redux (Advanced Option)</h3>
+            
+            <p>Context is great for small apps. For big apps with LOTS of global state, developers often use <strong>Redux</strong>.</p>
+
+            <div class="metaphor-box">
+                <h4>Context vs Redux</h4>
+                <p><strong>Context:</strong> Like a bulletin board in your house. Good for a few messages.<br><br>
+                <strong>Redux:</strong> Like a filing cabinet system with organized drawers and labels. Better when you have LOTS of data to manage.<br><br>
+                For beginners: Start with Context. Graduate to Redux when you feel Context getting messy.</p>
+            </div>
+
+            <h4>Complete Shopping Cart Example</h4>
+            
+            <p>Let's build a shopping cart with Context to see state management in action:</p>
+
+            <div class="code">// CartContext.jsx
+import { createContext, useContext, useState } from 'react';
+
+const CartContext = createContext();
+
+export function CartProvider({ children }) {
+  const [cart, setCart] = useState([]);
+  
+  const addToCart = (item) => {
+    setCart([...cart, item]);
+  };
+  
+  const removeFromCart = (itemId) => {
+    setCart(cart.filter(item => item.id !== itemId));
+  };
+  
+  const totalPrice = cart.reduce((sum, item) => sum + item.price, 0);
+  
+  return (
+    &lt;CartContext.Provider value={{ cart, addToCart, removeFromCart, totalPrice }}&gt;
+      {children}
+    &lt;/CartContext.Provider&gt;
+  );
+}
+
+export function useCart() {
+  return useContext(CartContext);
+}
+
+// App.jsx
+function App() {
+  return (
+    &lt;CartProvider&gt;
+      &lt;Header /&gt;
+      &lt;ProductList /&gt;
+      &lt;Cart /&gt;
+    &lt;/CartProvider&gt;
+  );
+}
+
+// Header.jsx (shows cart count)
+function Header() {
+  const { cart } = useCart();
+  
+  return (
+    &lt;header&gt;
+      &lt;h1&gt;My Shop&lt;/h1&gt;
+      &lt;div&gt;Cart: {cart.length} items&lt;/div&gt;
+    &lt;/header&gt;
+  );
+}
+
+// ProductList.jsx (adds items)
+function ProductList() {
+  const { addToCart } = useCart();
+  const products = [
+    { id: 1, name: 'Laptop', price: 999 },
+    { id: 2, name: 'Mouse', price: 29 }
+  ];
+  
+  return (
+    &lt;div&gt;
+      {products.map(product => (
+        &lt;div key={product.id}&gt;
+          &lt;h3&gt;{product.name}&lt;/h3&gt;
+          &lt;p&gt;${product.price}&lt;/p&gt;
+          &lt;button onClick={() => addToCart(product)}&gt;
+            Add to Cart
+          &lt;/button&gt;
+        &lt;/div&gt;
+      ))}
+    &lt;/div&gt;
+  );
+}
+
+// Cart.jsx (displays cart)
+function Cart() {
+  const { cart, removeFromCart, totalPrice } = useCart();
+  
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;Your Cart&lt;/h2&gt;
+      {cart.map(item => (
+        &lt;div key={item.id}&gt;
+          &lt;span&gt;{item.name} - ${item.price}&lt;/span&gt;
+          &lt;button onClick={() => removeFromCart(item.id)}&gt;
+            Remove
+          &lt;/button&gt;
+        &lt;/div&gt;
+      ))}
+      &lt;h3&gt;Total: ${totalPrice}&lt;/h3&gt;
+    &lt;/div&gt;
+  );
+}</div>
+
+            <div class="info-box">
+                <h4>What Just Happened?</h4>
+                <p><strong>1. CartProvider:</strong> Wraps the app and holds cart state<br>
+                <strong>2. useCart hook:</strong> Makes it easy to access cart anywhere<br>
+                <strong>3. Multiple components:</strong> Header, ProductList, and Cart all use the same cart data<br>
+                <strong>4. No prop drilling:</strong> Each component directly accesses what it needs</p>
+            </div>
+
+            <div class="metaphor-box">
+                <h4>You've Mastered State Management Basics!</h4>
+                <p>You now understand when and why to use state management. For most beginner projects, Context is more than enough. As you build bigger apps, you'll naturally feel when you need something more powerful like Redux. Don't overcomplicate—use the simplest solution that works!</p>
+            </div>
         </section>
 
         <!-- SECTION 4: API Integration -->
         <section id="api-integration" class="section">
             <h2 class="section-title">API Integration</h2>
-            <p class="section-intro"><!-- EXPAND THIS SECTION --></p>
+            <p class="section-intro">Your frontend is looking good! But right now it's like a beautiful restaurant with no kitchen—it has no data. Real apps need to talk to servers to get data, save user info, fetch products, etc. That's where APIs come in. Let's learn how to connect your frontend to the backend!</p>
+
+            <h3>What is an API? (Review from Section 1)</h3>
+            
+            <p>Quick recap: API stands for Application Programming Interface. In simple terms, it's a menu of actions your app can request from a server.</p>
+
+            <div class="metaphor-box">
+                <h4>The Restaurant Menu Metaphor</h4>
+                <p>An API is like a restaurant menu:<br><br>
+                <strong>Menu:</strong> "You can order: burger, pizza, salad"<br>
+                <strong>API:</strong> "You can request: user data, product list, weather info"<br><br>
+                You (frontend) look at the menu, place an order, and the kitchen (backend) prepares it and sends it back.</p>
+            </div>
+
+            <h4>HTTP Methods: The Basic Actions</h4>
+            
+            <p>When talking to APIs, you use different "methods" depending on what you want to do:</p>
+
+            <div class="code">GET    - Read/Fetch data ("Give me the user info")
+POST   - Create new data ("Create a new user account")
+PUT    - Update existing data ("Update user email")
+DELETE - Remove data ("Delete this post")
+
+// Think of it like:
+GET    = Read a book
+POST   = Write a new book
+PUT    = Edit an existing book
+DELETE = Throw away a book</div>
+
+            <h3>Making Your First API Request</h3>
+            
+            <p>JavaScript has a built-in function called <span class="inline-code">fetch()</span> that lets you talk to APIs:</p>
+
+            <div class="code">// Basic fetch syntax
+fetch('https://api.example.com/users')
+  .then(response => response.json())  // Convert to JavaScript object
+  .then(data => {
+    console.log(data);  // Do something with the data
+  })
+  .catch(error => {
+    console.error('Error:', error);  // Handle errors
+  });</div>
+
+            <p>Let's break this down step by step:</p>
+
+            <div class="info-box">
+                <h4>How fetch() Works</h4>
+                <p><strong>1. fetch(url):</strong> Makes a request to the URL<br>
+                <strong>2. .then(response => ...):</strong> Waits for server response<br>
+                <strong>3. response.json():</strong> Converts response to usable JavaScript<br>
+                <strong>4. .then(data => ...):</strong> Now you have the data!<br>
+                <strong>5. .catch(error => ...):</strong> Handles errors if something goes wrong</p>
+            </div>
+
+            <h4>Modern Way: async/await (Easier to Read!)</h4>
+            
+            <p>There's a cleaner way to write fetch requests:</p>
+
+            <div class="code">// Modern async/await syntax (preferred!)
+async function getUsers() {
+  try {
+    const response = await fetch('https://api.example.com/users');
+    const data = await response.json();
+    console.log(data);
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+getUsers();</div>
+
+            <div class="metaphor-box">
+                <h4>Why async/await is Better</h4>
+                <p>Think of <span class="inline-code">.then().then().then()</span> like nested Russian dolls - you keep opening one to get to the next.<br><br>
+                <span class="inline-code">async/await</span> is like laying everything out in a line - much easier to read and understand!</p>
+            </div>
+
+            <h3>Complete React Example: Fetching User Data</h3>
+            
+            <div class="code">import React, { useState, useEffect } from 'react';
+
+function UserList() {
+  const [users, setUsers] = useState([]);  // Store users
+  const [loading, setLoading] = useState(true);  // Track loading state
+  const [error, setError] = useState(null);  // Track errors
+  
+  useEffect(() => {
+    // Fetch users when component mounts
+    async function fetchUsers() {
+      try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/users');
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch');
+        }
+        
+        const data = await response.json();
+        setUsers(data);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    }
+    
+    fetchUsers();
+  }, []);  // Empty array = run once when component loads
+  
+  // Show loading
+  if (loading) return &lt;div&gt;Loading users...&lt;/div&gt;
+  
+  // Show error
+  if (error) return &lt;div&gt;Error: {error}&lt;/div&gt;
+  
+  // Show users
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;Users&lt;/h2&gt;
+      &lt;ul&gt;
+        {users.map(user => (
+          &lt;li key={user.id}&gt;{user.name} - {user.email}&lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  );
+}</div>
+
+            <div class="info-box">
+                <h4>The Three States Pattern</h4>
+                <p>When fetching data, always track:<br><br>
+                <strong>1. Loading:</strong> Waiting for data<br>
+                <strong>2. Error:</strong> Something went wrong<br>
+                <strong>3. Success:</strong> Got the data!<br><br>
+                This gives users feedback instead of a blank screen.</p>
+            </div>
+
+            <h3>Sending Data: POST Requests</h3>
+            
+            <p>GET requests fetch data. POST requests send data to create something new:</p>
+
+            <div class="code">async function createUser(userData) {
+  try {
+    const response = await fetch('https://api.example.com/users', {
+      method: 'POST',  // Specify POST method
+      headers: {
+        'Content-Type': 'application/json'  // Tell server we're sending JSON
+      },
+      body: JSON.stringify(userData)  // Convert JavaScript object to JSON string
+    });
+    
+    const data = await response.json();
+    console.log('User created:', data);
+  } catch (error) {
+    console.error('Error creating user:', error);
+  }
+}
+
+// Usage
+createUser({
+  name: 'Alice',
+  email: 'alice@example.com',
+  age: 28
+});</div>
+
+            <h4>Complete Form Submission Example</h4>
+            
+            <div class="code">function SignupForm() {
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    password: ''
+  });
+  const [message, setMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const handleSubmit = async (e) => {
+    e.preventDefault();  // Prevent page reload
+    setIsSubmitting(true);
+    setMessage('');
+    
+    try {
+      const response = await fetch('https://api.example.com/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      
+      if (!response.ok) {
+        throw new Error('Signup failed');
+      }
+      
+      const data = await response.json();
+      setMessage('Signup successful! Welcome ' + data.username);
+    } catch (error) {
+      setMessage('Error: ' + error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+  
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;input
+        type="text"
+        placeholder="Username"
+        value={formData.username}
+        onChange={(e) => setFormData({...formData, username: e.target.value})}
+      /&gt;
+      &lt;input
+        type="email"
+        placeholder="Email"
+        value={formData.email}
+        onChange={(e) => setFormData({...formData, email: e.target.value})}
+      /&gt;
+      &lt;input
+        type="password"
+        placeholder="Password"
+        value={formData.password}
+        onChange={(e) => setFormData({...formData, password: e.target.value})}
+      /&gt;
+      &lt;button type="submit" disabled={isSubmitting}&gt;
+        {isSubmitting ? 'Signing up...' : 'Sign Up'}
+      &lt;/button&gt;
+      {message && &lt;p&gt;{message}&lt;/p&gt;}
+    &lt;/form&gt;
+  );
+}</div>
+
+            <div class="warning-box">
+                <h4>Common API Mistakes</h4>
+                <p><strong>1. Forgetting await:</strong> Without await, you get a Promise, not the data<br>
+                <strong>2. Not handling errors:</strong> Always use try/catch<br>
+                <strong>3. Not showing loading state:</strong> Users see blank screen<br>
+                <strong>4. Forgetting headers:</strong> Server needs to know you're sending JSON<br>
+                <strong>5. CORS errors:</strong> Your backend needs to allow requests from your frontend domain</p>
+            </div>
+
+            <div class="metaphor-box">
+                <h4>You're Now Full-Stack Ready!</h4>
+                <p>Congratulations! You now know how to connect a frontend to a backend. Your components can fetch data, submit forms, and create a complete user experience. This is THE skill that makes you a full-stack developer—you can build the beautiful frontend AND connect it to real data!</p>
+            </div>
         </section>
 
         <!-- SECTION 5: Real-Time Features -->
         <section id="realtime-features" class="section">
             <h2 class="section-title">Real-Time Features</h2>
-            <p class="section-intro"><!-- EXPAND THIS SECTION --></p>
+            <p class="section-intro">So far, your app fetches data when a page loads. But what if you want LIVE updates—like a chat app where messages appear instantly, or a stock ticker that updates prices in real-time? That's where WebSockets come in. Let's learn how to make your app "live"!</p>
+
+            <h3>The Problem with Regular HTTP</h3>
+            
+            <p>Remember our restaurant metaphor? Regular HTTP (fetch requests) works like this:</p>
+
+            <div class="metaphor-box">
+                <h4>HTTP: One-Time Orders</h4>
+                <p><strong>You:</strong> "Can I have a burger?" (GET request)<br>
+                <strong>Kitchen:</strong> "Here's your burger!" (Response)<br>
+                <strong>Connection closes.</strong><br><br>
+                If you want updates, you have to keep asking: "Any new messages? How about now? Now?" This is called <strong>polling</strong> and it's inefficient.</p>
+            </div>
+
+            <h4>The Solution: WebSockets (Two-Way Connection)</h4>
+            
+            <div class="metaphor-box">
+                <h4>WebSockets: Open Phone Line</h4>
+                <p>Instead of placing separate orders, imagine having an open phone line with the kitchen:<br><br>
+                <strong>You:</strong> "Keep me updated on order status"<br>
+                <strong>Kitchen:</strong> "Will do! I'll call you when things change"<br>
+                <strong>Connection stays open.</strong><br><br>
+                The kitchen can now send you updates INSTANTLY without you asking each time.</p>
+            </div>
+
+            <h3>When Do You Need Real-Time?</h3>
+            
+            <p>Real-time features are POWERFUL but add complexity. Use them when:</p>
+
+            <div class="code">// DO use real-time for:
+• Chat applications (messages appear instantly)
+• Live notifications ("John liked your post!")
+• Multiplayer games (player positions update)
+• Live dashboards (stock prices, analytics)
+• Collaborative editing (Google Docs style)
+
+// DON'T use real-time for:
+• Static content (blog posts, product listings)
+• Data that rarely changes (user profiles)
+• One-time actions (form submissions)</div>
+
+            <div class="info-box">
+                <h4>Simple Rule</h4>
+                <p>If data changes <strong>every few seconds and users need immediate updates</strong>, use real-time. Otherwise, regular fetch requests are simpler and perfectly fine!</p>
+            </div>
+
+            <h3>Simple WebSocket Example</h3>
+            
+            <p>Here's how to create a WebSocket connection in JavaScript:</p>
+
+            <div class="code">// 1. Connect to WebSocket server
+const socket = new WebSocket('ws://localhost:3000');
+
+// 2. Listen for connection open
+socket.onopen = () => {
+  console.log('Connected to server!');
+  socket.send('Hello server!');  // Send a message
+};
+
+// 3. Listen for messages from server
+socket.onmessage = (event) => {
+  console.log('Message from server:', event.data);
+};
+
+// 4. Listen for errors
+socket.onerror = (error) => {
+  console.error('WebSocket error:', error);
+};
+
+// 5. Listen for connection close
+socket.onclose = () => {
+  console.log('Disconnected from server');
+};</div>
+
+            <div class="info-box">
+                <h4>WebSocket Events</h4>
+                <p><strong>onopen:</strong> Connection established<br>
+                <strong>onmessage:</strong> Received data from server<br>
+                <strong>onerror:</strong> Something went wrong<br>
+                <strong>onclose:</strong> Connection closed<br><br>
+                Think of these like notification settings—you're telling the app what to do when each event happens.</p>
+            </div>
+
+            <h4>Complete React Chat Example</h4>
+            
+            <div class="code">import React, { useState, useEffect, useRef } from 'react';
+
+function ChatRoom() {
+  const [messages, setMessages] = useState([]);
+  const [inputValue, setInputValue] = useState('');
+  const [isConnected, setIsConnected] = useState(false);
+  const socketRef = useRef(null);
+  
+  useEffect(() => {
+    // Connect to WebSocket server when component mounts
+    socketRef.current = new WebSocket('ws://localhost:3000');
+    
+    socketRef.current.onopen = () => {
+      console.log('Connected!');
+      setIsConnected(true);
+    };
+    
+    socketRef.current.onmessage = (event) => {
+      // Add new message to list
+      const newMessage = JSON.parse(event.data);
+      setMessages(prev => [...prev, newMessage]);
+    };
+    
+    socketRef.current.onclose = () => {
+      console.log('Disconnected');
+      setIsConnected(false);
+    };
+    
+    // Cleanup: close connection when component unmounts
+    return () => {
+      socketRef.current.close();
+    };
+  }, []);  // Empty array = run once when component loads
+  
+  const sendMessage = (e) => {
+    e.preventDefault();
+    
+    if (!inputValue.trim()) return;  // Don't send empty messages
+    
+    const message = {
+      text: inputValue,
+      timestamp: new Date().toISOString(),
+      username: 'You'
+    };
+    
+    // Send to server
+    socketRef.current.send(JSON.stringify(message));
+    
+    // Clear input
+    setInputValue('');
+  };
+  
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;Chat Room&lt;/h2&gt;
+      &lt;div&gt;Status: {isConnected ? '✅ Connected' : '❌ Disconnected'}&lt;/div&gt;
+      
+      &lt;div style={{ border: '1px solid #ccc', padding: '10px', height: '300px', overflowY: 'scroll' }}&gt;
+        {messages.map((msg, index) => (
+          &lt;div key={index}&gt;
+            &lt;strong&gt;{msg.username}:&lt;/strong&gt; {msg.text}
+          &lt;/div&gt;
+        ))}
+      &lt;/div&gt;
+      
+      &lt;form onSubmit={sendMessage}&gt;
+        &lt;input
+          type="text"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          placeholder="Type a message..."
+          disabled={!isConnected}
+        /&gt;
+        &lt;button type="submit" disabled={!isConnected}&gt;
+          Send
+        &lt;/button&gt;
+      &lt;/form&gt;
+    &lt;/div&gt;
+  );
+}</div>
+
+            <div class="warning-box">
+                <h4>Important: useRef for WebSockets</h4>
+                <p>Notice we used <span class="inline-code">useRef</span> instead of <span class="inline-code">useState</span> for the socket? That's because:<br><br>
+                • We don't want React re-rendering when socket changes<br>
+                • We need the SAME socket instance across re-renders<br>
+                • <span class="inline-code">useRef</span> persists values without causing re-renders</p>
+            </div>
+
+            <h3>Simple Backend Example (Node.js)</h3>
+            
+            <p>To test your WebSocket frontend, you need a simple backend. Here's a basic Node.js WebSocket server:</p>
+
+            <div class="code">// Install: npm install ws
+const WebSocket = require('ws');
+
+const server = new WebSocket.Server({ port: 3000 });
+
+const clients = new Set();
+
+server.on('connection', (socket) => {
+  console.log('Client connected');
+  clients.add(socket);
+  
+  // When client sends message, broadcast to all clients
+  socket.on('message', (message) => {
+    console.log('Received:', message);
+    
+    // Send to all connected clients
+    clients.forEach(client => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(message);
+      }
+    });
+  });
+  
+  socket.on('close', () => {
+    console.log('Client disconnected');
+    clients.delete(socket);
+  });
+});
+
+console.log('WebSocket server running on ws://localhost:3000');</div>
+
+            <div class="info-box">
+                <h4>What This Server Does</h4>
+                <p><strong>1. Creates WebSocket server</strong> on port 3000<br>
+                <strong>2. Tracks connected clients</strong> in a Set<br>
+                <strong>3. Receives messages</strong> and broadcasts to all clients<br>
+                <strong>4. Handles disconnections</strong> by removing from Set<br><br>
+                This creates a simple chat room where everyone sees everyone's messages!</p>
+            </div>
+
+            <h4>Socket.io: The Easy Way</h4>
+            
+            <p>Raw WebSockets are powerful but basic. Most developers use <strong>Socket.io</strong> library—it adds automatic reconnection, rooms, and easier APIs:</p>
+
+            <div class="code">// Backend with Socket.io (easier!)
+const io = require('socket.io')(3000);
+
+io.on('connection', (socket) => {
+  console.log('User connected:', socket.id);
+  
+  socket.on('chat-message', (message) => {
+    // Broadcast to everyone except sender
+    socket.broadcast.emit('chat-message', message);
+  });
+  
+  socket.on('disconnect', () => {
+    console.log('User disconnected:', socket.id);
+  });
+});
+
+// Frontend with Socket.io
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:3000');
+
+// Send message
+socket.emit('chat-message', { text: 'Hello!' });
+
+// Receive messages
+socket.on('chat-message', (message) => {
+  console.log('New message:', message);
+});</div>
+
+            <div class="metaphor-box">
+                <h4>You've Unlocked Real-Time!</h4>
+                <p>Real-time features make apps feel alive and responsive. Chat apps, live notifications, collaborative tools—they all use WebSockets or Socket.io. You now have the foundation to build interactive, live experiences. Start with simple chat, then expand to more complex features as you grow!</p>
+            </div>
         </section>
 
         <!-- SECTION 6: Authentication -->
         <section id="authentication" class="section">
             <h2 class="section-title">Authentication & Authorization</h2>
-            <p class="section-intro"><!-- EXPAND THIS SECTION --></p>
+            <p class="section-intro">Almost every real app needs users to log in. But how does a website "remember" you're logged in? How does it prevent others from accessing your account? Let's demystify authentication—it's simpler than you think!</p>
+
+            <h3>Authentication vs Authorization (What's the Difference?)</h3>
+            
+            <div class="metaphor-box">
+                <h4>The Concert Venue Metaphor</h4>
+                <p><strong>Authentication:</strong> Proving WHO you are<br>
+                → Showing your ID at the door: "Yes, you are Alice"<br><br>
+                <strong>Authorization:</strong> Proving WHAT you can access<br>
+                → Checking your ticket type: "VIP ticket = backstage access"<br><br>
+                <strong>Authentication = Identity</strong><br>
+                <strong>Authorization = Permissions</strong></p>
+            </div>
+
+            <h4>How Login Actually Works (Step-by-Step)</h4>
+            
+            <p>Let's walk through what happens when you log in to a website:</p>
+
+            <div class="code">1. User enters username + password
+2. Frontend sends credentials to backend (POST /login)
+3. Backend checks database: "Does this user exist?"
+4. Backend checks password: "Does it match the stored hash?"
+5. If valid: Backend generates a TOKEN (like a temporary badge)
+6. Backend sends token back to frontend
+7. Frontend stores token (usually in localStorage)
+8. For future requests, frontend includes token in headers
+9. Backend validates token: "Is this token valid?"
+10. If valid: Backend processes request
+11. If invalid/expired: Backend returns 401 Unauthorized
+
+Logout = Delete the token</div>
+
+            <div class="info-box">
+                <h4>What's a Token?</h4>
+                <p>A token is a long random string that proves you're logged in. Think of it like a temporary ID badge:<br><br>
+                <strong>Example token:</strong> <span class="inline-code">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</span><br><br>
+                The token contains encoded info (user ID, expiration time) that the backend can decode and verify. Most apps use <strong>JWT (JSON Web Tokens)</strong>.</p>
+            </div>
+
+            <h3>Complete Login Flow (Frontend)</h3>
+            
+            <div class="code">import React, { useState } from 'react';
+
+function LoginPage() {
+  const [credentials, setCredentials] = useState({ email: '', password: '' });
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError('');
+    setIsLoading(true);
+    
+    try {
+      const response = await fetch('https://api.example.com/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(credentials)
+      });
+      
+      if (!response.ok) {
+        throw new Error('Invalid credentials');
+      }
+      
+      const data = await response.json();
+      
+      // Store token in localStorage
+      localStorage.setItem('authToken', data.token);
+      
+      // Redirect to dashboard or home
+      window.location.href = '/dashboard';
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;Login&lt;/h2&gt;
+      &lt;form onSubmit={handleLogin}&gt;
+        &lt;input
+          type="email"
+          placeholder="Email"
+          value={credentials.email}
+          onChange={(e) => setCredentials({...credentials, email: e.target.value})}
+          required
+        /&gt;
+        &lt;input
+          type="password"
+          placeholder="Password"
+          value={credentials.password}
+          onChange={(e) => setCredentials({...credentials, password: e.target.value})}
+          required
+        /&gt;
+        &lt;button type="submit" disabled={isLoading}&gt;
+          {isLoading ? 'Logging in...' : 'Login'}
+        &lt;/button&gt;
+        {error && &lt;p style={{color: 'red'}}&gt;{error}&lt;/p&gt;}
+      &lt;/form&gt;
+    &lt;/div&gt;
+  );
+}</div>
+
+            <h4>Making Authenticated Requests</h4>
+            
+            <p>Once logged in, include the token in ALL requests to protected endpoints:</p>
+
+            <div class="code">// Get user profile (protected route)
+async function getUserProfile() {
+  const token = localStorage.getItem('authToken');
+  
+  const response = await fetch('https://api.example.com/profile', {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`  // Include token!
+    }
+  });
+  
+  if (response.status === 401) {
+    // Token invalid/expired - redirect to login
+    localStorage.removeItem('authToken');
+    window.location.href = '/login';
+    return;
+  }
+  
+  const data = await response.json();
+  return data;
+}</div>
+
+            <div class="warning-box">
+                <h4>Security: Bearer Token Format</h4>
+                <p>The <span class="inline-code">Authorization: Bearer TOKEN</span> format is standard. The backend expects this exact format. "Bearer" means "whoever holds (bears) this token has access."</p>
+            </div>
+
+            <h3>Protected Routes in React</h3>
+            
+            <p>How do you prevent users from accessing pages unless they're logged in? Use a <strong>ProtectedRoute</strong> component:</p>
+
+            <div class="code">import { Navigate } from 'react-router-dom';
+
+function ProtectedRoute({ children }) {
+  const token = localStorage.getItem('authToken');
+  
+  // If no token, redirect to login
+  if (!token) {
+    return &lt;Navigate to="/login" /&gt;;
+  }
+  
+  // If token exists, show the page
+  return children;
+}
+
+// Usage in your routes
+function App() {
+  return (
+    &lt;Routes&gt;
+      &lt;Route path="/login" element={&lt;LoginPage /&gt;} /&gt;
+      &lt;Route path="/signup" element={&lt;SignupPage /&gt;} /&gt;
+      
+      {/* Protected routes */}
+      &lt;Route path="/dashboard" element={
+        &lt;ProtectedRoute&gt;
+          &lt;Dashboard /&gt;
+        &lt;/ProtectedRoute&gt;
+      } /&gt;
+      
+      &lt;Route path="/profile" element={
+        &lt;ProtectedRoute&gt;
+          &lt;Profile /&gt;
+        &lt;/ProtectedRoute&gt;
+      } /&gt;
+    &lt;/Routes&gt;
+  );
+}</div>
+
+            <div class="info-box">
+                <h4>How ProtectedRoute Works</h4>
+                <p><strong>1. Check for token:</strong> Does user have authToken in localStorage?<br>
+                <strong>2. If NO:</strong> Redirect to /login<br>
+                <strong>3. If YES:</strong> Render the protected page<br><br>
+                This ensures users can't access pages by typing the URL directly.</p>
+            </div>
+
+            <h4>Complete Auth Context (Global State)</h4>
+            
+            <p>For a real app, you'll want authentication state available everywhere:</p>
+
+            <div class="code">import { createContext, useContext, useState, useEffect } from 'react';
+
+const AuthContext = createContext();
+
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  
+  // Check if user is logged in on mount
+  useEffect(() => {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      // Fetch user data from backend
+      fetchUserProfile(token)
+        .then(userData => setUser(userData))
+        .catch(() => {
+          // Token invalid
+          localStorage.removeItem('authToken');
+        })
+        .finally(() => setLoading(false));
+    } else {
+      setLoading(false);
+    }
+  }, []);
+  
+  const login = async (credentials) => {
+    const response = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(credentials)
+    });
+    
+    const data = await response.json();
+    localStorage.setItem('authToken', data.token);
+    setUser(data.user);
+  };
+  
+  const logout = () => {
+    localStorage.removeItem('authToken');
+    setUser(null);
+    window.location.href = '/login';
+  };
+  
+  return (
+    &lt;AuthContext.Provider value={{ user, login, logout, loading }}&gt;
+      {children}
+    &lt;/AuthContext.Provider&gt;
+  );
+}
+
+export function useAuth() {
+  return useContext(AuthContext);
+}
+
+// Usage in any component
+function Dashboard() {
+  const { user, logout } = useAuth();
+  
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Welcome, {user.name}!&lt;/h1&gt;
+      &lt;button onClick={logout}&gt;Logout&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</div>
+
+            <div class="metaphor-box">
+                <h4>You're Now Security-Aware!</h4>
+                <p>Authentication is fundamental to almost every app. You now understand tokens, protected routes, and global auth state. Remember: NEVER store passwords in frontend, ALWAYS use HTTPS in production, and tokens should expire (typically 1-7 days). You're ready to build secure, user-based applications!</p>
+            </div>
         </section>
 
         <!-- SECTION 7: File Uploads -->
         <section id="file-uploads" class="section">
             <h2 class="section-title">File Uploads & Media</h2>
-            <p class="section-intro"><!-- EXPAND THIS SECTION --></p>
+            <p class="section-intro">Users need to upload profile pictures, documents, videos—how do you handle files in your web app? Let's learn how to accept file uploads, validate them, preview images, and send them to your backend!</p>
+
+            <h3>The HTML File Input</h3>
+            
+            <p>The simplest way to let users select files is the HTML file input:</p>
+
+            <div class="code">&lt;input type="file" /&gt;
+
+// With restrictions:
+&lt;input type="file" accept="image/*" /&gt;  {/* Only images */}
+&lt;input type="file" accept=".pdf,.doc,.docx" /&gt;  {/* Only documents */}
+&lt;input type="file" multiple /&gt;  {/* Allow multiple files */}</div>
+
+            <h3>Complete React File Upload Example</h3>
+            
+            <div class="code">import React, { useState } from 'react';
+
+function ImageUpload() {
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [message, setMessage] = useState('');
+  
+  const handleFileSelect = (e) => {
+    const file = e.target.files[0];
+    
+    if (!file) return;
+    
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      setMessage('Please select an image file');
+      return;
+    }
+    
+    // Validate file size (e.g., max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setMessage('File too large (max 5MB)');
+      return;
+    }
+    
+    setSelectedFile(file);
+    
+    // Create preview
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPreview(reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
+  
+  const handleUpload = async () => {
+    if (!selectedFile) return;
+    
+    setUploading(true);
+    setMessage('');
+    
+    // Create FormData (special format for file uploads)
+    const formData = new FormData();
+    formData.append('image', selectedFile);
+    
+    try {
+      const response = await fetch('https://api.example.com/upload', {
+        method: 'POST',
+        body: formData  // Don't set Content-Type - browser does it automatically
+      });
+      
+      if (!response.ok) throw new Error('Upload failed');
+      
+      const data = await response.json();
+      setMessage('Upload successful! URL: ' + data.url);
+    } catch (error) {
+      setMessage('Error: ' + error.message);
+    } finally {
+      setUploading(false);
+    }
+  };
+  
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;Upload Image&lt;/h2&gt;
+      
+      &lt;input type="file" accept="image/*" onChange={handleFileSelect} /&gt;
+      
+      {preview && (
+        &lt;div&gt;
+          &lt;h3&gt;Preview:&lt;/h3&gt;
+          &lt;img src={preview} alt="Preview" style={{ maxWidth: '300px' }} /&gt;
+        &lt;/div&gt;
+      )}
+      
+      &lt;button onClick={handleUpload} disabled={!selectedFile || uploading}&gt;
+        {uploading ? 'Uploading...' : 'Upload'}
+      &lt;/button&gt;
+      
+      {message && &lt;p&gt;{message}&lt;/p&gt;}
+    &lt;/div&gt;
+  );
+}</div>
+
+            <div class="info-box">
+                <h4>Key File Upload Concepts</h4>
+                <p><strong>1. FormData:</strong> Special object for sending files (can mix files + text data)<br>
+                <strong>2. FileReader:</strong> Reads file contents for preview<br>
+                <strong>3. Validation:</strong> Check type and size before uploading<br>
+                <strong>4. No Content-Type header:</strong> Browser sets it automatically with boundary</p>
+            </div>
+
+            <div class="metaphor-box">
+                <h4>You Can Now Handle File Uploads!</h4>
+                <p>File uploads are essential for modern apps. Whether it's profile pictures, documents, or media files—you now have the foundation to handle them securely and efficiently!</p>
+            </div>
         </section>
 
         <!-- SECTION 8: PWA Features -->
         <section id="pwa-features" class="section">
             <h2 class="section-title">Progressive Web Apps</h2>
-            <p class="section-intro"><!-- EXPAND THIS SECTION --></p>
+            <p class="section-intro">What if your website could work offline? What if users could install it like a real app? That's what Progressive Web Apps (PWAs) do—they're websites that feel like native apps!</p>
+
+            <h3>What is a PWA?</h3>
+            
+            <div class="metaphor-box">
+                <h4>Regular Website vs PWA</h4>
+                <p><strong>Regular Website:</strong> Like a newspaper—needs internet, can't be installed<br><br>
+                <strong>PWA:</strong> Like a magazine you download—works offline, installs to home screen, feels like an app<br><br>
+                Examples: Twitter Lite, Pinterest, Starbucks web app</p>
+            </div>
+
+            <h4>PWA Features</h4>
+            
+            <div class="code">✅ Works offline (caches content)
+✅ Installable (add to home screen)
+✅ Push notifications
+✅ Fast loading (pre-cached resources)
+✅ Works on any device
+✅ No app store needed</div>
+
+            <h3>Basic PWA Setup</h3>
+            
+            <p>Two files make your site a PWA:</p>
+
+            <div class="code">// 1. manifest.json - App metadata
+{
+  "name": "My Awesome App",
+  "short_name": "MyApp",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
+
+// 2. service-worker.js - Offline functionality
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open('v1').then((cache) => {
+      return cache.addAll(['/index.html', '/styles.css', '/app.js']);
+    })
+  );
+});</div>
+
+            <div class="metaphor-box">
+                <h4>PWAs: The Future of Web Apps</h4>
+                <p>PWAs bridge the gap between websites and native apps. They're easier to build than native apps but offer similar experiences. As you advance, explore PWA capabilities!</p>
+            </div>
         </section>
 
         <!-- SECTION 9: Testing Integration -->
         <section id="testing-integration" class="section">
             <h2 class="section-title">Testing Full-Stack Apps</h2>
-            <p class="section-intro"><!-- EXPAND THIS SECTION --></p>
+            <p class="section-intro">How do you know your app actually works? Testing! Let's learn why testing matters and how to write simple tests for your frontend and backend.</p>
+
+            <h3>Why Test?</h3>
+            
+            <div class="metaphor-box">
+                <h4>Testing as Safety Net</h4>
+                <p>Imagine walking a tightrope:<br><br>
+                <strong>No tests:</strong> No safety net—one mistake and everything breaks<br>
+                <strong>With tests:</strong> Safety net catches errors before users see them<br><br>
+                Tests ensure your code works NOW and KEEPS working when you make changes.</p>
+            </div>
+
+            <h4>Types of Tests (Simple Explanation)</h4>
+            
+            <div class="code">1. Unit Tests - Test one function in isolation
+   Example: "Does the `add(2, 3)` function return 5?"
+
+2. Integration Tests - Test components working together
+   Example: "Does clicking login button call the API?"
+
+3. End-to-End Tests - Test entire user flows
+   Example: "Can a user sign up, log in, and make a purchase?"</div>
+
+            <h3>Simple React Component Test</h3>
+            
+            <div class="code">// Component
+function Greeting({ name }) {
+  return &lt;h1&gt;Hello, {name}!&lt;/h1&gt;
+}
+
+// Test (using Jest + React Testing Library)
+import { render, screen } from '@testing-library/react';
+
+test('displays greeting with name', () => {
+  render(&lt;Greeting name="Alice" /&gt;);
+  expect(screen.getByText('Hello, Alice!')).toBeInTheDocument();
+});</div>
+
+            <div class="info-box">
+                <h4>Testing Benefits</h4>
+                <p>✅ Catch bugs before users do<br>
+                ✅ Confidence when refactoring<br>
+                ✅ Documentation (tests show how code should work)<br>
+                ✅ Faster development (find bugs instantly)</p>
+            </div>
+
+            <div class="metaphor-box">
+                <h4>You're Test-Aware!</h4>
+                <p>Testing is a huge topic, but now you understand WHY it matters. Start with simple tests for critical features, then expand as you grow!</p>
+            </div>
         </section>
 
         <!-- SECTION 10: Deployment & Scaling -->
         <section id="deployment-scaling" class="section">
             <h2 class="section-title">Deployment & Scaling</h2>
-            <p class="section-intro"><!-- EXPAND THIS SECTION --></p>
+            <p class="section-intro">Your app is built! Now how do you get it online for the world to see? Let's deploy your frontend and backend, and understand what happens when you get LOTS of users.</p>
+
+            <h3>What is Deployment?</h3>
+            
+            <div class="metaphor-box">
+                <h4>Deployment = Moving Day</h4>
+                <p><strong>Development (localhost):</strong> Building furniture in your garage<br>
+                <strong>Deployment (production):</strong> Moving furniture to your house where guests can see it<br><br>
+                Deployment means putting your code on a server that's accessible 24/7 from anywhere.</p>
+            </div>
+
+            <h3>Deploying Your Frontend (Free!)</h3>
+            
+            <h4>Option 1: Vercel (Easiest for React/Next.js)</h4>
+            
+            <div class="code">// Step 1: Install Vercel CLI
+npm install -g vercel
+
+// Step 2: Navigate to your project
+cd my-react-app
+
+// Step 3: Deploy!
+vercel
+
+// Follow prompts, get live URL instantly:
+// https://my-app.vercel.app ✅</div>
+
+            <h4>Option 2: Netlify (Great for any static site)</h4>
+            
+            <div class="code">// Method 1: Drag & Drop (easiest!)
+1. Go to netlify.com
+2. Drag your build folder (npm run build)
+3. Done! Live URL given
+
+// Method 2: CLI
+npm install -g netlify-cli
+netlify deploy</div>
+
+            <h4>Option 3: GitHub Pages (Free, GitHub integration)</h4>
+            
+            <div class="code">// 1. Install gh-pages package
+npm install --save-dev gh-pages
+
+// 2. Add to package.json
+"scripts": {
+  "predeploy": "npm run build",
+  "deploy": "gh-pages -d build"
+}
+
+// 3. Deploy!
+npm run deploy
+
+// Live at: https://yourusername.github.io/repo-name</div>
+
+            <div class="info-box">
+                <h4>All Three Are FREE!</h4>
+                <p><strong>Vercel:</strong> Best for Next.js, serverless functions included<br>
+                <strong>Netlify:</strong> Great forms, serverless functions, easy custom domains<br>
+                <strong>GitHub Pages:</strong> Perfect for static sites, portfolios</p>
+            </div>
+
+            <h3>Deploying Your Backend</h3>
+            
+            <h4>Option 1: Railway (Easiest)</h4>
+            
+            <div class="code">// 1. Push code to GitHub
+// 2. Go to railway.app
+// 3. Click "Deploy from GitHub"
+// 4. Select your repo
+// 5. Railway auto-detects Node.js and deploys!
+// 6. Get live API URL</div>
+
+            <h4>Option 2: Render (Great free tier)</h4>
+            
+            <div class="code">// Similar to Railway:
+1. Connect GitHub
+2. Select repo
+3. Configure:
+   - Build: npm install
+   - Start: npm start
+4. Deploy!</div>
+
+            <h3>Environment Variables</h3>
+            
+            <p>NEVER put secrets in code! Use environment variables:</p>
+
+            <div class="code">// Local: .env file
+DATABASE_URL=postgres://...
+API_KEY=secret123
+
+// In code:
+const dbUrl = process.env.DATABASE_URL;
+
+// On hosting platform:
+// Add env vars in dashboard settings</div>
+
+            <div class="warning-box">
+                <h4>Production Checklist</h4>
+                <p>✅ Environment variables set<br>
+                ✅ HTTPS enabled (automatic on Vercel/Netlify)<br>
+                ✅ Database has backups<br>
+                ✅ Error logging enabled<br>
+                ✅ .env file in .gitignore</p>
+            </div>
+
+            <h3>What is Scaling?</h3>
+            
+            <div class="metaphor-box">
+                <h4>Scaling = Handling Growth</h4>
+                <p><strong>10 users:</strong> One cashier at a coffee shop—easy<br>
+                <strong>10,000 users:</strong> Need more cashiers, bigger kitchen, more supplies<br><br>
+                Scaling means your app can handle increasing users without slowing down or crashing.</p>
+            </div>
+
+            <h4>Two Types of Scaling</h4>
+            
+            <div class="code">// Vertical Scaling ("Scale Up")
+Upgrade server:
+Small server → Bigger server (more CPU/RAM)
+Like: Getting a faster computer
+
+// Horizontal Scaling ("Scale Out")
+Add more servers:
+1 server → 10 servers working together
+Like: Hiring more cashiers</div>
+
+            <div class="info-box">
+                <h4>When to Worry About Scaling</h4>
+                <p><strong>Don't worry yet if you have:</strong> < 1,000 users<br>
+                <strong>Start optimizing at:</strong> 10,000+ users<br>
+                <strong>Need serious scaling at:</strong> 100,000+ users<br><br>
+                Most beginners over-optimize too early. Focus on BUILDING first!</p>
+            </div>
+
+            <h3>Quick Performance Wins</h3>
+            
+            <div class="code">// 1. Image optimization
+&lt;img src="photo.jpg" loading="lazy" /&gt;  {/* Lazy load */}
+Use WebP format (smaller size)
+
+// 2. Code splitting (React)
+import React, { lazy, Suspense } from 'react';
+const HeavyComponent = lazy(() => import('./Heavy'));
+
+// 3. Caching
+Cache-Control: max-age=3600  {/* Cache for 1 hour */}
+
+// 4. Minimize bundle size
+npm run build  {/* Minifies code automatically */}</div>
+
+            <div class="metaphor-box">
+                <h4>🎉 Congratulations! You're a Full-Stack Developer!</h4>
+                <p>You've learned:<br><br>
+                ✅ <strong>Frontend:</strong> React/Vue components, state, routing<br>
+                ✅ <strong>Backend:</strong> APIs, databases, authentication<br>
+                ✅ <strong>Integration:</strong> Connecting frontend to backend<br>
+                ✅ <strong>Real-time:</strong> WebSockets for live features<br>
+                ✅ <strong>Files:</strong> Handling uploads<br>
+                ✅ <strong>Deployment:</strong> Getting your app online<br><br>
+                <strong>What's next?</strong> BUILD! Start with a todo app with authentication, then a chat app, then your dream project. Every app you build makes you better. The learning never stops, but you now have the foundation to build ANYTHING.<br><br>
+                Welcome to the world of full-stack development. Now go build something amazing! 🚀</p>
+            </div>
         </section>
 
     </main>
