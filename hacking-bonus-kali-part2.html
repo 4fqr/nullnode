@@ -19197,6 +19197,391 @@ sp64.bin --markov-hcstat2 hashcat.hcstat2 ?l?l?l?l?l?l?l?l</div>
                 • <strong>Use Both:</strong> John for format conversion (zip2john, ssh2john), Hashcat for actual cracking! 💻⚡</p>
             </div>
 
+            <h4>Gobuster (Go-Based Directory & DNS Brute Force)</h4>
+
+            <p><strong>What is Gobuster?</strong> Gobuster is a <strong>blazing-fast directory/file brute-forcing tool</strong> written in Go. It's the modern replacement for tools like DirBuster and DIRB—faster, more efficient, and supports multiple modes (directory bruteforce, DNS subdomain enumeration, vhost discovery, S3 bucket enumeration). Think of it as a "speed demon" for web enumeration! 🚀</p>
+
+            <p><strong>Why Gobuster?</strong> Written in Go = multithreaded = FAST! Can scan thousands of URLs per second. Supports custom wordlists, wildcard detection, status code filtering, and parallel requests. Essential for web pentesting!</p>
+
+            <h5>Installation & Basic Usage</h5>
+
+            <div class="code"># Install (pre-installed in Kali):
+sudo apt install gobuster
+
+# Check version:
+gobuster version
+# Shows: Gobuster v3.x
+
+# View help:
+gobuster -h
+# Shows all modes: dir, dns, vhost, s3, gcs, tftp, fuzz</div>
+
+            <h5>Mode 1: Directory & File Enumeration (dir)</h5>
+
+            <p><strong>Purpose:</strong> Find hidden directories, files, and endpoints on web servers (admin panels, backups, config files, upload directories, etc.)</p>
+
+            <div class="code"># Basic directory scan:
+gobuster dir -u http://target.com -w /usr/share/wordlists/dirb/common.txt
+# -u: Target URL
+# -w: Wordlist path
+
+# BEGINNER EXPLANATION:
+# Gobuster tries URLs like:
+# http://target.com/admin
+# http://target.com/backup
+# http://target.com/uploads
+# http://target.com/config
+# If the page exists (200/301/302), it displays the result!
+
+# Example output:
+===============================================================
+Gobuster v3.6
+===============================================================
+[+] Url:                     http://target.com
+[+] Threads:                 10
+[+] Wordlist:                /usr/share/wordlists/dirb/common.txt
+[+] Status codes:            200,204,301,302,307,401,403
+===============================================================
+/admin                (Status: 301) [Size: 314] [→ /admin/]
+/backup               (Status: 200) [Size: 1234]
+/uploads              (Status: 403) [Size: 278]
+/config.php           (Status: 200) [Size: 456]
+===============================================================
+# Found 4 directories/files!
+
+# What each status means:
+# 200 = Page exists and is accessible
+# 301 = Redirect (directory exists, redirects to /admin/)
+# 302 = Temporary redirect
+# 403 = Forbidden (exists but access denied - try directory listing bypass!)
+# 404 = Not found (page doesn't exist)</div>
+
+            <h5>Common Flags for Directory Enumeration</h5>
+
+            <div class="code"># Specify file extensions to search:
+gobuster dir -u http://target.com -w wordlist.txt -x php,html,txt,bak,zip
+# -x: File extensions (tries admin.php, admin.html, admin.txt, admin.bak, etc.)
+# BEGINNER TIP: Use -x php,txt,bak to find backup files and source code!
+
+# Filter by status codes:
+gobuster dir -u http://target.com -w wordlist.txt -s 200,204,301,302,307,401,403
+# -s: Status codes to display (default: 200,204,301,302,307,401,403)
+# BEGINNER TIP: Remove 403 if you want to hide "Forbidden" results
+
+# Exclude status codes:
+gobuster dir -u http://target.com -w wordlist.txt -b 404,500
+# -b: Blacklist status codes (don't show 404 or 500 errors)
+
+# Increase speed with more threads:
+gobuster dir -u http://target.com -w wordlist.txt -t 50
+# -t: Number of threads (default: 10, max recommended: 50-100)
+# BEGINNER WARNING: Too many threads = server might block you or crash!
+
+# Add custom headers (bypass WAF/authentication):
+gobuster dir -u http://target.com -w wordlist.txt -H "User-Agent: Mozilla/5.0" -H "X-Forwarded-For: 127.0.0.1"
+# -H: Add custom HTTP headers
+# BEGINNER TIP: Use "Authorization: Bearer TOKEN" for authenticated scans
+
+# Use cookies for authenticated scanning:
+gobuster dir -u http://target.com -w wordlist.txt -c "PHPSESSID=abc123; user_id=5"
+# -c: Add cookies (useful for scanning logged-in areas)
+
+# Follow redirects:
+gobuster dir -u http://target.com -w wordlist.txt -r
+# -r: Follow redirects (e.g., 301 → follow to final destination)
+
+# Disable wildcard detection:
+gobuster dir -u http://target.com -w wordlist.txt --no-error
+# --no-error: Disable wildcard detection (some servers return 200 for everything)
+
+# Show full URLs in output:
+gobuster dir -u http://target.com -w wordlist.txt -e
+# -e: Expanded mode (shows full URL: http://target.com/admin instead of /admin)
+
+# Timeout settings:
+gobuster dir -u http://target.com -w wordlist.txt --timeout 5s
+# --timeout: Request timeout (default: 10s)
+
+# Verbose output:
+gobuster dir -u http://target.com -w wordlist.txt -v
+# -v: Verbose mode (shows all requests, even 404s)
+
+# Quiet mode (only show found):
+gobuster dir -u http://target.com -w wordlist.txt -q
+# -q: Quiet mode (minimal output, only discoveries)
+
+# Save output to file:
+gobuster dir -u http://target.com -w wordlist.txt -o results.txt
+# -o: Output file (save results for reporting)</div>
+
+            <h5>Mode 2: DNS Subdomain Enumeration (dns)</h5>
+
+            <p><strong>Purpose:</strong> Discover subdomains of a target domain (dev.example.com, admin.example.com, api.example.com, staging.example.com)</p>
+
+            <div class="code"># Basic DNS enumeration:
+gobuster dns -d example.com -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt
+# -d: Domain to enumerate
+# -w: Wordlist (tries dev.example.com, admin.example.com, etc.)
+
+# BEGINNER EXPLANATION:
+# Gobuster performs DNS lookups for:
+# admin.example.com
+# dev.example.com
+# staging.example.com
+# api.example.com
+# If the subdomain resolves to an IP, it's found!
+
+# Example output:
+Found: admin.example.com [192.168.1.50]
+Found: dev.example.com [192.168.1.51]
+Found: staging.example.com [192.168.1.52]
+Found: api.example.com [192.168.1.53]
+
+# Common DNS flags:
+
+# Use custom DNS resolver:
+gobuster dns -d example.com -w wordlist.txt -r 8.8.8.8
+# -r: DNS resolver (Google DNS: 8.8.8.8, Cloudflare: 1.1.1.1)
+
+# Show IP addresses:
+gobuster dns -d example.com -w wordlist.txt -i
+# -i: Show IP addresses for discovered subdomains
+
+# Increase threads:
+gobuster dns -d example.com -w wordlist.txt -t 50
+# -t: Threads (DNS lookups are fast, can use 50-100 threads)
+
+# Timeout:
+gobuster dns -d example.com -w wordlist.txt --timeout 2s
+# --timeout: DNS timeout (default: 1s)</div>
+
+            <h5>Mode 3: Virtual Host Discovery (vhost)</h5>
+
+            <p><strong>Purpose:</strong> Discover virtual hosts on a web server (same IP, different websites based on Host header)</p>
+
+            <div class="code"># Basic vhost enumeration:
+gobuster vhost -u http://target.com -w wordlist.txt
+# -u: Target URL (base domain)
+# -w: Wordlist (tries Host: admin.target.com, Host: dev.target.com)
+
+# BEGINNER EXPLANATION:
+# Some web servers host multiple sites on same IP using "Host" header
+# Example: 192.168.1.100 hosts:
+#   - target.com (main site)
+#   - admin.target.com (admin panel)
+#   - dev.target.com (dev environment)
+# Gobuster tries different Host headers to find hidden sites!
+
+# Append domain automatically:
+gobuster vhost -u http://target.com -w wordlist.txt --append-domain
+# --append-domain: Automatically appends base domain (tries admin.target.com, dev.target.com)
+
+# Filter by status codes:
+gobuster vhost -u http://target.com -w wordlist.txt -s 200,204,301,302
+# -s: Only show these status codes</div>
+
+            <h5>Mode 4: AWS S3 Bucket Enumeration (s3)</h5>
+
+            <p><strong>Purpose:</strong> Find publicly accessible AWS S3 buckets (cloud storage leaks - passwords, backups, source code!)</p>
+
+            <div class="code"># Basic S3 bucket scan:
+gobuster s3 -w wordlist.txt
+# -w: Wordlist (tries company-backup, company-files, company-prod, etc.)
+
+# BEGINNER EXPLANATION:
+# AWS S3 buckets have URLs like:
+# https://company-backup.s3.amazonaws.com
+# https://company-prod.s3.amazonaws.com
+# If misconfigured, anyone can LIST/DOWNLOAD files!
+# Gobuster tries common bucket names to find exposed data
+
+# Example output:
+https://company-backup.s3.amazonaws.com (Status: 200) [Size: 1234]
+https://company-prod.s3.amazonaws.com (Status: 403) [Forbidden]
+# 200 = Bucket exists and is public (JACKPOT!)
+# 403 = Bucket exists but access denied (still useful intel!)
+
+# Increase threads:
+gobuster s3 -w wordlist.txt -t 50
+# S3 API is fast, can use many threads</div>
+
+            <h5>Best Wordlists for Gobuster</h5>
+
+            <div class="code"># Pre-installed wordlists in Kali:
+
+# Small (fast scans):
+/usr/share/wordlists/dirb/common.txt                    # 4,614 entries (good for quick scans)
+/usr/share/wordlists/dirb/big.txt                       # 20,469 entries
+
+# Medium (balanced):
+/usr/share/seclists/Discovery/Web-Content/common.txt    # 4,662 entries
+/usr/share/seclists/Discovery/Web-Content/directory-list-2.3-small.txt  # 87,664 entries
+
+# Large (thorough scans):
+/usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt # 220,560 entries
+/usr/share/seclists/Discovery/Web-Content/raft-large-directories.txt    # 62,284 entries
+
+# DNS subdomains:
+/usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt       # 5,000 most common
+/usr/share/seclists/Discovery/DNS/subdomains-top1million-20000.txt      # 20,000 entries
+
+# API endpoints:
+/usr/share/seclists/Discovery/Web-Content/api/api-endpoints.txt
+/usr/share/seclists/Discovery/Web-Content/api/objects.txt
+
+# BEGINNER TIP:
+# Start small (common.txt) → if you find stuff, use bigger wordlist!
+# Use multiple extensions: -x php,html,txt,bak,zip,sql,old,swp</div>
+
+            <h5>Complete Real-World Examples</h5>
+
+            <div class="code"># Example 1: Basic web app scan
+gobuster dir -u http://target.com -w /usr/share/wordlists/dirb/common.txt -x php,html,txt -t 50 -o scan-results.txt
+# Scans for directories/files with .php, .html, .txt extensions
+# 50 threads for speed, saves to scan-results.txt
+
+# Example 2: Find admin panels
+gobuster dir -u http://target.com -w /usr/share/seclists/Discovery/Web-Content/common.txt -x php,html -s 200,301,302 -t 30
+# Only shows pages that exist (200/301/302)
+# Looks for admin.php, login.html, dashboard.php, etc.
+
+# Example 3: Authenticated scan
+gobuster dir -u http://target.com -w wordlist.txt -c "PHPSESSID=abc123; role=admin" -x php,html -t 50
+# Scans while authenticated (uses session cookie)
+# Finds admin-only pages!
+
+# Example 4: API endpoint discovery
+gobuster dir -u http://target.com/api -w /usr/share/seclists/Discovery/Web-Content/api/api-endpoints.txt -t 50
+# Scans /api/ path for hidden endpoints
+# Finds /api/users, /api/admin, /api/debug, etc.
+
+# Example 5: DNS subdomain enumeration
+gobuster dns -d example.com -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt -t 100 -i
+# Finds dev.example.com, admin.example.com, staging.example.com
+# Shows IP addresses with -i flag
+
+# Example 6: Virtual host discovery
+gobuster vhost -u http://192.168.1.100 -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt --append-domain -t 50
+# Discovers hidden sites on same IP (virtual hosting)
+
+# Example 7: S3 bucket hunting
+gobuster s3 -w /usr/share/seclists/Discovery/Web-Content/s3-buckets.txt -t 50
+# Finds exposed AWS S3 buckets
+# Look for: company-backup, company-prod, company-staging
+
+# Example 8: Bypass WAF with custom User-Agent
+gobuster dir -u http://target.com -w wordlist.txt -H "User-Agent: Googlebot/2.1" -t 30
+# Pretends to be Google crawler (some WAFs allow this!)
+
+# Example 9: Recursive scan (scan found directories)
+gobuster dir -u http://target.com -w wordlist.txt -x php -t 50 --wildcard
+# Then manually scan found dirs:
+gobuster dir -u http://target.com/admin -w wordlist.txt -x php -t 50</div>
+
+            <h5>Gobuster vs Other Tools</h5>
+
+            <div class="code"># Gobuster vs DirBuster vs DIRB vs Feroxbuster:
+
+# GOBUSTER:
+✅ Fastest (written in Go, multithreaded)
+✅ Multiple modes (dir, dns, vhost, s3)
+✅ Clean output
+✅ Wildcard detection
+❌ No recursive scanning (yet)
+
+# DirBuster:
+✅ GUI interface (good for beginners)
+✅ Recursive scanning
+❌ SLOW (Java-based)
+❌ No longer maintained
+
+# DIRB:
+✅ Pre-installed in Kali
+✅ Good default wordlists
+❌ VERY SLOW (single-threaded)
+❌ Limited features
+
+# Feroxbuster:
+✅ Recursive scanning (auto-scans found directories!)
+✅ Fast (Rust-based)
+✅ Wildcard filtering
+✅ Modern alternative to Gobuster
+❌ Newer tool (less documentation)
+
+# RECOMMENDATION:
+# - Quick scans: Gobuster (fastest!)
+# - Recursive scans: Feroxbuster
+# - Beginners: Gobuster (simpler syntax)</div>
+
+            <h5>Performance Tuning</h5>
+
+            <div class="code"># Optimize speed without crashing target:
+
+# Low-resource target (shared hosting, slow server):
+gobuster dir -u http://target.com -w wordlist.txt -t 10 --timeout 10s --delay 100ms
+# -t 10: Only 10 threads (gentle)
+# --timeout 10s: Wait 10 seconds for response
+# --delay 100ms: 100ms delay between requests
+
+# Medium target (VPS, dedicated server):
+gobuster dir -u http://target.com -w wordlist.txt -t 50 --timeout 5s
+# -t 50: 50 threads (balanced)
+# --timeout 5s: 5 second timeout
+
+# High-performance target (enterprise, CDN):
+gobuster dir -u http://target.com -w wordlist.txt -t 100 --timeout 3s
+# -t 100: 100 threads (aggressive!)
+# --timeout 3s: Fast timeout
+
+# BEGINNER TIP:
+# Start with -t 10, increase gradually
+# Watch for 429 (rate limiting) or 503 (service unavailable)
+# If you get blocked, decrease threads and add --delay!</div>
+
+            <div class="metaphor-box">
+                <h4>🎯 Gobuster Workflow for Web Pentesting</h4>
+                <p><strong>Step-by-step enumeration process:</strong><br><br>
+                
+                1. <strong>Initial recon (find the target):</strong><br>
+                   • Run nmap to find web ports (80, 443, 8080, 8443)<br>
+                   • Visit in browser, check for technology (Wappalyzer extension)<br><br>
+                
+                2. <strong>Directory enumeration (find hidden paths):</strong><br>
+                   <code>gobuster dir -u http://target.com -w /usr/share/wordlists/dirb/common.txt -x php,html,txt -t 50</code><br>
+                   • Look for: /admin, /backup, /config, /uploads, /api, /dev<br>
+                   • Check each found directory manually in browser!<br><br>
+                
+                3. <strong>DNS subdomain discovery (expand attack surface):</strong><br>
+                   <code>gobuster dns -d target.com -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt -t 100 -i</code><br>
+                   • Found dev.target.com? Scan it with gobuster dir!<br>
+                   • Found staging.target.com? Often less secure than production!<br><br>
+                
+                4. <strong>Virtual host discovery (same IP, different sites):</strong><br>
+                   <code>gobuster vhost -u http://target.com -w wordlist.txt --append-domain</code><br>
+                   • Finds hidden sites on same IP<br>
+                   • Try accessing with "Host" header: <code>curl -H "Host: admin.target.com" http://192.168.1.100</code><br><br>
+                
+                5. <strong>S3 bucket hunting (cloud leaks):</strong><br>
+                   <code>gobuster s3 -w /usr/share/seclists/Discovery/Web-Content/s3-buckets.txt</code><br>
+                   • Try company name variations: companybackup, company-prod, company-staging<br>
+                   • If found, check with: <code>aws s3 ls s3://company-backup --no-sign-request</code><br><br>
+                
+                6. <strong>Authenticated scanning (logged-in areas):</strong><br>
+                   • Login to site, copy cookies from browser (F12 → Application → Cookies)<br>
+                   • Run: <code>gobuster dir -u http://target.com -w wordlist.txt -c "session=abc123" -t 50</code><br>
+                   • Finds admin panels, user dashboards, hidden features<br><br>
+                
+                <strong>Tools to chain with Gobuster:</strong><br>
+                • <strong>Nmap:</strong> Find web ports first<br>
+                • <strong>Nikto:</strong> Vulnerability scanner after finding directories<br>
+                • <strong>WhatWeb:</strong> Technology detection<br>
+                • <strong>Burp Suite:</strong> Manual testing of found endpoints<br>
+                • <strong>SQLmap:</strong> SQL injection on found pages<br>
+                • <strong>ffuf:</strong> Parameter fuzzing on found endpoints<br><br>
+                
+                Gobuster finds the doors, YOU kick them open! 🚪💥</p>
+            </div>
+
         </section>
 
         <section id="final-words" class="content-section">
